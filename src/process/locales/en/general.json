@@ -1,0 +1,8 @@
+{
+  "cancel": "Cancel",
+  "permisions": {
+    "location": {
+      "whyLocationUsage": "Your location is required for searching within the app."
+    }
+  }
+}

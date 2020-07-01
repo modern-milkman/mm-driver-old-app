@@ -1,0 +1,4 @@
+export default {
+  APP_STATE_CHANGED: 'APP::STATE::CHANGED',
+  NAVIGATE: 'APP::NAVIGATE'
+};

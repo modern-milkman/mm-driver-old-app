@@ -1,0 +1,46 @@
+import { createLogger } from 'redux-logger';
+import createSagaMiddleware from 'redux-saga';
+import { persistStore, persistReducer } from 'redux-persist';
+import { createStore, compose, applyMiddleware } from 'redux';
+import { createReactNavigationReduxMiddleware } from 'react-navigation-redux-helpers';
+
+import sagas from '/process/sagas';
+import { Creators as StartupActions } from '/process/reducers/application';
+
+import { storeConfig } from './config';
+import rootReducer from './rootReducer';
+//import apiMidleware from './apiMidleware';
+import appStateMiddleware from './appStateMiddleware';
+
+let rehydrationComplete;
+
+const rehydrationPromise = new Promise((resolve) => {
+  rehydrationComplete = resolve;
+});
+
+const rehydration = () => rehydrationPromise;
+
+const middleware = createReactNavigationReduxMiddleware((state) => state.nav);
+
+const loggerMiddleware = createLogger({
+  collapsed: true,
+  predicate: () => __DEV__
+});
+
+const sagaMiddleware = createSagaMiddleware();
+
+const enhancer = compose(
+  appStateMiddleware(),
+  applyMiddleware(middleware, sagaMiddleware, loggerMiddleware) //2nd is apiMidleware
+);
+
+const persistedReducer = persistReducer(storeConfig, rootReducer);
+const store = createStore(persistedReducer, enhancer);
+const persistor = persistStore(store, {}, () => {
+  rehydrationComplete();
+  store.dispatch(StartupActions.rehydrated());
+});
+
+sagaMiddleware.run(sagas);
+
+export default () => ({ store, persistor, rehydration });
