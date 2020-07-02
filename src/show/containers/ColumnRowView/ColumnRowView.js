@@ -5,7 +5,7 @@ alignItems      - horizontal alignment / secondary axis
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView } from 'react-navigation';
+import { ScrollView } from '@react-navigation/native';
 import { View, Animated } from 'react-native';
 
 const ColumnRowView = (props) => {

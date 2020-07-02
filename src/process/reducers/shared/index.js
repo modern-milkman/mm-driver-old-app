@@ -1,3 +1,4 @@
+import produce from 'immer';
 import updateProps from './updateProps';
 
-export { updateProps };
+export { produce, updateProps };

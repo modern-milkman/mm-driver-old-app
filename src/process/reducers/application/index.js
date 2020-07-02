@@ -1,6 +1,6 @@
 import { createActions, createReducer } from 'reduxsauce';
 
-import { updateProps } from '../shared';
+import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
@@ -23,34 +23,25 @@ const initialState = {
 
 const resetStackDepthRoutes = [];
 
-export const addToStackRoute = (state, action) => {
-  const { routeName, params } = action;
-  let stack = state.stackRoute;
-  let lastRouteParams = null;
-
-  if (params) {
-    lastRouteParams = params;
-  }
-
-  if (state.stackRoute[state.stackRoute.length - 1] !== routeName) {
-    if (resetStackDepthRoutes.includes(routeName)) {
-      stack = [routeName];
-    } else {
-      stack = state.stackRoute.concat(routeName);
+export const addToStackRoute = (state = initialState, action) =>
+  produce(state, (draft) => {
+    const { routeName, params } = action;
+    if (draft.stackRoute[draft.stackRoute.length - 1] !== routeName) {
+      if (resetStackDepthRoutes.includes(routeName)) {
+        draft.stackRoute = [routeName];
+      } else {
+        draft.stackRoute.push(routeName);
+      }
     }
-  }
+    if (params) {
+      draft.lastRouteParams = params;
+    }
+  });
 
-  return {
-    ...state,
-    stackRoute: stack,
-    lastRouteParams
-  };
-};
-
-export const removeLastStackRoute = (state) => ({
-  ...state,
-  stackRoute: state.stackRoute.slice(0, -1)
-});
+export const removeLastStackRoute = (state = initialState) =>
+  produce(state, (draft) => {
+    draft.stackRoute.slice(0, -1);
+  });
 
 export default createReducer(initialState, {
   [Types.ADD_TO_STACK_ROUTE]: addToStackRoute,

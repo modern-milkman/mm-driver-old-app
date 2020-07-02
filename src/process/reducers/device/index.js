@@ -1,6 +1,6 @@
 import { createActions, createReducer } from 'reduxsauce';
 
-import { updateProps } from '../shared';
+import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
@@ -16,19 +16,17 @@ const initialState = {
   uniqueID: 'uninitialized'
 };
 
-export const setLocation = (state, action) => {
-  const locationValidated =
-    !isNaN(parseFloat(action.position.coords.latitude)) &&
-    !isNaN(parseFloat(action.position.coords.longitude));
-  if (locationValidated) {
-    return {
-      ...state,
-      position: action.position
-    };
-  } else {
-    return { ...state };
-  }
-};
+export const setLocation = (state, action) =>
+  produce(state, (draft) => {
+    const { position } = action;
+    if (
+      position &&
+      !isNaN(parseFloat(position.coords.latitude)) &&
+      !isNaN(parseFloat(position.coords.longitude))
+    ) {
+      draft.position = position;
+    }
+  });
 
 export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps,

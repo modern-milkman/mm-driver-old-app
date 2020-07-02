@@ -25,9 +25,7 @@ class UpgradeApp extends React.Component {
       <SharedElement id="awesome-transition">
         <Button.CallToAction
           title={'navigate'}
-          onPress={NavigationService.navigate.bind(null, {
-            routeName: 'Home'
-          })}
+          onPress={NavigationService.goBack}
           icon
         />
       </SharedElement>

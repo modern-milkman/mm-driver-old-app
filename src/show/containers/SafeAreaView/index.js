@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
-import { SafeAreaView as SafeAreaViewRN } from 'react-navigation';
+import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
 
 const SafeAreaView = (props) => {
   const defaultTransparency = {
