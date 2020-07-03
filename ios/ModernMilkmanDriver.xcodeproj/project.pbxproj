@@ -20,6 +20,7 @@
 		6D1047599FDDE410DC1ECBE6 /* libPods-ModernMilkmanDriver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC9AF6CDA85A9DF63A421840 /* libPods-ModernMilkmanDriver.a */; };
 		7CAFB7E90BF1B6D3E4D999A3 /* libPods-ModernMilkmanDriver-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46BFFC95877C61807FF4DAFF /* libPods-ModernMilkmanDriver-tvOSTests.a */; };
 		C6C986B5F53EEE5CC4A0812A /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E18CDF96C13A16602A11E783 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
+		FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		EE7398B9A2D9EE411414DE5A /* Pods-ModernMilkmanDriver-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-tvOSTests/Pods-ModernMilkmanDriver-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		F25D4241F51B28E1040B26C3 /* libPods-ModernMilkmanDriver-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC9AF6CDA85A9DF63A421840 /* libPods-ModernMilkmanDriver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "ModernMilkmanDriver/AppCenter-Config.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 		13B07FAE1A68108700A75B9A /* ModernMilkmanDriver */ = {
 			isa = PBXGroup;
 			children = (
+				FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -194,7 +197,6 @@
 				81E9A28304F6134D86F39820 /* Pods-ModernMilkmanDriver-tvOSTests.debug.xcconfig */,
 				EE7398B9A2D9EE411414DE5A /* Pods-ModernMilkmanDriver-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -342,6 +344,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

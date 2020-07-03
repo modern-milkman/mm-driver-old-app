@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "versionCode": "1",
   "private": true,
   "scripts": {
@@ -15,6 +15,9 @@
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/toolbar-android": "0.1.0-rc.2",
     "amplitude": "5.1.2",
+    "appcenter": "3.0.3",
+    "appcenter-analytics": "3.0.3",
+    "appcenter-crashes": "3.0.3",
     "i18next": "19.5.3",
     "immer": "7.0.5",
     "react": "16.13.1",
