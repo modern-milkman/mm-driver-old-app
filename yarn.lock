@@ -1334,6 +1334,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
   integrity sha512-rk4sWFsmtOw8oyx8SD3KSvawwaK7gRBSEIy2TAwURyGt+3TizssXP1r8nx3zY+R7v2vYYHXZ+k2/GULAT/bcaQ==
 
+"@react-native-community/toolbar-android@0.1.0-rc.2":
+  version "0.1.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/toolbar-android/-/toolbar-android-0.1.0-rc.2.tgz#86cae655836afacc52d4063062cc59837d1a8640"
+  integrity sha512-UCblqsitOcoYxVc6QzcaqCKogeRnePPMw7cbGvW5GI/GXIwQel8Kge9d910W3MUPUzw3pFzhIZVug6U3W067Pg==
+
 "@react-navigation/core@^3.7.6":
   version "3.7.6"
   resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-3.7.6.tgz#e0244fcdc22937825b252197f70308bbe5709c58"
@@ -1673,10 +1678,10 @@ ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-amplitude@5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/amplitude/-/amplitude-5.1.1.tgz#8c4c035c5320bf7be8496fd72b86eff04114f32f"
-  integrity sha512-DDgB//juAw/Yzr0sboxVKE869kqq7a6kHaAspsJdhNq3RdiEEvRU3pOt0KDyscCNNtCqaKnTDK1fuF3XxMi0ig==
+amplitude@5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/amplitude/-/amplitude-5.1.2.tgz#85e304d231169b7e895fce384ba3922fab48bc05"
+  integrity sha512-9/k+8OH6whUSdA2580yCrF3DfnTQuFw0YfxSxRiK0Dh0+2ds/Iy18tUovZrLe3rouf/95EVArj6x9vYDPnFKKQ==
   dependencies:
     axios "^0.19.2"
 
@@ -2661,6 +2666,13 @@ decamelize@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
+
+decamelize@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-3.2.0.tgz#84b8e8f4f8c579f938e35e2cc7024907e0090851"
+  integrity sha512-4TgkVUsmmu7oCSyGBm5FvfMoACuoh9EOidm7V5/J2X2djAwwt57qb3F2KMP2ITqODTCSwb+YRV+0Zqrv18k/hw==
+  dependencies:
+    xregexp "^4.2.4"
 
 decimal.js@^10.2.0:
   version "10.2.0"
@@ -3773,10 +3785,10 @@ husky@4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-i18next@19.5.2:
-  version "19.5.2"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.5.2.tgz#0db0293704b2bb73caa8b54ef4a9ff211aef8ee0"
-  integrity sha512-gkUpnWt+y3Yuz6Lp6VV0VPxJ8oOr/6YQ7PeUkEOBY/u/fE2RqxvoCNTJVhBiuJySWwf4cbtWjmlASoFqf1Y1cg==
+i18next@19.5.3:
+  version "19.5.3"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.5.3.tgz#1e8416072c1e1cd0c83afab430e94957a5165a74"
+  integrity sha512-R7ie0TdTpBhybNa2eDhTkJKSCDe7pPsHx6/q0RTtHPFw1mrFp0PEtpUqOPy4KaIRwJc8n2N/phTp+HiOBP5Biw==
   dependencies:
     "@babel/runtime" "^7.10.1"
 
@@ -4924,7 +4936,7 @@ lodash.throttle@^4.1.1:
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
 
-lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.3.0:
+lodash@^4.17.10, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.3.0:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -6153,14 +6165,14 @@ react-native-typography@1.4.1:
   resolved "https://registry.yarnpkg.com/react-native-typography/-/react-native-typography-1.4.1.tgz#2d05cb5935a2f7fdb6b43bbde93d60f1324578e3"
   integrity sha512-dc9Zfs4jUdq4ygx4/KwO6jKTERBu6cRrfPJGntw/pA+D6BMjlWfMNuhZ/69vf4Zpsnt9s4AGe+Z/V1QFYaCXAA==
 
-react-native-vector-icons@6.6.0:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-6.6.0.tgz#66cf004918eb05d90778d64bd42077c1800d481b"
-  integrity sha512-MImKVx8JEvVVBnaShMr7/yTX4Y062JZMupht1T+IEgbqBj4aQeQ1z2SH4VHWKNtWtppk4kz9gYyUiMWqx6tNSw==
+react-native-vector-icons@6.7.0:
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-6.7.0.tgz#8871ba52ef8e98878ba7a932847f96b6dfc1c137"
+  integrity sha512-LKdwqDIGVxV1+4HnmFIPaok9hba3WyTQ7H2Wj5RFv54zIdIjixrAiV9VD/Ej9Mc5/rUhTpmMiIVF3LVmVYD7dg==
   dependencies:
-    lodash "^4.0.0"
-    prop-types "^15.6.2"
-    yargs "^13.2.2"
+    lodash "^4.17.15"
+    prop-types "^15.7.2"
+    yargs "^15.0.2"
 
 react-native@0.62.2:
   version "0.62.2"
@@ -7814,7 +7826,7 @@ xpipe@^1.0.5:
   resolved "https://registry.yarnpkg.com/xpipe/-/xpipe-1.0.5.tgz#8dd8bf45fc3f7f55f0e054b878f43a62614dafdf"
   integrity sha1-jdi/Rfw/f1Xw4FS4ePQ6YmFNr98=
 
-xregexp@^4.3.0:
+xregexp@^4.2.4, xregexp@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-4.3.0.tgz#7e92e73d9174a99a59743f67a4ce879a04b5ae50"
   integrity sha512-7jXDIFXh5yJ/orPn4SXjuVrWWoi4Cr8jfV1eHv9CixKSbU+jY4mxfrBwAuDvupPNKpMUY+FeIqsVw/JLT9+B8g==
@@ -7841,14 +7853,6 @@ yaml@^1.7.2:
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.0.tgz#3b593add944876077d4d683fee01081bd9fff31e"
   integrity sha512-yr2icI4glYaNG+KWONODapy2/jDdMSDnrONSjblABjD9B4Z5LgiircSt8m8sRZFNi08kG9Sm0uSHtEmP3zaEGg==
 
-yargs-parser@^13.1.2:
-  version "13.1.2"
-  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-13.1.2.tgz#130f09702ebaeef2650d54ce6e3e5706f7a4fb38"
-  integrity sha512-3lbsNRf/j+A4QuSZfDRA7HRSfWrzO0YjqTJd5kjAq37Zep1CEgaYmrH9Q3GwPiB9cHyd1Y1UwggGhJGoxipbzg==
-  dependencies:
-    camelcase "^5.0.0"
-    decamelize "^1.2.0"
-
 yargs-parser@^15.0.1:
   version "15.0.1"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-15.0.1.tgz#54786af40b820dcb2fb8025b11b4d659d76323b3"
@@ -7857,29 +7861,13 @@ yargs-parser@^15.0.1:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
-yargs-parser@^18.1.1:
+yargs-parser@^18.1.1, yargs-parser@^18.1.2:
   version "18.1.3"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-18.1.3.tgz#be68c4975c6b2abf469236b0c870362fab09a7b0"
   integrity sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==
   dependencies:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
-
-yargs@^13.2.2:
-  version "13.3.2"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-13.3.2.tgz#ad7ffefec1aa59565ac915f82dccb38a9c31a2dd"
-  integrity sha512-AX3Zw5iPruN5ie6xGRIDgqkT+ZhnRlZMLMHAs8tg7nRruy2Nb+i5o9bwghAogtM08q1dpr2LVoS8KSTMYpWXUw==
-  dependencies:
-    cliui "^5.0.0"
-    find-up "^3.0.0"
-    get-caller-file "^2.0.1"
-    require-directory "^2.1.1"
-    require-main-filename "^2.0.0"
-    set-blocking "^2.0.0"
-    string-width "^3.0.0"
-    which-module "^2.0.0"
-    y18n "^4.0.0"
-    yargs-parser "^13.1.2"
 
 yargs@^14.2.0:
   version "14.2.3"
@@ -7897,6 +7885,23 @@ yargs@^14.2.0:
     which-module "^2.0.0"
     y18n "^4.0.0"
     yargs-parser "^15.0.1"
+
+yargs@^15.0.2:
+  version "15.4.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.4.0.tgz#53949fb768309bac1843de9b17b80051e9805ec2"
+  integrity sha512-D3fRFnZwLWp8jVAAhPZBsmeIHY8tTsb8ItV9KaAaopmC6wde2u6Yw29JBIZHXw14kgkRnYmDgmQU4FVMDlIsWw==
+  dependencies:
+    cliui "^6.0.0"
+    decamelize "^3.2.0"
+    find-up "^4.1.0"
+    get-caller-file "^2.0.1"
+    require-directory "^2.1.1"
+    require-main-filename "^2.0.0"
+    set-blocking "^2.0.0"
+    string-width "^4.2.0"
+    which-module "^2.0.0"
+    y18n "^4.0.0"
+    yargs-parser "^18.1.2"
 
 yargs@^15.1.0, yargs@^15.3.1:
   version "15.3.1"

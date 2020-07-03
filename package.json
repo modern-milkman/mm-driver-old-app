@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "versionCode": "1",
   "private": true,
   "scripts": {
@@ -13,8 +13,9 @@
     "@react-native-community/async-storage": "1.11.0",
     "@react-native-community/geolocation": "2.0.2",
     "@react-native-community/masked-view": "0.1.10",
-    "amplitude": "5.1.1",
-    "i18next": "19.5.2",
+    "@react-native-community/toolbar-android": "0.1.0-rc.2",
+    "amplitude": "5.1.2",
+    "i18next": "19.5.3",
     "immer": "7.0.5",
     "react": "16.13.1",
     "react-native": "0.62.2",
@@ -26,7 +27,7 @@
     "react-native-screens": "2.9.0",
     "react-native-shared-element": "0.7.0",
     "react-native-typography": "1.4.1",
-    "react-native-vector-icons": "6.6.0",
+    "react-native-vector-icons": "6.7.0",
     "react-navigation": "4.4.0",
     "react-navigation-redux-helpers": "4.0.1",
     "react-navigation-shared-element": "2.3.1",

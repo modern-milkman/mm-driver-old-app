@@ -310,7 +310,9 @@ PODS:
     - React
   - RNSharedElement (0.7.0):
     - React
-  - RNVectorIcons (6.6.0):
+  - RNVectorIcons (6.7.0):
+    - React
+  - toolbar-android (0.1.0-rc.2):
     - React
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -373,6 +375,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSharedElement (from `../node_modules/react-native-shared-element`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - "toolbar-android (from `../node_modules/@react-native-community/toolbar-android`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -459,6 +462,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-shared-element"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  toolbar-android:
+    :path: "../node_modules/@react-native-community/toolbar-android"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -507,7 +512,8 @@ SPEC CHECKSUMS:
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
   RNSharedElement: 00b1a1420d213a34459bb9a5aacabb38107d7948
-  RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
+  RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
+  toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
