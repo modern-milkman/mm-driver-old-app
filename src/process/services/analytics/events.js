@@ -1,4 +1,5 @@
 export default {
+  API_ERROR: 'APP::API::ERROR',
   APP_STATE_CHANGED: 'APP::STATE::CHANGED',
   NAVIGATE: 'APP::NAVIGATE'
 };

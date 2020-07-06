@@ -1,2 +1,3 @@
-const repositories = {};
-export default repositories;
+import user from './user';
+
+export default { user };

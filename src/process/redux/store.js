@@ -9,7 +9,7 @@ import { Creators as StartupActions } from '/process/reducers/application';
 
 import { storeConfig } from './config';
 import rootReducer from './rootReducer';
-//import apiMidleware from './apiMidleware';
+import apiMiddleware from './apiMiddleware';
 import appStateMiddleware from './appStateMiddleware';
 
 let rehydrationComplete;
@@ -31,7 +31,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const enhancer = compose(
   appStateMiddleware(),
-  applyMiddleware(middleware, sagaMiddleware, loggerMiddleware) //2nd is apiMidleware
+  applyMiddleware(middleware, apiMiddleware, sagaMiddleware, loggerMiddleware)
 );
 
 const persistedReducer = persistReducer(storeConfig, rootReducer);

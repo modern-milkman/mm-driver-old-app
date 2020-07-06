@@ -2,6 +2,7 @@ import { Keyboard } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { call, put, select } from 'redux-saga/effects';
 
+import Api from '/process/api';
 import NavigationService from '/process/navigation/service';
 import Analytics, { EVENTS } from '/process/services/analytics';
 import {
@@ -9,6 +10,7 @@ import {
   device as deviceSelector
 } from '/process/reducers/device';
 import {
+  Types as ApplicationTypes,
   lastRoute as lastRouteSelector,
   lastRouteParams as lastRouteParamsSelector
 } from '/process/reducers/application';
@@ -17,7 +19,7 @@ import { onNavigateSideEffects } from './onNavigateSideEffects';
 
 const defaultRoutes = {
   public: 'Home',
-  session: 'Search'
+  session: 'Main'
 };
 
 // EXPORTED
@@ -38,6 +40,33 @@ export const dismissKeyboard = function () {
 
 export const init = function* () {
   yield put({ type: DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS });
+};
+
+export const login = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: ApplicationTypes.LOGIN_SUCCESS },
+      fail: { type: ApplicationTypes.LOGIN_ERROR }
+    },
+    promise: Api.repositories.user.login(
+      'arthur@themodernmilkman.co.uk',
+      'Letmein1!'
+    )
+  });
+};
+
+export const login_error = function* ({ status, data }) {
+  // TODO handle login errors
+  yield null;
+};
+
+export const login_success = function* ({ payload }) {
+  NavigationService.navigate({ routeName: defaultRoutes.session });
+};
+
+export const logout = function* () {
+  NavigationService.navigate({ routeName: defaultRoutes.public });
 };
 
 export const onNavigate = function* (params) {

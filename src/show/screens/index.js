@@ -1,6 +1,8 @@
+// PUBLIC
 import Home from './public/Home';
-
-// Upgrade App
 import UpgradeApp from './public/UpgradeApp';
 
-export { Home, UpgradeApp };
+// SESSION ONLY
+import Main from './session/Main';
+
+export { Home, Main, UpgradeApp };

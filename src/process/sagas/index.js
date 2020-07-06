@@ -12,6 +12,10 @@ import {
   checkNavigationSideEffects,
   dismissKeyboard,
   init,
+  login,
+  login_error,
+  login_success,
+  logout,
   onNavigate,
   onNavigateBack,
   rehydrated
@@ -27,6 +31,10 @@ export default function* root() {
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
     takeLatest(ApplicationTypes.INIT, init),
+    takeLatest(ApplicationTypes.LOGIN, login),
+    takeLatest(ApplicationTypes.LOGIN_ERROR, login_error),
+    takeLatest(ApplicationTypes.LOGIN_SUCCESS, login_success),
+    takeLatest(ApplicationTypes.LOGOUT, logout),
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),

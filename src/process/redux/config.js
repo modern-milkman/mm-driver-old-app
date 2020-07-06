@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import { createBlacklistFilter } from 'redux-persist-transform-filter';
 
 export const storeConfig = {
   key: 'mm-driver-persist',
   storage: AsyncStorage,
   timeout: null,
   blacklist: ['actionsheetandroid'],
-  transforms: []
+  transforms: [createBlacklistFilter('application', ['processing'])]
 };
 
 export default { storeConfig };

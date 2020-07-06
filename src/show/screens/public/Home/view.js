@@ -1,7 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { SharedElement } from 'react-navigation-shared-element';
-
-import NavigationService from '/process/navigation/service';
 
 import { colors } from '/show/resources/theme';
 import { Button, Text } from '/show/components';
@@ -9,6 +8,7 @@ import { ColumnView, FullView, RowView } from '/show/containers';
 
 class Home extends React.Component {
   render = () => {
+    const { login, processing } = this.props;
     return (
       <FullView bgColor={colors.primary}>
         <ColumnView
@@ -18,17 +18,16 @@ class Home extends React.Component {
           alignItems={'stretch'}>
           <SharedElement id="awesome-transition">
             <Button.CallToAction
-              title={'navigate'}
-              onPress={NavigationService.navigate.bind(null, {
-                routeName: 'UpgradeApp'
-              })}
-              icon
+              title={'dummy login'}
+              onPress={login}
+              processing={processing}
+              disabled={processing}
             />
           </SharedElement>
         </ColumnView>
         <RowView>
           <SharedElement id="awesome-transition-text">
-            <Text.Title textAlign={'center'}>Larger text down</Text.Title>
+            <Text.Title textAlign={'center'}>Home screen</Text.Title>
           </SharedElement>
         </RowView>
       </FullView>
@@ -36,6 +35,9 @@ class Home extends React.Component {
   };
 }
 
-Home.propTypes = {};
+Home.propTypes = {
+  login: PropTypes.func,
+  processing: PropTypes.bool
+};
 
 export default Home;

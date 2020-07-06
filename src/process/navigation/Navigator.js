@@ -2,12 +2,13 @@
 import { createAppContainer } from 'react-navigation';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 
-import { Home, UpgradeApp } from '/show/screens';
+import { Home, Main, UpgradeApp } from '/show/screens';
 
 // TOP NAVIGATOR [ Home]
 const TopNavigator = createSharedElementStackNavigator(
   {
     Home: Home,
+    Main: Main,
     UpgradeApp: UpgradeApp
   },
   {
