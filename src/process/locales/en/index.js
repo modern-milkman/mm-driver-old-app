@@ -1,4 +1,5 @@
 import general from './general';
 import input from './input';
 import routes from './routes';
-export default { general, input, routes };
+import validations from './validations';
+export default { general, input, routes, validations };

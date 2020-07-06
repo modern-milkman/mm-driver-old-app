@@ -13,6 +13,6 @@ export const validations = {
         emailRegex.test(value.toLowerCase())
       );
     },
-    message: I18n.t('validations:invalidEmail')
+    message: I18n.t('validations:invalid.email')
   }
 };

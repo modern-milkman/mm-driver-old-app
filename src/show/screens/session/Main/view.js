@@ -20,7 +20,7 @@ class Main extends React.Component {
           alignItems={'stretch'}>
           <RowView>
             <Text.Callout textAlign={'center'} color={colors.primary}>
-              {`Hey, ${name}! "You're now logged in!"`}
+              {`Hey, ${name}! You're now logged in!`}
             </Text.Callout>
           </RowView>
         </ColumnView>
