@@ -1,6 +1,6 @@
 // Color palette
 const rgbColors = {
-  primary: '141, 199, 238', //'#8dc7ee'
+  primary: '0, 180, 255', //'#00B4FF'
   secondary: '196, 196, 204', //'#c4c4cc'
   background: '249, 249, 249', //'#f9f9f9'
   standard: '255, 255, 255', //'#ffffff'

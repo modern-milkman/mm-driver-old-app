@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "2.2.7",
+  "version": "2.2.8",
   "versionCode": "1",
   "private": true,
   "scripts": {
@@ -32,6 +32,7 @@
     "react-native-safe-area-context": "3.0.7",
     "react-native-screens": "2.9.0",
     "react-native-shared-element": "0.7.0",
+    "react-native-svg": "12.1.0",
     "react-native-typography": "1.4.1",
     "react-native-vector-icons": "6.7.0",
     "react-navigation": "4.4.0",

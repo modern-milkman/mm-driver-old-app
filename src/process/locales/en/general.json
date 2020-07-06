@@ -1,5 +1,7 @@
 {
   "cancel": "Cancel",
+  "login": "Login",
+  "logout": "Logout",
   "permisions": {
     "location": {
       "whyLocationUsage": "Your location is required for searching within the app."

@@ -16,9 +16,7 @@ class UpgradeApp extends React.Component {
         justifyContent={'flex-start'}
         alignItems={'stretch'}>
         <RowView>
-          <SharedElement id="awesome-transition-text">
-            <Text.Title textAlign={'center'}>Larger text up</Text.Title>
-          </SharedElement>
+          <Text.Title textAlign={'center'}>Larger text up</Text.Title>
         </RowView>
       </ColumnView>
 
@@ -34,7 +32,6 @@ class UpgradeApp extends React.Component {
 }
 
 UpgradeApp.sharedElements = (route, otherRoute, showing) => [
-  { id: 'awesome-transition-text', animation: 'fade' },
   { id: 'awesome-transition', animation: 'fade' }
 ];
 

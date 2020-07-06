@@ -40,7 +40,7 @@ class Root extends React.Component {
       <StatusBar
         translucent
         backgroundColor={'transparent'}
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
       />
       {Platform.OS === 'android' && <ActionSheetAndroid />}
       {/* content that should go on top of the app, full view, no safe area bounds */}
@@ -52,7 +52,7 @@ class Root extends React.Component {
         style={[
           fullFlex,
           statusBarHeightPadding,
-          { backgroundColor: colors.primary }
+          { backgroundColor: colors.standard }
         ]}>
         <Navigator
           ref={(nav) => {

@@ -6,6 +6,11 @@ import Api from '/process/api';
 import NavigationService from '/process/navigation/service';
 import Analytics, { EVENTS } from '/process/services/analytics';
 import {
+  Types as TransientTypes,
+  transient as transientSelector
+} from '/process/reducers/transient';
+import { Types as UserTypes } from '/process/reducers/user';
+import {
   Types as DeviceTypes,
   device as deviceSelector
 } from '/process/reducers/device';
@@ -43,29 +48,32 @@ export const init = function* () {
 };
 
 export const login = function* () {
+  yield put({ type: ApplicationTypes.DISMISS_KEYBOARD });
+  const { email, password } = yield select(transientSelector);
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: ApplicationTypes.LOGIN_SUCCESS },
       fail: { type: ApplicationTypes.LOGIN_ERROR }
     },
-    promise: Api.repositories.user.login(
-      'arthur@themodernmilkman.co.uk',
-      'Letmein1!'
-    )
+    promise: Api.repositories.user.login(email, password)
   });
 };
 
 export const login_error = function* ({ status, data }) {
-  // TODO handle login errors
-  yield null;
+  yield put({
+    type: TransientTypes.UPDATE_PROPS,
+    props: { password: '', jiggleForm: true }
+  });
 };
 
 export const login_success = function* ({ payload }) {
+  yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
   NavigationService.navigate({ routeName: defaultRoutes.session });
 };
 
 export const logout = function* () {
+  yield put({ type: 'state/RESET' });
   NavigationService.navigate({ routeName: defaultRoutes.public });
 };
 

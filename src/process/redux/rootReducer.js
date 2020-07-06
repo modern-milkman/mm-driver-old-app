@@ -1,7 +1,13 @@
 import { createActions } from 'reduxsauce';
 import { persistCombineReducers } from 'redux-persist';
 
-import { actionsheetandroid, application, device } from '/process/reducers';
+import {
+  actionsheetandroid,
+  application,
+  device,
+  transient,
+  user
+} from '/process/reducers';
 
 import { storeConfig } from './config';
 
@@ -15,7 +21,9 @@ export const { Types } = createActions(
 const appReducers = persistCombineReducers(storeConfig, {
   actionsheetandroid,
   application,
-  device
+  device,
+  transient,
+  user
 });
 
 const rootReducer = (state, action) => {
@@ -23,7 +31,9 @@ const rootReducer = (state, action) => {
     state = {
       ...state,
       actionsheetandroid: undefined,
-      application: undefined
+      application: undefined,
+      transient: undefined,
+      user: undefined
     };
   }
   return appReducers(state, action);
