@@ -58,10 +58,14 @@ class Home extends React.Component {
             alignItems={'center'}
             flex={1}
             minHeight={103}>
-            <CarLogo width={100} />
-            <Text.Title textAlign={'center'} color={colors.primary}>
-              Driver Login
-            </Text.Title>
+            <SharedElement id="car-transition">
+              <CarLogo width={100} />
+            </SharedElement>
+            <ColumnView>
+              <Text.Title textAlign={'center'} color={colors.primary}>
+                {I18n.t('screens:home.driverLogin')}
+              </Text.Title>
+            </ColumnView>
           </ColumnView>
           <ColumnView
             animated
@@ -93,7 +97,7 @@ class Home extends React.Component {
               secureTextEntry
               placeholder={I18n.t('input:placeholder.password')}
             />
-            <SharedElement id="awesome-transition">
+            <SharedElement id="loginout-btn-transition">
               <Button.Primary
                 title={I18n.t('general:login')}
                 onPress={login}

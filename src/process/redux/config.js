@@ -6,7 +6,9 @@ export const storeConfig = {
   storage: AsyncStorage,
   timeout: null,
   blacklist: ['actionsheetandroid'],
-  transforms: [createBlacklistFilter('application', ['processing'])]
+  transforms: [
+    createBlacklistFilter('application', ['processing', 'sideBarOpen'])
+  ]
 };
 
 export default { storeConfig };

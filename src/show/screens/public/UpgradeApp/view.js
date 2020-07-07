@@ -1,5 +1,4 @@
 import React from 'react';
-import { SharedElement } from 'react-navigation-shared-element';
 
 import NavigationService from '/process/navigation/service';
 
@@ -20,19 +19,13 @@ class UpgradeApp extends React.Component {
         </RowView>
       </ColumnView>
 
-      <SharedElement id="awesome-transition">
-        <Button.CallToAction
-          title={'navigate'}
-          onPress={NavigationService.goBack}
-          icon
-        />
-      </SharedElement>
+      <Button.CallToAction
+        title={'navigate'}
+        onPress={NavigationService.goBack}
+        icon
+      />
     </FullView>
   );
 }
-
-UpgradeApp.sharedElements = (route, otherRoute, showing) => [
-  { id: 'awesome-transition', animation: 'fade' }
-];
 
 export default UpgradeApp;

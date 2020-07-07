@@ -25,6 +25,11 @@ const ColumnRowView = (props) => {
     marginLeft: props.marginLeft || props.marginHorizontal || 0,
     marginRight: props.marginRight || props.marginHorizontal || 0,
     marginTop: props.marginTop || props.marginVertical || 0,
+    paddingBottom: props.paddingBottom || props.paddingVertical || 0,
+    paddingLeft: props.paddingLeft || props.paddingHorizontal || 0,
+    paddingRight: props.paddingRight || props.paddingHorizontal || 0,
+    paddingTop: props.paddingTop || props.paddingVertical || 0,
+
     minHeight: props.minHeight
   };
 
@@ -67,6 +72,12 @@ ColumnRowView.propTypes = {
   marginRight: PropTypes.number,
   marginTop: PropTypes.number,
   marginVertical: PropTypes.number,
+  paddingBottom: PropTypes.number,
+  paddingHorizontal: PropTypes.number,
+  paddingLeft: PropTypes.number,
+  paddingRight: PropTypes.number,
+  paddingTop: PropTypes.number,
+  paddingVertical: PropTypes.number,
   minHeight: PropTypes.number,
   onLayout: PropTypes.func,
   scrollable: PropTypes.bool,
@@ -88,6 +99,12 @@ ColumnRowView.defaultProps = {
   marginRight: undefined,
   marginTop: undefined,
   marginVertical: undefined,
+  paddingBottom: undefined,
+  paddingHorizontal: undefined,
+  paddingLeft: undefined,
+  paddingRight: undefined,
+  paddingTop: undefined,
+  paddingVertical: undefined,
   minHeight: 0,
   scrollable: false,
   width: '100%'

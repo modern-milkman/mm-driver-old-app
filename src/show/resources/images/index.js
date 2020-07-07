@@ -1,3 +1,4 @@
 import CarLogo from './CarLogo';
+import Menu from './Menu';
 
-export { CarLogo };
+export { CarLogo, Menu };

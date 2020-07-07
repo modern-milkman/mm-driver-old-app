@@ -22,6 +22,7 @@ export const { Types, Creators } = createActions(
 
 const initialState = {
   processing: false,
+  sideBarOpen: false,
   stackRoute: ['Home'],
   lastRouteParams: null
 };

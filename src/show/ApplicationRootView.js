@@ -8,7 +8,7 @@ import Navigator from '/process/navigation/Navigator';
 import NavigationService from '/process/navigation/service';
 
 import { colors } from '/show/resources/theme';
-import { ActionSheetAndroid } from '/show/components';
+import { ActionSheetAndroid, SideBar } from '/show/components';
 import { FullView, SafeAreaView } from '/show/containers';
 
 const fullFlex = { flex: 1 };
@@ -35,33 +35,43 @@ class Root extends React.Component {
     BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
   };
 
-  render = () => (
-    <FullView>
-      <StatusBar
-        translucent
-        backgroundColor={'transparent'}
-        barStyle={'dark-content'}
-      />
-      {Platform.OS === 'android' && <ActionSheetAndroid />}
-      {/* content that should go on top of the app, full view, no safe area bounds */}
+  render = () => {
+    const { application } = this.props;
+    const lastRoute = application.stackRoute[application.stackRoute.length - 1];
 
-      {/* content that should go within the safe area bounds of a device's view */}
-      <SafeAreaView
-        top={this.shouldHaveTopInset()}
-        bottom={this.shouldHaveBottomInset()}
-        style={[
-          fullFlex,
-          statusBarHeightPadding,
-          { backgroundColor: colors.standard }
-        ]}>
-        <Navigator
-          ref={(nav) => {
-            this.navigator = nav;
-          }}
+    return (
+      <FullView>
+        <StatusBar
+          translucent
+          backgroundColor={'transparent'}
+          barStyle={'dark-content'}
         />
-      </SafeAreaView>
-    </FullView>
-  );
+        {Platform.OS === 'android' && <ActionSheetAndroid />}
+        {/* content that should go on top of the app, full view, no safe area bounds */}
+
+        {/* content that should go within the safe area bounds of a device's view */}
+        <SafeAreaView
+          top={this.shouldHaveTopInset()}
+          bottom={this.shouldHaveBottomInset()}
+          style={[
+            fullFlex,
+            statusBarHeightPadding,
+            { backgroundColor: colors.standard }
+          ]}>
+          <Navigator
+            ref={(nav) => {
+              this.navigator = nav;
+            }}
+          />
+        </SafeAreaView>
+
+        <SideBar
+          top={this.shouldHaveTopInset()}
+          bottom={this.shouldHaveBottomInset()}
+        />
+      </FullView>
+    );
+  };
 
   shouldHaveBottomInset = () => {
     const { application } = this.props;
