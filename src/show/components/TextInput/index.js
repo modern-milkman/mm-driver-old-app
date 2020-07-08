@@ -91,7 +91,6 @@ class TextInput extends React.Component {
       value
     } = this.props;
     const { hasError, erorrMessage, focus } = this.state;
-    const textInputNotFocused = !focus;
 
     return (
       <RowView>
@@ -115,7 +114,7 @@ class TextInput extends React.Component {
             style={[
               style.textInput,
               style.h45,
-              textInputNotFocused && style.textInputNotFocused,
+              focus && style.textInputFocused,
               darkMode && style.darkModeTextInput
             ]}
             value={value}
@@ -130,25 +129,22 @@ class TextInput extends React.Component {
             autoFocus={autoFocus}
             secureTextEntry={secureTextEntry}
           />
-          {!textInputNotFocused &&
-            value !== null &&
-            value !== undefined &&
-            value.length > 0 && (
-              <View style={style.iconClose(disableErrors)}>
-                <Icon
-                  type="material-community"
-                  name="close-circle-outline"
-                  size={20}
-                  containerSize={20}
-                  color={
-                    darkMode
-                      ? style.iconCloseColor.darkColor
-                      : style.iconCloseColor.color
-                  }
-                  onPress={this.clearInput}
-                />
-              </View>
-            )}
+          {focus && value !== null && value !== undefined && value.length > 0 && (
+            <View style={style.iconClose(disableErrors)}>
+              <Icon
+                type="material-community"
+                name="close-circle-outline"
+                size={20}
+                containerSize={20}
+                color={
+                  darkMode
+                    ? style.iconCloseColor.darkColor
+                    : style.iconCloseColor.color
+                }
+                onPress={this.clearInput}
+              />
+            </View>
+          )}
 
           {!disableErrors && (
             <RowView justifyContent={'flex-end'}>

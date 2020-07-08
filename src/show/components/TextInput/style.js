@@ -24,7 +24,7 @@ const style = {
     ...systemWeights.semibold,
     color: colors.primary,
     borderBottomWidth: 1,
-    borderColor: colors.primary,
+    borderColor: colors.secondaryLight,
     paddingRight: 30,
     paddingVertical: 12,
     width: '100%',
@@ -42,8 +42,8 @@ const style = {
     color: colors.standard,
     borderColor: colors.standard
   },
-  textInputNotFocused: {
-    borderColor: colors.secondaryLight
+  textInputFocused: {
+    borderColor: colors.primary
   },
   textInputError: {
     borderColor: colors.error
