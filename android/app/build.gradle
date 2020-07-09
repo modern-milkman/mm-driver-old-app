@@ -143,8 +143,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode project.env.get("APP_VERSION_CODE").toInteger()
+        versionName project.env.get("APP_VERSION_NAME")
     }
     splits {
         abi {
