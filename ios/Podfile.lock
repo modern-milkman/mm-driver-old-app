@@ -10,13 +10,13 @@ PODS:
     - AppCenter/Crashes
     - AppCenterReactNativeShared
     - React
-  - AppCenter/Analytics (2.5.3):
+  - AppCenter/Analytics (3.3.1):
     - AppCenter/Core
-  - AppCenter/Core (2.5.3)
-  - AppCenter/Crashes (2.5.3):
+  - AppCenter/Core (3.3.1)
+  - AppCenter/Crashes (3.3.1):
     - AppCenter/Core
-  - AppCenterReactNativeShared (2.6.1):
-    - AppCenter/Core (= 2.5.3)
+  - AppCenterReactNativeShared (3.1.0):
+    - AppCenter/Core (= 3.3.1)
   - boost-for-react-native (1.63.0)
   - CocoaAsyncSocket (7.6.4)
   - CocoaLibEvent (1.0.0)
@@ -507,11 +507,11 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AppCenter: 765ff38c4d360fc5ec61b61a8be24d74cd6d4d83
+  AppCenter: 76ecf7e959a68e36b0fd314e8dc5897660214423
   appcenter-analytics: 4fdc885acb8a3bfac835515a8b9610d054ba8b9f
   appcenter-core: 84a1c69361d10272bf08b2ff906c37f4e422b940
   appcenter-crashes: e9008710be7612c585c39f3dc2cf3894172dc6e2
-  AppCenterReactNativeShared: d90c7165b03171aff31ecbe1424a04b34f64d609
+  AppCenterReactNativeShared: 2ec88a4ac2c52cdbc828a1f9c16244b534c84026
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   CocoaLibEvent: 2fab71b8bd46dd33ddb959f7928ec5909f838e3f
@@ -565,4 +565,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: a42dce469fd31e39a79b0bdc84dd10593228d6f7
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.3
