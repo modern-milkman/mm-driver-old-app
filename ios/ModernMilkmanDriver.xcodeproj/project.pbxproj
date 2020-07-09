@@ -19,7 +19,6 @@
 		6D1047599FDDE410DC1ECBE6 /* libPods-ModernMilkmanDriver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC9AF6CDA85A9DF63A421840 /* libPods-ModernMilkmanDriver.a */; };
 		7CAFB7E90BF1B6D3E4D999A3 /* libPods-ModernMilkmanDriver-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46BFFC95877C61807FF4DAFF /* libPods-ModernMilkmanDriver-tvOSTests.a */; };
 		9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D9B5EE824B365C80047134F /* BootSplash.storyboard */; };
-		9D9B5EEC24B367340047134F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D9B5EEA24B367340047134F /* LaunchScreen.xib */; };
 		C6C986B5F53EEE5CC4A0812A /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E18CDF96C13A16602A11E783 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
 		FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */; };
 /* End PBXBuildFile section */
@@ -63,7 +62,6 @@
 		93402412AA8772527C909A90 /* Pods-ModernMilkmanDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.release.xcconfig"; sourceTree = "<group>"; };
 		9BB156D22DB438919427415E /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig"; sourceTree = "<group>"; };
 		9D9B5EE824B365C80047134F /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = ModernMilkmanDriver/BootSplash.storyboard; sourceTree = "<group>"; };
-		9D9B5EEB24B367340047134F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = ModernMilkmanDriver/Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		E18CDF96C13A16602A11E783 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -136,7 +134,6 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				9D9B5EE824B365C80047134F /* BootSplash.storyboard */,
-				9D9B5EEA24B367340047134F /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = ModernMilkmanDriver;
@@ -346,7 +343,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D9B5EEC24B367340047134F /* LaunchScreen.xib in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */,
 				9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */,
@@ -422,6 +418,7 @@
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -441,6 +438,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -514,6 +512,7 @@
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -533,6 +532,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -672,17 +672,6 @@
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		9D9B5EEA24B367340047134F /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9D9B5EEB24B367340047134F /* Base */,
-			);
-			name = LaunchScreen.xib;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
