@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 
 import style from './style';
 

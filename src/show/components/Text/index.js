@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { Text as RNText, Platform } from 'react-native';
 import { material, human } from 'react-native-typography';
 
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 
 import Types from './Types';
 import style from './style';

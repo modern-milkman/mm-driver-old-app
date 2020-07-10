@@ -7,7 +7,7 @@ import { BackHandler, NativeModules, Platform, StatusBar } from 'react-native';
 import Navigator from 'Navigation/Navigator';
 import NavigationService from 'Navigation/service';
 
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 import { ActionSheetAndroid, SideBar } from 'Components';
 import { FullView, SafeAreaView } from 'Containers';
 

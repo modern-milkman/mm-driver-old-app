@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 import { shadows } from 'Components/shared';
 
 import Types from './Types';

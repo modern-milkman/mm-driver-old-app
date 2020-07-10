@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { alphaColor } from 'Resources/theme/colors';
+import { alphaColor } from 'Theme/colors';
 
 export default {
   defaultShadow: {

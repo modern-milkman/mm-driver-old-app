@@ -3,7 +3,7 @@ import React from 'react';
 import NavigationService from 'Navigation/service';
 
 import { ColumnView, FullView, RowView } from 'Containers';
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 import { Button, Text } from 'Components';
 
 class UpgradeApp extends React.Component {

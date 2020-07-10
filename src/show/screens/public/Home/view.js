@@ -8,9 +8,9 @@ import I18n from 'Locales/I18n';
 import { jiggleAnimation } from 'Helpers';
 import Vibration from 'Services/vibration';
 
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 import { Button, Text, TextInput } from 'Components';
-import { CarLogo } from 'Resources/images';
+import { CarLogo } from 'Images';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 
 import style from './style';
@@ -113,7 +113,7 @@ class Home extends React.Component {
           </ColumnView>
           <RowView>
             <Text.Caption textAlign={'center'} color={colors.black}>
-              {`V: ${Config.APP_VERSION_NAME}-${Config.APP_VERSION_CODE}`}
+              {`V: ${Config.APP_VERSION_NAME}`}
             </Text.Caption>
           </RowView>
         </ColumnView>

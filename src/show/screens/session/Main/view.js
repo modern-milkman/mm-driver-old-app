@@ -4,8 +4,8 @@ import { SharedElement } from 'react-navigation-shared-element';
 
 import I18n from 'Locales/I18n';
 
-import { alphaColor, colors } from 'Resources/theme';
-import { CarLogo } from 'Resources/images';
+import { alphaColor, colors } from 'Theme';
+import { CarLogo } from 'Images';
 import { ColumnView } from 'Containers';
 import { Button, BottomNavigation } from 'Components';
 

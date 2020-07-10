@@ -4,6 +4,7 @@ import { ActivityIndicator, View, TouchableOpacity } from 'react-native';
 
 import { RowView } from 'Containers';
 import { Icon, Text } from 'Components';
+import { colors } from 'Theme';
 
 import Types from './Types';
 import { style } from './style';
@@ -75,7 +76,7 @@ const Button = (props) => {
             )}
           </RowView>
         )}
-        {processing && <ActivityIndicator />}
+        {processing && <ActivityIndicator color={colors.standard} />}
       </TouchableOpacity>
     </View>
   );

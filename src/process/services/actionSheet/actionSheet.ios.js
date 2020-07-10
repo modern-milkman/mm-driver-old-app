@@ -2,7 +2,7 @@ import { ActionSheetIOS } from 'react-native';
 
 import I18n from 'Locales/I18n';
 
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 
 export default ({ optionKeys, options, config }) => {
   const { destructiveButtonIndex } = config;

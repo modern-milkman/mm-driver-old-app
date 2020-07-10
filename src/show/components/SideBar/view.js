@@ -8,7 +8,7 @@ import I18n from 'Locales/I18n';
 
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
 import { Text, Separator } from 'Components';
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 
 import styles from './styles';
 

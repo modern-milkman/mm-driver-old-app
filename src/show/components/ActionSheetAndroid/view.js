@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native';
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
 import { Button } from 'Components';
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 
 import style from './style';

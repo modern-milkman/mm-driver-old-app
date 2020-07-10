@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 
 const Logo = (props) => {
   const { disabled, fill, marginBottom, marginTop, onPress, width } = props;

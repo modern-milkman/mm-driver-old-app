@@ -2090,24 +2090,24 @@ anymatch@^3.0.3:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-appcenter-analytics@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/appcenter-analytics/-/appcenter-analytics-3.0.3.tgz#9bbd24b4b87c730e6e3f9f3c1524f7494fab4263"
-  integrity sha512-JvR8pUqcIgzFJ1cC8YtfsTOKOgMAhRpqUavxbVJsUIQ2ahQtYnUvi7+3DJxbY1iNZORWQMOT7zDO/6fNdtBVKQ==
+appcenter-analytics@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/appcenter-analytics/-/appcenter-analytics-3.1.0.tgz#ec51c79f43c58a6e6d6d5ce4c8bdb0ada3bda539"
+  integrity sha512-zGJRBe39IigyT127/alNzNeOpDYSyRo8RX2RYq2AtL01LnCreOy/fpzoF4yOVPMedFMiinEN+OOqR9e7WydAwg==
   dependencies:
-    appcenter "3.0.3"
+    appcenter "3.1.0"
 
-appcenter-crashes@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/appcenter-crashes/-/appcenter-crashes-3.0.3.tgz#a7762e03aa8277b3b76227d4e5e4f8add9de9afa"
-  integrity sha512-Zem7sPvfdJYqeAG1srzytVJu/t/k6AWKKl0j9iUWmpudUSXPsAVAVmuPjEpxZrldFAqeUjVt6piynhU1y2Vqog==
+appcenter-crashes@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/appcenter-crashes/-/appcenter-crashes-3.1.0.tgz#6b0fb592bc5e69cbd83106b47f55c97bc33a3fa3"
+  integrity sha512-2dwy7aqhSKifWg5yZVPuZdNRiHMO/XTsaQSHvvHNDA47BJ2y/cwCsK516KNgoYvp97B3Pr3Xyim7ee/n/xxO4g==
   dependencies:
-    appcenter "3.0.3"
+    appcenter "3.1.0"
 
-appcenter-link-scripts@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/appcenter-link-scripts/-/appcenter-link-scripts-3.0.3.tgz#242066059d90efc1a2343c4d37e0d5b30d37dc5a"
-  integrity sha512-wY+1zIPIbNOsFiagEz03r1fRk6erRdy93VYYEH9wPzERWH9nybx1HjE4gaxqb5UZSlQx1WKNPWWaLPPxuD4ZvQ==
+appcenter-link-scripts@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/appcenter-link-scripts/-/appcenter-link-scripts-3.1.0.tgz#5cc9d0303f9f16b7170d56a403fa3e69379cfd36"
+  integrity sha512-0ECoQLjfIJhAO8EkvRQ4fO5gZELhzwD3eRhsCD4d27k7TDPXYt32/p5ylHXUWotR7pduTE1rZ8gtETTr4oZf9g==
   dependencies:
     debug "4.1.1"
     glob "5.0.15"
@@ -2117,12 +2117,12 @@ appcenter-link-scripts@3.0.3:
     which "1.2.11"
     xcode "2.0.0"
 
-appcenter@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/appcenter/-/appcenter-3.0.3.tgz#62d0868d090f4d0fb68d825f5e402be94d388313"
-  integrity sha512-HOfgcM3XBK4cxnT9/a3QFolRuZf9LNCbOspOJVpXJsekcDAzAVpYzmlFihaMm/e/s9nfngAyik4BqftBzFtCog==
+appcenter@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/appcenter/-/appcenter-3.1.0.tgz#55fb01bfedc92e732e52ab97c8b344e062ba61a7"
+  integrity sha512-SvEdrqeEqK5BJizdrRmWdp/NFwwb3FJ08U5LQkRdqPoFWXQZ7d+AC2cVnemORXsiYPcpwK9xqiNxyofzEzddFA==
   dependencies:
-    appcenter-link-scripts "3.0.3"
+    appcenter-link-scripts "3.1.0"
 
 argparse@^1.0.7:
   version "1.0.10"
@@ -4173,10 +4173,10 @@ husky@4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-i18next@19.5.3:
-  version "19.5.3"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.5.3.tgz#1e8416072c1e1cd0c83afab430e94957a5165a74"
-  integrity sha512-R7ie0TdTpBhybNa2eDhTkJKSCDe7pPsHx6/q0RTtHPFw1mrFp0PEtpUqOPy4KaIRwJc8n2N/phTp+HiOBP5Biw==
+i18next@19.5.6:
+  version "19.5.6"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.5.6.tgz#4fa27b1bfc1486c4b10dec807e24de9c57467a84"
+  integrity sha512-5Myu9NDyBhygRUJv6o7/uIXSaHMP/hgS9QLVDICqS5V0i80dcGZEqzYER8pcPRWzuzbLBq4CSJZhFSpWbl+YUA==
   dependencies:
     "@babel/runtime" "^7.10.1"
 
@@ -6832,10 +6832,10 @@ react-native-typography@1.4.1:
   resolved "https://registry.yarnpkg.com/react-native-typography/-/react-native-typography-1.4.1.tgz#2d05cb5935a2f7fdb6b43bbde93d60f1324578e3"
   integrity sha512-dc9Zfs4jUdq4ygx4/KwO6jKTERBu6cRrfPJGntw/pA+D6BMjlWfMNuhZ/69vf4Zpsnt9s4AGe+Z/V1QFYaCXAA==
 
-react-native-vector-icons@6.7.0:
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-6.7.0.tgz#8871ba52ef8e98878ba7a932847f96b6dfc1c137"
-  integrity sha512-LKdwqDIGVxV1+4HnmFIPaok9hba3WyTQ7H2Wj5RFv54zIdIjixrAiV9VD/Ej9Mc5/rUhTpmMiIVF3LVmVYD7dg==
+react-native-vector-icons@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-7.0.0.tgz#5b92ed363c867645daad48c559e1f99efcfbb813"
+  integrity sha512-Ku8+dTUAnR9pexRPQqsUcQEZlxEpFZsIy8iOFqVL/3mrUyncZJHtqJyx2cUOmltZIC6W2GI4IkD3EYzPerXV5g==
   dependencies:
     lodash "^4.17.15"
     prop-types "^15.7.2"

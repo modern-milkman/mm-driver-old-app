@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { RowView } from 'Containers';
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 
 const Separator = (props) => {
   let height, width;

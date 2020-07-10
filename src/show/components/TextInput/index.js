@@ -4,7 +4,7 @@ import { View, TextInput as RNTextInputV3 } from 'react-native';
 
 import { Text, Icon } from 'Components';
 import { ColumnView, RowView } from 'Containers';
-import { colors } from 'Resources/theme';
+import { colors } from 'Theme';
 
 import style from './style';
 import { validations as validationMethods } from './validations';
