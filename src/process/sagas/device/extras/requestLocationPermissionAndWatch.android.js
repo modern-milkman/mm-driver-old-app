@@ -3,7 +3,7 @@ import { call } from 'redux-saga/effects';
 import { PermissionsAndroid } from 'react-native';
 import { getCurrentPosition, watchCurrentPosition } from 'redux-saga-location';
 
-import I18n from '/process/locales/I18n';
+import I18n from 'Locales/I18n';
 
 export function* requestLocationPermissionAndWatch() {
   let granted = false;

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import NavigationService from '/process/navigation/service';
+import NavigationService from 'Navigation/service';
 
-import { ColumnView, FullView, RowView } from '/show/containers';
-import { colors } from '/show/resources/theme';
-import { Button, Text } from '/show/components';
+import { ColumnView, FullView, RowView } from 'Containers';
+import { colors } from 'Resources/theme';
+import { Button, Text } from 'Components';
 
 class UpgradeApp extends React.Component {
   render = () => (

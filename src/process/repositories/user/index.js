@@ -1,4 +1,4 @@
-import Api from '/process/api';
+import Api from 'Api';
 
 export default {
   login(email, password) {

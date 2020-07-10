@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '/show/resources/theme';
+import { colors } from 'Resources/theme';
 
 // branding
 const styles = StyleSheet.create({

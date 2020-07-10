@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
-import { colors } from '/show/resources/theme';
+import { colors } from 'Resources/theme';
 
 import style from './style';
 const behaviour = {

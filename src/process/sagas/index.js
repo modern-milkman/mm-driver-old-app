@@ -1,8 +1,8 @@
 import { all, takeLatest, spawn } from 'redux-saga/effects';
 
 // TYPES
-import { Types as DeviceTypes } from '/process/reducers/device';
-import { Types as ApplicationTypes } from '/process/reducers/application';
+import { Types as DeviceTypes } from 'Reducers/device';
+import { Types as ApplicationTypes } from 'Reducers/application';
 
 import { watchLocationChannel } from 'redux-saga-location';
 import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/actions';

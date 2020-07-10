@@ -1,4 +1,4 @@
-import I18n from '/process/locales/I18n';
+import I18n from 'Locales/I18n';
 
 export const validations = {
   email: {

@@ -4,14 +4,14 @@ import { Animated } from 'react-native';
 import Config from 'react-native-config';
 import { SharedElement } from 'react-navigation-shared-element';
 
-import I18n from '/process/locales/I18n';
-import { jiggleAnimation } from '/process/helpers';
-import Vibration from '/process/services/vibration';
+import I18n from 'Locales/I18n';
+import { jiggleAnimation } from 'Helpers';
+import Vibration from 'Services/vibration';
 
-import { colors } from '/show/resources/theme';
-import { Button, Text, TextInput } from '/show/components';
-import { CarLogo } from '/show/resources/images';
-import { ColumnView, RowView, SafeAreaView } from '/show/containers';
+import { colors } from 'Resources/theme';
+import { Button, Text, TextInput } from 'Components';
+import { CarLogo } from 'Resources/images';
+import { ColumnView, RowView, SafeAreaView } from 'Containers';
 
 import style from './style';
 
@@ -113,7 +113,7 @@ class Home extends React.Component {
           </ColumnView>
           <RowView>
             <Text.Caption textAlign={'center'} color={colors.black}>
-              {`V: ${Config.APP_VERSION_NAME}`}
+              {`V: ${Config.APP_VERSION_NAME}-${Config.APP_VERSION_CODE}`}
             </Text.Caption>
           </RowView>
         </ColumnView>

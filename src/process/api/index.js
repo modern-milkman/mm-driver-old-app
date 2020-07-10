@@ -1,8 +1,8 @@
 import axios from 'axios';
 import Config from 'react-native-config';
 
-import repositories from '/process/repositories';
-import Analytics, { EVENTS } from '/process/services/analytics';
+import repositories from 'Repositories';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 const api = axios.create({
   baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,

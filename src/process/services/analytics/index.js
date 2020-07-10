@@ -2,7 +2,7 @@ import Amplitude from 'amplitude';
 import { Platform } from 'react-native';
 import Config from 'react-native-config';
 
-import store from '/process/redux/store';
+import store from 'Redux/store';
 
 import events from './events';
 

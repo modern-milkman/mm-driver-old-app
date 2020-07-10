@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { systemWeights } from 'react-native-typography';
 
-import { colors } from '/show/resources/theme';
+import { colors } from 'Resources/theme';
 
 const iconCloseStyle = (disabledErrors) => ({
   position: 'absolute',

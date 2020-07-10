@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import RNBootSplash from 'react-native-bootsplash';
 import { BackHandler, NativeModules, Platform, StatusBar } from 'react-native';
 
-import Navigator from '/process/navigation/Navigator';
-import NavigationService from '/process/navigation/service';
+import Navigator from 'Navigation/Navigator';
+import NavigationService from 'Navigation/service';
 
-import { colors } from '/show/resources/theme';
-import { ActionSheetAndroid, SideBar } from '/show/components';
-import { FullView, SafeAreaView } from '/show/containers';
+import { colors } from 'Resources/theme';
+import { ActionSheetAndroid, SideBar } from 'Components';
+import { FullView, SafeAreaView } from 'Containers';
 
 const fullFlex = { flex: 1 };
 const { StatusBarManager } = NativeModules;

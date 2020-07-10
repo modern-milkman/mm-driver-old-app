@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { Animated, View, TouchableOpacity } from 'react-native';
 
-import I18n from '/process/locales/I18n';
+import I18n from 'Locales/I18n';
 
-import { ColumnView, SafeAreaView, RowView } from '/show/containers';
-import { Text, Separator } from '/show/components';
-import { colors } from '/show/resources/theme';
+import { ColumnView, SafeAreaView, RowView } from 'Containers';
+import { Text, Separator } from 'Components';
+import { colors } from 'Resources/theme';
 
 import styles from './styles';
 

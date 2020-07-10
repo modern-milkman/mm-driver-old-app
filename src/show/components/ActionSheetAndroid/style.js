@@ -1,4 +1,4 @@
-import { alphaColor } from '/show/resources/theme';
+import { alphaColor } from 'Resources/theme';
 
 const flex = {
   flex: 1

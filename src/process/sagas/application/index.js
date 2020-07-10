@@ -2,23 +2,23 @@ import { Keyboard } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { call, put, select } from 'redux-saga/effects';
 
-import Api from '/process/api';
-import NavigationService from '/process/navigation/service';
-import Analytics, { EVENTS } from '/process/services/analytics';
+import Api from 'Api';
+import NavigationService from 'Navigation/service';
+import Analytics, { EVENTS } from 'Services/analytics';
 import {
   Types as TransientTypes,
   transient as transientSelector
-} from '/process/reducers/transient';
-import { Types as UserTypes } from '/process/reducers/user';
+} from 'Reducers/transient';
+import { Types as UserTypes } from 'Reducers/user';
 import {
   Types as DeviceTypes,
   device as deviceSelector
-} from '/process/reducers/device';
+} from 'Reducers/device';
 import {
   Types as ApplicationTypes,
   lastRoute as lastRouteSelector,
   lastRouteParams as lastRouteParamsSelector
-} from '/process/reducers/application';
+} from 'Reducers/application';
 
 import { onNavigateSideEffects } from './onNavigateSideEffects';
 

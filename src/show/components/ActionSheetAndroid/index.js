@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { Creators as ActionSheetAndroidActions } from '/process/reducers/actionsheetandroid';
+import { Creators as ActionSheetAndroidActions } from 'Reducers/actionsheetandroid';
 
 import ActionSheetAndroid from './view';
 

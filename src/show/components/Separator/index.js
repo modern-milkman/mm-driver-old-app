@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { RowView } from '/show/containers';
-import { colors } from '/show/resources/theme';
+import { RowView } from 'Containers';
+import { colors } from 'Resources/theme';
 
 const Separator = (props) => {
   let height, width;

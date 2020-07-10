@@ -7,7 +7,7 @@ import {
   device,
   transient,
   user
-} from '/process/reducers';
+} from 'Reducers';
 
 import { storeConfig } from './config';
 

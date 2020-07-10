@@ -1,5 +1,5 @@
-import store from '/process/redux/store';
-import { Creators as ActionSheetAndroidActions } from '/process/reducers/actionsheetandroid';
+import store from 'Redux/store';
+import { Creators as ActionSheetAndroidActions } from 'Reducers/actionsheetandroid';
 
 export default ({ optionKeys, options }) => {
   const { dispatch } = store().store;

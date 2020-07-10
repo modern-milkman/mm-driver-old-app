@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import createStore from '/process/redux/store';
-import { Creators as StartupActions } from '/process/reducers/application';
+import createStore from 'Redux/store';
+import { Creators as StartupActions } from 'Reducers/application';
 
 const { store, persistor } = createStore();
 

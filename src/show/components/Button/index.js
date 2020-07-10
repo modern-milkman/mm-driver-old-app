@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, View, TouchableOpacity } from 'react-native';
 
-import { RowView } from '/show/containers';
-import { Icon, Text } from '/show/components';
+import { RowView } from 'Containers';
+import { Icon, Text } from 'Components';
 
 import Types from './Types';
 import { style } from './style';

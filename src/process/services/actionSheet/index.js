@@ -1,6 +1,6 @@
 // SEE https://facebook.github.io/react-native/docs/actionsheetios
 // USES MODAL + BUTTONS for android
-// usage after import from /process/services/actionSheet
+// usage after import from Services/actionSheet
 // actionSheet(options = { key: callback }, config = {});
 // config could have destructiveButtonIndex for iOS
 // android ignores config

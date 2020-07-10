@@ -1,4 +1,4 @@
-import { colors } from '/show/resources/theme';
+import { colors } from 'Resources/theme';
 
 export default {
   screenWrapper: {

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors } from '/show/resources/theme';
+import { colors } from 'Resources/theme';
 
 import defaultStyle from './style';
 

@@ -4,8 +4,8 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { createReactNavigationReduxMiddleware } from 'react-navigation-redux-helpers';
 
-import sagas from '/process/sagas';
-import { Creators as StartupActions } from '/process/reducers/application';
+import sagas from 'Sagas';
+import { Creators as StartupActions } from 'Reducers/application';
 
 import { storeConfig } from './config';
 import rootReducer from './rootReducer';

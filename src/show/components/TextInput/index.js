@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, TextInput as RNTextInputV3 } from 'react-native';
 
-import { Text, Icon } from '/show/components';
-import { ColumnView, RowView } from '/show/containers';
-import { colors } from '/show/resources/theme';
+import { Text, Icon } from 'Components';
+import { ColumnView, RowView } from 'Containers';
+import { colors } from 'Resources/theme';
 
 import style from './style';
 import { validations as validationMethods } from './validations';

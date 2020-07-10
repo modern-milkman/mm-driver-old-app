@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 
-import { mock } from '/process/helpers';
-import I18n from '/process/locales/I18n';
-import { Button } from '/show/components';
-import { colors } from '/show/resources/theme';
-import { ColumnView, Modal, RowView, SafeAreaView } from '/show/containers';
+import { mock } from 'Helpers';
+import I18n from 'Locales/I18n';
+import { Button } from 'Components';
+import { colors } from 'Resources/theme';
+import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 
 import style from './style';
 

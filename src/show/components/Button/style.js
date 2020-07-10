@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
-import { colors } from '/show/resources/theme';
-import { shadows } from '/show/components/shared';
+import { colors } from 'Resources/theme';
+import { shadows } from 'Components/shared';
 
 import Types from './Types';
 

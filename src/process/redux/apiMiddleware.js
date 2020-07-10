@@ -1,4 +1,4 @@
-import Api from '/process/api';
+import Api from 'Api';
 
 export default function apiMiddleware() {
   return (next) => (action) => {

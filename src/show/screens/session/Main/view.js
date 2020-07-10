@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SharedElement } from 'react-navigation-shared-element';
 
-import I18n from '/process/locales/I18n';
+import I18n from 'Locales/I18n';
 
-import { alphaColor, colors } from '/show/resources/theme';
-import { CarLogo } from '/show/resources/images';
-import { ColumnView } from '/show/containers';
-import { Button, BottomNavigation } from '/show/components';
+import { alphaColor, colors } from 'Resources/theme';
+import { CarLogo } from 'Resources/images';
+import { ColumnView } from 'Containers';
+import { Button, BottomNavigation } from 'Components';
 
 class Main extends React.Component {
   render = () => {

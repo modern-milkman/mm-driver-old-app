@@ -1,6 +1,6 @@
 import { AppState } from 'react-native';
 
-import Analytics, { EVENTS } from '/process/services/analytics';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 export const FOREGROUND = 'APP_STATE.FOREGROUND';
 export const BACKGROUND = 'APP_STATE.BACKGROUND';

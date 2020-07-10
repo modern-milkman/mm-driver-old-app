@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
-import { Creators as applicationActions } from '/process/reducers/application';
-import { Creators as transientActions } from '/process/reducers/transient';
+import { Creators as applicationActions } from 'Reducers/application';
+import { Creators as transientActions } from 'Reducers/transient';
 
 import Home from './view';
 

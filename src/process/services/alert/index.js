@@ -1,5 +1,5 @@
 // SEE https://facebook.github.io/react-native/docs/alert
-// usage after import from /process/services/alert:
+// usage after import from Services/alert:
 // Alert({title: 'test', message: 'message', buttons: [{},{},{},{}]});
 
 import { Alert, Platform } from 'react-native';

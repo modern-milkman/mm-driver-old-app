@@ -1,5 +1,5 @@
 import { StackActions, NavigationActions } from 'react-navigation';
-import { Types as ApplicationTypes } from '/process/reducers/application';
+import { Types as ApplicationTypes } from 'Reducers/application';
 
 const config = {
   resetStackRoutes: []

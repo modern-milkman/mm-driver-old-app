@@ -3,9 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, View } from 'react-native';
 
-import { Menu } from '/show/resources/images';
-import { RowView } from '/show/containers';
-import { Text } from '/show/components';
+import { Menu } from 'Resources/images';
+import { RowView } from 'Containers';
+import { Text } from 'Components';
 
 import styles from './style';
 

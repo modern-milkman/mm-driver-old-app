@@ -1,10 +1,10 @@
 import { put, select } from 'redux-saga/effects';
 
-import { Types as TransientTypes } from '/process/reducers/transient';
+import { Types as TransientTypes } from 'Reducers/transient';
 import {
   Types as ApplicationTypes,
   lastRoute as lastRouteSelector
-} from '/process/reducers/application';
+} from 'Reducers/application';
 
 export function* onNavigateSideEffects(navigateParams) {
   // type, routeName, params, action
