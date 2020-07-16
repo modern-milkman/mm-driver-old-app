@@ -734,7 +734,7 @@
 				);
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.18;
+				MARKETING_VERSION = 2.2.19;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -758,7 +758,7 @@
 				DEVELOPMENT_TEAM = VW7823QN3U;
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.18;
+				MARKETING_VERSION = 2.2.19;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
