@@ -109,6 +109,7 @@ const Main = (props) => {
     }
   };
 
+  let currentLocationY = 0;
   const foregroundPaddingTop = new Animated.Value(0);
   const pullHandleMoveY = new Animated.Value(
     height -
@@ -126,15 +127,16 @@ const Main = (props) => {
   });
   const pullHandlePanResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => {
+    onPanResponderGrant: (e, gestureState) => {
+      currentLocationY = e.nativeEvent.locationY;
       pullHandlePan.setOffset({
-        y: pullHandlePan.y._value
+        y: pullHandlePan.y._value + currentLocationY
       });
     },
-    onPanResponderMove: (e, gestureState) => {
+    onPanResponderMove: (e, { dy, moveY }) => {
       Animated.event([null, { dy: pullHandlePan.y, moveY: pullHandleMoveY }], {
         useNativeDriver: false
-      })(e, gestureState);
+      })(e, { dy, moveY: moveY - currentLocationY });
     },
     onPanResponderRelease: (e, { vy, moveY, ...rest }) => {
       pullHandlePan.flattenOffset();
@@ -159,6 +161,7 @@ const Main = (props) => {
         foregroundPaddingTop,
         top
       });
+      currentLocationY = 0;
     }
   });
 
