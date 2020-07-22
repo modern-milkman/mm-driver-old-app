@@ -1,5 +1,4 @@
 import ActionSheetAndroid from './ActionSheetAndroid';
-import BottomNavigation from './BottomNavigation';
 import Button from './Button';
 import Icon from './Icon';
 import Text from './Text';
@@ -9,7 +8,6 @@ import Separator from './Separator';
 
 export {
   ActionSheetAndroid,
-  BottomNavigation,
   Button,
   Icon,
   Text,

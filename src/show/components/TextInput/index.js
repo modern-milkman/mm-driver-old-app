@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, TextInput as RNTextInputV3 } from 'react-native';
 
-import { Text, Icon } from 'Components';
 import { ColumnView, RowView } from 'Containers';
 import { colors } from 'Theme';
 
 import style from './style';
 import { validations as validationMethods } from './validations';
+
+import Icon from '../Icon';
+import Text from '../Text';
 import { digitsOnly as filterDigitsOnly } from '../shared';
 
 class TextInput extends React.Component {

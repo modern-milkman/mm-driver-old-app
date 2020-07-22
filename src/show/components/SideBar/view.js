@@ -1,19 +1,21 @@
 //TODO refactor after branding
-import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import React, { useEffect, useState } from 'react';
 import { Animated, View, TouchableOpacity } from 'react-native';
 
-import I18n from 'Locales/I18n';
-
-import { ColumnView, SafeAreaView, RowView } from 'Containers';
-import { Text, Separator } from 'Components';
 import { colors } from 'Theme';
+import I18n from 'Locales/I18n';
+import { ColumnView, SafeAreaView, RowView } from 'Containers';
 
 import styles from './styles';
 
+import Text from '../Text';
+import Button from '../Button';
+import Separator from '../Separator';
+
 const SideBar = (props) => {
-  const { top, bottom, name, updateProps, visible } = props;
+  const { top, bottom, logout, name, updateProps, visible } = props;
   const [left] = useState(new Animated.Value(-310));
   const [opacity] = useState(new Animated.Value(0));
   const [show, setShow] = useState(visible);
@@ -98,11 +100,18 @@ const SideBar = (props) => {
                 </RowView>
               </ColumnView>
 
-              <RowView>
-                <Text.Caption textAlign={'center'} color={colors.black}>
-                  {`V: ${Config.APP_VERSION_NAME}`}
-                </Text.Caption>
-              </RowView>
+              <ColumnView alignItems={'stretch'}>
+                <Button.Primary
+                  title={I18n.t('general:logout')}
+                  onPress={logout}
+                  noMargin
+                />
+                <RowView>
+                  <Text.Caption textAlign={'center'} color={colors.black}>
+                    {`V: ${Config.APP_VERSION_NAME}`}
+                  </Text.Caption>
+                </RowView>
+              </ColumnView>
             </ColumnView>
           </SafeAreaView>
         </Animated.View>

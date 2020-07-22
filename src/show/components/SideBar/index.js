@@ -10,6 +10,7 @@ export default connect(
     visible: state.application.sideBarOpen
   }),
   {
+    logout: applicationActions.logout,
     updateProps: applicationActions.updateProps
   }
 )(SideBar);

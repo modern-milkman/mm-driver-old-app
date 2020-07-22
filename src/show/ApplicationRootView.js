@@ -2,20 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import RNBootSplash from 'react-native-bootsplash';
-import { BackHandler, NativeModules, Platform, StatusBar } from 'react-native';
+import { BackHandler, Platform, StatusBar } from 'react-native';
 
+import { FullView } from 'Containers';
 import Navigator from 'Navigation/Navigator';
 import NavigationService from 'Navigation/service';
-
-import { colors } from 'Theme';
 import { ActionSheetAndroid, SideBar } from 'Components';
-import { FullView, SafeAreaView } from 'Containers';
-
-const fullFlex = { flex: 1 };
-const { StatusBarManager } = NativeModules;
-const statusBarHeightPadding = {
-  paddingTop: Platform.OS === 'ios' ? 0 : StatusBarManager.HEIGHT
-};
 
 const handleBackPress = () => true;
 
@@ -50,20 +42,12 @@ class Root extends React.Component {
         {/* content that should go on top of the app, full view, no safe area bounds */}
 
         {/* content that should go within the safe area bounds of a device's view */}
-        <SafeAreaView
-          top={this.shouldHaveTopInset()}
-          bottom={this.shouldHaveBottomInset()}
-          style={[
-            fullFlex,
-            statusBarHeightPadding,
-            { backgroundColor: colors.standard }
-          ]}>
-          <Navigator
-            ref={(nav) => {
-              this.navigator = nav;
-            }}
-          />
-        </SafeAreaView>
+        {/* add SafeAreaView with dynamic top / bottom insets */}
+        <Navigator
+          ref={(nav) => {
+            this.navigator = nav;
+          }}
+        />
 
         <SideBar
           top={this.shouldHaveTopInset()}

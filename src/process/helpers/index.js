@@ -1,6 +1,8 @@
-import { Animated, Easing } from 'react-native';
+import { Animated, Dimensions, Easing } from 'react-native';
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const deviceFrame = () => Dimensions.get('window');
 
 const jiggleAnimation = (animatedValue, callback) => {
   Animated.loop(
@@ -35,4 +37,4 @@ const jiggleAnimation = (animatedValue, callback) => {
 
 const mock = () => {};
 
-export { capitalize, jiggleAnimation, mock };
+export { capitalize, deviceFrame, jiggleAnimation, mock };
