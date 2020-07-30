@@ -1,24 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Platform } from 'react-native';
 import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
 
 const SafeAreaView = (props) => {
+  const { bottom, top } = props;
   const defaultTransparency = {
     backgroundColor: 'transparent'
   };
 
+  const edges = ['right', 'left'];
+
+  if (top) {
+    edges.push('top');
+  }
+  if (bottom) {
+    edges.push('bottom');
+  }
+
   return (
-    <SafeAreaViewRN
-      style={[defaultTransparency, props.style]}
-      {...Platform.select({
-        ios: {
-          forceInset: {
-            bottom: props.bottom ? 'always' : 'never',
-            top: props.top ? 'always' : 'never'
-          }
-        }
-      })}>
+    <SafeAreaViewRN style={[defaultTransparency, props.style]} edges={edges}>
       {props.children}
     </SafeAreaViewRN>
   );

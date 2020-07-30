@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import Config from 'react-native-config';
 import { Animated, PanResponder } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -6,7 +8,7 @@ import { deviceFrame } from 'Helpers';
 import { FullView } from 'Containers';
 
 import { configuration } from './helpers';
-import { Foreground, Navigation, PullHandle } from './subviews';
+import { Foreground, Navigation, Map, PullHandle } from './subviews';
 
 const springForeground = ({
   animatedValues,
@@ -51,6 +53,10 @@ const springForeground = ({
 };
 
 const Main = (props) => {
+  const {
+    availableNavApps,
+    coords: { longitude, latitude }
+  } = props;
   const { top, bottom } = useSafeAreaInsets();
   const { height } = deviceFrame();
   const snapBottomY =
@@ -180,7 +186,19 @@ const Main = (props) => {
 
   return (
     <FullView>
-      {/* Map Component zIndex 1 */}
+      <Map
+        latitude={latitude}
+        longitude={longitude}
+        mapPadding={{
+          bottom:
+            configuration.navigation.height +
+            configuration.foreground.defaultHeight +
+            configuration.topBorderRadius.max
+        }}
+        height={height + 25}
+        availableNavApps={availableNavApps}
+      />
+
       <Foreground
         pullHandleMoveY={pullHandleMoveY}
         height={interpolatedValues.foregroundHeight}
@@ -208,6 +226,17 @@ const Main = (props) => {
   );
 };
 
-Main.propTypes = {};
+Main.propTypes = {
+  availableNavApps: PropTypes.array,
+  coords: PropTypes.object
+};
+
+Main.defaultProps = {
+  availableNavApps: [],
+  coords: {
+    latitude: parseFloat(Config.DEFAULT_LATITUDE),
+    longitude: parseFloat(Config.DEFAULT_LONGITUDE)
+  }
+};
 
 export default Main;

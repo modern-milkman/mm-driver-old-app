@@ -1,8 +1,22 @@
-import { Animated, Dimensions, Easing } from 'react-native';
+import { Animated, Dimensions, Easing, Linking } from 'react-native';
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const deviceFrame = () => Dimensions.get('window');
+
+const isAppInstalled = async (appName) => {
+  return await Linking.canOpenURL(appName + '://')
+    .then((installed) => {
+      if (!installed) {
+        return false;
+      } else {
+        return true;
+      }
+    })
+    .catch(() => {
+      return false;
+    });
+};
 
 const jiggleAnimation = (animatedValue, callback) => {
   Animated.loop(
@@ -37,4 +51,4 @@ const jiggleAnimation = (animatedValue, callback) => {
 
 const mock = () => {};
 
-export { capitalize, deviceFrame, jiggleAnimation, mock };
+export { capitalize, deviceFrame, isAppInstalled, jiggleAnimation, mock };

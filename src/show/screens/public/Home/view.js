@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
 import Config from 'react-native-config';
-import { SharedElement } from 'react-navigation-shared-element';
 
 import I18n from 'Locales/I18n';
 import { jiggleAnimation } from 'Helpers';
@@ -44,6 +43,7 @@ class Home extends React.Component {
 
   render = () => {
     const { email, emailHasError, login, password, processing } = this.props;
+
     return (
       <SafeAreaView top={true} bottom={true} style={style.screenWrapper}>
         <ColumnView

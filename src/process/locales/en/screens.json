@@ -1,5 +1,8 @@
 {
   "home": {
     "driverLogin": "Driver Login"
+  },
+  "main": {
+    "openIn": "Open in {{appName}}"
   }
 }

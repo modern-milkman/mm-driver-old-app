@@ -9,6 +9,7 @@ export function* requestLocationPermissionAndWatch() {
   });
   yield call(watchCurrentPosition, {
     enableHighAccuracy: JSON.parse(Config.GEOLOCATION_ENABLE_HIGH_ACCURACY),
-    maximumAge: parseFloat(Config.GEOLOCATION_MAXIMUM_AGE)
+    maximumAge: parseFloat(Config.GEOLOCATION_MAXIMUM_AGE),
+    distanceFilter: parseInt(Config.GOOGLE_MAP_DISTANCE_FILTER)
   });
 }

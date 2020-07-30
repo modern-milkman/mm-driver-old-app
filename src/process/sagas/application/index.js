@@ -1,4 +1,4 @@
-import { Keyboard } from 'react-native';
+import { Keyboard, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { call, put, select } from 'redux-saga/effects';
 
@@ -19,13 +19,18 @@ import {
   lastRoute as lastRouteSelector,
   lastRouteParams as lastRouteParamsSelector
 } from 'Reducers/application';
-
+import { isAppInstalled } from 'Helpers';
 import { onNavigateSideEffects } from './onNavigateSideEffects';
 
 const defaultRoutes = {
   public: 'Home',
   session: 'Main'
 };
+
+const navigationAppList = Platform.select({
+  android: ['geo', 'waze'],
+  ios: ['maps', 'comgooglemaps', 'waze']
+});
 
 // EXPORTED
 export const checkNavigationSideEffects = function* () {
@@ -45,6 +50,20 @@ export const dismissKeyboard = function () {
 
 export const init = function* () {
   yield put({ type: DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS });
+
+  const availableNavApps = [];
+  for (const i of navigationAppList) {
+    if (yield isAppInstalled(i)) {
+      availableNavApps.push(i);
+    }
+  }
+
+  yield put({
+    type: DeviceTypes.UPDATE_PROPS,
+    props: {
+      availableNavApps
+    }
+  });
 };
 
 export const login = function* () {

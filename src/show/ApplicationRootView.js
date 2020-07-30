@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import RNBootSplash from 'react-native-bootsplash';
-import { BackHandler, Platform, StatusBar } from 'react-native';
+import { BackHandler, NativeModules, Platform, StatusBar } from 'react-native';
 
-import { FullView } from 'Containers';
+import { colors } from 'Theme';
 import Navigator from 'Navigation/Navigator';
 import NavigationService from 'Navigation/service';
+import { FullView, SafeAreaView } from 'Containers';
 import { ActionSheetAndroid, SideBar } from 'Components';
 
+const fullFlex = { flex: 1 };
+const { StatusBarManager } = NativeModules;
 const handleBackPress = () => true;
 
 class Root extends React.Component {
@@ -28,9 +31,6 @@ class Root extends React.Component {
   };
 
   render = () => {
-    const { application } = this.props;
-    const lastRoute = application.stackRoute[application.stackRoute.length - 1];
-
     return (
       <FullView>
         <StatusBar
@@ -42,31 +42,47 @@ class Root extends React.Component {
         {/* content that should go on top of the app, full view, no safe area bounds */}
 
         {/* content that should go within the safe area bounds of a device's view */}
-        {/* add SafeAreaView with dynamic top / bottom insets */}
-        <Navigator
-          ref={(nav) => {
-            this.navigator = nav;
-          }}
-        />
+        <SafeAreaView
+          top={this.shouldHaveTopInset()}
+          bottom={this.shouldHaveBottomInset()}
+          style={[
+            fullFlex,
+            { paddingTop: this.statusBarHeightPadding() },
+            { backgroundColor: colors.standard }
+          ]}>
+          <Navigator
+            ref={(nav) => {
+              this.navigator = nav;
+            }}
+          />
+        </SafeAreaView>
 
         <SideBar
-          top={this.shouldHaveTopInset()}
+          top={this.shouldHaveTopInset(true)}
           bottom={this.shouldHaveBottomInset()}
         />
       </FullView>
     );
   };
 
+  statusBarHeightPadding = () => {
+    const paddingTop = Platform.OS === 'ios' ? 0 : StatusBarManager.HEIGHT;
+
+    const { application } = this.props;
+    const lastRoute = application.stackRoute[application.stackRoute.length - 1];
+    return ['UpgradeApp', 'Home'].includes(lastRoute) ? paddingTop : 0;
+  };
+
   shouldHaveBottomInset = () => {
     const { application } = this.props;
     const lastRoute = application.stackRoute[application.stackRoute.length - 1];
-    return ['UpgradeApp', 'Home'].includes(lastRoute);
+    return ['UpgradeApp', 'Home', 'Main'].includes(lastRoute);
   };
 
-  shouldHaveTopInset = () => {
+  shouldHaveTopInset = (isSidebar = false) => {
     const { application } = this.props;
     const lastRoute = application.stackRoute[application.stackRoute.length - 1];
-    return ['UpgradeApp', 'Home'].includes(lastRoute);
+    return ['UpgradeApp', 'Home', isSidebar ? 'Main' : ''].includes(lastRoute);
   };
 }
 
