@@ -6,5 +6,12 @@ export default {
       username: email, // API expects username to be email
       password
     });
+  },
+
+  refreshToken(jwtToken, refreshToken) {
+    return Api.post('/Security/Refresh', {
+      jwtToken,
+      refreshToken
+    });
   }
 };

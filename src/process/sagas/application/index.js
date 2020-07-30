@@ -1,6 +1,7 @@
-import { Keyboard, Platform } from 'react-native';
+import { InteractionManager, Keyboard, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { call, put, select } from 'redux-saga/effects';
+import RNBootSplash from 'react-native-bootsplash';
+import { call, delay, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
 import NavigationService from 'Navigation/service';
@@ -9,15 +10,17 @@ import {
   Types as TransientTypes,
   transient as transientSelector
 } from 'Reducers/transient';
-import { Types as UserTypes } from 'Reducers/user';
+import { user as userSelector, Types as UserTypes } from 'Reducers/user';
 import {
   Types as DeviceTypes,
   device as deviceSelector
 } from 'Reducers/device';
+
 import {
-  Types as ApplicationTypes,
   lastRoute as lastRouteSelector,
-  lastRouteParams as lastRouteParamsSelector
+  lastRouteParams as lastRouteParamsSelector,
+  Types as ApplicationTypes,
+  userSessionPresent as userSessionPresentSelector
 } from 'Reducers/application';
 import { isAppInstalled } from 'Helpers';
 import { onNavigateSideEffects } from './onNavigateSideEffects';
@@ -31,6 +34,17 @@ const navigationAppList = Platform.select({
   android: ['geo', 'waze'],
   ios: ['maps', 'comgooglemaps', 'waze']
 });
+
+const refreshToken = function* (jwtToken, jwtRefreshToken) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: ApplicationTypes.REFRESH_TOKEN_SUCCESS },
+      fail: { type: ApplicationTypes.LOGOUT }
+    },
+    promise: Api.repositories.user.refreshToken(jwtToken, jwtRefreshToken)
+  });
+};
 
 // EXPORTED
 export const checkNavigationSideEffects = function* () {
@@ -88,11 +102,13 @@ export const login_error = function* ({ status, data }) {
 
 export const login_success = function* ({ payload }) {
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
+  Api.authToken(payload.jwtToken);
   NavigationService.navigate({ routeName: defaultRoutes.session });
 };
 
 export const logout = function* () {
   yield put({ type: 'state/RESET' });
+  Api.authToken();
   NavigationService.navigate({ routeName: defaultRoutes.public });
 };
 
@@ -106,8 +122,35 @@ export const onNavigateBack = function* () {
   Analytics.trackEvent(EVENTS.NAVIGATE, { back: true });
 };
 
+export const initRefreshToken = function* () {
+  const user = yield select(userSelector);
+  yield call(refreshToken.bind(null, user.jwtToken, user.refreshToken));
+};
+
+export const refreshTokenSuccess = function* ({ payload }) {
+  yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
+
+  Api.authToken(payload.jwtToken);
+};
+
 export const rehydrated = function* () {
   const device = yield select(deviceSelector);
+  const lastRoute = yield select(lastRouteSelector);
+  const user = yield select(userSelector);
+  const user_session = yield select(userSessionPresentSelector);
+
+  if (user_session) {
+    if (new Date(user.jwtExpiry) < new Date()) {
+      yield call(logout);
+    } else {
+      yield call(initRefreshToken);
+
+      NavigationService.navigate({ routeName: lastRoute });
+    }
+  } else {
+    NavigationService.navigate({ routeName: defaultRoutes.public });
+  }
+
   if (device.uniqueID === 'uninitialized') {
     yield put({
       type: DeviceTypes.UPDATE_PROPS,
@@ -116,5 +159,10 @@ export const rehydrated = function* () {
       }
     });
   }
-  NavigationService.navigate({ routeName: defaultRoutes.public });
+
+  yield delay(1000);
+
+  InteractionManager.runAfterInteractions(() => {
+    RNBootSplash.hide();
+  });
 };

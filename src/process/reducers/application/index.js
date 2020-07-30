@@ -7,24 +7,27 @@ export const { Types, Creators } = createActions(
     addToStackRoute: ['routeName', 'params'],
     dismissKeyboard: null,
     init: null,
-    login: null,
-    logout: null,
+    initRefreshToken: null,
     login_error: ['payload'],
     login_success: ['payload'],
+    login: null,
+    logout: null,
     navigate: null,
     navigateBack: null,
+    refreshTokenSuccess: ['payload'],
     rehydrated: null,
-    updateProps: ['props'],
-    removeLastStackRoute: null
+    removeLastStackRoute: null,
+    updateProps: ['props']
   },
   { prefix: 'application/' }
 );
 
 const initialState = {
+  lastRouteParams: null,
   processing: false,
   sideBarOpen: false,
   stackRoute: ['Home'],
-  lastRouteParams: null
+  userSessionPresent: false
 };
 
 const resetStackDepthRoutes = [];
@@ -47,19 +50,28 @@ export const addToStackRoute = (state = initialState, action) =>
 export const processingOn = (state = initialState) =>
   updateProps(state, { props: { processing: true } });
 
-export const processingOff = (state = initialState) =>
-  updateProps(state, { props: { processing: false } });
-
 export const removeLastStackRoute = (state = initialState) =>
   produce(state, (draft) => {
     draft.stackRoute.slice(0, -1);
   });
 
+export const loginSuccess = (state = initialState) =>
+  produce(state, (draft) => {
+    draft.userSessionPresent = true;
+    draft.processing = false;
+  });
+
+export const loginError = (state = initialState) =>
+  produce(state, (draft) => {
+    draft.userSessionPresent = false;
+    draft.processing = false;
+  });
+
 export default createReducer(initialState, {
   [Types.ADD_TO_STACK_ROUTE]: addToStackRoute,
   [Types.LOGIN]: processingOn,
-  [Types.LOGIN_ERROR]: processingOff,
-  [Types.LOGIN_SUCCESS]: processingOff,
+  [Types.LOGIN_ERROR]: loginError,
+  [Types.LOGIN_SUCCESS]: loginSuccess,
   [Types.REMOVE_LAST_STACK_ROUTE]: removeLastStackRoute,
   [Types.UPDATE_PROPS]: updateProps
 });
@@ -67,3 +79,5 @@ export default createReducer(initialState, {
 export const lastRoute = (state) =>
   state.application.stackRoute[state.application.stackRoute.length - 1];
 export const lastRouteParams = (state) => state.application.lastRouteParams;
+export const userSessionPresent = (state) =>
+  state.application.userSessionPresent;

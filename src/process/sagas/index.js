@@ -12,12 +12,14 @@ import {
   checkNavigationSideEffects,
   dismissKeyboard,
   init,
-  login,
+  initRefreshToken,
   login_error,
   login_success,
+  login,
   logout,
   onNavigate,
   onNavigateBack,
+  refreshTokenSuccess,
   rehydrated
 } from './application';
 
@@ -28,15 +30,17 @@ export default function* root() {
     spawn(watchLocationChannel),
 
     takeLatest('APP_STATE.FOREGROUND', checkNavigationSideEffects),
+    takeLatest('APP_STATE.FOREGROUND', initRefreshToken),
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
     takeLatest(ApplicationTypes.INIT, init),
-    takeLatest(ApplicationTypes.LOGIN, login),
     takeLatest(ApplicationTypes.LOGIN_ERROR, login_error),
     takeLatest(ApplicationTypes.LOGIN_SUCCESS, login_success),
+    takeLatest(ApplicationTypes.LOGIN, login),
     takeLatest(ApplicationTypes.LOGOUT, logout),
-    takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
+    takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
+    takeLatest(ApplicationTypes.REFRESH_TOKEN_SUCCESS, refreshTokenSuccess),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
 
     takeLatest(

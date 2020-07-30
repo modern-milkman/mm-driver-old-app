@@ -18,3 +18,4 @@ export default createReducer(initialState, {
 });
 
 export const name = (state) => state.user.name;
+export const user = (state) => state.user;

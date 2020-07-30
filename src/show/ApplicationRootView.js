@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import RNBootSplash from 'react-native-bootsplash';
 import { BackHandler, NativeModules, Platform, StatusBar } from 'react-native';
 
 import { colors } from 'Theme';
@@ -22,7 +21,7 @@ class Root extends React.Component {
   componentDidMount = () => {
     const { dispatch } = this.props;
     NavigationService.setNavigator(this.navigator, dispatch);
-    RNBootSplash.hide();
+
     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
   };
 
