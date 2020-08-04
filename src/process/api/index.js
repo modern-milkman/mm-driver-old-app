@@ -7,6 +7,7 @@ import Analytics, { EVENTS } from 'Services/analytics';
 const api = axios.create({
   baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
   headers: {
+    Accept: 'application/json',
     'Content-Type': 'application/json',
     'x-api-version': Config.X_API_VERSION
   },
