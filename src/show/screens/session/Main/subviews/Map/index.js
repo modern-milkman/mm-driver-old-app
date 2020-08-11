@@ -10,10 +10,75 @@ import actionSheet from 'Services/actionSheet';
 
 import styles from './style';
 
+const appName = (type) => {
+  switch (type) {
+    case 'maps':
+      return 'Apple Maps';
+
+    case 'comgooglemaps':
+    case 'geo':
+      return 'Google Maps';
+
+    case 'waze':
+      return 'Waze';
+  }
+};
+
 const defaultMapZoom = 16;
+
+const navigateInSheet = ({ availableNavApps, source, destination }) => {
+  const actions = {};
+  if (availableNavApps.length === 1) {
+    openNavigation({ type: availableNavApps[0], source, destination });
+    return;
+  }
+
+  for (const type of availableNavApps) {
+    actions[
+      `${I18n.t('screens:main.openIn', { appName: appName(type) })}`
+    ] = openNavigation.bind(null, {
+      type,
+      source,
+      destination
+    });
+  }
+
+  actionSheet(actions);
+};
+
+const openNavigation = ({
+  type,
+  source: { latitude: sLatitude, longitude: sLongitude },
+  destination: { latitude: dLatitude, longitude: dLongitude }
+}) => {
+  let url;
+
+  switch (type) {
+    case 'maps': {
+      url = `maps://${sLatitude},${sLongitude}?daddr=${dLatitude},${dLongitude}&saddr=${sLatitude},${sLongitude}`;
+      break;
+    }
+    case 'comgooglemaps':
+    case 'geo': {
+      url = `https://www.google.com/maps/dir/?api=1&center=${sLatitude},${sLongitude}&origin=${sLatitude},${sLongitude}&destination=${dLatitude},${dLongitude}&travelmode=driving&dir_action=navigate`;
+      break;
+    }
+    case 'waze': {
+      url = `https://waze.com/ul?ll=${dLatitude},${dLongitude}&navigate=yes`;
+      break;
+    }
+  }
+
+  Linking.openURL(url).catch(() => {
+    alert(`Please make sure you have ${type} app installed`); // eslint-disable-line no-alert
+  });
+};
 
 const Map = (props) => {
   const { availableNavApps, height, latitude, longitude, mapPadding } = props;
+  const source = { latitude, longitude };
+  //TODO REMOVE TESTING DIRECTIONS
+  const destination = { latitude: 51.5287718, longitude: -0.2416814 };
 
   const [mapRef, setRef] = useState(undefined);
   const [animateCamera, setAnimateCamera] = useState({});
@@ -83,72 +148,14 @@ const Map = (props) => {
         color={colors.primary}
         right={10}
         bottom={mapPadding.bottom + 75}
-        onPress={navigateInSheet.bind(
-          null,
+        onPress={navigateInSheet.bind(null, {
           availableNavApps,
-          latitude,
-          longitude
-        )}
+          source,
+          destination
+        })}
       />
     </View>
   );
-};
-const openNavigation = (type, latitude, longitude) => {
-  let url;
-
-  switch (type) {
-    case 'maps': {
-      url = `maps:0,0?daddr=${latitude},${longitude}`;
-      break;
-    }
-    case 'comgooglemaps':
-    case 'geo': {
-      url = `comgooglemaps://?center=${latitude},${longitude}`;
-      break;
-    }
-    case 'waze': {
-      url = `waze://ul?ll=${latitude}%2C-${longitude}`;
-      break;
-    }
-  }
-
-  Linking.openURL(url).catch(() => {
-    alert(`Please make sure you have ${type} app installed`); // eslint-disable-line no-alert
-  });
-};
-
-const appName = (type) => {
-  switch (type) {
-    case 'maps':
-      return 'Apple Maps';
-
-    case 'comgooglemaps':
-    case 'geo':
-      return 'Google Maps';
-
-    case 'waze':
-      return 'Waze';
-  }
-};
-
-const navigateInSheet = (availableNavApps, latitude, longitude) => {
-  //TESTING DIRECTIONS, REMOVE THIS LATER!!!!
-  latitude = 46.7572506;
-  longitude = 23.5238225;
-
-  const actions = {};
-  if (availableNavApps.length === 1) {
-    openNavigation(availableNavApps[0], latitude, longitude);
-    return;
-  }
-
-  for (const i of availableNavApps) {
-    actions[
-      `${I18n.t('screens:main.openIn', { appName: appName(i) })}`
-    ] = openNavigation.bind(null, i, latitude, longitude);
-  }
-
-  actionSheet(actions);
 };
 
 Map.defaultProps = {
