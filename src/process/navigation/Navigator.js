@@ -14,7 +14,8 @@ const TopNavigator = createStackNavigator(
   {
     defaultNavigationOptions: {
       headerShown: false,
-      cardShadowEnabled: false
+      cardShadowEnabled: false,
+      gestureEnabled: false
     },
     initialRouteName: 'Home'
   }
