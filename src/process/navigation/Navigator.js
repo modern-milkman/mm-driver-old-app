@@ -1,11 +1,11 @@
 //TODO upgrade to nav v5
 import { createAppContainer } from 'react-navigation';
-import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import { Home, Main, UpgradeApp } from 'Screens';
 
 // TOP NAVIGATOR [ Home]
-const TopNavigator = createSharedElementStackNavigator(
+const TopNavigator = createStackNavigator(
   {
     Home: Home,
     Main: Main,
