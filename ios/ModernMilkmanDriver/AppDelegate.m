@@ -1,4 +1,6 @@
 #import "AppDelegate.h"
+#import "RNBootSplash.h"
+#import "ReactNativeConfig.h"
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -6,7 +8,7 @@
 #import <AppCenterReactNative.h>
 #import <AppCenterReactNativeAnalytics.h>
 #import <AppCenterReactNativeCrashes.h>
-#import "RNBootSplash.h"
+#import <GoogleMaps/GoogleMaps.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -15,11 +17,6 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-
-#import "RNBootSplash.h"
-#import "ReactNativeConfig.h"
-
-#import <GoogleMaps/GoogleMaps.h>
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -40,7 +37,7 @@ static void InitializeFlipper(UIApplication *application) {
   InitializeFlipper(application);
 #endif
   [GMSServices provideAPIKey:[ReactNativeConfig envFor:@"GOOGLE_GEOCODING_IOS"]];
-  
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"ModernMilkmanDriver"
@@ -59,7 +56,7 @@ static void InitializeFlipper(UIApplication *application) {
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
 
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
-  
+
   return YES;
 }
 

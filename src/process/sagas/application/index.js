@@ -66,9 +66,9 @@ export const init = function* () {
   yield put({ type: DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS });
 
   const availableNavApps = [];
-  for (const i of navigationAppList) {
-    if (yield isAppInstalled(i)) {
-      availableNavApps.push(i);
+  for (const appName of navigationAppList) {
+    if (yield isAppInstalled(appName)) {
+      availableNavApps.push(appName);
     }
   }
 
