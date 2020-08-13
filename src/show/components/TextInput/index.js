@@ -2,28 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, TextInput as RNTextInputV3 } from 'react-native';
 
-import { ColumnView, RowView } from 'Containers';
 import { colors } from 'Theme';
+import { ColumnView, RowView } from 'Containers';
 
 import style from './style';
 import { validations as validationMethods } from './validations';
 
 import Icon from '../Icon';
 import Text from '../Text';
-import { digitsOnly as filterDigitsOnly } from '../shared';
 
 class TextInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      errorMessage: '',
       focused: false,
       hasError: '',
-      erorrMessage: ''
+      internalValue: props.value
     };
   }
 
   blurElement = () => {
-    this.setState({ focus: false });
+    this.setState({ focused: false });
     this.props.onFocusChanged(false);
   };
 
@@ -44,36 +44,47 @@ class TextInput extends React.Component {
     this.handleChangedText('');
   };
 
+  componentDidUpdate = (previousProps, previousState) => {
+    const { onChangeValidation } = this.props;
+    const { hasError, errorMessage } = this.state;
+    if (
+      hasError !== previousState.hasError ||
+      errorMessage !== previousState.errorMessage
+    ) {
+      onChangeValidation(hasError);
+    }
+  };
+
   focus = () => {
     this._RNTIV3.focus();
   };
 
   focusElement = () => {
-    this.setState({ focus: true });
+    this.setState({ focused: true });
     this.props.onFocusChanged(true);
   };
 
   handleChangedText = (text) => {
-    const {
-      digitsOnly,
-      onChangeText,
-      onChangeValidation,
-      validations
-    } = this.props;
+    const { onChangeText, validations } = this.props;
+    this.setState({ internalValue: text });
+    onChangeText(text);
+    if (validations.length > 0) {
+      this.handleValidations(text);
+    }
+  };
 
+  handleValidations = (text) => {
+    const { validations } = this.props;
     const checkedValidation = this.checkValidations(validations, text);
 
     if (checkedValidation.hasError) {
       this.setState({
         hasError: checkedValidation.hasError,
-        erorrMessage: checkedValidation.message
+        errorMessage: checkedValidation.message
       });
     } else {
       this.setState({ hasError: checkedValidation.hasError });
     }
-
-    onChangeText(digitsOnly ? filterDigitsOnly(text) : text);
-    onChangeValidation(checkedValidation.hasError);
   };
 
   render = () => {
@@ -88,12 +99,14 @@ class TextInput extends React.Component {
       noMargin,
       placeholder,
       returnKeyType,
+      rightIcon,
+      rightIconAction,
       secureTextEntry,
+      style: styleProp,
       title,
       value
     } = this.props;
-    const { hasError, erorrMessage, focus } = this.state;
-
+    const { errorMessage, focused, hasError, internalValue } = this.state;
     return (
       <RowView>
         <ColumnView
@@ -111,39 +124,41 @@ class TextInput extends React.Component {
             ref={(RNTIV3) => {
               this._RNTIV3 = RNTIV3;
             }}
+            autoCapitalize={autoCapitalize}
+            autoFocus={autoFocus}
+            keyboardType={keyboardType}
+            maxLength={maxLength}
+            multiline={multiline}
             placeholder={placeholder}
             placeholderTextColor={colors.secondaryLight}
+            returnKeyType={returnKeyType}
+            secureTextEntry={secureTextEntry}
             style={[
               style.textInput,
               style.h45,
-              focus && style.textInputFocused,
-              darkMode && style.darkModeTextInput
+              focused && style.textInputFocused,
+              darkMode && style.darkModeTextInput,
+              styleProp
             ]}
-            value={value}
-            onChangeText={this.handleChangedText.bind(null)}
-            multiline={multiline}
-            onFocus={this.focusElement}
             onBlur={this.blurElement}
-            autoCapitalize={autoCapitalize}
-            keyboardType={keyboardType}
-            maxLength={maxLength}
-            returnKeyType={returnKeyType}
-            autoFocus={autoFocus}
-            secureTextEntry={secureTextEntry}
+            onChangeText={this.handleChangedText.bind(null)}
+            onFocus={this.focusElement}
+            defaultValue={focused ? internalValue : value}
           />
-          {focus && value !== null && value !== undefined && value.length > 0 && (
+          {focused && (
             <View style={style.iconClose(disableErrors)}>
               <Icon
                 type="material-community"
-                name="close-circle-outline"
+                name={rightIcon}
                 size={20}
-                containerSize={20}
+                containerSize={46}
+                width={23}
                 color={
                   darkMode
                     ? style.iconCloseColor.darkColor
                     : style.iconCloseColor.color
                 }
-                onPress={this.clearInput}
+                onPress={rightIconAction ? rightIconAction : this.clearInput}
               />
             </View>
           )}
@@ -151,12 +166,20 @@ class TextInput extends React.Component {
           {!disableErrors && (
             <RowView justifyContent={'flex-end'}>
               <Text.Caption noMargin align="right" color={colors.error}>
-                {hasError ? erorrMessage : ' '}
+                {hasError ? errorMessage : ' '}
               </Text.Caption>
             </RowView>
           )}
         </ColumnView>
       </RowView>
+    );
+  };
+
+  shouldComponentUpdate = (nextProps, nextState) => {
+    return (
+      this.state.focused !== nextState.focused ||
+      this.state.hasError !== nextState.hasError ||
+      this.state.errorMessage !== nextState.errorMessage
     );
   };
 }
@@ -166,7 +189,6 @@ TextInput.defaultProps = {
   autoFocus: false,
   darkMode: false,
   disableErrors: false,
-  digitsOnly: false,
   hasError: false,
   keyboardType: 'default',
   maxLength: null,
@@ -176,6 +198,7 @@ TextInput.defaultProps = {
   validations: [],
   value: '',
   placeholder: '...',
+  rightIcon: 'close-circle-outline',
   secureTextEntry: false,
   onChangeText: () => {},
   onFocusChanged: () => {},
@@ -187,7 +210,6 @@ TextInput.propTypes = {
   autoFocus: PropTypes.bool,
   darkMode: PropTypes.bool,
   disableErrors: PropTypes.bool,
-  digitsOnly: PropTypes.bool,
   hasError: PropTypes.bool,
   keyboardType: PropTypes.string,
   maxLength: PropTypes.any,
@@ -198,7 +220,10 @@ TextInput.propTypes = {
   value: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   returnKeyType: PropTypes.string,
+  rightIcon: PropTypes.string,
+  rightIconAction: PropTypes.func,
   secureTextEntry: PropTypes.bool,
+  style: PropTypes.any,
   onChangeText: PropTypes.func.isRequired,
   onChangeValidation: PropTypes.func,
   onFocusChanged: PropTypes.func
