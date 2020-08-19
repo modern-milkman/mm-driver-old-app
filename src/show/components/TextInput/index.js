@@ -11,13 +11,17 @@ import { validations as validationMethods } from './validations';
 import Icon from '../Icon';
 import Text from '../Text';
 
+const initialTIState = {
+  errorMessage: '',
+  focused: false,
+  hasError: false
+};
+
 class TextInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      errorMessage: '',
-      focused: false,
-      hasError: '',
+      ...initialTIState,
       internalValue: props.value
     };
   }
@@ -45,13 +49,20 @@ class TextInput extends React.Component {
   };
 
   componentDidUpdate = (previousProps, previousState) => {
-    const { onChangeValidation } = this.props;
+    const { onChangeValidation, refreshKey, value } = this.props;
     const { hasError, errorMessage } = this.state;
     if (
       hasError !== previousState.hasError ||
       errorMessage !== previousState.errorMessage
     ) {
       onChangeValidation(hasError);
+    }
+    if (refreshKey !== previousProps.refreshKey) {
+      //eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        ...initialTIState,
+        internalValue: value
+      });
     }
   };
 
@@ -177,6 +188,7 @@ class TextInput extends React.Component {
 
   shouldComponentUpdate = (nextProps, nextState) => {
     return (
+      this.props.refreshKey !== nextProps.refreshKey ||
       this.state.focused !== nextState.focused ||
       this.state.hasError !== nextState.hasError ||
       this.state.errorMessage !== nextState.errorMessage
@@ -189,7 +201,6 @@ TextInput.defaultProps = {
   autoFocus: false,
   darkMode: false,
   disableErrors: false,
-  hasError: false,
   keyboardType: 'default',
   maxLength: null,
   multiline: false,
@@ -198,6 +209,7 @@ TextInput.defaultProps = {
   validations: [],
   value: '',
   placeholder: '...',
+  refreshKey: null,
   rightIcon: 'close-circle-outline',
   secureTextEntry: false,
   onChangeText: () => {},
@@ -210,7 +222,6 @@ TextInput.propTypes = {
   autoFocus: PropTypes.bool,
   darkMode: PropTypes.bool,
   disableErrors: PropTypes.bool,
-  hasError: PropTypes.bool,
   keyboardType: PropTypes.string,
   maxLength: PropTypes.any,
   multiline: PropTypes.bool,
@@ -219,6 +230,7 @@ TextInput.propTypes = {
   validations: PropTypes.array,
   value: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
+  refreshKey: PropTypes.string,
   returnKeyType: PropTypes.string,
   rightIcon: PropTypes.string,
   rightIconAction: PropTypes.func,

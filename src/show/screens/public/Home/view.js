@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
 import Config from 'react-native-config';
+import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
-import { jiggleAnimation } from 'Helpers';
+import { jiggleAnimation, randomKey } from 'Helpers';
 import Vibration from 'Services/vibration';
 
 import { colors } from 'Theme';
@@ -20,6 +21,9 @@ class Home extends React.Component {
   constructor() {
     super();
     this.animatedValue = new Animated.Value(0);
+    this.state = {
+      refreshKey: randomKey()
+    };
   }
 
   componentDidUpdate() {
@@ -41,11 +45,17 @@ class Home extends React.Component {
     updateTransientProps(update);
   };
 
+  refreshKey = () => {
+    this.setState({ refreshKey: randomKey() });
+  };
+
   render = () => {
+    const { refreshKey } = this.state;
     const { email, emailHasError, login, password, processing } = this.props;
 
     return (
       <SafeAreaView top={true} bottom={true} style={style.screenWrapper}>
+        <NavigationEvents onWillFocus={this.refreshKey} />
         <ColumnView
           width={'100%'}
           flex={1}
@@ -85,6 +95,7 @@ class Home extends React.Component {
               returnKeyType={'done'}
               placeholder={I18n.t('input:placeholder.email')}
               ref={(ti) => (emailReference = ti)}
+              refreshKey={refreshKey}
             />
             <TextInput
               onChangeText={this.updateTransient.bind(null, 'password')}
@@ -94,6 +105,7 @@ class Home extends React.Component {
               returnKeyType={'done'}
               secureTextEntry
               placeholder={I18n.t('input:placeholder.password')}
+              refreshKey={refreshKey}
             />
             <Button.Primary
               title={I18n.t('general:login')}

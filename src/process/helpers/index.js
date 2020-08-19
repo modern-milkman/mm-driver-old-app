@@ -51,4 +51,16 @@ const jiggleAnimation = (animatedValue, callback) => {
 
 const mock = () => {};
 
-export { capitalize, deviceFrame, isAppInstalled, jiggleAnimation, mock };
+const randomKey = () =>
+  Math.random()
+    .toString(36)
+    .replace(/[^a-z]+/g, '');
+
+export {
+  capitalize,
+  deviceFrame,
+  isAppInstalled,
+  jiggleAnimation,
+  mock,
+  randomKey
+};
