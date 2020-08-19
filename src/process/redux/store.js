@@ -24,7 +24,8 @@ const middleware = createReactNavigationReduxMiddleware((state) => state.nav);
 
 const loggerMiddleware = createLogger({
   collapsed: true,
-  predicate: () => __DEV__
+  predicate: () =>
+    global.location && global.location.pathname.includes('/debugger-ui')
 });
 
 const sagaMiddleware = createSagaMiddleware();
