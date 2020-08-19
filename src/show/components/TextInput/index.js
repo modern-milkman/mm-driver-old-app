@@ -44,6 +44,10 @@ class TextInput extends React.Component {
   };
 
   clearInput = () => {
+    const { rightIconAction } = this.props;
+    if (rightIconAction) {
+      rightIconAction();
+    }
     this._RNTIV3 && this._RNTIV3.clear();
     this.handleChangedText('');
   };
@@ -61,6 +65,7 @@ class TextInput extends React.Component {
       //eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         ...initialTIState,
+        focused: this._RNTIV3.isFocused(),
         internalValue: value
       });
     }
@@ -111,7 +116,6 @@ class TextInput extends React.Component {
       placeholder,
       returnKeyType,
       rightIcon,
-      rightIconAction,
       secureTextEntry,
       style: styleProp,
       title,
@@ -169,7 +173,7 @@ class TextInput extends React.Component {
                     ? style.iconCloseColor.darkColor
                     : style.iconCloseColor.color
                 }
-                onPress={rightIconAction ? rightIconAction : this.clearInput}
+                onPress={this.clearInput}
               />
             </View>
           )}
