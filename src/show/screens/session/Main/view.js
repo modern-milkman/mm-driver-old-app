@@ -1,11 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { Animated, PanResponder } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
+import { Animated, PanResponder, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { colors } from 'Theme';
 import { deviceFrame } from 'Helpers';
-import { FullView } from 'Containers';
+import { Button, Text } from 'Components';
+import { ColumnView, FullView } from 'Containers';
+import NavigationService from 'Navigation/service';
+
+import I18n from 'Locales/I18n';
 
 import { configuration } from './helpers';
 import { Foreground, Navigation, Map, PullHandle } from './subviews';
@@ -32,17 +38,18 @@ const springForeground = ({
   ]).start();
   if (toValue === snapTopY) {
     Animated.parallel([
-      Animated.spring(pullHandleMoveY, {
+      Animated.timing(pullHandleMoveY, {
         toValue: 0,
-        bounciness: 0,
-        useNativeDriver: false
+        useNativeDriver: false,
+        duration: 125
       }),
-      Animated.spring(foregroundPaddingTop, {
+      Animated.timing(foregroundPaddingTop, {
         toValue: top,
-        bounciness: 0,
-        useNativeDriver: false
+        useNativeDriver: false,
+        duration: 125
       })
     ]).start();
+    setTimeout(triggerNavigation, 150);
   } else {
     Animated.spring(foregroundPaddingTop, {
       toValue: 0,
@@ -52,30 +59,51 @@ const springForeground = ({
   }
 };
 
+const triggerNavigation = () => {
+  NavigationService.navigate({ routeName: 'CheckIn' });
+};
+
 const Main = (props) => {
   const {
-    availableNavApps,
-    coords: { longitude, latitude }
+    hasItemsLeftToDeliver,
+    hasRoutes,
+    itemCount,
+    routeDescription,
+    deliveryStatus
   } = props;
   const { top, bottom } = useSafeAreaInsets();
-  const { height } = deviceFrame();
+  const { height, width } = deviceFrame();
   const snapBottomY =
     height -
     bottom -
     configuration.navigation.height -
     configuration.foreground.defaultHeight;
   const snapTopY = top;
+  const hourNow = new Date().getHours();
 
   const interpolations = {
-    navigationY: {
+    chevronDownOpacity: {
       inputRange: [
-        top + configuration.foreground.collapseBackThreshold,
-        height -
-          bottom -
-          configuration.navigation.height -
-          configuration.foreground.defaultHeight
+        top + configuration.navigation.height,
+        top + configuration.foreground.collapseBackThreshold
       ],
-      outputRange: [bottom + configuration.navigation.height, 0],
+      outputRange: [configuration.opacity.max, configuration.opacity.min],
+      extrapolate: 'clamp'
+    },
+    foregroundDetailsOpacity: {
+      inputRange: [
+        top + configuration.navigation.height,
+        top + configuration.foreground.collapseBackThreshold
+      ],
+      outputRange: [configuration.opacity.min, configuration.opacity.max],
+      extrapolate: 'clamp'
+    },
+    foregroundActionTop: {
+      inputRange: [
+        top + configuration.navigation.height,
+        top + configuration.foreground.collapseBackThreshold
+      ],
+      outputRange: [Platform.OS === 'ios' ? -72 : -68, 0],
       extrapolate: 'clamp'
     },
     foregroundHeight: {
@@ -94,6 +122,28 @@ const Main = (props) => {
       ],
       extrapolate: 'clamp'
     },
+    navigationY: {
+      inputRange: [
+        top + configuration.foreground.collapseBackThreshold,
+        height -
+          bottom -
+          configuration.navigation.height -
+          configuration.foreground.defaultHeight
+      ],
+      outputRange: [bottom + configuration.navigation.height, 0],
+      extrapolate: 'clamp'
+    },
+    pullHandleWidth: {
+      inputRange: [
+        top + configuration.foreground.collapseBackThreshold,
+        height -
+          bottom -
+          configuration.navigation.height -
+          configuration.foreground.defaultHeight
+      ],
+      outputRange: [44, width],
+      extrapolate: 'clamp'
+    },
     topBorderRadius: {
       inputRange: [
         top + configuration.navigation.height,
@@ -103,14 +153,6 @@ const Main = (props) => {
         configuration.topBorderRadius.min,
         configuration.topBorderRadius.max
       ],
-      extrapolate: 'clamp'
-    },
-    chevronDownOpacity: {
-      inputRange: [
-        top + configuration.navigation.height,
-        top + configuration.foreground.collapseBackThreshold
-      ],
-      outputRange: [configuration.opacity.max, configuration.opacity.min],
       extrapolate: 'clamp'
     }
   };
@@ -132,7 +174,7 @@ const Main = (props) => {
       configuration.foreground.defaultHeight
   });
   const pullHandlePanResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: () => hasRoutes,
     onPanResponderGrant: (e, gestureState) => {
       currentLocationY = e.nativeEvent.locationY;
       pullHandlePan.setOffset({
@@ -172,31 +214,50 @@ const Main = (props) => {
   });
 
   const interpolatedValues = {
-    navigationY: pullHandleMoveY.interpolate(interpolations.navigationY),
+    chevronDownOpacity: pullHandleMoveY.interpolate(
+      interpolations.chevronDownOpacity
+    ),
+    foregroundDetailsOpacity: pullHandleMoveY.interpolate(
+      interpolations.foregroundDetailsOpacity
+    ),
+    foregroundActionTop: pullHandleMoveY.interpolate(
+      interpolations.foregroundActionTop
+    ),
     foregroundHeight: pullHandleMoveY.interpolate(
       interpolations.foregroundHeight
     ),
-    topBorderRadius: pullHandleMoveY.interpolate(
-      interpolations.topBorderRadius
+    navigationY: pullHandleMoveY.interpolate(interpolations.navigationY),
+    pullHandleWidth: pullHandleMoveY.interpolate(
+      interpolations.pullHandleWidth
     ),
-    chevronDownOpacity: pullHandleMoveY.interpolate(
-      interpolations.chevronDownOpacity
-    )
+    topBorderRadius: pullHandleMoveY.interpolate(interpolations.topBorderRadius)
   };
 
   return (
     <FullView>
+      <NavigationEvents
+        onWillFocus={setTimeout.bind(
+          null,
+          springForeground.bind(null, {
+            animatedValues: [pullHandlePan.y, pullHandleMoveY],
+            toValue: snapBottomY,
+            snapTopY,
+            pullHandleMoveY,
+            foregroundPaddingTop,
+            top
+          }),
+          150
+        )}
+      />
       <Map
-        latitude={latitude}
-        longitude={longitude}
         mapPadding={{
           bottom:
             configuration.navigation.height +
             configuration.foreground.defaultHeight +
-            configuration.topBorderRadius.max
+            configuration.topBorderRadius.max +
+            bottom
         }}
         height={height + 25}
-        availableNavApps={availableNavApps}
       />
 
       <Foreground
@@ -216,7 +277,61 @@ const Main = (props) => {
           })}
           chevronDownOpacity={interpolatedValues.chevronDownOpacity}
           pullHandlePanResponder={pullHandlePanResponder}
+          width={interpolatedValues.pullHandleWidth}
         />
+        <ColumnView>
+          <Animated.View
+            style={{ opacity: interpolatedValues.foregroundDetailsOpacity }}>
+            <Text.Callout color={colors.black} align={'center'}>
+              {deliveryStatus === 3
+                ? hourNow < Config.RESET_HOUR_DAY
+                  ? I18n.t('screens:main.comeBackLaterTitle')
+                  : I18n.t('screens:main.noDeliveryTitle')
+                : routeDescription}
+            </Text.Callout>
+            <Text.Caption
+              color={colors.black}
+              align={'center'}
+              noMargin
+              noPadding>
+              {deliveryStatus === 3
+                ? hourNow < Config.RESET_HOUR_DAY
+                  ? I18n.t('screens:main.comeBackLaterDesc')
+                  : I18n.t('screens:main.noDeliveryDesc')
+                : I18n.t('screens:main.deliveryActiveDesc', {
+                    itemCount
+                  })}
+            </Text.Caption>
+          </Animated.View>
+          <Animated.View
+            style={{
+              transform: [
+                { translateY: interpolatedValues.foregroundActionTop }
+              ]
+            }}>
+            <Button.Primary
+              title={
+                deliveryStatus === 0 || deliveryStatus === 3
+                  ? I18n.t('screens:checkIn.checkIn')
+                  : I18n.t('general:go')
+              }
+              disabled={deliveryStatus === 3}
+              onPress={
+                deliveryStatus === 1 || deliveryStatus === 2
+                  ? alert.bind(null, 'GO ACTION HERE!')
+                  : springForeground.bind(null, {
+                      animatedValues: [pullHandlePan.y, pullHandleMoveY],
+                      toValue: snapTopY,
+                      snapTopY,
+                      pullHandleMoveY,
+                      foregroundPaddingTop,
+                      top
+                    })
+              }
+              width={'70%'}
+            />
+          </Animated.View>
+        </ColumnView>
       </Foreground>
       <Navigation
         panY={interpolatedValues.navigationY}
@@ -227,16 +342,19 @@ const Main = (props) => {
 };
 
 Main.propTypes = {
-  availableNavApps: PropTypes.array,
-  coords: PropTypes.object
+  hasRoutes: PropTypes.bool,
+  deliveryStatus: PropTypes.bool,
+  hasItemsLeftToDeliver: PropTypes.bool,
+  itemCount: PropTypes.number,
+  routeDescription: PropTypes.string
 };
 
 Main.defaultProps = {
-  availableNavApps: [],
-  coords: {
-    latitude: parseFloat(Config.DEFAULT_LATITUDE),
-    longitude: parseFloat(Config.DEFAULT_LONGITUDE)
-  }
+  hasRoutes: false,
+  deliveryStatus: 0,
+  hasItemsLeftToDeliver: false,
+  itemCount: 0,
+  routeDescription: ''
 };
 
 export default Main;

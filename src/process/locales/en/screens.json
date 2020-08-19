@@ -3,6 +3,21 @@
     "driverLogin": "Driver Login"
   },
   "main": {
-    "openIn": "Open in {{appName}}"
+    "openIn": "Open in {{appName}}",
+    "noDeliveryTitle": "No deliveries tonight",
+    "noDeliveryDesc": "See you tomorrow",
+    "comeBackLaterTitle": "Come back later",
+    "comeBackLaterDesc": "Come back later",
+    "deliveryActiveDesc": "{{itemCount}} deliveries"
+  },
+  "checkIn": {
+    "checkIn": "Check in",
+    "itemsLeft": "{{items}} items left",
+    "loadTheVanDescription": "Load the van to start your round",
+    "loadVan": "Load Van"
+  },
+  "loadVan": {
+    "title": "items",
+    "done": "Done"
   }
 }

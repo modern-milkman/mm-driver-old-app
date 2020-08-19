@@ -2,6 +2,7 @@ import { all, takeLatest, spawn } from 'redux-saga/effects';
 
 // TYPES
 import { Types as DeviceTypes } from 'Reducers/device';
+import { Types as DeliveryTypes } from 'Reducers/delivery';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
 import { watchLocationChannel } from 'redux-saga-location';
@@ -23,6 +24,8 @@ import {
   rehydrated
 } from './application';
 
+import { getForDriver, getForDriverSuccess } from './delivery';
+
 import { requestLocationPermissionAndWatch, setLocation } from './device';
 
 export default function* root() {
@@ -42,6 +45,9 @@ export default function* root() {
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.REFRESH_TOKEN_SUCCESS, refreshTokenSuccess),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
+
+    takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
+    takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
 
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,

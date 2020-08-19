@@ -77,5 +77,9 @@ export const style = {
   },
   rightIcon: {
     marginRight: 10
+  },
+  noMargin: {
+    marginVertical: 0,
+    marginHorizontal: 0
   }
 };

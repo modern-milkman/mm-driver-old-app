@@ -58,7 +58,7 @@ class Root extends React.Component {
 
         <SideBar
           top={this.shouldHaveTopInset(true)}
-          bottom={this.shouldHaveBottomInset()}
+          bottom={this.shouldHaveBottomInset(true)}
         />
       </FullView>
     );
@@ -72,16 +72,16 @@ class Root extends React.Component {
     return ['UpgradeApp', 'Home'].includes(lastRoute) ? paddingTop : 0;
   };
 
-  shouldHaveBottomInset = () => {
+  shouldHaveBottomInset = (isSidebar = false) => {
     const { application } = this.props;
     const lastRoute = application.stackRoute[application.stackRoute.length - 1];
-    return ['UpgradeApp', 'Home', 'Main'].includes(lastRoute);
+    return ['Home', isSidebar ? 'Main' : '', 'UpgradeApp'].includes(lastRoute);
   };
 
   shouldHaveTopInset = (isSidebar = false) => {
     const { application } = this.props;
     const lastRoute = application.stackRoute[application.stackRoute.length - 1];
-    return ['UpgradeApp', 'Home', isSidebar ? 'Main' : ''].includes(lastRoute);
+    return ['Home', isSidebar ? 'Main' : '', 'UpgradeApp'].includes(lastRoute);
   };
 }
 

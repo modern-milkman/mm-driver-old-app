@@ -1,15 +1,16 @@
 import { StyleSheet } from 'react-native';
 
+import { configuration } from '../../helpers';
+
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     zIndex: 2,
     top: 0,
 
-    width: '100%',
-    height: 44,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25
+    height: configuration.pullHandle.height,
+    borderTopLeftRadius: configuration.topBorderRadius.max,
+    borderTopRightRadius: configuration.topBorderRadius.max
   }
 });
 

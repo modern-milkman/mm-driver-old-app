@@ -42,7 +42,8 @@ const Button = (props) => {
         style.container,
         style[type].backgroundStyle,
         disabled && !processing ? style.disabled.backgroundStyle : null,
-        width && { width: width }
+        width && { width: width },
+        noMargin && style.noMargin
       ]}>
       <TouchableOpacity
         disabled={disabled}

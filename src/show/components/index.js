@@ -2,18 +2,21 @@ import ActionSheetAndroid from './ActionSheetAndroid';
 import Button from './Button';
 import Fab from './Fab';
 import Icon from './Icon';
+import List, { ListItem } from './List';
+import Separator from './Separator';
+import SideBar from './SideBar';
 import Text from './Text';
 import TextInput from './TextInput';
-import SideBar from './SideBar';
-import Separator from './Separator';
 
 export {
   ActionSheetAndroid,
   Button,
   Fab,
   Icon,
-  Text,
-  TextInput,
+  List,
+  ListItem,
+  Separator,
   SideBar,
-  Separator
+  Text,
+  TextInput
 };

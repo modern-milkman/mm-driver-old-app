@@ -6,6 +6,7 @@ import { call, delay, put, select } from 'redux-saga/effects';
 import Api from 'Api';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { Types as DeliveryTypes } from 'Reducers/delivery';
 import {
   Types as TransientTypes,
   transient as transientSelector
@@ -101,8 +102,10 @@ export const login_error = function* ({ status, data }) {
 };
 
 export const login_success = function* ({ payload }) {
+  yield Api.authToken(payload.jwtToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
-  Api.authToken(payload.jwtToken);
+  yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
+  yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
   NavigationService.navigate({ routeName: defaultRoutes.session });
 };
 

@@ -1,8 +1,32 @@
+import Config from 'react-native-config';
 import { Animated, Dimensions, Easing, Linking } from 'react-native';
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
+const checkAtLeastOneItem = (items, statusId, exclude = false) => {
+  if (items) {
+    if (exclude) {
+      return items.some((i) => i.delivery_stateID !== statusId);
+    }
+
+    return items.some((i) => i.delivery_stateID === statusId);
+  }
+
+  return false;
+};
+
+const currentDay = () => {
+  const date = new Date();
+  if (Config.RESET_HOUR_DAY <= new Date().getHours()) {
+    date.setDate(date.getDate() + 1);
+  }
+  return formatDate(date);
+};
+
 const deviceFrame = () => Dimensions.get('window');
+
+const formatDate = (date) =>
+  date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
 const isAppInstalled = async (appName) => {
   return await Linking.canOpenURL(appName + '://')
@@ -50,7 +74,6 @@ const jiggleAnimation = (animatedValue, callback) => {
 };
 
 const mock = () => {};
-
 const randomKey = () =>
   Math.random()
     .toString(36)
@@ -58,7 +81,10 @@ const randomKey = () =>
 
 export {
   capitalize,
+  checkAtLeastOneItem,
+  currentDay,
   deviceFrame,
+  formatDate,
   isAppInstalled,
   jiggleAnimation,
   mock,

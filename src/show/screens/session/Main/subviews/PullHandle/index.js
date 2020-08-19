@@ -11,11 +11,12 @@ const PullHandle = (props) => {
   const {
     chevronDownOpacity,
     chevronDownOnPress,
-    pullHandlePanResponder
+    pullHandlePanResponder,
+    width
   } = props;
   return (
     <Animated.View
-      style={[style.container]}
+      style={[style.container, { width }]}
       {...pullHandlePanResponder.panHandlers}>
       <Animated.View style={{ opacity: chevronDownOpacity }}>
         <TouchableOpacity activeOpacity={0.9} onPress={chevronDownOnPress}>
@@ -35,7 +36,8 @@ const PullHandle = (props) => {
 PullHandle.propTypes = {
   chevronDownOnPress: PropTypes.func,
   chevronDownOpacity: PropTypes.object,
-  pullHandlePanResponder: PropTypes.object
+  pullHandlePanResponder: PropTypes.object,
+  width: PropTypes.object
 };
 
 export default PullHandle;

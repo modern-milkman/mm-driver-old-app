@@ -6,5 +6,8 @@
     "location": {
       "whyLocationUsage": "Your location is required for searching within the app."
     }
-  }
+  },
+  "go": "Go!",
+  "done": "Done",
+  "appInstalled": "Please make sure you have {{type}} app installed"
 }

@@ -4,6 +4,7 @@ import { persistCombineReducers } from 'redux-persist';
 import {
   actionsheetandroid,
   application,
+  delivery,
   device,
   transient,
   user
@@ -21,6 +22,7 @@ export const { Types } = createActions(
 const appReducers = persistCombineReducers(storeConfig, {
   actionsheetandroid,
   application,
+  delivery,
   device,
   transient,
   user
@@ -32,6 +34,7 @@ const rootReducer = (state, action) => {
       ...state,
       actionsheetandroid: undefined,
       application: undefined,
+      delivery: undefined,
       transient: undefined,
       user: undefined
     };
