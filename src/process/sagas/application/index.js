@@ -48,17 +48,6 @@ const refreshToken = function* (jwtToken, jwtRefreshToken) {
 };
 
 // EXPORTED
-export const checkNavigationSideEffects = function* () {
-  const lastRoute = yield select(lastRouteSelector);
-  const lastRouteParams = yield select(lastRouteParamsSelector);
-  if (lastRoute) {
-    yield call(onNavigateSideEffects, {
-      routeName: lastRoute,
-      params: lastRouteParams
-    });
-  }
-};
-
 export const dismissKeyboard = function () {
   Keyboard.dismiss();
 };
@@ -128,7 +117,10 @@ export const onNavigateBack = function* () {
 
 export const initRefreshToken = function* () {
   const user = yield select(userSelector);
-  yield call(refreshToken.bind(null, user.jwtToken, user.refreshToken));
+  const user_session = yield select(userSessionPresentSelector);
+  if (user_session) {
+    yield call(refreshToken.bind(null, user.jwtToken, user.refreshToken));
+  }
 };
 
 export const refreshTokenSuccess = function* ({ payload }) {
