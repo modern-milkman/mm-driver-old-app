@@ -100,8 +100,8 @@ const Map = (props) => {
   } = props;
   const source = { latitude, longitude };
   const destination =
-    stops && orderedStopsIds && stops[orderedStopsIds[0]]
-      ? { ...stops[orderedStopsIds[0]] }
+    stops && selectedStopId && stops[selectedStopId]
+      ? { ...stops[selectedStopId] }
       : null;
 
   const [mapRef, setRef] = useState(undefined);
