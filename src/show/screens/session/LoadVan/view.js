@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { mock } from 'Helpers';
 import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
-import { Button, Icon, List, Text } from 'Components';
 import NavigationService from 'Navigation/service';
+import { Button, Icon, List, Text } from 'Components';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 
 import style from './style';

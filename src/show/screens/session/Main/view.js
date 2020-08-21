@@ -65,11 +65,11 @@ const triggerNavigation = () => {
 
 const Main = (props) => {
   const {
+    deliveryStatus,
     hasItemsLeftToDeliver,
     hasRoutes,
     itemCount,
-    routeDescription,
-    deliveryStatus
+    routeDescription
   } = props;
   const { top, bottom } = useSafeAreaInsets();
   const { height, width } = deviceFrame();

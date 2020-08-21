@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { View, Linking } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import I18n from 'Locales/I18n';
 import { colors } from 'Theme';
@@ -80,11 +80,17 @@ const Map = (props) => {
     availableNavApps,
     height,
     coords: { latitude, longitude },
-    mapPadding
+    mapPadding,
+    orderedStopsIds,
+    selectedStopId,
+    stops,
+    updateSelectedStop
   } = props;
   const source = { latitude, longitude };
-  //TODO REMOVE TESTING DIRECTIONS
-  const destination = { latitude: 51.5287718, longitude: -0.2416814 };
+  const destination =
+    stops && orderedStopsIds && stops[orderedStopsIds[0]]
+      ? { ...stops[orderedStopsIds[0]] }
+      : null;
 
   const [mapRef, setRef] = useState(undefined);
   const [animateCamera, setAnimateCamera] = useState({});
@@ -132,8 +138,26 @@ const Map = (props) => {
         }
         showsUserLocation
         onPanDrag={toggleLocationTracking.bind(null, false)}
-        mapPadding={mapPadding}
-      />
+        mapPadding={mapPadding}>
+        {orderedStopsIds.map((sID) => {
+          const stop = stops[sID];
+          return (
+            stop && (
+              <Marker
+                key={sID}
+                coordinate={{
+                  latitude: stop?.latitude,
+                  longitude: stop?.longitude
+                }}
+                title={`${stop.surname}, ${stop.forename}`}
+                description={stop.phoneNumber}
+                pinColor={selectedStopId === sID ? 'red' : 'wheat'}
+                onPress={updateSelectedStop.bind(null, sID)}
+              />
+            )
+          );
+        })}
+      </MapView>
 
       <Fab
         type="material-community"
@@ -146,20 +170,22 @@ const Map = (props) => {
         onPress={toggleLocationTracking.bind(null, true)}
       />
 
-      <Fab
-        type="material-community"
-        iconName="directions"
-        size={24}
-        containerSize={56}
-        color={colors.primary}
-        right={10}
-        bottom={mapPadding.bottom + 75}
-        onPress={navigateInSheet.bind(null, {
-          availableNavApps,
-          source,
-          destination
-        })}
-      />
+      {destination && (
+        <Fab
+          type="material-community"
+          iconName="directions"
+          size={24}
+          containerSize={56}
+          color={colors.primary}
+          right={10}
+          bottom={mapPadding.bottom + 75}
+          onPress={navigateInSheet.bind(null, {
+            availableNavApps,
+            source,
+            destination
+          })}
+        />
+      )}
     </View>
   );
 };
@@ -176,9 +202,13 @@ Map.defaultProps = {
 
 Map.propTypes = {
   availableNavApps: PropTypes.array,
-  height: PropTypes.number,
   coords: { latitude: PropTypes.number, longitude: PropTypes.number },
-  mapPadding: PropTypes.object
+  height: PropTypes.number,
+  mapPadding: PropTypes.object,
+  orderedStopsIds: PropTypes.array,
+  selectedStopId: PropTypes.number,
+  stops: PropTypes.object,
+  updateSelectedStop: PropTypes.func
 };
 
 export default Map;

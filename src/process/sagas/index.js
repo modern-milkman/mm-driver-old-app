@@ -24,7 +24,7 @@ import {
   rehydrated
 } from './application';
 
-import { getForDriver, getForDriverSuccess } from './delivery';
+import { getForDriver, getForDriverSuccess, startDelivering } from './delivery';
 
 import { requestLocationPermissionAndWatch, setLocation } from './device';
 
@@ -48,6 +48,7 @@ export default function* root() {
 
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
+    takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
 
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,

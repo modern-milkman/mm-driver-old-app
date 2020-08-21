@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Animated, View } from 'react-native';
+import { Animated } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
@@ -18,11 +18,11 @@ const forFade = ({ current, closing }) => ({
   }
 });
 
-const navigateBack = () => {
+const navigateBack = (callback) => {
   animateContent({
     contentTranslateYValue: 100,
     contentOpacityValue: 0,
-    callback: NavigationService.goBack,
+    callback: callback ? callback : NavigationService.goBack,
     reverse: true
   });
 };
@@ -66,7 +66,7 @@ const contentTranslateY = [new Animated.Value(100), new Animated.Value(100)];
 const contentOpacity = [new Animated.Value(0), new Animated.Value(0)];
 
 const CheckIn = (props) => {
-  const { itemCount, deliveryStatus } = props;
+  const { deliveryStatus, itemCount, startDelivering } = props;
   return (
     <SafeAreaView
       top
@@ -124,7 +124,7 @@ const CheckIn = (props) => {
             <Button.Primary
               title={I18n.t('general:go')}
               disabled={deliveryStatus !== 1}
-              onPress={navigateBack}
+              onPress={navigateBack.bind(null, startDelivering)}
             />
             {deliveryStatus !== 1 && (
               <RowView width={null}>
@@ -147,8 +147,9 @@ const CheckIn = (props) => {
 };
 
 CheckIn.propTypes = {
+  deliveryStatus: PropTypes.bool,
   itemCount: PropTypes.number,
-  deliveryStatus: PropTypes.bool
+  startDelivering: PropTypes.func
 };
 
 CheckIn.defaultProps = {
