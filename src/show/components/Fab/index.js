@@ -14,6 +14,7 @@ const Fab = (props) => {
     containerSize,
     iconName,
     left,
+    onLongPress,
     onPress,
     right,
     size,
@@ -40,6 +41,7 @@ const Fab = (props) => {
         containerSize={containerSize}
         color={color}
         onPress={onPress}
+        onLongPress={onLongPress}
       />
     </View>
   );
@@ -51,6 +53,7 @@ Fab.defaultProps = {
   containerSize: 56,
   iconName: 'close-thick',
   left: undefined,
+  onLongPress: () => {},
   onPress: () => {},
   right: undefined,
   size: 44,
@@ -64,6 +67,7 @@ Fab.propTypes = {
   containerSize: PropTypes.number,
   iconName: PropTypes.string,
   left: PropTypes.number,
+  onLongPress: PropTypes.func,
   onPress: PropTypes.func,
   right: PropTypes.number,
   size: PropTypes.number,

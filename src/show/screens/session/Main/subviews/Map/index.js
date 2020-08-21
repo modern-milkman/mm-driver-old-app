@@ -17,6 +17,7 @@ export default connect(
     };
   },
   {
+    updateReturnPosition: deliveryActions.updateReturnPosition,
     updateSelectedStop: deliveryActions.updateSelectedStop
   }
 )(Map);

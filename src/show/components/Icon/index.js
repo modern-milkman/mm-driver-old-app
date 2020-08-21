@@ -15,6 +15,7 @@ const Icon = (props) => {
     containerSize,
     disabled,
     name,
+    onLongPress,
     onPress,
     type,
     size,
@@ -38,6 +39,7 @@ const Icon = (props) => {
         ]}
         name={name}
         onPress={!disabled ? onPress : null}
+        onLongPress={!disabled ? onLongPress : null}
         size={size}
         type={type}
         underlayColor={'transparent'}
@@ -52,6 +54,7 @@ Icon.propTypes = {
   color: PropTypes.any,
   containerSize: PropTypes.number,
   disabled: PropTypes.bool,
+  onLongPress: PropTypes.func,
   onPress: PropTypes.func,
   name: PropTypes.string,
   size: PropTypes.number,
@@ -66,6 +69,7 @@ Icon.defaultProps = {
   containerSize: 44,
   disabled: false,
   name: 'circle',
+  onLongPress: () => {},
   onPress: () => {},
   size: 32,
   style: {},

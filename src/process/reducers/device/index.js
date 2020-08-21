@@ -13,6 +13,7 @@ export const { Types, Creators } = createActions(
 
 const initialState = {
   position: null,
+  returnPosition: null,
   uniqueID: 'uninitialized'
 };
 

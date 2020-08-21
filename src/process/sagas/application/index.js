@@ -96,6 +96,7 @@ export const login_success = function* ({ payload }) {
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
   yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
   yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
+  yield put({ type: DeliveryTypes.UPDATE_RETURN_POSITION, clear: true });
   NavigationService.navigate({ routeName: defaultRoutes.session });
 };
 

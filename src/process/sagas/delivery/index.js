@@ -3,7 +3,10 @@ import { put, select } from 'redux-saga/effects';
 import Api from 'Api';
 import NavigationService from 'Navigation/service';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
-import { device as deviceSelector } from 'Reducers/device';
+import {
+  Types as DeviceTypes,
+  device as deviceSelector
+} from 'Reducers/device';
 
 // EXPORTED
 export const getForDriver = function* () {
@@ -33,7 +36,20 @@ export const startDelivering = function* () {
   const device = yield select(deviceSelector);
   yield put({
     type: DeliveryTypes.OPTIMIZE_STOPS,
-    currentLocation: device.position.coords
+    currentLocation: device.position.coords,
+    returnPosition: device.returnPosition
   });
   NavigationService.goBack();
+};
+
+export const updateReturnPosition = function* ({ clear }) {
+  const device = yield select(deviceSelector);
+  let returnPosition = device?.position?.coords || null;
+  if (clear) {
+    returnPosition = null;
+  }
+  yield put({
+    type: DeviceTypes.UPDATE_PROPS,
+    props: { returnPosition }
+  });
 };

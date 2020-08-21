@@ -27,6 +27,18 @@ const appName = (type) => {
 
 const defaultMapZoom = 16;
 
+const changeReturnPosition = (props) => {
+  const { updateReturnPosition } = props;
+  const actions = {};
+  actions[
+    `${I18n.t('screens:main.setReturnPosition')}`
+  ] = updateReturnPosition.bind(null, false);
+  actions[
+    `${I18n.t('screens:main.clearReturnPosition')}`
+  ] = updateReturnPosition.bind(null, true);
+  actionSheet(actions, { destructiveButtonIndex: 2 });
+};
+
 const navigateInSheet = ({ availableNavApps, source, destination }) => {
   const actions = {};
   if (availableNavApps.length === 1) {
@@ -168,6 +180,7 @@ const Map = (props) => {
         right={10}
         bottom={mapPadding.bottom + 10}
         onPress={toggleLocationTracking.bind(null, true)}
+        onLongPress={changeReturnPosition.bind(null, props)}
       />
 
       {destination && (
@@ -208,6 +221,7 @@ Map.propTypes = {
   orderedStopsIds: PropTypes.array,
   selectedStopId: PropTypes.number,
   stops: PropTypes.object,
+  updateReturnPosition: PropTypes.func,
   updateSelectedStop: PropTypes.func
 };
 

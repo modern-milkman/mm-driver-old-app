@@ -11,10 +11,11 @@ export const { Types, Creators } = createActions(
     getForDriverSuccess: ['payload'],
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
-    optimizeStops: ['currentLocation'],
+    optimizeStops: ['currentLocation', 'returnPosition'],
     startDelivering: null,
     updateCurrentDayProps: ['props'],
     updateProps: ['props'],
+    updateReturnPosition: ['clear'],
     updateSelectedStop: ['sID']
   },
   { prefix: 'delivery/' }
@@ -119,7 +120,7 @@ export const startDelivering = (state) =>
     draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
   });
 
-export const optimizeStops = (state, { currentLocation }) =>
+export const optimizeStops = (state, { currentLocation, returnPosition }) =>
   produce(state, (draft) => {
     const cd = currentDay();
     const stops = [
@@ -133,6 +134,15 @@ export const optimizeStops = (state, { currentLocation }) =>
       const item = state[cd].stops[addressId];
       stops.push(new Point(item.latitude, item.longitude, addressId));
     }
+    if (returnPosition) {
+      stops.push(
+        new Point(
+          returnPosition.latitude,
+          returnPosition.longitude,
+          'RETURN_LOCATION'
+        )
+      );
+    }
     const hasDummy = stops.length > 2;
 
     if (hasDummy) {
@@ -141,6 +151,9 @@ export const optimizeStops = (state, { currentLocation }) =>
     const optimizedRoute = salesman(stops, hasDummy);
     optimizedRoute.splice(0, 1);
     if (hasDummy) {
+      optimizedRoute.splice(-1, 1);
+    }
+    if (returnPosition) {
       optimizedRoute.splice(-1, 1);
     }
     draft[cd].orderedStopsIds = [];
