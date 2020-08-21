@@ -10,7 +10,6 @@ import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/act
 
 // SAGAS
 import {
-  checkNavigationSideEffects,
   dismissKeyboard,
   init,
   initRefreshToken,
@@ -32,7 +31,6 @@ export default function* root() {
   yield all([
     spawn(watchLocationChannel),
 
-    takeLatest('APP_STATE.FOREGROUND', checkNavigationSideEffects),
     takeLatest('APP_STATE.FOREGROUND', initRefreshToken),
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
