@@ -52,7 +52,7 @@ export const processingOn = (state = initialState) =>
 
 export const removeLastStackRoute = (state = initialState) =>
   produce(state, (draft) => {
-    draft.stackRoute.slice(0, -1);
+    draft.stackRoute.splice(-1, 1);
   });
 
 export const loginSuccess = (state = initialState) =>
