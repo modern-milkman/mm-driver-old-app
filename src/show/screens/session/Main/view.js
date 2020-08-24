@@ -71,10 +71,9 @@ const triggerNavigation = () => {
 const Main = (props) => {
   const {
     deliveryStatus,
-    hasItemsLeftToDeliver,
     hasRoutes,
     itemCount,
-    proccessing,
+    processing,
     routeDescription
   } = props;
   const { top, bottom } = useSafeAreaInsets();
@@ -285,9 +284,9 @@ const Main = (props) => {
           pullHandlePanResponder={pullHandlePanResponder}
           width={interpolatedValues.pullHandleWidth}
         />
-        {proccessing ? (
+        {processing ? (
           <ColumnView flex={1}>
-            <ActivityIndicator />
+            <ActivityIndicator color={colors.primary} />
           </ColumnView>
         ) : (
           <ColumnView>
@@ -354,7 +353,7 @@ const Main = (props) => {
 };
 
 Main.propTypes = {
-  proccessing: PropTypes.bool,
+  processing: PropTypes.bool,
   hasRoutes: PropTypes.bool,
   deliveryStatus: PropTypes.bool,
   hasItemsLeftToDeliver: PropTypes.bool,
@@ -363,7 +362,7 @@ Main.propTypes = {
 };
 
 Main.defaultProps = {
-  proccessing: true,
+  processing: true,
   hasRoutes: false,
   deliveryStatus: 0,
   hasItemsLeftToDeliver: false,

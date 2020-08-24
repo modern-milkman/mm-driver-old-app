@@ -24,7 +24,7 @@ Delivery status:
 */
 
 const initialState = {
-  proccessing: true,
+  processing: true,
   [formatDate(new Date())]: {
     groupedStock: {},
     hasRoutes: false,
@@ -66,7 +66,7 @@ export const getVehicleStockForDriverSuccess = (
     draft[formatedDate].stock = payload;
     draft[formatedDate].groupedStock = groupedItems;
     draft[formatedDate].hasRoutes = payload.length > 0;
-    draft.proccessing = false;
+    draft.processing = false;
   });
 
 export const getForDriverSuccess = (state, { payload }) =>

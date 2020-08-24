@@ -12,7 +12,7 @@ export default connect((state) => {
     hasItemsLeftToDeliver: hasItemsLeftToDeliver(state),
     hasRoutes: state.delivery[currDay]?.hasRoutes,
     itemCount: state.delivery[currDay]?.stockWithData?.itemCount,
-    proccessing: state.delivery.proccessing,
+    processing: state.delivery.processing,
     routeDescription: state.delivery[currDay]?.stockWithData?.routeDescription
   };
 }, {})(Main);
