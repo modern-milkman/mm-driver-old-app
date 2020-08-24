@@ -2,7 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { NavigationEvents } from 'react-navigation';
-import { Animated, PanResponder, Platform } from 'react-native';
+import {
+  ActivityIndicator,
+  Animated,
+  PanResponder,
+  Platform
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors } from 'Theme';
@@ -66,9 +71,9 @@ const triggerNavigation = () => {
 const Main = (props) => {
   const {
     deliveryStatus,
-    hasItemsLeftToDeliver,
     hasRoutes,
     itemCount,
+    processing,
     routeDescription
   } = props;
   const { top, bottom } = useSafeAreaInsets();
@@ -279,59 +284,65 @@ const Main = (props) => {
           pullHandlePanResponder={pullHandlePanResponder}
           width={interpolatedValues.pullHandleWidth}
         />
-        <ColumnView>
-          <Animated.View
-            style={{ opacity: interpolatedValues.foregroundDetailsOpacity }}>
-            <Text.Callout color={colors.black} align={'center'}>
-              {deliveryStatus === 3
-                ? hourNow < Config.RESET_HOUR_DAY
-                  ? I18n.t('screens:main.comeBackLaterTitle')
-                  : I18n.t('screens:main.noDeliveryTitle')
-                : routeDescription}
-            </Text.Callout>
-            <Text.Caption
-              color={colors.black}
-              align={'center'}
-              noMargin
-              noPadding>
-              {deliveryStatus === 3
-                ? hourNow < Config.RESET_HOUR_DAY
-                  ? I18n.t('screens:main.comeBackLaterDesc')
-                  : I18n.t('screens:main.noDeliveryDesc')
-                : I18n.t('screens:main.deliveryActiveDesc', {
-                    itemCount
-                  })}
-            </Text.Caption>
-          </Animated.View>
-          <Animated.View
-            style={{
-              transform: [
-                { translateY: interpolatedValues.foregroundActionTop }
-              ]
-            }}>
-            <Button.Primary
-              title={
-                deliveryStatus === 0 || deliveryStatus === 3
-                  ? I18n.t('screens:checkIn.checkIn')
-                  : I18n.t('general:go')
-              }
-              disabled={deliveryStatus === 3}
-              onPress={
-                deliveryStatus === 1 || deliveryStatus === 2
-                  ? alert.bind(null, 'GO ACTION HERE!')
-                  : springForeground.bind(null, {
-                      animatedValues: [pullHandlePan.y, pullHandleMoveY],
-                      toValue: snapTopY,
-                      snapTopY,
-                      pullHandleMoveY,
-                      foregroundPaddingTop,
-                      top
-                    })
-              }
-              width={'70%'}
-            />
-          </Animated.View>
-        </ColumnView>
+        {processing ? (
+          <ColumnView flex={1}>
+            <ActivityIndicator color={colors.primary} />
+          </ColumnView>
+        ) : (
+          <ColumnView>
+            <Animated.View
+              style={{ opacity: interpolatedValues.foregroundDetailsOpacity }}>
+              <Text.Callout color={colors.black} align={'center'}>
+                {deliveryStatus === 3
+                  ? hourNow < Config.RESET_HOUR_DAY
+                    ? I18n.t('screens:main.comeBackLaterTitle')
+                    : I18n.t('screens:main.noDeliveryTitle')
+                  : routeDescription}
+              </Text.Callout>
+              <Text.Caption
+                color={colors.black}
+                align={'center'}
+                noMargin
+                noPadding>
+                {deliveryStatus === 3
+                  ? hourNow < Config.RESET_HOUR_DAY
+                    ? I18n.t('screens:main.comeBackLaterDesc')
+                    : I18n.t('screens:main.noDeliveryDesc')
+                  : I18n.t('screens:main.deliveryActiveDesc', {
+                      itemCount
+                    })}
+              </Text.Caption>
+            </Animated.View>
+            <Animated.View
+              style={{
+                transform: [
+                  { translateY: interpolatedValues.foregroundActionTop }
+                ]
+              }}>
+              <Button.Primary
+                title={
+                  deliveryStatus === 0 || deliveryStatus === 3
+                    ? I18n.t('screens:checkIn.checkIn')
+                    : I18n.t('general:go')
+                }
+                disabled={deliveryStatus === 3}
+                onPress={
+                  deliveryStatus === 1 || deliveryStatus === 2
+                    ? alert.bind(null, 'GO ACTION HERE!')
+                    : springForeground.bind(null, {
+                        animatedValues: [pullHandlePan.y, pullHandleMoveY],
+                        toValue: snapTopY,
+                        snapTopY,
+                        pullHandleMoveY,
+                        foregroundPaddingTop,
+                        top
+                      })
+                }
+                width={'70%'}
+              />
+            </Animated.View>
+          </ColumnView>
+        )}
       </Foreground>
       <Navigation
         panY={interpolatedValues.navigationY}
@@ -342,6 +353,7 @@ const Main = (props) => {
 };
 
 Main.propTypes = {
+  processing: PropTypes.bool,
   hasRoutes: PropTypes.bool,
   deliveryStatus: PropTypes.bool,
   hasItemsLeftToDeliver: PropTypes.bool,
@@ -350,6 +362,7 @@ Main.propTypes = {
 };
 
 Main.defaultProps = {
+  processing: true,
   hasRoutes: false,
   deliveryStatus: 0,
   hasItemsLeftToDeliver: false,
