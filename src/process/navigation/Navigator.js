@@ -19,7 +19,8 @@ const MainNavigator = createStackNavigator(
   {
     initialRouteName: 'Main',
     defaultNavigationOptions: {
-      headerShown: false
+      headerShown: false,
+      gestureEnabled: false
     }
   }
 );
