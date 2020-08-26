@@ -14,13 +14,19 @@
     "done": "Done"
   },
   "main": {
-    "clearReturnPosition": "Clear current return position",
-    "comeBackLaterTitle": "Come back later",
-    "comeBackLaterDesc": "Come back later",
-    "deliveryActiveDesc": "{{itemCount}} deliveries",
-    "openIn": "Open in {{appName}}",
-    "noDeliveryTitle": "No deliveries tonight",
-    "noDeliveryDesc": "See you tomorrow",
-    "setReturnPosition": "Set current return position"
+    "actions": {
+      "clearReturnPosition": "Clear current return position",
+      "openIn": "Open in {{appName}}",
+      "setReturnPosition": "Set current return position"
+    },
+    "descriptions": {
+      "comeBackLater": "Come back later",
+      "deliveryActive": "{{itemCount}} deliveries",
+      "noDelivery": "See you tomorrow"
+    },
+    "titles": {
+      "comeBackLater": "No delivery info yet",
+      "noDelivery": "No deliveries tonight"
+    }
   }
 }

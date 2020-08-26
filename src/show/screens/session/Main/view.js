@@ -295,8 +295,8 @@ const Main = (props) => {
               <Text.Callout color={colors.black} align={'center'}>
                 {deliveryStatus === 3
                   ? hourNow < Config.RESET_HOUR_DAY
-                    ? I18n.t('screens:main.comeBackLaterTitle')
-                    : I18n.t('screens:main.noDeliveryTitle')
+                    ? I18n.t('screens:main.titles.comeBackLater')
+                    : I18n.t('screens:main.titles.noDelivery')
                   : routeDescription}
               </Text.Callout>
               <Text.Caption
@@ -306,9 +306,9 @@ const Main = (props) => {
                 noPadding>
                 {deliveryStatus === 3
                   ? hourNow < Config.RESET_HOUR_DAY
-                    ? I18n.t('screens:main.comeBackLaterDesc')
-                    : I18n.t('screens:main.noDeliveryDesc')
-                  : I18n.t('screens:main.deliveryActiveDesc', {
+                    ? I18n.t('screens:main.descriptions.comeBackLater')
+                    : I18n.t('screens:main.descriptions.noDelivery')
+                  : I18n.t('screens:main.descriptions.deliveryActive', {
                       itemCount
                     })}
               </Text.Caption>

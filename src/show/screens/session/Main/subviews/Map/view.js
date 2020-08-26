@@ -31,10 +31,10 @@ const changeReturnPosition = (props) => {
   const { updateReturnPosition } = props;
   const actions = {};
   actions[
-    `${I18n.t('screens:main.setReturnPosition')}`
+    `${I18n.t('screens:main.actions.setReturnPosition')}`
   ] = updateReturnPosition.bind(null, false);
   actions[
-    `${I18n.t('screens:main.clearReturnPosition')}`
+    `${I18n.t('screens:main.actions.clearReturnPosition')}`
   ] = updateReturnPosition.bind(null, true);
   actionSheet(actions, { destructiveButtonIndex: 2 });
 };
@@ -48,7 +48,7 @@ const navigateInSheet = ({ availableNavApps, source, destination }) => {
 
   for (const type of availableNavApps) {
     actions[
-      `${I18n.t('screens:main.openIn', { appName: appName(type) })}`
+      `${I18n.t('screens:main.actions.openIn', { appName: appName(type) })}`
     ] = openNavigation.bind(null, {
       type,
       source,
