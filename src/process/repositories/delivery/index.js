@@ -4,7 +4,14 @@ export default {
   getForDriver() {
     return Api.get('/Delivery/GetForDriver');
   },
+
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
+  },
+
+  updateDirectionsPolyline({ origin, destination }) {
+    return Api.get(
+      `https://mm-driver-directions-api.herokuapp.com?origin=${origin}&destination=${destination}`
+    );
   }
 };

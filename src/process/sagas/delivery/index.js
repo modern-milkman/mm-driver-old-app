@@ -1,8 +1,11 @@
-import { put, select } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
 import NavigationService from 'Navigation/service';
-import { Types as DeliveryTypes } from 'Reducers/delivery';
+import {
+  Types as DeliveryTypes,
+  selectedStop as selectedStopSelector
+} from 'Reducers/delivery';
 import {
   Types as DeviceTypes,
   device as deviceSelector
@@ -36,6 +39,10 @@ export const getForDriverSuccess = function* ({ payload }) {
   });
 };
 
+export const optimizeStops = function* () {
+  yield call(updatedSelectedStop);
+};
+
 export const startDelivering = function* () {
   const device = yield select(deviceSelector);
   yield put({
@@ -56,4 +63,21 @@ export const updateReturnPosition = function* ({ clear }) {
     type: DeviceTypes.UPDATE_PROPS,
     props: { returnPosition }
   });
+};
+
+export const updatedSelectedStop = function* () {
+  const selectedStop = yield select(selectedStopSelector);
+  const device = yield select(deviceSelector);
+  if (device && device.position && device.position.coords && selectedStop) {
+    yield put({
+      type: Api.API_CALL,
+      actions: {
+        success: { type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE }
+      },
+      promise: Api.repositories.delivery.updateDirectionsPolyline({
+        origin: `${device.position.coords.latitude},${device.position.coords.longitude}`,
+        destination: `${selectedStop.latitude},${selectedStop.longitude}`
+      })
+    });
+  }
 };

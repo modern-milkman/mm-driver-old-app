@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { View, Linking } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import I18n from 'Locales/I18n';
 import { colors } from 'Theme';
@@ -37,6 +37,15 @@ const changeReturnPosition = (props) => {
     `${I18n.t('screens:main.actions.clearReturnPosition')}`
   ] = updateReturnPosition.bind(null, true);
   actionSheet(actions, { destructiveButtonIndex: 2 });
+};
+
+const fitMapToDirections = (mapRef, directionsPolyline) => {
+  if (directionsPolyline && directionsPolyline.length > 0 && mapRef) {
+    mapRef.fitToCoordinates(directionsPolyline, {
+      edgePadding: { top: 150, right: 50, bottom: 150, left: 50 },
+      animated: true
+    });
+  }
 };
 
 const navigateInSheet = ({ availableNavApps, source, destination }) => {
@@ -92,6 +101,7 @@ const Map = (props) => {
     availableNavApps,
     height,
     coords: { latitude, longitude },
+    directionsPolyline,
     mapPadding,
     orderedStopsIds,
     selectedStopId,
@@ -106,7 +116,10 @@ const Map = (props) => {
 
   const [mapRef, setRef] = useState(undefined);
   const [animateCamera, setAnimateCamera] = useState({});
-  const [shouldTrackLocation, toggleLocationTracking] = useState(true);
+  const [shouldTrackLocation, toggleLocationTracking] = useState({
+    gps: false,
+    directionsPolyline: true
+  });
   const [camera, setCamera] = useState({
     center: {
       latitude,
@@ -118,7 +131,7 @@ const Map = (props) => {
   });
 
   useEffect(() => {
-    if (shouldTrackLocation) {
+    if (shouldTrackLocation.gps) {
       const cameraUpdated = {
         center: {
           latitude,
@@ -136,7 +149,10 @@ const Map = (props) => {
       }, 500);
       return () => clearTimeout(animatedCameraCallback);
     }
-  }, [latitude, longitude, shouldTrackLocation]);
+    if (shouldTrackLocation.directionsPolyline) {
+      fitMapToDirections(mapRef, directionsPolyline);
+    }
+  }, [directionsPolyline, latitude, longitude, mapRef, shouldTrackLocation]);
 
   return (
     <View style={{ ...styles.container, height }}>
@@ -146,10 +162,13 @@ const Map = (props) => {
         style={styles.map}
         camera={camera}
         animateCamera={
-          shouldTrackLocation && mapRef?.animateCamera(animateCamera)
+          shouldTrackLocation.gps && mapRef?.animateCamera(animateCamera)
         }
         showsUserLocation
-        onPanDrag={toggleLocationTracking.bind(null, false)}
+        onPanDrag={toggleLocationTracking.bind(null, {
+          gps: false,
+          directionsPolyline: false
+        })}
         mapPadding={mapPadding}>
         {orderedStopsIds.map((sID) => {
           const stop = stops[sID];
@@ -169,17 +188,28 @@ const Map = (props) => {
             )
           );
         })}
+        {directionsPolyline && directionsPolyline.length > 1 && (
+          <Polyline
+            strokeWidth={3}
+            strokeColor={'blue'}
+            coordinates={directionsPolyline}
+            geodesic
+          />
+        )}
       </MapView>
 
       <Fab
-        type="material-community"
-        iconName="crosshairs-gps"
+        type={'material-community'}
+        iconName={'crosshairs-gps'}
         size={24}
         containerSize={56}
-        color={colors.primary}
+        color={shouldTrackLocation.gps ? colors.primary : colors.secondary}
         right={10}
         bottom={mapPadding.bottom + 10}
-        onPress={toggleLocationTracking.bind(null, true)}
+        onPress={toggleLocationTracking.bind(null, {
+          gps: !shouldTrackLocation.gps,
+          directionsPolyline: shouldTrackLocation.gps
+        })}
         onLongPress={changeReturnPosition.bind(null, props)}
       />
 
@@ -210,12 +240,14 @@ Map.defaultProps = {
     latitude: parseFloat(Config.DEFAULT_LATITUDE),
     longitude: parseFloat(Config.DEFAULT_LONGITUDE)
   },
+  directionsPolyline: [],
   mapPadding: { bottom: 0 }
 };
 
 Map.propTypes = {
   availableNavApps: PropTypes.array,
   coords: { latitude: PropTypes.number, longitude: PropTypes.number },
+  directionsPolyline: PropTypes.array,
   height: PropTypes.number,
   mapPadding: PropTypes.object,
   orderedStopsIds: PropTypes.array,

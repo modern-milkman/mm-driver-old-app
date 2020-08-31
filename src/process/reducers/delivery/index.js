@@ -14,6 +14,7 @@ export const { Types, Creators } = createActions(
     optimizeStops: ['currentLocation', 'returnPosition'],
     startDelivering: null,
     updateCurrentDayProps: ['props'],
+    updateDirectionsPolyline: ['payload'],
     updateProps: ['props'],
     updateReturnPosition: ['clear'],
     updateSelectedStop: ['sID']
@@ -35,6 +36,7 @@ const initialState = {
     groupedStock: {},
     hasRoutes: false,
     deliveryStatus: 3,
+    directionsPolyline: [],
     stock: [],
     stockWithData: {},
     stops: {},
@@ -117,9 +119,8 @@ export const startDelivering = (state) =>
       }
       draft[cd].stops[addressId].orders.push(item);
     }
-
+    draft[cd].processing = true;
     draft[cd].deliveryStatus = 2;
-    draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
   });
 
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
@@ -160,6 +161,8 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     }
     draft[cd].orderedStopsIds = [];
     optimizedRoute.map((i) => draft[cd].orderedStopsIds.push(stops[i].key));
+    draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
+    draft[cd].processing = false;
   });
 
 export const updateCurrentDayProps = (state, { props }) => {
@@ -167,9 +170,16 @@ export const updateCurrentDayProps = (state, { props }) => {
   return { ...state, [cd]: { ...state[cd], ...props } };
 };
 
+export const updateDirectionsPolyline = (state, { payload }) =>
+  produce(state, (draft) => {
+    let cd = currentDay(); //This will need to change with the current day prop
+    draft[cd].directionsPolyline = payload;
+  });
+
 export const updateSelectedStop = (state, { sID }) =>
   produce(state, (draft) => {
     let cd = currentDay(); //This will need to change with the current day prop
+    draft[cd].directionsPolyline = [];
     draft[cd].selectedStopId = sID;
   });
 
@@ -179,6 +189,7 @@ export default createReducer(initialState, {
   [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.START_DELIVERING]: startDelivering,
   [Types.UPDATE_CURRENT_DAY_PROPS]: updateCurrentDayProps,
+  [Types.UPDATE_DIRECTIONS_POLYLINE]: updateDirectionsPolyline,
   [Types.UPDATE_PROPS]: updateProps,
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
 });
@@ -197,3 +208,13 @@ export const itemCount = (state) =>
         0
       )
     : 0;
+
+export const selectedStop = (state) => {
+  const todaysDelivery = state.delivery[currentDay()];
+  return todaysDelivery &&
+    todaysDelivery.stops &&
+    todaysDelivery.selectedStopId &&
+    todaysDelivery.stops[todaysDelivery.selectedStopId]
+    ? todaysDelivery.stops[todaysDelivery.selectedStopId]
+    : null;
+};

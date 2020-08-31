@@ -26,8 +26,10 @@ import {
 import {
   getForDriver,
   getForDriverSuccess,
+  optimizeStops,
   startDelivering,
-  updateReturnPosition
+  updateReturnPosition,
+  updatedSelectedStop
 } from './delivery';
 
 import { requestLocationPermissionAndWatch, setLocation } from './device';
@@ -51,8 +53,10 @@ export default function* root() {
 
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
+    takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
     takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
     takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
+    takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updatedSelectedStop),
 
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,

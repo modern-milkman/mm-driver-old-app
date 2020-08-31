@@ -13,7 +13,8 @@ export default connect(
       coords: state.device?.position?.coords,
       orderedStopsIds: state.delivery[cd].orderedStopsIds,
       selectedStopId: state.delivery[cd].selectedStopId,
-      stops: state.delivery[cd].stops
+      stops: state.delivery[cd].stops,
+      directionsPolyline: state.delivery[cd].directionsPolyline
     };
   },
   {
