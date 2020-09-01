@@ -2,6 +2,7 @@ import { call, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
 import NavigationService from 'Navigation/service';
+import { user as userSelector } from 'Reducers/user';
 import {
   Types as DeliveryTypes,
   selectedStop as selectedStopSelector
@@ -51,6 +52,29 @@ export const startDelivering = function* () {
     returnPosition: device.returnPosition
   });
   NavigationService.goBack();
+};
+
+export const updateCurrentDayProps = function* ({ props: { deliveryStatus } }) {
+  const user = yield select(userSelector);
+  if (user && deliveryStatus) {
+    let stringifiedDeliveryStatus = 'NCI';
+    switch (deliveryStatus) {
+      case 1:
+      case 2:
+        stringifiedDeliveryStatus = 'DELIVERING';
+        break;
+      case 3:
+        stringifiedDeliveryStatus = 'DELIVERY_COMPLETE';
+        break;
+    }
+    yield put({
+      type: Api.API_CALL,
+      promise: Api.repositories.fleet.drivers({
+        id: `${user.id}`,
+        deliveryStatus: stringifiedDeliveryStatus
+      })
+    });
+  }
 };
 
 export const updateReturnPosition = function* ({ clear }) {

@@ -19,7 +19,6 @@ import {
 
 import {
   lastRoute as lastRouteSelector,
-  lastRouteParams as lastRouteParamsSelector,
   Types as ApplicationTypes,
   userSessionPresent as userSessionPresentSelector
 } from 'Reducers/application';
@@ -48,6 +47,17 @@ const refreshToken = function* (jwtToken, jwtRefreshToken) {
 };
 
 // EXPORTED
+
+export const getId = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: UserTypes.UPDATE_PROPS }
+    },
+    promise: Api.repositories.user.getId()
+  });
+};
+
 export const dismissKeyboard = function () {
   Keyboard.dismiss();
 };
@@ -93,6 +103,7 @@ export const login_error = function* ({ status, data }) {
 export const login_success = function* ({ payload }) {
   yield Api.authToken(payload.jwtToken);
   yield delay(500); // TODO - remove this & implement better solution for API calls reaching BE without authToken
+  yield put({ type: UserTypes.GET_ID });
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
   yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
   yield put({ type: DeliveryTypes.GET_FOR_DRIVER });

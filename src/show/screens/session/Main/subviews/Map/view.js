@@ -170,7 +170,7 @@ const Map = (props) => {
           directionsPolyline: false
         })}
         mapPadding={mapPadding}>
-        {orderedStopsIds.map((sID) => {
+        {orderedStopsIds?.map((sID) => {
           const stop = stops[sID];
           return (
             stop && (

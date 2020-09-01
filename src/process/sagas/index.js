@@ -1,6 +1,7 @@
 import { all, takeLatest, spawn } from 'redux-saga/effects';
 
 // TYPES
+import { Types as UserTypes } from 'Reducers/user';
 import { Types as DeviceTypes } from 'Reducers/device';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
 import { Types as ApplicationTypes } from 'Reducers/application';
@@ -28,11 +29,14 @@ import {
   getForDriverSuccess,
   optimizeStops,
   startDelivering,
+  updateCurrentDayProps,
   updateReturnPosition,
   updatedSelectedStop
 } from './delivery';
 
 import { requestLocationPermissionAndWatch, setLocation } from './device';
+
+import { getId } from './user';
 
 export default function* root() {
   yield all([
@@ -55,8 +59,11 @@ export default function* root() {
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
     takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
     takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
+    takeLatest(DeliveryTypes.UPDATE_CURRENT_DAY_PROPS, updateCurrentDayProps),
     takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updatedSelectedStop),
+
+    takeLatest(UserTypes.GET_ID, getId),
 
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,
