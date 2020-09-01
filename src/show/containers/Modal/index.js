@@ -4,6 +4,7 @@ import { Modal as RNModal } from 'react-native';
 
 const Modal = (props) => {
   const {
+    animationType,
     children,
     onDismiss,
     onRequestClose,
@@ -13,7 +14,7 @@ const Modal = (props) => {
   } = props;
   return (
     <RNModal
-      animationType="slide"
+      animationType={animationType}
       transparent={transparent}
       visible={visible}
       onShow={onShow}
@@ -25,6 +26,7 @@ const Modal = (props) => {
 };
 
 Modal.propTypes = {
+  animationType: PropTypes.string,
   children: PropTypes.object.isRequired,
   onDismiss: PropTypes.func,
   onRequestClose: PropTypes.func,
@@ -34,6 +36,7 @@ Modal.propTypes = {
 };
 
 Modal.defaultProps = {
+  animationType: 'slide',
   children: {},
   onDismiss: () => {},
   onRequestClose: () => {},

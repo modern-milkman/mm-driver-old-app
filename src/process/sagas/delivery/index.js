@@ -4,13 +4,16 @@ import Api from 'Api';
 import NavigationService from 'Navigation/service';
 import { user as userSelector } from 'Reducers/user';
 import {
-  Types as DeliveryTypes,
-  selectedStop as selectedStopSelector
+  outOfStockItems as outOfStockItemsSelector,
+  selectedStop as selectedStopSelector,
+  Types as DeliveryTypes
 } from 'Reducers/delivery';
 import {
   Types as DeviceTypes,
   device as deviceSelector
 } from 'Reducers/device';
+
+import { checkAtLeastOneItem } from 'Helpers';
 
 // EXPORTED
 export const getForDriver = function* () {
@@ -38,6 +41,50 @@ export const getForDriverSuccess = function* ({ payload }) {
     deliveryDate: payload.deliveryDate,
     props: { processing: false }
   });
+
+  if (checkAtLeastOneItem(payload?.items, 2)) {
+    yield put({
+      type: DeliveryTypes.START_DELIVERING
+    });
+  }
+};
+
+export const setDelivered = function* ({ id }) {
+  const outOfStockItems = yield select(outOfStockItemsSelector);
+  for (const i of outOfStockItems) {
+    yield put({ type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK, id: i });
+  }
+
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS }
+    },
+    promise: Api.repositories.delivery.patchDelivered(id),
+    id
+  });
+};
+
+export const setItemOutOfStock = function* ({ id }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {},
+    promise: Api.repositories.delivery.patchItemOutOfStock(id)
+  });
+};
+
+export const setRejected = function* ({ id, reasonMessage }) {
+  // TODO - trigger out of stock requests even in reject delivery mode
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS }
+    },
+    promise: Api.repositories.delivery.patchRejected(id, reasonMessage),
+    id
+  });
+
+  NavigationService.goBack();
 };
 
 export const optimizeStops = function* () {
@@ -51,7 +98,6 @@ export const startDelivering = function* () {
     currentLocation: device.position.coords,
     returnPosition: device.returnPosition
   });
-  NavigationService.goBack();
 };
 
 export const updateCurrentDayProps = function* ({ props: { deliveryStatus } }) {

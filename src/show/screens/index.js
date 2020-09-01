@@ -4,7 +4,8 @@ import UpgradeApp from './public/UpgradeApp';
 
 // SESSION ONLY
 import CheckIn from './session/CheckIn';
+import Deliver from './session/Deliver';
 import LoadVan from './session/LoadVan';
 import Main from './session/Main';
 
-export { CheckIn, Home, LoadVan, Main, UpgradeApp };
+export { CheckIn, Deliver, Home, LoadVan, Main, UpgradeApp };

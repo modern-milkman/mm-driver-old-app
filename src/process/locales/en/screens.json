@@ -5,15 +5,21 @@
     "loadTheVanDescription": "Load the van to start your round",
     "loadVan": "Load Van"
   },
+  "deliver": {
+    "modal": {
+      "inputPlaceholder": "Type your reason here",
+      "title": "Please provide a reason for skipping delivery"
+    }
+  },
   "home": {
     "driverLogin": "Driver Login"
   },
-
   "loadVan": {
     "title": "items",
     "done": "Done"
   },
   "main": {
+    "activeDeliveryFor": "{{itemCount}} items for {{fullName}}",
     "actions": {
       "clearReturnPosition": "Clear current return position",
       "openIn": "Open in {{appName}}",

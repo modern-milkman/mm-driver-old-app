@@ -5,7 +5,7 @@ import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
 import { colors } from 'Theme';
-import { mockF } from 'Helpers';
+import { mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import { Button, Icon, ListItem, Text } from 'Components';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
@@ -22,15 +22,17 @@ const navigateBack = (callback) => {
   animateContent({
     contentTranslateYValue: 100,
     contentOpacityValue: 0,
-    callback: callback ? callback : NavigationService.goBack,
+    callback,
     reverse: true
   });
+
+  NavigationService.goBack();
 };
 
 const animateContent = ({
   contentTranslateYValue,
   contentOpacityValue,
-  callback = mockF,
+  callback = mock,
   reverse = false
 }) => {
   let index = 0;
@@ -91,7 +93,7 @@ const CheckIn = (props) => {
             color={colors.primary}
             size={32}
             containerSize={44}
-            onPress={navigateBack}
+            onPress={navigateBack.bind(null, null)}
           />
           <Text.Callout color={colors.black}>
             {I18n.t('screens:checkIn.checkIn')}
@@ -124,7 +126,7 @@ const CheckIn = (props) => {
             <Button.Primary
               title={I18n.t('general:go')}
               disabled={deliveryStatus !== 1}
-              onPress={navigateBack.bind(null, startDelivering)}
+              onPress={navigateBack.bind(null, startDelivering.bind(null))}
             />
             {deliveryStatus !== 1 && (
               <RowView width={null}>
@@ -147,7 +149,7 @@ const CheckIn = (props) => {
 };
 
 CheckIn.propTypes = {
-  deliveryStatus: PropTypes.bool,
+  deliveryStatus: PropTypes.number,
   itemCount: PropTypes.number,
   startDelivering: PropTypes.func
 };

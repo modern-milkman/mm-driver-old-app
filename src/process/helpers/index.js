@@ -74,6 +74,19 @@ const jiggleAnimation = (animatedValue, callback) => {
 };
 
 const mock = () => {};
+
+const toggle = (collection, item) => {
+  const duplicate = [...collection];
+  var idx = duplicate.indexOf(item);
+  if (idx !== -1) {
+    duplicate.splice(idx, 1);
+  } else {
+    duplicate.push(item);
+  }
+
+  return duplicate;
+};
+
 const randomKey = () =>
   Math.random()
     .toString(36)
@@ -88,5 +101,6 @@ export {
   isAppInstalled,
   jiggleAnimation,
   mock,
+  toggle,
   randomKey
 };

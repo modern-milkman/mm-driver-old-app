@@ -6,13 +6,16 @@ import { hasItemsLeftToDeliver } from 'Reducers/delivery';
 import Main from './view';
 
 export default connect((state) => {
-  const currDay = currentDay();
+  const today = currentDay();
+  const selectedStopId = state.delivery[today]?.selectedStopId;
+
   return {
-    deliveryStatus: state.delivery[currDay]?.deliveryStatus,
+    selectedStop: state.delivery[today]?.stops[selectedStopId],
+    deliveryStatus: state.delivery[today]?.deliveryStatus,
     hasItemsLeftToDeliver: hasItemsLeftToDeliver(state),
-    hasRoutes: state.delivery[currDay]?.hasRoutes,
-    itemCount: state.delivery[currDay]?.stockWithData?.itemCount,
+    hasRoutes: state.delivery[today]?.hasRoutes,
+    itemCount: state.delivery[today]?.stockWithData?.itemCount,
     processing: state.delivery.processing,
-    routeDescription: state.delivery[currDay]?.stockWithData?.routeDescription
+    routeDescription: state.delivery[today]?.stockWithData?.routeDescription
   };
 }, {})(Main);

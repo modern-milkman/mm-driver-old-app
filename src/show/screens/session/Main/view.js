@@ -13,13 +13,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from 'Theme';
 import { deviceFrame } from 'Helpers';
 import { Button, Text } from 'Components';
-import { ColumnView, FullView } from 'Containers';
+import { ColumnView } from 'Containers';
 import NavigationService from 'Navigation/service';
 
 import I18n from 'Locales/I18n';
 
 import { configuration } from './helpers';
-import { Foreground, Navigation, Map, PullHandle } from './subviews';
+import { Foreground, Navigation, Map, PullHandle, Search } from './subviews';
 
 const springForeground = ({
   animatedValues,
@@ -27,7 +27,8 @@ const springForeground = ({
   snapTopY,
   pullHandleMoveY,
   foregroundPaddingTop,
-  top
+  top,
+  routeName
 }) => {
   Animated.parallel([
     Animated.spring(animatedValues[0], {
@@ -54,7 +55,7 @@ const springForeground = ({
         duration: 125
       })
     ]).start();
-    setTimeout(triggerNavigation, 150);
+    setTimeout(triggerNavigation.bind(null, routeName), 150);
   } else {
     Animated.spring(foregroundPaddingTop, {
       toValue: 0,
@@ -64,12 +65,13 @@ const springForeground = ({
   }
 };
 
-const triggerNavigation = () => {
-  NavigationService.navigate({ routeName: 'CheckIn' });
+const triggerNavigation = (routeName) => {
+  NavigationService.navigate({ routeName });
 };
 
 const Main = (props) => {
   const {
+    selectedStop,
     deliveryStatus,
     hasRoutes,
     itemCount,
@@ -212,7 +214,8 @@ const Main = (props) => {
         snapTopY,
         pullHandleMoveY,
         foregroundPaddingTop,
-        top
+        top,
+        routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn'
       });
       currentLocationY = 0;
     }
@@ -239,7 +242,15 @@ const Main = (props) => {
   };
 
   return (
-    <FullView>
+    <ColumnView flex={1} justifyContent={'flex-start'}>
+      <Search
+        bottomHeight={
+          configuration.navigation.height +
+          configuration.foreground.defaultHeight +
+          configuration.topBorderRadius.max +
+          bottom
+        }
+      />
       <NavigationEvents
         onWillFocus={setTimeout.bind(
           null,
@@ -293,7 +304,9 @@ const Main = (props) => {
             <Animated.View
               style={{ opacity: interpolatedValues.foregroundDetailsOpacity }}>
               <Text.Callout color={colors.black} align={'center'}>
-                {deliveryStatus === 3
+                {deliveryStatus === 2
+                  ? selectedStop.fullAddress
+                  : deliveryStatus === 3
                   ? hourNow < Config.RESET_HOUR_DAY
                     ? I18n.t('screens:main.titles.comeBackLater')
                     : I18n.t('screens:main.titles.noDelivery')
@@ -304,7 +317,12 @@ const Main = (props) => {
                 align={'center'}
                 noMargin
                 noPadding>
-                {deliveryStatus === 3
+                {deliveryStatus === 2
+                  ? I18n.t('screens:main.activeDeliveryFor', {
+                      itemCount: selectedStop.itemCount,
+                      fullName: `${selectedStop.forename} ${selectedStop.surname}`
+                    })
+                  : deliveryStatus === 3
                   ? hourNow < Config.RESET_HOUR_DAY
                     ? I18n.t('screens:main.descriptions.comeBackLater')
                     : I18n.t('screens:main.descriptions.noDelivery')
@@ -321,23 +339,22 @@ const Main = (props) => {
               }}>
               <Button.Primary
                 title={
-                  deliveryStatus === 0 || deliveryStatus === 3
+                  deliveryStatus === 2
+                    ? I18n.t('general:details')
+                    : deliveryStatus === 0 || deliveryStatus === 3
                     ? I18n.t('screens:checkIn.checkIn')
                     : I18n.t('general:go')
                 }
                 disabled={deliveryStatus === 3}
-                onPress={
-                  deliveryStatus === 1 || deliveryStatus === 2
-                    ? alert.bind(null, 'GO ACTION HERE!')
-                    : springForeground.bind(null, {
-                        animatedValues: [pullHandlePan.y, pullHandleMoveY],
-                        toValue: snapTopY,
-                        snapTopY,
-                        pullHandleMoveY,
-                        foregroundPaddingTop,
-                        top
-                      })
-                }
+                onPress={springForeground.bind(null, {
+                  animatedValues: [pullHandlePan.y, pullHandleMoveY],
+                  toValue: snapTopY,
+                  snapTopY,
+                  pullHandleMoveY,
+                  foregroundPaddingTop,
+                  top,
+                  routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn'
+                })}
                 width={'70%'}
               />
             </Animated.View>
@@ -348,24 +365,24 @@ const Main = (props) => {
         panY={interpolatedValues.navigationY}
         paddingBottom={bottom}
       />
-    </FullView>
+    </ColumnView>
   );
 };
 
 Main.propTypes = {
+  selectedStop: PropTypes.object,
   processing: PropTypes.bool,
   hasRoutes: PropTypes.bool,
-  deliveryStatus: PropTypes.bool,
-  hasItemsLeftToDeliver: PropTypes.bool,
+  deliveryStatus: PropTypes.number,
   itemCount: PropTypes.number,
   routeDescription: PropTypes.string
 };
 
 Main.defaultProps = {
+  selectedStop: {},
   processing: true,
   hasRoutes: false,
   deliveryStatus: 0,
-  hasItemsLeftToDeliver: false,
   itemCount: 0,
   routeDescription: ''
 };

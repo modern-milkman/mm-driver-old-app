@@ -11,6 +11,5 @@ export default connect(
     itemCount: itemCount(state),
     deliveryStatus: state.delivery[currentDay()]?.deliveryStatus
   }),
-
   { startDelivering: deliveryActions.startDelivering }
 )(Main);

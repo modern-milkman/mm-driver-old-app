@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 
+import { mock } from 'Helpers';
+import { colors } from 'Theme';
 import { Icon, Text } from 'Components';
 import { ColumnView, RowView } from 'Containers';
-import { colors } from 'Theme';
 
 const List = (props) => {
   const { items } = props;
@@ -25,7 +26,7 @@ const List = (props) => {
 
 export const ListItem = (item) => (
   <ColumnView alignItems={'flex-start'}>
-    <TouchableOpacity onPress={item.onPress}>
+    <TouchableOpacity onPress={item.onPress} onLongPress={item.onLongPress}>
       <RowView justifyContent={'space-between'}>
         <RowView width={44} justifyContent={'flex-start'}>
           <Icon
@@ -51,14 +52,16 @@ export const ListItem = (item) => (
           )}
         </ColumnView>
 
-        <RowView
-          flex={2}
-          marginRight={!item.rightIcon && 15}
-          justifyContent={'flex-end'}>
-          <Text.Subhead color={colors.black} noMargin noPadding>
-            {item.rightText}
-          </Text.Subhead>
-        </RowView>
+        {item.rightText && (
+          <RowView
+            flex={2}
+            marginRight={!item.rightIcon ? 15 : 0}
+            justifyContent={'flex-end'}>
+            <Text.Subhead color={colors.black} noMargin noPadding>
+              {item.rightText}
+            </Text.Subhead>
+          </RowView>
+        )}
 
         {item.rightIcon && (
           <RowView width={44} justifyContent={'flex-start'}>
@@ -76,16 +79,20 @@ export const ListItem = (item) => (
 );
 
 ListItem.propTypes = {
-  title: PropTypes.string,
   description: PropTypes.string,
-  rightText: PropTypes.string,
-  rightIcon: PropTypes.string
+  onLongPress: PropTypes.func,
+  onPress: PropTypes.func,
+  rightIcon: PropTypes.string,
+  rightText: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  title: PropTypes.string
 };
 
 ListItem.defaultProps = {
   title: '',
   description: null,
-  rightText: '',
+  onLongPress: mock,
+  onPress: mock,
+  rightText: null,
   rightIcon: undefined
 };
 

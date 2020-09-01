@@ -8,6 +8,8 @@
     }
   },
   "go": "Go!",
+  "details": "Details",
   "done": "Done",
+  "skip": "Skip",
   "appInstalled": "Please make sure you have {{type}} app installed"
 }

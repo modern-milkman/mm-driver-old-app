@@ -4,12 +4,15 @@ import { View, Linking } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 
-import I18n from 'Locales/I18n';
 import { colors } from 'Theme';
+import I18n from 'Locales/I18n';
 import { Fab } from 'Components';
+import { deviceFrame } from 'Helpers';
 import actionSheet from 'Services/actionSheet';
 
 import styles from './style';
+
+const deviceHeight = deviceFrame().height;
 
 const appName = (type) => {
   switch (type) {
@@ -127,7 +130,8 @@ const Map = (props) => {
     },
     heading: 0,
     pitch: 0,
-    zoom: defaultMapZoom
+    zoom: defaultMapZoom,
+    altitude: 1000
   });
 
   useEffect(() => {
@@ -139,7 +143,8 @@ const Map = (props) => {
         },
         heading: 0,
         pitch: 0,
-        zoom: defaultMapZoom
+        zoom: defaultMapZoom,
+        altitude: 1000
       };
 
       setAnimateCamera(cameraUpdated);
@@ -155,11 +160,11 @@ const Map = (props) => {
   }, [directionsPolyline, latitude, longitude, mapRef, shouldTrackLocation]);
 
   return (
-    <View style={{ ...styles.container, height }}>
+    <View style={[styles.map, { height: deviceHeight }]}>
       <MapView
         ref={(ref) => setRef(ref)}
         provider={PROVIDER_GOOGLE}
-        style={styles.map}
+        style={[styles.map, { height }]}
         camera={camera}
         animateCamera={
           shouldTrackLocation.gps && mapRef?.animateCamera(animateCamera)
@@ -246,7 +251,7 @@ Map.defaultProps = {
 
 Map.propTypes = {
   availableNavApps: PropTypes.array,
-  coords: { latitude: PropTypes.number, longitude: PropTypes.number },
+  coords: PropTypes.object,
   directionsPolyline: PropTypes.array,
   height: PropTypes.number,
   mapPadding: PropTypes.object,

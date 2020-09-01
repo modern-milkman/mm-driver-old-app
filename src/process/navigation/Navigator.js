@@ -2,7 +2,7 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import { CheckIn, Home, LoadVan, Main, UpgradeApp } from 'Screens';
+import { CheckIn, Deliver, Home, LoadVan, Main, UpgradeApp } from 'Screens';
 
 const MainNavigator = createStackNavigator(
   {
@@ -11,6 +11,9 @@ const MainNavigator = createStackNavigator(
     },
     CheckIn: {
       screen: CheckIn
+    },
+    Deliver: {
+      screen: Deliver
     },
     LoadVan: {
       screen: LoadVan

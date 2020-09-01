@@ -1,9 +1,11 @@
 import { createActions, createReducer } from 'reduxsauce';
 
 import { Point, solve as salesman } from 'Services/salesman';
-import { checkAtLeastOneItem, currentDay, formatDate } from 'Helpers';
+import { checkAtLeastOneItem, currentDay, formatDate, toggle } from 'Helpers';
 
 import { produce, updateProps } from '../shared';
+
+import NavigationService from 'Navigation/service';
 
 export const { Types, Creators } = createActions(
   {
@@ -12,7 +14,13 @@ export const { Types, Creators } = createActions(
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
     optimizeStops: ['currentLocation', 'returnPosition'],
-    startDelivering: null,
+    setDelivered: ['id'],
+    setDeliveredOrRejectedSuccess: ['id'],
+    setItemOutOfStock: ['id'],
+    setRejected: ['id', 'reasonMessage'],
+    startDelivering: [],
+    toggleConfirmedItem: ['id'],
+    toggleOutOfStock: ['id'],
     updateCurrentDayProps: ['props'],
     updateDirectionsPolyline: ['payload'],
     updateProps: ['props'],
@@ -33,15 +41,18 @@ Delivery status:
 const initialState = {
   processing: true,
   [formatDate(new Date())]: {
-    groupedStock: {},
-    hasRoutes: false,
+    allItemsDone: false,
+    confirmedItem: [],
     deliveryStatus: 3,
     directionsPolyline: [],
+    groupedStock: {},
+    hasRoutes: false,
+    orderedStopsIds: [],
+    outOfStockIds: [],
+    selectedStopId: null,
     stock: [],
     stockWithData: {},
-    stops: {},
-    orderedStopsIds: [],
-    selectedStopId: null
+    stops: {}
   }
 };
 
@@ -55,19 +66,21 @@ export const getVehicleStockForDriverSuccess = (
     const formatedDate = formatDate(new Date(deliveryDate));
     const groupedItems = payload.reduce((routeRes, route) => {
       route.vehicleStockItems.forEach((item) => {
-        routeRes[item.category] = routeRes[item.category] || {};
-        routeRes[item.category][item.productName] = routeRes[item.category][
-          item.productName
-        ] || {
+        routeRes[item.categoryDescription] =
+          routeRes[item.categoryDescription] || {};
+        routeRes[item.categoryDescription][item.productName] = routeRes[
+          item.categoryDescription
+        ][item.productName] || {
           rightText: 0,
           title: item.productName,
           description: item.measureDescription
         };
 
-        routeRes[item.category][item.productName] = {
-          ...routeRes[item.category][item.productName],
+        routeRes[item.categoryDescription][item.productName] = {
+          ...routeRes[item.categoryDescription][item.productName],
           rightText:
-            routeRes[item.category][item.productName]?.rightText + item.quantity
+            routeRes[item.categoryDescription][item.productName]?.rightText +
+            item.quantity
         };
       });
 
@@ -91,10 +104,29 @@ export const getForDriverSuccess = (state, { payload }) =>
       1,
       true
     )
-      ? 2
-      : checkAtLeastOneItem(payload?.items, 1)
-      ? 0
-      : 3;
+      ? checkAtLeastOneItem(payload?.items, 1)
+        ? 2
+        : 3
+      : 0;
+  });
+
+export const setDeliveredOrRejectedSuccess = (state, { id }) =>
+  produce(state, (draft) => {
+    const cd = currentDay();
+    draft[cd].orderedStopsIds.splice(
+      draft[cd].orderedStopsIds.indexOf(draft[cd].stops.selectedStopId),
+      1
+    );
+
+    draft[cd].allItemsDone = false;
+    draft[cd].confirmedItem = [];
+    draft[cd].outOfStockIds = [];
+
+    if (draft[cd].orderedStopsIds.length > 0) {
+      draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
+    } else {
+      draft[cd].deliveryStatus = 3;
+    }
   });
 
 export const startDelivering = (state) =>
@@ -105,22 +137,68 @@ export const startDelivering = (state) =>
       const {
         address: { addressId, latitude, longitude }
       } = item;
+
       if (!draft[cd].stops[addressId]) {
-        draft[cd].orderedStopsIds.push(addressId);
+        if (item.delivery_stateID === 1) {
+          draft[cd].orderedStopsIds.push(addressId);
+        }
         draft[cd].stops[addressId] = {
+          addressId,
           customerId: item.customerId,
           latitude,
           longitude,
           forename: item.forename,
           surname: item.surname,
           phoneNumber: item.phoneNumber,
-          orders: []
+          orders: [],
+          orderID: item.orderID,
+          fullAddress:
+            (item.address.name_number ? `${item.address.name_number}` : '') +
+            (item.address.line1 ? `, ${item.address.line1}` : '') +
+            (item.address.line2 ? `, ${item.address.line2}` : '')
         };
       }
       draft[cd].stops[addressId].orders.push(item);
+
+      draft[cd].stops[addressId].itemCount =
+        (draft[cd].stops[addressId]?.itemCount
+          ? draft[cd].stops[addressId].itemCount
+          : 0) + item.quantity;
     }
-    draft[cd].processing = true;
-    draft[cd].deliveryStatus = 2;
+
+    if (draft[cd].orderedStopsIds.length > 0) {
+      draft[cd].processing = true;
+      draft[cd].deliveryStatus = 2;
+      draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
+    }
+  });
+
+export const toggleConfirmedItem = (state, { id }) =>
+  produce(state, (draft) => {
+    const cd = currentDay();
+    draft[cd].confirmedItem = toggle(state[cd].confirmedItem, id);
+
+    const idx = state[cd].outOfStockIds.indexOf(id);
+    if (idx > -1) {
+      draft[cd].outOfStockIds.splice(idx, 1);
+    }
+// TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
+    draft[cd].allItemsDone =
+      draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
+      state[cd].stops[state[cd].selectedStopId]?.orders.length;
+  });
+
+export const toggleOutOfStock = (state, { id }) =>
+  produce(state, (draft) => {
+    const cd = currentDay();
+    draft[cd].outOfStockIds = toggle(state[cd].outOfStockIds, id);
+    const idx = state[cd].confirmedItem.indexOf(id);
+    if (idx > -1) {
+      draft[cd].confirmedItem.splice(idx, 1);
+    }
+    draft[cd].allItemsDone =
+      draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
+      state[cd].stops[state[cd].selectedStopId]?.orders.length;
   });
 
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
@@ -135,7 +213,7 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     ];
     for (const addressId of state[cd].orderedStopsIds) {
       const item = state[cd].stops[addressId];
-      stops.push(new Point(item.latitude, item.longitude, addressId));
+      stops.push(new Point(item?.latitude, item?.longitude, addressId));
     }
     if (returnPosition) {
       stops.push(
@@ -187,7 +265,10 @@ export default createReducer(initialState, {
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
+  [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
   [Types.START_DELIVERING]: startDelivering,
+  [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
+  [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,
   [Types.UPDATE_CURRENT_DAY_PROPS]: updateCurrentDayProps,
   [Types.UPDATE_DIRECTIONS_POLYLINE]: updateDirectionsPolyline,
   [Types.UPDATE_PROPS]: updateProps,
@@ -208,6 +289,9 @@ export const itemCount = (state) =>
         0
       )
     : 0;
+
+export const outOfStockItems = (state) =>
+  state.delivery[currentDay()]?.outOfStockIds;
 
 export const selectedStop = (state) => {
   const todaysDelivery = state.delivery[currentDay()];

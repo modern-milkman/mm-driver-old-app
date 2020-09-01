@@ -3,6 +3,7 @@ import Button from './Button';
 import Fab from './Fab';
 import Icon from './Icon';
 import List, { ListItem } from './List';
+import SearchBar from './SearchBar';
 import Separator from './Separator';
 import SideBar from './SideBar';
 import Text from './Text';
@@ -15,6 +16,7 @@ export {
   Icon,
   List,
   ListItem,
+  SearchBar,
   Separator,
   SideBar,
   Text,

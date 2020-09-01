@@ -8,10 +8,10 @@ const iconCloseStyle = (disabledErrors) => ({
   right: 5,
   ...Platform.select({
     ios: {
-      bottom: disabledErrors ? 12 : 49
+      bottom: disabledErrors ? 20 : 36
     },
     android: {
-      bottom: disabledErrors ? 15 : 53
+      bottom: disabledErrors ? 20 : 40
     }
   })
 });

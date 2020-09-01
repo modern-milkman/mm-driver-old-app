@@ -15,6 +15,7 @@ const behaviour = {
 
 const FullView = (props) => {
   const composedStyles = [style.fullview, { backgroundColor: props.bgColor }];
+
   return (
     <KeyboardAvoidingView {...behaviour} enabled style={composedStyles}>
       {props.children}
