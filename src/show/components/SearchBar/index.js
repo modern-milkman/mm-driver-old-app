@@ -83,7 +83,7 @@ SearchBar.defaultProps = {
   onChangeText: mock,
   onFocusChanged: mock,
   processing: false,
-  placeholder: I18n.t('search:searchPlaceholder'),
+  placeholder: I18n.t('screens:main.search.placeholder'),
   returnKeyType: 'search',
   rightIcon: 'close-circle-outline',
   value: ''

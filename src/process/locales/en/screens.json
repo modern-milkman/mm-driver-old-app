@@ -30,6 +30,9 @@
       "deliveryActive": "{{itemCount}} deliveries",
       "noDelivery": "See you tomorrow"
     },
+    "search": {
+      "placeholder": "Search"
+    },
     "titles": {
       "comeBackLater": "No delivery info yet",
       "noDelivery": "No deliveries tonight"
