@@ -10,6 +10,7 @@ export default connect(
     const cd = currentDay();
     return {
       availableNavApps: state.device?.availableNavApps,
+      completedStopsIds: state.delivery[cd]?.completedStopsIds,
       coords: state.device?.position?.coords,
       directionsPolyline: state.delivery[cd]?.directionsPolyline,
       orderedStopsIds: state.delivery[cd]?.orderedStopsIds,

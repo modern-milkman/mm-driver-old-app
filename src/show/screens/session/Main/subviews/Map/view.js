@@ -102,6 +102,7 @@ const openNavigation = ({
 const Map = (props) => {
   const {
     availableNavApps,
+    completedStopsIds,
     height,
     coords: { latitude, longitude },
     directionsPolyline,
@@ -185,9 +186,23 @@ const Map = (props) => {
                   latitude: stop?.latitude,
                   longitude: stop?.longitude
                 }}
-                title={`${stop.surname}, ${stop.forename}`}
-                description={stop.phoneNumber}
                 pinColor={selectedStopId === sID ? 'red' : 'wheat'}
+                onPress={updateSelectedStop.bind(null, sID)}
+              />
+            )
+          );
+        })}
+        {completedStopsIds?.map((sID) => {
+          const stop = stops[sID];
+          return (
+            stop && (
+              <Marker
+                key={sID}
+                coordinate={{
+                  latitude: stop?.latitude,
+                  longitude: stop?.longitude
+                }}
+                pinColor={selectedStopId === sID ? 'red' : 'green'}
                 onPress={updateSelectedStop.bind(null, sID)}
               />
             )
@@ -251,6 +266,7 @@ Map.defaultProps = {
 
 Map.propTypes = {
   availableNavApps: PropTypes.array,
+  completedStopsIds: PropTypes.array,
   coords: PropTypes.object,
   directionsPolyline: PropTypes.array,
   height: PropTypes.number,

@@ -42,6 +42,7 @@ const initialState = {
   [formatDate(new Date())]: {
     allItemsDone: false,
     confirmedItem: [],
+    completedStopsIds: [],
     deliveryStatus: 3,
     directionsPolyline: [],
     groupedStock: {},
@@ -54,6 +55,11 @@ const initialState = {
     stops: {}
   }
 };
+
+const processingTrue = (state) =>
+  produce(state, (draft) => {
+    draft.processing = true;
+  });
 
 export const reset = () => initialState;
 
@@ -117,20 +123,24 @@ export const setDeliveredOrRejectedFailure = (state) =>
     draft[cd].allItemsDone = false;
     draft[cd].confirmedItem = [];
     draft[cd].outOfStockIds = [];
+    draft.processing = false;
   });
 
 export const setDeliveredOrRejectedSuccess = (state) =>
   produce(state, (draft) => {
     const cd = currentDay();
     draft[cd].directionsPolyline = [];
-    draft[cd].orderedStopsIds.splice(
-      draft[cd].orderedStopsIds.indexOf(draft[cd].selectedStopId),
-      1
+    draft[cd].completedStopsIds.push(
+      ...draft[cd].orderedStopsIds.splice(
+        draft[cd].orderedStopsIds.indexOf(draft[cd].selectedStopId),
+        1
+      )
     );
 
     draft[cd].allItemsDone = false;
     draft[cd].confirmedItem = [];
     draft[cd].outOfStockIds = [];
+    draft[cd].stops[draft[cd].selectedStopId].status = 'completed';
 
     if (draft[cd].orderedStopsIds.length > 0) {
       draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
@@ -138,6 +148,7 @@ export const setDeliveredOrRejectedSuccess = (state) =>
       draft[cd].selectedStopId = null;
       draft[cd].deliveryStatus = 3;
     }
+    draft.processing = false;
   });
 
 export const startDelivering = (state) =>
@@ -152,8 +163,11 @@ export const startDelivering = (state) =>
       if (!draft[cd].stops[addressId]) {
         if (item.delivery_stateID === 1) {
           draft[cd].orderedStopsIds.push(addressId);
+        } else {
+          draft[cd].completedStopsIds.push(addressId);
         }
         draft[cd].stops[addressId] = {
+          status: item.delivery_stateID === 1 ? 'pending' : 'completed',
           addressId,
           customerId: item.customerId,
           latitude,
@@ -277,8 +291,10 @@ export default createReducer(initialState, {
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
+  [Types.SET_DELIVERED]: processingTrue,
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
+  [Types.SET_REJECTED]: processingTrue,
   [Types.START_DELIVERING]: startDelivering,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,

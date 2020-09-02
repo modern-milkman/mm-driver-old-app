@@ -26,7 +26,10 @@ const List = (props) => {
 
 export const ListItem = (item) => (
   <ColumnView alignItems={'flex-start'}>
-    <TouchableOpacity onPress={item.onPress} onLongPress={item.onLongPress}>
+    <TouchableOpacity
+      disabled={item.disabled}
+      onPress={item.onPress}
+      onLongPress={item.onLongPress}>
       <RowView justifyContent={'space-between'}>
         <RowView width={44} justifyContent={'flex-start'}>
           <Icon

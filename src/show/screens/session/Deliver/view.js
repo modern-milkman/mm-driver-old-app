@@ -121,15 +121,17 @@ const Deliver = (props) => {
                 onPress={setModalVisible.bind(null, false)}
                 width={'40%'}
               />
-              <Button.Primary
-                title={I18n.t('general:skip')}
-                width={'40%'}
-                disabled={reasonMessage === ''}
-                onPress={navigateBack.bind(
-                  null,
-                  setRejected.bind(null, selectedStop.orderID, reasonMessage)
-                )}
-              />
+              {selectedStop && (
+                <Button.Primary
+                  title={I18n.t('general:skip')}
+                  width={'40%'}
+                  disabled={reasonMessage === ''}
+                  onPress={navigateBack.bind(
+                    null,
+                    setRejected.bind(null, selectedStop.orderID, reasonMessage)
+                  )}
+                />
+              )}
             </RowView>
           </View>
         </FullView>
@@ -161,49 +163,53 @@ const Deliver = (props) => {
             opacity: contentOpacity[0]
           }}>
           <ColumnView>
-            {selectedStop.orders.map((i) => (
-              <ListItem
-                title={i.productName}
-                description={i.measureDescription}
-                rightText={i.quantity}
-                onLongPress={toggleOutOfStock.bind(null, i.orderItemId)}
-                onPress={toggleConfirmedItem.bind(null, i.orderItemId)}
-                rightIcon={
-                  outOfStock.includes(i.orderItemId)
-                    ? 'alert'
-                    : confirmedItem.includes(i.orderItemId)
-                    ? 'check'
-                    : null
-                }
-                key={i.orderItemId}
-              />
-            ))}
+            {selectedStop &&
+              selectedStop.orders.map((i) => (
+                <ListItem
+                  disabled={selectedStop.status === 'completed'}
+                  title={i.productName}
+                  description={i.measureDescription}
+                  rightText={i.quantity}
+                  onLongPress={toggleOutOfStock.bind(null, i.orderItemId)}
+                  onPress={toggleConfirmedItem.bind(null, i.orderItemId)}
+                  rightIcon={
+                    outOfStock.includes(i.orderItemId)
+                      ? 'alert'
+                      : confirmedItem.includes(i.orderItemId)
+                      ? 'check'
+                      : null
+                  }
+                  key={i.orderItemId}
+                />
+              ))}
           </ColumnView>
         </Animated.View>
       </ColumnView>
-      <Animated.View
-        style={{
-          transform: [{ translateY: contentTranslateY[1] }],
-          opacity: contentOpacity[1]
-        }}>
-        <ColumnView>
-          <Button.Primary
-            title={I18n.t('general:done')}
-            onPress={navigateBack.bind(
-              null,
-              setDelivered.bind(null, selectedStop.orderID)
-            )}
-            disabled={!allItemsDone}
-            width={'70%'}
-          />
+      {selectedStop && selectedStop.status === 'pending' && (
+        <Animated.View
+          style={{
+            transform: [{ translateY: contentTranslateY[1] }],
+            opacity: contentOpacity[1]
+          }}>
+          <ColumnView>
+            <Button.Primary
+              title={I18n.t('general:done')}
+              onPress={navigateBack.bind(
+                null,
+                setDelivered.bind(null, selectedStop.orderID)
+              )}
+              disabled={!allItemsDone}
+              width={'70%'}
+            />
 
-          <Button.Destroy
-            title={I18n.t('general:skip')}
-            onPress={setModalVisible.bind(null, true)}
-            width={'70%'}
-          />
-        </ColumnView>
-      </Animated.View>
+            <Button.Destroy
+              title={I18n.t('general:skip')}
+              onPress={setModalVisible.bind(null, true)}
+              width={'70%'}
+            />
+          </ColumnView>
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 };
