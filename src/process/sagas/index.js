@@ -29,6 +29,7 @@ import {
   getForDriverSuccess,
   optimizeStops,
   setDelivered,
+  setDeliveredOrRejectedSuccess,
   setItemOutOfStock,
   setRejected,
   startDelivering,
@@ -63,6 +64,10 @@ export default function* root() {
     takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
     takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
     takeLatest(DeliveryTypes.SET_DELIVERED, setDelivered),
+    takeLatest(
+      DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS,
+      setDeliveredOrRejectedSuccess
+    ),
     takeLatest(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
     takeLatest(DeliveryTypes.SET_REJECTED, setRejected),
     takeLatest(DeliveryTypes.UPDATE_CURRENT_DAY_PROPS, updateCurrentDayProps),

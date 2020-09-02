@@ -5,8 +5,6 @@ import { checkAtLeastOneItem, currentDay, formatDate, toggle } from 'Helpers';
 
 import { produce, updateProps } from '../shared';
 
-import NavigationService from 'Navigation/service';
-
 export const { Types, Creators } = createActions(
   {
     getForDriver: null,
@@ -15,7 +13,8 @@ export const { Types, Creators } = createActions(
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
     optimizeStops: ['currentLocation', 'returnPosition'],
     setDelivered: ['id'],
-    setDeliveredOrRejectedSuccess: ['id'],
+    setDeliveredOrRejectedFailure: null,
+    setDeliveredOrRejectedSuccess: null,
     setItemOutOfStock: ['id'],
     setRejected: ['id', 'reasonMessage'],
     startDelivering: [],
@@ -110,11 +109,22 @@ export const getForDriverSuccess = (state, { payload }) =>
       : 0;
   });
 
-export const setDeliveredOrRejectedSuccess = (state, { id }) =>
+export const setDeliveredOrRejectedFailure = (state) =>
   produce(state, (draft) => {
     const cd = currentDay();
+
+    draft[cd].directionsPolyline = [];
+    draft[cd].allItemsDone = false;
+    draft[cd].confirmedItem = [];
+    draft[cd].outOfStockIds = [];
+  });
+
+export const setDeliveredOrRejectedSuccess = (state) =>
+  produce(state, (draft) => {
+    const cd = currentDay();
+    draft[cd].directionsPolyline = [];
     draft[cd].orderedStopsIds.splice(
-      draft[cd].orderedStopsIds.indexOf(draft[cd].stops.selectedStopId),
+      draft[cd].orderedStopsIds.indexOf(draft[cd].selectedStopId),
       1
     );
 
@@ -125,6 +135,7 @@ export const setDeliveredOrRejectedSuccess = (state, { id }) =>
     if (draft[cd].orderedStopsIds.length > 0) {
       draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
     } else {
+      draft[cd].selectedStopId = null;
       draft[cd].deliveryStatus = 3;
     }
   });
@@ -166,11 +177,8 @@ export const startDelivering = (state) =>
           : 0) + item.quantity;
     }
 
-    if (draft[cd].orderedStopsIds.length > 0) {
-      draft[cd].processing = true;
-      draft[cd].deliveryStatus = 2;
-      draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
-    }
+    draft.processing = true;
+    draft[cd].deliveryStatus = 2;
   });
 
 export const toggleConfirmedItem = (state, { id }) =>
@@ -182,7 +190,7 @@ export const toggleConfirmedItem = (state, { id }) =>
     if (idx > -1) {
       draft[cd].outOfStockIds.splice(idx, 1);
     }
-// TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
+    // TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
     draft[cd].allItemsDone =
       draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
       state[cd].stops[state[cd].selectedStopId]?.orders.length;
@@ -204,6 +212,8 @@ export const toggleOutOfStock = (state, { id }) =>
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
   produce(state, (draft) => {
     const cd = currentDay();
+    let dummyIndex = null;
+    let returnPositionIndex = null;
     const stops = [
       new Point(
         currentLocation.latitude,
@@ -223,24 +233,26 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
           'RETURN_LOCATION'
         )
       );
+      returnPositionIndex = stops.length - 1;
     }
     const hasDummy = stops.length > 2;
 
     if (hasDummy) {
       stops.push(new Point(0, 0)); //dummy TSP point
+      dummyIndex = stops.length - 1;
     }
     const optimizedRoute = salesman(stops, hasDummy);
     optimizedRoute.splice(0, 1);
     if (hasDummy) {
-      optimizedRoute.splice(-1, 1);
+      optimizedRoute.splice(optimizedRoute.indexOf(dummyIndex), 1);
     }
     if (returnPosition) {
-      optimizedRoute.splice(-1, 1);
+      optimizedRoute.splice(optimizedRoute.indexOf(returnPositionIndex), 1);
     }
     draft[cd].orderedStopsIds = [];
     optimizedRoute.map((i) => draft[cd].orderedStopsIds.push(stops[i].key));
     draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
-    draft[cd].processing = false;
+    draft.processing = false;
   });
 
 export const updateCurrentDayProps = (state, { props }) => {
@@ -265,6 +277,7 @@ export default createReducer(initialState, {
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
+  [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
   [Types.START_DELIVERING]: startDelivering,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
@@ -274,6 +287,9 @@ export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps,
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
 });
+
+export const deliveryStatus = (state) =>
+  state.delivery[currentDay()]?.deliveryStatus;
 
 export const hasItemsLeftToDeliver = (state) => {
   return checkAtLeastOneItem(
@@ -293,6 +309,9 @@ export const itemCount = (state) =>
 export const outOfStockItems = (state) =>
   state.delivery[currentDay()]?.outOfStockIds;
 
+export const orderedStopsIds = (state) =>
+  state.delivery[currentDay()]?.orderedStopsIds;
+
 export const selectedStop = (state) => {
   const todaysDelivery = state.delivery[currentDay()];
   return todaysDelivery &&
@@ -302,3 +321,5 @@ export const selectedStop = (state) => {
     ? todaysDelivery.stops[todaysDelivery.selectedStopId]
     : null;
 };
+
+export const stops = (state) => state.delivery[currentDay()]?.stops;

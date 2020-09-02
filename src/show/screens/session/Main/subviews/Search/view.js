@@ -4,7 +4,7 @@ import { Animated, View, TouchableOpacity, Keyboard } from 'react-native';
 
 import { colors } from 'Theme';
 import { ColumnView } from 'Containers';
-import { deviceFrame, mock, randomKey } from 'Helpers';
+import { deviceFrame, mock } from 'Helpers';
 import { Icon, SearchBar, ListItem } from 'Components';
 
 import style from './style';
@@ -138,7 +138,7 @@ const Search = (props) => {
                       updateSelectedStop,
                       item.addressId
                     )}
-                    key={randomKey()}
+                    key={item.addressId}
                   />
                 );
               })}

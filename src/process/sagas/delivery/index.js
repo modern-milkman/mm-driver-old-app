@@ -1,11 +1,13 @@
 import { call, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
-import NavigationService from 'Navigation/service';
 import { user as userSelector } from 'Reducers/user';
 import {
+  deliveryStatus as deliveryStatusSelector,
   outOfStockItems as outOfStockItemsSelector,
+  orderedStopsIds as orderedStopsIdsSelector,
   selectedStop as selectedStopSelector,
+  stops as stopsSelector,
   Types as DeliveryTypes
 } from 'Reducers/delivery';
 import {
@@ -13,7 +15,28 @@ import {
   device as deviceSelector
 } from 'Reducers/device';
 
-import { checkAtLeastOneItem } from 'Helpers';
+const updateTrackerData = function* ({ deliveryStatus }) {
+  const user = yield select(userSelector);
+  const device = yield select(deviceSelector);
+  let stringifiedDeliveryStatus = 'NCI';
+  switch (deliveryStatus) {
+    case 1:
+    case 2:
+      stringifiedDeliveryStatus = 'DELIVERING';
+      break;
+    case 3:
+      stringifiedDeliveryStatus = 'DELIVERY_COMPLETE';
+      break;
+  }
+  yield put({
+    type: Api.API_CALL,
+    promise: Api.repositories.fleet.drivers({
+      id: `${user.id}`,
+      deliveryStatus: stringifiedDeliveryStatus,
+      ...(device.position?.coords && { location: device.position.coords })
+    })
+  });
+};
 
 // EXPORTED
 export const getForDriver = function* () {
@@ -29,6 +52,7 @@ export const getForDriver = function* () {
 };
 
 export const getForDriverSuccess = function* ({ payload }) {
+  const deliveryStatus = yield select(deliveryStatusSelector);
   yield put({
     type: Api.API_CALL,
     actions: {
@@ -42,11 +66,12 @@ export const getForDriverSuccess = function* ({ payload }) {
     props: { processing: false }
   });
 
-  if (checkAtLeastOneItem(payload?.items, 2)) {
+  if (deliveryStatus === 2) {
     yield put({
       type: DeliveryTypes.START_DELIVERING
     });
   }
+  yield call(updateTrackerData, { deliveryStatus });
 };
 
 export const setDelivered = function* ({ id }) {
@@ -58,10 +83,34 @@ export const setDelivered = function* ({ id }) {
   yield put({
     type: Api.API_CALL,
     actions: {
-      success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS }
+      success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS },
+      fail: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_FAILURE }
     },
-    promise: Api.repositories.delivery.patchDelivered(id),
-    id
+    promise: Api.repositories.delivery.patchDelivered(id)
+  });
+};
+
+export const setDeliveredOrRejectedSuccess = function* () {
+  const stops = yield select(stopsSelector);
+  const user = yield select(userSelector);
+  const deliveryStatus = yield select(deliveryStatusSelector);
+  const orderedStopsIds = yield select(orderedStopsIdsSelector);
+  const totalDeliveries = Object.keys(stops).length;
+  const deliveriesLeft = orderedStopsIds.length;
+  if (deliveriesLeft > 0) {
+    yield call(updatedSelectedStop);
+  }
+  yield call(updateTrackerData, { deliveryStatus });
+
+  yield put({
+    type: Api.API_CALL,
+    promise: Api.repositories.fleet.drivers({
+      id: `${user.id}`,
+      deliveries: {
+        completed: totalDeliveries - deliveriesLeft,
+        total: totalDeliveries
+      }
+    })
   });
 };
 
@@ -78,13 +127,12 @@ export const setRejected = function* ({ id, reasonMessage }) {
   yield put({
     type: Api.API_CALL,
     actions: {
-      success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS }
+      success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS },
+      fail: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_FAILURE }
     },
     promise: Api.repositories.delivery.patchRejected(id, reasonMessage),
     id
   });
-
-  NavigationService.goBack();
 };
 
 export const optimizeStops = function* () {
@@ -103,23 +151,7 @@ export const startDelivering = function* () {
 export const updateCurrentDayProps = function* ({ props: { deliveryStatus } }) {
   const user = yield select(userSelector);
   if (user && deliveryStatus) {
-    let stringifiedDeliveryStatus = 'NCI';
-    switch (deliveryStatus) {
-      case 1:
-      case 2:
-        stringifiedDeliveryStatus = 'DELIVERING';
-        break;
-      case 3:
-        stringifiedDeliveryStatus = 'DELIVERY_COMPLETE';
-        break;
-    }
-    yield put({
-      type: Api.API_CALL,
-      promise: Api.repositories.fleet.drivers({
-        id: `${user.id}`,
-        deliveryStatus: stringifiedDeliveryStatus
-      })
-    });
+    yield call(updateTrackerData, { deliveryStatus });
   }
 };
 

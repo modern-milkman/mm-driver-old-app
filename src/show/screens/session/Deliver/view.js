@@ -5,7 +5,7 @@ import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
 import { colors } from 'Theme';
-import { mock, randomKey } from 'Helpers';
+import { mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import { Button, Icon, ListItem, Text, TextInput } from 'Components';
 import { ColumnView, Modal, RowView, FullView, SafeAreaView } from 'Containers';
@@ -22,9 +22,11 @@ const navigateBack = (callback) => {
   animateContent({
     contentTranslateYValue: 100,
     contentOpacityValue: 0,
-    callback: callback ? callback : NavigationService.goBack,
+    callback,
     reverse: true
   });
+
+  NavigationService.goBack();
 };
 
 const animateContent = ({
@@ -123,10 +125,9 @@ const Deliver = (props) => {
                 title={I18n.t('general:skip')}
                 width={'40%'}
                 disabled={reasonMessage === ''}
-                onPress={setRejected.bind(
+                onPress={navigateBack.bind(
                   null,
-                  selectedStop.orderID,
-                  reasonMessage
+                  setRejected.bind(null, selectedStop.orderID, reasonMessage)
                 )}
               />
             </RowView>
@@ -174,7 +175,7 @@ const Deliver = (props) => {
                     ? 'check'
                     : null
                 }
-                key={randomKey()}
+                key={i.orderItemId}
               />
             ))}
           </ColumnView>
@@ -188,7 +189,10 @@ const Deliver = (props) => {
         <ColumnView>
           <Button.Primary
             title={I18n.t('general:done')}
-            onPress={setDelivered.bind(null, selectedStop.orderID)}
+            onPress={navigateBack.bind(
+              null,
+              setDelivered.bind(null, selectedStop.orderID)
+            )}
             disabled={!allItemsDone}
             width={'70%'}
           />
