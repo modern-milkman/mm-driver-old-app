@@ -71,12 +71,13 @@ const triggerNavigation = (routeName) => {
 
 const Main = (props) => {
   const {
-    selectedStop,
     deliveryStatus,
     hasRoutes,
     itemCount,
     processing,
-    routeDescription
+    routeDescription,
+    selectedStop,
+    startDelivering
   } = props;
   const { top, bottom } = useSafeAreaInsets();
   const { height, width } = deviceFrame();
@@ -346,15 +347,19 @@ const Main = (props) => {
                     : I18n.t('general:go')
                 }
                 disabled={deliveryStatus === 3}
-                onPress={springForeground.bind(null, {
-                  animatedValues: [pullHandlePan.y, pullHandleMoveY],
-                  toValue: snapTopY,
-                  snapTopY,
-                  pullHandleMoveY,
-                  foregroundPaddingTop,
-                  top,
-                  routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn'
-                })}
+                onPress={
+                  deliveryStatus === 1
+                    ? startDelivering.bind(null)
+                    : springForeground.bind(null, {
+                        animatedValues: [pullHandlePan.y, pullHandleMoveY],
+                        toValue: snapTopY,
+                        snapTopY,
+                        pullHandleMoveY,
+                        foregroundPaddingTop,
+                        top,
+                        routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn'
+                      })
+                }
                 width={'70%'}
               />
             </Animated.View>
@@ -370,21 +375,22 @@ const Main = (props) => {
 };
 
 Main.propTypes = {
-  selectedStop: PropTypes.object,
-  processing: PropTypes.bool,
-  hasRoutes: PropTypes.bool,
   deliveryStatus: PropTypes.number,
+  hasRoutes: PropTypes.bool,
   itemCount: PropTypes.number,
-  routeDescription: PropTypes.string
+  processing: PropTypes.bool,
+  routeDescription: PropTypes.string,
+  selectedStop: PropTypes.object,
+  startDelivering: PropTypes.func
 };
 
 Main.defaultProps = {
-  selectedStop: {},
-  processing: true,
-  hasRoutes: false,
   deliveryStatus: 0,
+  hasRoutes: false,
   itemCount: 0,
-  routeDescription: ''
+  processing: true,
+  routeDescription: '',
+  selectedStop: {}
 };
 
 export default Main;

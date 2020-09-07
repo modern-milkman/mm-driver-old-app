@@ -111,7 +111,7 @@ const CheckIn = (props) => {
               rightIcon={'chevron-right'}
               title={I18n.t('screens:checkIn.loadVan')}
               rightText={I18n.t('screens:checkIn.itemsLeft', {
-                items: itemCount
+                items: deliveryStatus !== 1 ? itemCount : 0
               })}
               onPress={NavigationService.navigate.bind(null, {
                 routeName: 'LoadVan'
