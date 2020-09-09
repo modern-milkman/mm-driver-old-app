@@ -170,6 +170,7 @@ const Map = (props) => {
         animateCamera={
           shouldTrackLocation.gps && mapRef?.animateCamera(animateCamera)
         }
+        showsCompass={false}
         showsMyLocationButton={false}
         showsUserLocation
         onPanDrag={toggleLocationTracking.bind(null, {
