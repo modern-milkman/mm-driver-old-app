@@ -83,6 +83,7 @@ export const ListItem = (item) => (
 
 ListItem.propTypes = {
   description: PropTypes.string,
+  disabled: PropTypes.bool,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
   rightIcon: PropTypes.string,
@@ -91,8 +92,9 @@ ListItem.propTypes = {
 };
 
 ListItem.defaultProps = {
-  title: '',
   description: null,
+  disabled: false,
+  title: '',
   onLongPress: mock,
   onPress: mock,
   rightText: null,

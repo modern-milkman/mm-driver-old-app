@@ -78,7 +78,8 @@ export const getVehicleStockForDriverSuccess = (
         ][item.productName] || {
           rightText: 0,
           title: item.productName,
-          description: item.measureDescription
+          description: item.measureDescription,
+          disabled: true // items in load van should not be tappable
         };
 
         routeRes[item.categoryDescription][item.productName] = {
