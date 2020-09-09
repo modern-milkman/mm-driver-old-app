@@ -77,7 +77,7 @@
   "lint-staged": {
     "*.js": [
       "prettier --single-quote --print-width=120 --write",
-      "eslint --fix"
+      "eslint --fix --max-warnings 0"
     ]
   }
 }
