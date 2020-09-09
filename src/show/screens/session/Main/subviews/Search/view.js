@@ -25,6 +25,7 @@ const onPressAddress = (updateSelectedStop, aId) => {
   Keyboard.dismiss();
 };
 
+//TODO use SafeKeyboardAreaView
 const useKeyboardEvent = (event, callback) => {
   useEffect(() => {
     Keyboard.addListener(event, callback);
@@ -63,22 +64,23 @@ const Search = (props) => {
     updateTransientProps({ searchValue: val });
   };
 
-  const handleFocus = (focused) => {
-    if (focused) {
-      updateTransientProps({ focused });
+  const handleFocus = (isFocused) => {
+    if (isFocused) {
+      updateTransientProps({ focused: true });
     }
 
     Animated.timing(height, {
-      toValue: focused ? 1 : 0,
+      toValue: isFocused ? 1 : 0,
       duration: 250,
       useNativeDriver: false
     }).start(() => {
-      if (!focused) {
-        updateTransientProps({ focused });
+      if (!isFocused) {
+        updateTransientProps({ focused: false });
       }
     });
   };
 
+  //TODO use SafeKeyboardAreaView
   const keyboardEvent = useCallback(
     (size = null, e) => {
       const searchBarHeight = 120;

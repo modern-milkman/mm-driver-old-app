@@ -30,6 +30,7 @@ const ColumnRowView = (props) => {
     paddingRight: props.paddingRight || props.paddingHorizontal || 0,
     paddingTop: props.paddingTop || props.paddingVertical || 0,
 
+    maxHeight: props.maxHeight,
     minHeight: props.minHeight
   };
 
@@ -78,6 +79,7 @@ ColumnRowView.propTypes = {
   paddingRight: PropTypes.number,
   paddingTop: PropTypes.number,
   paddingVertical: PropTypes.number,
+  maxHeight: PropTypes.number,
   minHeight: PropTypes.number,
   onLayout: PropTypes.func,
   scrollable: PropTypes.bool,
@@ -105,6 +107,7 @@ ColumnRowView.defaultProps = {
   paddingRight: undefined,
   paddingTop: undefined,
   paddingVertical: undefined,
+  maxHeight: undefined,
   minHeight: 0,
   scrollable: false,
   width: '100%'

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Animated, View } from 'react-native';
+import { Animated } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
 import { colors } from 'Theme';
-import { mock } from 'Helpers';
+import { deviceFrame, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import { Button, Icon, ListItem, Text, TextInput } from 'Components';
-import { ColumnView, Modal, RowView, FullView, SafeAreaView } from 'Containers';
+import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 
 import style from './style';
 
@@ -18,16 +18,7 @@ const forFade = ({ current, closing }) => ({
   }
 });
 
-const navigateBack = (callback) => {
-  animateContent({
-    contentTranslateYValue: 100,
-    contentOpacityValue: 0,
-    callback,
-    reverse: true
-  });
-
-  NavigationService.goBack();
-};
+const { width } = deviceFrame();
 
 const animateContent = ({
   contentTranslateYValue,
@@ -71,6 +62,17 @@ const handleChangeSkip = (updateTransientProps, value) => {
   updateTransientProps({ reasonMessage: value });
 };
 
+const navigateBack = (callback) => {
+  animateContent({
+    contentTranslateYValue: 100,
+    contentOpacityValue: 0,
+    callback,
+    reverse: true
+  });
+
+  NavigationService.goBack();
+};
+
 const Deliver = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {
@@ -98,24 +100,25 @@ const Deliver = (props) => {
         })}
       />
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
-        <FullView>
-          <View style={style.modalBackground} />
-          <View style={style.modalWrapper}>
-            <ColumnView
-              flex={1}
-              justifyContent={'flex-start'}
-              alignItems={'flex-start'}>
-              <Text.Callout color={colors.black}>
-                {I18n.t('screens:deliver.modal.title')}
-              </Text.Callout>
-              <TextInput
-                multiline
-                value={reasonMessage}
-                placeholder={I18n.t('screens:deliver.modal.inputPlaceholder')}
-                onChangeText={handleChangeSkip.bind(null, updateTransientProps)}
-              />
-            </ColumnView>
-            <RowView>
+        <ColumnView marginHorizontal={25} width={width - 50} flex={1}>
+          {/*TODO margins / width above should be updated based on branding */}
+          <ColumnView
+            justifyContent={'flex-start'}
+            alignItems={'flex-start'}
+            backgroundColor={colors.standard}>
+            <Text.Callout color={colors.black}>
+              {I18n.t('screens:deliver.modal.title')}
+            </Text.Callout>
+
+            <TextInput
+              style={style.maxInputHeight}
+              multiline
+              value={reasonMessage}
+              placeholder={I18n.t('screens:deliver.modal.inputPlaceholder')}
+              onChangeText={handleChangeSkip.bind(null, updateTransientProps)}
+            />
+
+            <RowView backgroundColor={colors.standard}>
               <Button.Plain
                 title={I18n.t('general:cancel')}
                 onPress={setModalVisible.bind(null, false)}
@@ -133,8 +136,8 @@ const Deliver = (props) => {
                 />
               )}
             </RowView>
-          </View>
-        </FullView>
+          </ColumnView>
+        </ColumnView>
       </Modal>
 
       <ColumnView

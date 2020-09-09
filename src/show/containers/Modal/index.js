@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal as RNModal } from 'react-native';
 
+import SafeAreaView from 'Containers/SafeAreaView';
+
+import style from './style';
+
 const Modal = (props) => {
   const {
     animationType,
@@ -20,7 +24,12 @@ const Modal = (props) => {
       onShow={onShow}
       onDismiss={onDismiss}
       onRequestClose={onRequestClose}>
-      {children}
+      <SafeAreaView
+        keyboardSafe
+        style={style.sawrapper}
+        keyboardSafeStyle={[style.flex]}>
+        {children}
+      </SafeAreaView>
     </RNModal>
   );
 };
