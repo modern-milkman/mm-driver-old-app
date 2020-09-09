@@ -2,7 +2,10 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   map: {
-    ...StyleSheet.absoluteFill
+    position: 'absolute',
+    width: '100%',
+    top: 0,
+    left: 0
   }
 });
 

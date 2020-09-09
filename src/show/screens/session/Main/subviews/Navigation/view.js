@@ -9,12 +9,12 @@ import { RowView } from 'Containers';
 import style from './style';
 
 const Navigation = (props) => {
-  const { paddingBottom, panY, updateProps } = props;
+  const { paddingBottom, panY, updateProps, top } = props;
   return (
     <Animated.View
       style={[
         style.container,
-        { paddingBottom, transform: [{ translateY: panY }] }
+        { top, paddingBottom, transform: [{ translateY: panY }] }
       ]}>
       <RowView justifyContent={'space-between'}>
         <Menu onPress={() => updateProps({ sideBarOpen: true })} />
@@ -34,6 +34,7 @@ Navigation.defaultProps = {
 Navigation.propTypes = {
   paddingBottom: PropTypes.number,
   panY: PropTypes.object,
+  top: PropTypes.number,
   updateProps: PropTypes.func
 };
 

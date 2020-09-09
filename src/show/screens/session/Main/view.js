@@ -8,7 +8,7 @@ import {
   PanResponder,
   Platform
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 import { colors } from 'Theme';
 import { deviceFrame } from 'Helpers';
@@ -79,7 +79,7 @@ const Main = (props) => {
     selectedStop,
     startDelivering
   } = props;
-  const { top, bottom } = useSafeAreaInsets();
+  const { top, bottom } = initialWindowMetrics.insets;
   const { height, width } = deviceFrame();
   const snapBottomY =
     height -
@@ -242,6 +242,8 @@ const Main = (props) => {
     topBorderRadius: pullHandleMoveY.interpolate(interpolations.topBorderRadius)
   };
 
+  const bottomMapPadding = configuration.navigation.height + bottom;
+
   return (
     <ColumnView flex={1} justifyContent={'flex-start'}>
       <Search
@@ -268,13 +270,9 @@ const Main = (props) => {
       />
       <Map
         mapPadding={{
-          bottom:
-            configuration.navigation.height +
-            configuration.foreground.defaultHeight +
-            configuration.topBorderRadius.max +
-            bottom
+          bottom: bottomMapPadding
         }}
-        height={height + 25}
+        height={height - bottomMapPadding}
       />
 
       <Foreground
@@ -369,6 +367,7 @@ const Main = (props) => {
       <Navigation
         panY={interpolatedValues.navigationY}
         paddingBottom={bottom}
+        top={height - top - bottom}
       />
     </ColumnView>
   );
