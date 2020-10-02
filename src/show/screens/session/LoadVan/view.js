@@ -2,13 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { mock } from 'Helpers';
-import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
+import { colors, defaults } from 'Theme';
+import { List, NavBar, Text } from 'Components';
 import NavigationService from 'Navigation/service';
-import { Button, Icon, List, Text } from 'Components';
-import { ColumnView, RowView, SafeAreaView } from 'Containers';
-
-import style from './style';
+import { ColumnView, SafeAreaView } from 'Containers';
 
 const LoadVan = (props) => {
   const { groupedStock, itemCount, updateCurrentDayProps } = props;
@@ -18,43 +16,35 @@ const LoadVan = (props) => {
     NavigationService.goBack();
   };
 
+  const doneButton = () => (
+    <ColumnView
+      width={60}
+      alignItems={'flex-end'}
+      justifyContent={'center'}
+      height={defaults.topNavigation.height}>
+      <Text.Label
+        color={colors.primary}
+        onPress={doneLoadedVan.bind(null)}
+        align={'right'}
+        lineHeight={defaults.topNavigation.height}>
+        {I18n.t('screens:loadVan.done')}
+      </Text.Label>
+    </ColumnView>
+  );
+
   return (
-    <SafeAreaView
-      bottom
-      style={[style.container, { backgroundColor: colors.standard }]}>
-      <ColumnView flex={1} justifyContent={'flex-start'}>
-        <ColumnView
-          backgroundColor={colors.standard}
-          justifyContent={'flex-start'}>
-          <RowView
-            justifyContent={'space-between'}
-            height={44}
-            alignItems={'center'}>
-            <Icon
-              name={'arrow-left'}
-              color={colors.primary}
-              size={24}
-              containerSize={44}
-              onPress={NavigationService.goBack}
-            />
-
-            <Text.Callout color={colors.black}>
-              {itemCount} {I18n.t('screens:loadVan.title')}
-            </Text.Callout>
-
-            <ColumnView width={44} marginRight={15}>
-              <Button.Plain
-                title={I18n.t('screens:loadVan.done')}
-                noMargin
-                onPress={doneLoadedVan.bind(null)}
-              />
-            </ColumnView>
-          </RowView>
-        </ColumnView>
-
-        <ColumnView flex={1}>
-          <List items={groupedStock} />
-        </ColumnView>
+    <SafeAreaView top bottom>
+      <ColumnView
+        flex={1}
+        justifyContent={'flex-start'}
+        backgroundColor={colors.neutral}>
+        <NavBar
+          leftIcon={'chevron-left'}
+          leftIconAction={NavigationService.goBack}
+          title={`${itemCount} ${I18n.t('screens:loadVan.title')}`}
+          RightComponent={doneButton}
+        />
+        <List data={groupedStock} hasSections />
       </ColumnView>
     </SafeAreaView>
   );

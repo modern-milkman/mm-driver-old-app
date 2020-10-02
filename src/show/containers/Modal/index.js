@@ -16,6 +16,7 @@ const Modal = (props) => {
     transparent,
     visible
   } = props;
+
   return (
     <RNModal
       animationType={animationType}
@@ -23,7 +24,8 @@ const Modal = (props) => {
       visible={visible}
       onShow={onShow}
       onDismiss={onDismiss}
-      onRequestClose={onRequestClose}>
+      onRequestClose={onRequestClose}
+      statusBarTranslucent={true}>
       <SafeAreaView
         keyboardSafe
         style={style.sawrapper}

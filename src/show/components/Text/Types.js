@@ -1,7 +1,10 @@
 export default {
-  CAPTION: 'caption',
-  CALLOUT: 'callout',
-  SUBHEAD: 'subhead',
-  FOOTNOTE: 'footnote',
-  TITLE: 'title'
+  BUTTON: 'Button',
+  CAPTION: 'Caption',
+  HEADING: 'Heading',
+  INPUT: 'Input',
+  LABEL: 'Label',
+  LIST: 'List',
+  TAB: 'Tab',
+  TAG: 'Tag'
 };

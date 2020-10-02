@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
-import I18n from 'Locales/I18n';
-import { colors } from 'Theme';
 import { mock } from 'Helpers';
+import I18n from 'Locales/I18n';
+import { colors, defaults } from 'Theme';
 import NavigationService from 'Navigation/service';
-import { Button, Icon, ListItem, Text } from 'Components';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
+import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 
 import style from './style';
 
@@ -70,10 +70,7 @@ const contentOpacity = [new Animated.Value(0), new Animated.Value(0)];
 const CheckIn = (props) => {
   const { deliveryStatus, itemCount, startDelivering } = props;
   return (
-    <SafeAreaView
-      top
-      bottom
-      style={[style.container, { backgroundColor: colors.standard }]}>
+    <SafeAreaView top bottom>
       <NavigationEvents
         onDidFocus={animateContent.bind(null, {
           contentTranslateYValue: 0,
@@ -81,66 +78,73 @@ const CheckIn = (props) => {
         })}
       />
       <ColumnView
-        backgroundColor={colors.standard}
+        backgroundColor={colors.neutral}
         flex={1}
         justifyContent={'flex-start'}>
-        <RowView
-          justifyContent={'space-between'}
-          height={44}
-          alignItems={'center'}>
-          <Icon
-            name={'chevron-down'}
-            color={colors.primary}
-            size={32}
-            containerSize={44}
-            onPress={navigateBack.bind(null, null)}
-          />
-          <Text.Callout color={colors.black}>
-            {I18n.t('screens:checkIn.checkIn')}
-          </Text.Callout>
-          <RowView width={44} height={44} />
-        </RowView>
+        <NavBar
+          leftIcon={'chevron-down'}
+          leftIconAction={navigateBack.bind(null, null)}
+          title={I18n.t('screens:checkIn.checkIn')}
+        />
         <ColumnView flex={1} justifyContent={'space-between'}>
           <Animated.View
-            style={{
-              transform: [{ translateY: contentTranslateY[0] }],
-              opacity: contentOpacity[0]
-            }}>
+            style={[
+              style.fullWidth,
+              {
+                transform: [{ translateY: contentTranslateY[0] }],
+                opacity: contentOpacity[0]
+              }
+            ]}>
+            <Separator />
             <ListItem
-              leftIcon={'package-variant'}
-              rightIcon={'chevron-right'}
-              title={I18n.t('screens:checkIn.loadVan')}
-              rightText={I18n.t('screens:checkIn.itemsLeft', {
+              miscelaneousSmall={I18n.t('screens:checkIn.itemsLeft', {
                 items: deliveryStatus !== 1 ? itemCount : 0
               })}
+              miscelaneousColor={colors.secondary}
               onPress={NavigationService.navigate.bind(null, {
                 routeName: 'LoadVan'
               })}
+              customIcon={'cart'}
+              rightIcon={'chevron-right'}
+              title={I18n.t('screens:checkIn.loadVan')}
             />
+            <Separator />
           </Animated.View>
           <Animated.View
             style={{
+              ...style.fullWidth,
               transform: [{ translateY: contentTranslateY[1] }],
               opacity: contentOpacity[1]
             }}>
-            <Button.Primary
-              title={I18n.t('general:go')}
-              disabled={deliveryStatus !== 1}
-              onPress={navigateBack.bind(null, startDelivering.bind(null))}
-            />
-            {deliveryStatus !== 1 && (
-              <RowView width={null}>
-                <Icon
-                  size={15}
-                  containerSize={15}
-                  name={'information-outline'}
-                  color={colors.black}
-                />
-                <Text.Caption align={'center'} color={colors.black} noMargin>
-                  {I18n.t('screens:checkIn.loadTheVanDescription')}
-                </Text.Caption>
-              </RowView>
-            )}
+            <ColumnView
+              width={'auto'}
+              marginHorizontal={defaults.marginHorizontal}
+              marginVertical={
+                deliveryStatus === 1 ? defaults.marginVertical : 0
+              }>
+              <Button.Primary
+                title={I18n.t('general:go')}
+                disabled={deliveryStatus !== 1}
+                onPress={navigateBack.bind(null, startDelivering.bind(null))}
+              />
+              {deliveryStatus !== 1 && (
+                <RowView marginVertical={defaults.marginVertical / 2}>
+                  <Icon
+                    size={15}
+                    containerSize={15}
+                    name={'information-outline'}
+                    color={colors.secondary}
+                    style={{ marginRight: defaults.marginHorizontal / 3 }}
+                  />
+                  <Text.Caption
+                    align={'center'}
+                    color={colors.secondary}
+                    noMargin>
+                    {I18n.t('screens:checkIn.loadTheVanDescription')}
+                  </Text.Caption>
+                </RowView>
+              )}
+            </ColumnView>
           </Animated.View>
         </ColumnView>
       </ColumnView>

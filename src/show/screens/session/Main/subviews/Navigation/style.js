@@ -1,16 +1,14 @@
 import { StyleSheet } from 'react-native';
 
-import { shadows } from 'Theme';
+import { colors, shadows } from 'Theme';
 
-// branding
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     zIndex: 3,
-    backgroundColor: 'white',
+    backgroundColor: colors.neutral,
     width: '100%',
-
-    ...shadows.hint
+    ...shadows.hintHigher
   }
 });
 

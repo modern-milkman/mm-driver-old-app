@@ -1,4 +1,4 @@
-import { alphaColor } from 'Theme';
+import { defaults } from 'Theme';
 
 const flex = {
   flex: 1
@@ -7,7 +7,9 @@ const flex = {
 export default {
   sawrapper: {
     ...flex,
-    backgroundColor: alphaColor('black', 0.7)
+    width: '100%',
+    height: '100%',
+    backgroundColor: defaults.overlayBackground
   },
   flex: {
     ...flex

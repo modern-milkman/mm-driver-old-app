@@ -1,6 +1,7 @@
 export default {
-  CTA: 'callToAction',
-  DESTROY: 'destroy',
-  PLAIN: 'plain',
-  PRIMARY: 'primary'
+  ERROR: 'Error',
+  OUTLINE: 'Outline',
+  PRIMARY: 'Primary',
+  SECONDARY: 'Secondary',
+  TERTIARY: 'Tertiary'
 };

@@ -12,7 +12,7 @@
     }
   },
   "home": {
-    "driverLogin": "Driver Login"
+    "driver": "Driver"
   },
   "loadVan": {
     "title": "items",
@@ -27,15 +27,34 @@
     },
     "descriptions": {
       "comeBackLater": "Come back later",
-      "deliveryActive": "{{itemCount}} deliveries",
+      "deliveryActive": "{{stopCount}} deliveries",
       "noDelivery": "See you tomorrow"
     },
+    "navigation": {
+      "deliveries": "Deliveries"
+    },
     "search": {
-      "placeholder": "Search"
+      "noResults": "No Results",
+      "placeholder": "Search",
+      "results": "Results"
     },
     "titles": {
       "comeBackLater": "No delivery info yet",
       "noDelivery": "No deliveries tonight"
+    }
+  },
+  "panel": {
+    "driverID": "Driver ID #{{driverId}}"
+  },
+  "settings": {
+    "sliders": {
+      "buttons": "Button size",
+      "drag": "Drag to resize",
+      "mapMarkers": "Map pins size"
+    },
+    "switches": {
+      "vibrations": "Vibrations",
+      "showDoneDeliveries": "Show done deliveries"
     }
   }
 }

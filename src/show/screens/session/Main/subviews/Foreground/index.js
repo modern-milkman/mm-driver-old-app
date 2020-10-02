@@ -13,6 +13,7 @@ const Foreground = (props) => {
     pullHandleMoveY,
     topBorderRadius
   } = props;
+
   return (
     <Animated.View
       style={[

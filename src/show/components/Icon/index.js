@@ -64,7 +64,7 @@ Icon.propTypes = {
 
 Icon.defaultProps = {
   circle: false,
-  circleColor: colors.standard,
+  circleColor: colors.white,
   color: colors.primary,
   containerSize: 44,
   disabled: false,

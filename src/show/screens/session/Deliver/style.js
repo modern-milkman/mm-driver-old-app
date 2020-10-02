@@ -1,9 +1,8 @@
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 0
+  fullWidth: {
+    width: '100%'
   },
   maxInputHeight: {
     maxHeight: 200

@@ -14,64 +14,71 @@ export default {
   fontWeight: (weight) => ({
     ...systemWeights[weight]
   }),
-  [Types.CAPTION]: {
+  [Types.BUTTON]: {
     textStyle: {
-      marginTop: 7,
-      marginBottom: 7,
-      marginLeft: 15,
-      marginRight: 15,
-      paddingVertical: 12
+      fontSize: 18,
+      lineHeight: 60,
+      letterSpacing: -0.24,
+      ...systemWeights.bold
     }
   },
-  [Types.CALLOUT]: {
+  [Types.CAPTION]: {
     textStyle: {
-      marginTop: 7,
-      marginBottom: 7,
-      marginLeft: 15,
-      marginRight: 15,
-      paddingVertical: 5,
+      fontSize: 11,
+      lineHeight: 13,
+      letterSpacing: 0.06
+    }
+  },
+  [Types.HEADING]: {
+    textStyle: {
+      fontSize: 20,
+      lineHeight: 28,
+      letterSpacing: 0.4,
+      ...systemWeights.bold
+    }
+  },
+  [Types.INPUT]: {
+    textStyle: {
+      fontSize: 18,
+      lineHeight: 22,
+      letterSpacing: -0.24,
       ...systemWeights.semibold
     }
   },
-  [Types.SUBHEAD]: {
+  [Types.LABEL]: {
     textStyle: {
-      paddingVertical: 15,
-      marginLeft: 15,
-      marginRight: 15
-    }
-  },
-  [Types.FOOTNOTE]: {
-    textStyle: {
-      marginLeft: 15,
-      marginRight: 15,
+      fontSize: 12,
+      lineHeight: 13,
+      letterSpacing: 0.06,
       textTransform: 'uppercase',
       ...systemWeights.semibold
     }
   },
-  [Types.TITLE]: {
+  [Types.LIST]: {
     textStyle: {
-      marginLeft: 15,
-      marginRight: 15,
+      fontSize: 14,
+      lineHeight: 16,
+      letterSpacing: -0.16,
+      ...systemWeights.semibold
+    }
+  },
+  [Types.TAB]: {
+    textStyle: {
+      fontSize: 16,
+      lineHeight: 20,
+      letterSpacing: -0.24,
       ...systemWeights.bold
+    }
+  },
+  [Types.TAG]: {
+    textStyle: {
+      fontSize: 12,
+      lineHeight: 16,
+      letterSpacing: 0.2,
+      ...systemWeights.semibold
     }
   },
   flex: {
     flex: 1
-  },
-  noMargins: {
-    marginTop: 0,
-    marginBottom: 0,
-    marginLeft: 0,
-    marginRight: 0
-  },
-  noMarginLeft: {
-    marginLeft: 0
-  },
-  noMarginVertical: {
-    marginTop: 0,
-    marginBottom: 0
-  },
-  noPaddings: {
-    paddingVertical: 0
   }
 };

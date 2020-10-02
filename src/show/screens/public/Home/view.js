@@ -1,134 +1,172 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Animated } from 'react-native';
 import Config from 'react-native-config';
+import { Animated, Keyboard } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
-import { jiggleAnimation, randomKey } from 'Helpers';
-import Vibration from 'Services/vibration';
-
-import { colors } from 'Theme';
-import { Button, Text, TextInput } from 'Components';
 import { CarLogo } from 'Images';
+import { colors, defaults } from 'Theme';
+import { Button, Text } from 'Components';
+import Vibration from 'Services/vibration';
+import { jiggleAnimation, mock, deviceFrame } from 'Helpers';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
+import TextInput, { height as textInputHeight } from 'Components/TextInput';
 
-import style from './style';
+const emailReference = React.createRef();
+const passwordReference = React.createRef();
+const logoSize = 100;
+const minimumKeyboardHeight = 300;
+const minimumRequiredHeight =
+  textInputHeight('large') * 2 +
+  Text.Button.height +
+  Text.Caption.height +
+  logoSize +
+  Text.Heading.height +
+  defaults.marginVertical / 4 +
+  defaults.marginVertical * 2; // make things look spacious
+const focusPassword = () => {
+  passwordReference?.current?.focus();
+};
 
-let emailReference = null;
+const focusEmail = () => {
+  setTimeout(() => {
+    emailReference?.current?.focus();
+  }, 0);
+};
 
-class Home extends React.Component {
-  constructor() {
-    super();
-    this.animatedValue = new Animated.Value(0);
-    this.state = {
-      refreshKey: randomKey()
-    };
-  }
+let hasSmallHeight =
+  deviceFrame().height - minimumKeyboardHeight < minimumRequiredHeight;
 
-  componentDidUpdate() {
-    const { jiggleForm } = this.props;
+const renderLogo = () => (
+  <ColumnView
+    flex={hasSmallHeight ? 0 : 2}
+    width={'100%'}
+    justifyContent={'center'}
+    alignItems={'center'}
+    height={logoSize / (82 / 56) + Text.Heading.height}>
+    <CarLogo width={logoSize} disabled />
+    <ColumnView height={Text.Heading.height}>
+      <Text.Heading textAlign={'center'} color={colors.primary}>
+        {I18n.t('screens:home.driver')}
+      </Text.Heading>
+    </ColumnView>
+  </ColumnView>
+);
+
+const updateTransient = (updateTransientProps, prop, value) => {
+  const update = {};
+  update[`${prop}`] = value;
+  updateTransientProps(update);
+};
+
+const Home = (props) => {
+  const {
+    email,
+    emailErrorMessage,
+    emailHasError,
+    jiggleForm,
+    login,
+    password,
+    processing,
+    updateApplicationProps,
+    updateTransientProps
+  } = props;
+
+  const [animatedValue] = useState(new Animated.Value(0));
+
+  useEffect(() => {
     if (jiggleForm) {
       jiggleAnimation(
-        this.animatedValue,
-        this.updateTransient('jiggleForm', false)
+        animatedValue,
+        updateTransient(updateTransientProps, 'jiggleForm', false)
       );
       Vibration.vibrate();
-      emailReference?.focus();
+      focusEmail();
     }
-  }
+  });
 
-  updateTransient = (prop, value) => {
-    const { updateTransientProps } = this.props;
-    const update = {};
-    update[`${prop}`] = value;
-    updateTransientProps(update);
+  const disabledLogin =
+    processing || emailHasError || email.length === 0 || password.length === 0;
+
+  const reset = () => {
+    updateApplicationProps({ processing: false });
+    Keyboard.dismiss();
   };
 
-  refreshKey = () => {
-    this.setState({ refreshKey: randomKey() });
-  };
-
-  render = () => {
-    const { refreshKey } = this.state;
-    const { email, emailHasError, login, password, processing } = this.props;
-
-    return (
-      <SafeAreaView top={true} bottom={true} style={style.screenWrapper}>
-        <NavigationEvents onWillFocus={this.refreshKey} />
+  return (
+    <SafeAreaView top bottom>
+      <ColumnView
+        flex={1}
+        width={'100%'}
+        justifyContent={'space-between'}
+        alignItems={'stretch'}
+        backgroundColor={colors.neutral}
+        minHeight={minimumRequiredHeight}>
+        <NavigationEvents onDidFocus={focusEmail} onDidBlur={reset} />
+        {!hasSmallHeight && renderLogo(true)}
         <ColumnView
-          width={'100%'}
-          flex={1}
-          justifyContent={'space-between'}
+          flex={hasSmallHeight ? 2 : 3}
+          animated
+          animatedStyle={{ left: animatedValue }}
+          justifyContent={'center'}
           alignItems={'stretch'}
-          scrollable>
-          <ColumnView
-            width={'100%'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            flex={1}
-            minHeight={103}>
-            <CarLogo width={100} />
-            <ColumnView>
-              <Text.Title textAlign={'center'} color={colors.primary}>
-                {I18n.t('screens:home.driverLogin')}
-              </Text.Title>
-            </ColumnView>
-          </ColumnView>
-          <ColumnView
-            animated
-            animatedStyle={{ left: this.animatedValue }}
-            flex={2}
-            justifyContent={'flex-start'}
-            alignItems={'stretch'}
-            minHeight={220}>
-            <TextInput
-              onChangeText={this.updateTransient.bind(null, 'email')}
-              onChangeValidation={this.updateTransient.bind(
-                null,
-                'emailHasError'
-              )}
-              validations={['email']}
-              value={email}
-              keyboardType={'email-address'}
-              autoCapitalize={'none'}
-              returnKeyType={'done'}
-              placeholder={I18n.t('input:placeholder.email')}
-              ref={(ti) => (emailReference = ti)}
-              refreshKey={refreshKey}
-            />
-            <TextInput
-              onChangeText={this.updateTransient.bind(null, 'password')}
-              value={password}
-              keyboardType={'default'}
-              autoCapitalize={'none'}
-              returnKeyType={'done'}
-              secureTextEntry
-              placeholder={I18n.t('input:placeholder.password')}
-              refreshKey={refreshKey}
-            />
-            <Button.Primary
-              title={I18n.t('general:login')}
-              onPress={login}
-              processing={processing}
-              disabled={
-                processing ||
-                emailHasError ||
-                email.length === 0 ||
-                password.length === 0
-              }
-            />
-          </ColumnView>
-          <RowView>
-            <Text.Caption textAlign={'center'} color={colors.black}>
-              {`V: ${Config.APP_VERSION_NAME}`}
-            </Text.Caption>
-          </RowView>
+          height={textInputHeight('large') * 2 + Text.Button.height}
+          marginHorizontal={defaults.marginHorizontal}
+          width={'auto'}>
+          <TextInput
+            autoCapitalize={'none'}
+            error={emailHasError}
+            errorMessage={emailErrorMessage}
+            keyboardType={'email-address'}
+            onChangeText={updateTransient.bind(
+              null,
+              updateTransientProps,
+              'email'
+            )}
+            onSubmitEditing={focusPassword}
+            placeholder={I18n.t('input:placeholder.email')}
+            ref={emailReference}
+            returnKeyType={'next'}
+            value={email}
+          />
+          <TextInput
+            autoCapitalize={'none'}
+            keyboardType={'default'}
+            onChangeText={updateTransient.bind(
+              null,
+              updateTransientProps,
+              'password'
+            )}
+            onSubmitEditing={disabledLogin ? mock : login}
+            placeholder={I18n.t('input:placeholder.password')}
+            ref={passwordReference}
+            returnKeyType={'go'}
+            secureTextEntry
+            value={password}
+          />
+          <Button.Primary
+            title={I18n.t('general:login')}
+            onPress={login}
+            processing={processing}
+            disabled={disabledLogin}
+          />
         </ColumnView>
-      </SafeAreaView>
-    );
-  };
-}
+        {hasSmallHeight && renderLogo()}
+        <RowView
+          flex={hasSmallHeight ? 0 : 1}
+          justifyContent={'center'}
+          alignItems={'flex-end'}
+          height={Text.Caption.height + defaults.marginVertical / 4}
+          marginVertical={defaults.marginVertical / 4}>
+          <Text.Caption textAlign={'center'} color={colors.secondary}>
+            {`V: ${Config.APP_VERSION_NAME}`}
+          </Text.Caption>
+        </RowView>
+      </ColumnView>
+    </SafeAreaView>
+  );
+};
 
 Home.defaultProps = {
   emailHasError: false,
@@ -140,11 +178,12 @@ Home.defaultProps = {
 Home.propTypes = {
   email: PropTypes.string,
   emailHasError: PropTypes.bool,
+  emailErrorMessage: PropTypes.string,
   jiggleForm: PropTypes.bool,
   password: PropTypes.string,
   login: PropTypes.func,
   processing: PropTypes.bool,
-  updateProps: PropTypes.func,
+  updateApplicationProps: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
 

@@ -1,8 +1,10 @@
 import { put, select } from 'redux-saga/effects';
+import { InteractionManager } from 'react-native';
 
 import Api from 'Api';
+import store from 'Redux/store';
 import { user as userSelector } from 'Reducers/user';
-import { Types as TransientTypes } from 'Reducers/transient';
+import { Creators as TransientCreators } from 'Reducers/transient';
 import {
   Types as ApplicationTypes,
   lastRoute as lastRouteSelector
@@ -30,12 +32,15 @@ export function* onNavigateSideEffects(navigateParams) {
       yield put({
         type: Api.API_CALL,
         promise: Api.repositories.fleet.drivers({
-          id: `${user.id}`,
+          id: `${user.driverId}`,
           deliveryStatus: 'LOADING_VAN'
         })
       });
       break;
   }
 
-  yield put({ type: TransientTypes.RESET });
+  InteractionManager.runAfterInteractions(() => {
+    const { dispatch } = store().store;
+    dispatch(TransientCreators.reset());
+  });
 }

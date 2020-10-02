@@ -4,12 +4,12 @@ import Api from 'Api';
 import { Types as UserTypes } from 'Reducers/user';
 
 // EXPORTED
-export const getId = function* () {
+export const getDriver = function* () {
   yield put({
     type: Api.API_CALL,
     actions: {
-      success: { type: UserTypes.SET_ID }
+      success: { type: UserTypes.SET_DRIVER }
     },
-    promise: Api.repositories.user.getId()
+    promise: Api.repositories.user.getDriver()
   });
 };

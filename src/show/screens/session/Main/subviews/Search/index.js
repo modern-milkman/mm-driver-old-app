@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 
-import { currentDay } from 'Helpers';
 import { Creators as transientActions } from 'Reducers/transient';
 import { Creators as deliveryActions } from 'Reducers/delivery';
 
@@ -8,16 +7,18 @@ import Search from './view';
 
 export default connect(
   (state) => {
-    const stops = Object.values(state.delivery[currentDay()]?.stops);
+    const today = state.delivery.currentDay;
+    const stops = Object.values(state.delivery[today]?.stops || {});
+    const selectedStopId = state.delivery[today]?.selectedStopId;
+
     return {
-      stops: stops.length > 0,
-      focused: state.transient.focused,
       searchValue: state.transient.searchValue,
-      itemsToSearch: stops
+      selectedStopId,
+      stops
     };
   },
   {
-    updateTransientProps: transientActions.updateProps,
-    updateSelectedStop: deliveryActions.updateSelectedStop
+    updateSelectedStop: deliveryActions.updateSelectedStop,
+    updateTransientProps: transientActions.updateProps
   }
 )(Search);

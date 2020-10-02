@@ -1,37 +1,37 @@
 import { StyleSheet } from 'react-native';
 
 import { colors } from 'Theme';
-import { deviceFrame } from 'Helpers';
-
-const { width } = deviceFrame();
-
-const listMargin = 8;
 
 const style = StyleSheet.create({
   container: {
-    zIndex: 1,
+    left: 0,
     top: 0,
-    right: 0,
-    left: 0,
-    width: '100%'
-  },
-  searchWrapper: {
-    zIndex: -1,
-    left: 0,
-    right: 0,
-    top: 50
+    position: 'absolute',
+    width: '100%',
+    zIndex: 2
   },
   listWrapper: {
-    backgroundColor: colors.background,
-    marginTop: 20,
-    borderColor: colors.black,
-    borderWidth: 1,
-    borderRadius: 14,
-    width: width - listMargin * 2,
-    marginHorizontal: 8
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 7
   },
-  height100: { height: '100%' },
-  overflowHidden: { overflow: 'hidden' }
+  safeArea: {
+    top: 0,
+    height: '100%'
+  },
+  animatedList: {
+    backgroundColor: colors.neutral,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 8,
+    elevation: 8
+  },
+  keyboardSafe: { height: '100%' },
+  elevation7: { elevation: 7 }
 });
 
 export default style;

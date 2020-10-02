@@ -1,10 +1,6 @@
 import Api from 'Api';
 
 export default {
-  getId: () => {
-    return Api.get('/Security/GetId');
-  },
-
   login: (email, password) => {
     return Api.post('/Security/Logon', {
       username: email, // API expects username to be email
@@ -17,5 +13,9 @@ export default {
       jwtToken,
       refreshToken
     });
+  },
+
+  getDriver: () => {
+    return Api.get('/Driver');
   }
 };

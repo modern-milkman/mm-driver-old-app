@@ -1,20 +1,26 @@
 import { createActions, createReducer } from 'reduxsauce';
 
+import { sizes } from 'Theme';
 import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
     requestUserLocationPermisions: null,
     setLocation: ['position'],
+    setCurrentDay: null,
     updateProps: ['props']
   },
   { prefix: 'device/' }
 );
 
 const initialState = {
+  buttonAccessibility: sizes.button.normal,
+  mapMarkerSize: sizes.marker.normal,
   position: null,
   returnPosition: null,
-  uniqueID: 'uninitialized'
+  showDoneDeliveries: true,
+  uniqueID: 'uninitialized',
+  vibrate: true
 };
 
 export const setLocation = (state, action) =>

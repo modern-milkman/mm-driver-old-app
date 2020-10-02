@@ -1,44 +1,33 @@
-import { Platform } from 'react-native';
-
-import { colors } from 'Theme';
-import { shadows } from 'Components/shared';
+import { colors, defaults } from 'Theme';
 
 import Types from './Types';
 
 export const style = {
   container: {
-    marginVertical: 10,
-    marginHorizontal: 15,
-    borderRadius: 16,
-    minHeight: 46,
+    width: '100%',
+    borderRadius: defaults.borderRadius,
     justifyContent: 'center',
     alignItems: 'center'
   },
   touchableWrapper: {
     width: '100%'
   },
-  [Types.CTA]: {
-    backgroundStyle: {
-      backgroundColor: colors.accent
-    },
-    textStyle: {
-      color: colors.standard
-    }
-  },
-  [Types.DESTROY]: {
+  [Types.ERROR]: {
     backgroundStyle: {
       backgroundColor: colors.error
     },
     textStyle: {
-      color: colors.standard
+      color: colors.white
     }
   },
-  [Types.PLAIN]: {
+  [Types.OUTLINE]: {
     backgroundStyle: {
-      backgroundColor: 'transparent'
+      backgroundColor: colors.neutral,
+      borderColor: colors.inputDark,
+      borderWidth: 1
     },
     textStyle: {
-      color: colors.primary
+      color: colors.secondary
     }
   },
   [Types.PRIMARY]: {
@@ -46,40 +35,48 @@ export const style = {
       backgroundColor: colors.primary
     },
     textStyle: {
-      color: colors.standard
+      color: colors.white
     }
   },
-
-  disabled: {
+  [Types.SECONDARY]: {
     backgroundStyle: {
-      backgroundColor: 'transparent',
-      borderWidth: 1,
-      borderColor: colors.secondary,
-      ...Platform.select({
-        android: {
-          elevation: 0
-        }
-      })
+      backgroundColor: colors.secondary
+    },
+    textStyle: {
+      color: colors.white
+    }
+  },
+  [Types.TERTIARY]: {
+    backgroundStyle: {
+      backgroundColor: colors.neutral
     },
     textStyle: {
       color: colors.secondary
     }
   },
+
+  absolute: {
+    position: 'absolute',
+    width: '100%'
+  },
+  disabled: {
+    backgroundColor: colors.input,
+    textStyle: {
+      color: colors.white
+    }
+  },
+
   iconStyleContainer: {
-    right: 10,
+    right: defaults.paddingHorizontal / 2,
     justifyContent: 'center'
   },
-  shadow: {
-    ...shadows.defaultShadow
-  },
   leftIcon: {
-    marginLeft: 5
+    marginLeft: defaults.paddingHorizontal / 2
   },
   rightIcon: {
-    marginRight: 10
+    marginRight: defaults.paddingHorizontal / 2
   },
-  noMargin: {
-    marginVertical: 0,
-    marginHorizontal: 0
+  noBorderRadius: {
+    borderRadius: 0
   }
 };

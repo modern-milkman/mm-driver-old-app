@@ -1,30 +1,38 @@
-//TODO refactor after branding
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import React, { useEffect, useState } from 'react';
 import { Animated, View, TouchableOpacity } from 'react-native';
 
-import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
+import Text from 'Components/Text';
+import { deviceFrame } from 'Helpers';
+import { defaults, colors } from 'Theme';
+import { ListItem } from 'Components/List';
+import Separator from 'Components/Separator';
+import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
 
 import styles from './styles';
 
-import Text from '../Text';
-import Button from '../Button';
-import Separator from '../Separator';
+const { width } = deviceFrame();
+const sidebarWidth = 0.8 * width;
+
+const navigateAndClose = (updateProps, routeName) => {
+  NavigationService.navigate({ routeName });
+  updateProps({ sideBarOpen: false });
+};
 
 const SideBar = (props) => {
-  const { top, bottom, logout, name, updateProps, visible } = props;
-  const [left] = useState(new Animated.Value(-310));
+  const { driverId, name, updateProps, sideBarOpen } = props;
+  const [left] = useState(new Animated.Value(-sidebarWidth));
   const [opacity] = useState(new Animated.Value(0));
-  const [show, setShow] = useState(visible);
+  const [show, setShow] = useState(sideBarOpen);
 
   useEffect(() => {
-    if (!visible) {
+    if (!sideBarOpen) {
       Animated.parallel([
         Animated.timing(left, {
-          toValue: -310,
+          toValue: -sidebarWidth,
           duration: 250,
           useNativeDriver: false
         }),
@@ -40,7 +48,7 @@ const SideBar = (props) => {
       setShow(true);
       Animated.parallel([
         Animated.timing(opacity, {
-          toValue: 0.5,
+          toValue: 1,
           duration: 250,
           useNativeDriver: true
         }),
@@ -51,8 +59,7 @@ const SideBar = (props) => {
         })
       ]).start();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible]);
+  }, [left, opacity, sideBarOpen]);
 
   return (
     show && (
@@ -60,58 +67,50 @@ const SideBar = (props) => {
         <Animated.View style={{ ...styles.closeArea, opacity: opacity }}>
           <TouchableOpacity
             style={styles.fullView}
-            onPress={() => updateProps({ sideBarOpen: false })}
+            onPress={updateProps.bind(null, { sideBarOpen: false })}
           />
         </Animated.View>
 
-        <Animated.View style={{ ...styles.content, left: left }}>
-          <SafeAreaView top={top} bottom={bottom} style={styles.fullView}>
-            <ColumnView
-              height={'100%'}
-              justifyContent={'space-between'}
-              paddingHorizontal={24}>
+        <Animated.View
+          style={{ ...styles.content, left: left, width: sidebarWidth }}>
+          <SafeAreaView top bottom style={styles.fullView}>
+            <ColumnView flex={1} justifyContent={'space-between'}>
               <ColumnView>
-                <RowView width={'100%'} marginVertical={30}>
-                  <View style={styles.profilePicture} />
-
-                  <ColumnView
-                    alignItems={'flex-start'}
-                    flex={1}
-                    paddingLeft={12}>
-                    <Text.Subhead
-                      noMargin
-                      noPadding
-                      color={'#000000'}>{`${name}`}</Text.Subhead>
-                    <Text.Caption noPadding noMargin color={'#000000'}>
-                      Driver ID #123224
-                    </Text.Caption>
-                  </ColumnView>
-                </RowView>
-
-                <Separator height={1} width={'100%'} />
-
-                <RowView
-                  width={'100%'}
-                  justifyContent={'flex-start'}
-                  marginVertical={30}>
-                  <Text.Subhead color={colors.black} noPadding noMargin>
-                    {I18n.t('routes:settings')}
-                  </Text.Subhead>
-                </RowView>
-              </ColumnView>
-
-              <ColumnView alignItems={'stretch'}>
-                <Button.Primary
-                  title={I18n.t('general:logout')}
-                  onPress={logout}
-                  noMargin
-                />
-                <RowView>
-                  <Text.Caption textAlign={'center'} color={colors.black}>
-                    {`V: ${Config.APP_VERSION_NAME}`}
+                <ColumnView
+                  alignItems={'flex-start'}
+                  paddingHorizontal={defaults.marginHorizontal}
+                  marginVertical={defaults.marginVertical}>
+                  <Text.List color={colors.secondary}>{`${name}`}</Text.List>
+                  <Text.Caption color={colors.secondary}>
+                    {I18n.t('screens:panel.driverID', { driverId })}
                   </Text.Caption>
-                </RowView>
+                </ColumnView>
+                <Separator
+                  marginHorizontal={defaults.marginHorizontal}
+                  width={sidebarWidth - 2 * defaults.marginHorizontal}
+                />
+                <ColumnView alignItems={'stretch'}>
+                  <ListItem
+                    icon={null}
+                    onPress={navigateAndClose.bind(
+                      null,
+                      updateProps,
+                      'Settings'
+                    )}
+                    title={I18n.t('routes:settings')}
+                  />
+                </ColumnView>
               </ColumnView>
+
+              <RowView
+                justifyContent={'flex-start'}
+                paddingHorizontal={defaults.marginHorizontal}
+                marginVertical={defaults.marginVertical}>
+                <Text.List
+                  color={
+                    colors.inputDark
+                  }>{`Version: ${Config.APP_VERSION_NAME}`}</Text.List>
+              </RowView>
             </ColumnView>
           </SafeAreaView>
         </Animated.View>
@@ -121,12 +120,11 @@ const SideBar = (props) => {
 };
 
 SideBar.propTypes = {
-  bottom: PropTypes.bool,
-  top: PropTypes.bool,
-  logout: PropTypes.func,
+  driverId: PropTypes.number,
   name: PropTypes.string,
+  sideBarOpen: PropTypes.bool,
   updateProps: PropTypes.func,
-  visible: PropTypes.bool
+  userId: PropTypes.func
 };
 
 export default SideBar;

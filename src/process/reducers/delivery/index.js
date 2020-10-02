@@ -1,7 +1,13 @@
+import Config from 'react-native-config';
 import { createActions, createReducer } from 'reduxsauce';
 
 import { Point, solve as salesman } from 'Services/salesman';
-import { checkAtLeastOneItem, currentDay, formatDate, toggle } from 'Helpers';
+import {
+  checkAtLeastOneItem,
+  currentDay as cDay,
+  formatDate,
+  toggle
+} from 'Helpers';
 
 import { produce, updateProps } from '../shared';
 
@@ -12,6 +18,7 @@ export const { Types, Creators } = createActions(
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
     optimizeStops: ['currentLocation', 'returnPosition'],
+    setCurrentDay: null,
     setDelivered: ['id'],
     setDeliveredOrRejectedFailure: null,
     setDeliveredOrRejectedSuccess: null,
@@ -37,13 +44,18 @@ Delivery status:
   3-DELIVERY_COMPLETE
 */
 
+const imageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
+
+const initialCurrentDay = cDay();
+
 const initialState = {
   processing: true,
-  [formatDate(new Date())]: {
+  currentDay: initialCurrentDay,
+  [initialCurrentDay]: {
     allItemsDone: false,
-    confirmedItem: [],
     completedStopsIds: [],
-    deliveryStatus: 3,
+    confirmedItem: [],
+    deliveryStatus: 0,
     directionsPolyline: [],
     groupedStock: {},
     hasRoutes: false,
@@ -61,6 +73,13 @@ const processingTrue = (state) =>
     draft.processing = true;
   });
 
+const resetSelectedStopInfo = (draft) => {
+  draft.directionsPolyline = [];
+  draft.allItemsDone = false;
+  draft.confirmedItem = [];
+  draft.outOfStockIds = [];
+};
+
 export const reset = () => initialState;
 
 export const getVehicleStockForDriverSuccess = (
@@ -69,78 +88,143 @@ export const getVehicleStockForDriverSuccess = (
 ) =>
   produce(state, (draft) => {
     const formatedDate = formatDate(new Date(deliveryDate));
-    const groupedItems = payload.reduce((routeRes, route) => {
+    const categoryIndexes = {};
+    const categoryProductsIndexes = {};
+    draft[formatedDate].itemCount = 0;
+    const groupedItems = payload.reduce((categoryGroupedProducts, route) => {
       route.vehicleStockItems.forEach((item) => {
-        routeRes[item.categoryDescription] =
-          routeRes[item.categoryDescription] || {};
-        routeRes[item.categoryDescription][item.productName] = routeRes[
-          item.categoryDescription
-        ][item.productName] || {
-          rightText: 0,
-          title: item.productName,
-          description: item.measureDescription,
-          disabled: true // items in load van should not be tappable
-        };
+        const catDescription = item.categoryDescription;
 
-        routeRes[item.categoryDescription][item.productName] = {
-          ...routeRes[item.categoryDescription][item.productName],
-          rightText:
-            routeRes[item.categoryDescription][item.productName]?.rightText +
-            item.quantity
-        };
+        if (categoryIndexes[catDescription] !== undefined) {
+          const categoryProducts =
+            categoryGroupedProducts[categoryIndexes[catDescription]];
+          const prodIndex =
+            categoryProductsIndexes[catDescription][item.productName];
+
+          if (prodIndex !== undefined) {
+            categoryProducts.data[prodIndex].miscelaneousLarge += item.quantity;
+            draft[formatedDate].itemCount += item.quantity;
+          } else {
+            categoryProducts.data.push({
+              description: item.measureDescription,
+              disabled: true, // items in load van should not be tappable
+              image: `${imageUri}${item.productId}`,
+              key: item.productId,
+              miscelaneousLarge: item.quantity,
+              title: item.productName
+            });
+            categoryProductsIndexes[catDescription][item.productName] =
+              categoryProducts.length - 1;
+            draft[formatedDate].itemCount += item.quantity;
+          }
+        } else {
+          categoryGroupedProducts.push({
+            title: catDescription,
+            data: [
+              {
+                description: item.measureDescription,
+                disabled: true, // items in load van should not be tappable
+                image: `${imageUri}${item.productId}`,
+                key: item.productId,
+                miscelaneousLarge: item.quantity,
+                title: item.productName
+              }
+            ]
+          });
+          categoryIndexes[catDescription] = categoryGroupedProducts.length - 1;
+          categoryProductsIndexes[catDescription] = {};
+          categoryProductsIndexes[catDescription][item.productName] = 0;
+          draft[formatedDate].itemCount += item.quantity;
+        }
       });
 
-      return routeRes;
-    }, Object.create(null));
+      return categoryGroupedProducts;
+    }, []);
 
     draft[formatedDate].stock = payload;
     draft[formatedDate].groupedStock = groupedItems;
     draft[formatedDate].hasRoutes = payload.length > 0;
-    draft.processing = false;
   });
 
 export const getForDriverSuccess = (state, { payload }) =>
   produce(state, (draft) => {
-    const formatedDate = formatDate(new Date(payload.deliveryDate));
+    const cd = formatDate(new Date(payload.deliveryDate));
 
-    draft[formatedDate].stockWithData = payload;
-
-    draft[formatedDate].deliveryStatus = checkAtLeastOneItem(
-      payload?.items,
-      1,
-      true
-    )
+    draft[cd].stockWithData = payload;
+    draft[cd].deliveryStatus = checkAtLeastOneItem(payload?.items, 1, true)
       ? checkAtLeastOneItem(payload?.items, 1)
         ? 2
         : 3
       : 0;
+
+    // PREPARE RAW STOPS
+    for (const item of draft[cd].stockWithData.items) {
+      const {
+        address: { addressId: key, latitude, longitude }
+      } = item;
+
+      if (!draft[cd].stops[key]) {
+        if (item.delivery_stateID === 1) {
+          draft[cd].orderedStopsIds.push(key);
+        } else {
+          draft[cd].completedStopsIds.push(key);
+        }
+        draft[cd].stops[key] = {
+          key,
+          customerId: item.customerId,
+          description: `${item.forename} ${item.surname}`,
+          forename: item.forename,
+          icon: null,
+          title:
+            (item.address.name_number ? `${item.address.name_number}` : '') +
+            (item.address.line1 ? ` ${item.address.line1}` : '') +
+            (item.address.postcodeInward
+              ? `, ${item.address.postcodeInward}`
+              : '') +
+            (item.address.postcodeOutward
+              ? `${item.address.postcodeOutward}`
+              : ''),
+          latitude,
+          longitude,
+          orderID: item.orderID,
+          orders: [],
+
+          phoneNumber: item.phoneNumber,
+          surname: item.surname,
+          status: item.delivery_stateID === 1 ? 'pending' : 'completed'
+        };
+      }
+      draft[cd].stops[key].orders.push({
+        description: item.measureDescription,
+        image: `${imageUri}${item.productId}`,
+        key: item.orderItemId,
+        miscelaneousLarge: item.quantity,
+        title: item.productName
+      });
+
+      draft[cd].stops[key].itemCount =
+        (draft[cd].stops[key]?.itemCount ? draft[cd].stops[key].itemCount : 0) +
+        item.quantity;
+    }
   });
 
 export const setDeliveredOrRejectedFailure = (state) =>
   produce(state, (draft) => {
-    const cd = currentDay();
-
-    draft[cd].directionsPolyline = [];
-    draft[cd].allItemsDone = false;
-    draft[cd].confirmedItem = [];
-    draft[cd].outOfStockIds = [];
+    const cd = state.currentDay;
+    resetSelectedStopInfo(draft[cd]);
     draft.processing = false;
   });
 
 export const setDeliveredOrRejectedSuccess = (state) =>
   produce(state, (draft) => {
-    const cd = currentDay();
-    draft[cd].directionsPolyline = [];
+    const cd = state.currentDay;
     draft[cd].completedStopsIds.push(
       ...draft[cd].orderedStopsIds.splice(
         draft[cd].orderedStopsIds.indexOf(draft[cd].selectedStopId),
         1
       )
     );
-
-    draft[cd].allItemsDone = false;
-    draft[cd].confirmedItem = [];
-    draft[cd].outOfStockIds = [];
+    resetSelectedStopInfo(draft[cd]);
     draft[cd].stops[draft[cd].selectedStopId].status = 'completed';
 
     if (draft[cd].orderedStopsIds.length > 0) {
@@ -154,51 +238,12 @@ export const setDeliveredOrRejectedSuccess = (state) =>
 
 export const startDelivering = (state) =>
   produce(state, (draft) => {
-    const cd = currentDay();
-
-    for (const item of state[cd].stockWithData.items) {
-      const {
-        address: { addressId, latitude, longitude }
-      } = item;
-
-      if (!draft[cd].stops[addressId]) {
-        if (item.delivery_stateID === 1) {
-          draft[cd].orderedStopsIds.push(addressId);
-        } else {
-          draft[cd].completedStopsIds.push(addressId);
-        }
-        draft[cd].stops[addressId] = {
-          status: item.delivery_stateID === 1 ? 'pending' : 'completed',
-          addressId,
-          customerId: item.customerId,
-          latitude,
-          longitude,
-          forename: item.forename,
-          surname: item.surname,
-          phoneNumber: item.phoneNumber,
-          orders: [],
-          orderID: item.orderID,
-          fullAddress:
-            (item.address.name_number ? `${item.address.name_number}` : '') +
-            (item.address.line1 ? `, ${item.address.line1}` : '') +
-            (item.address.line2 ? `, ${item.address.line2}` : '')
-        };
-      }
-      draft[cd].stops[addressId].orders.push(item);
-
-      draft[cd].stops[addressId].itemCount =
-        (draft[cd].stops[addressId]?.itemCount
-          ? draft[cd].stops[addressId].itemCount
-          : 0) + item.quantity;
-    }
-
     draft.processing = true;
-    draft[cd].deliveryStatus = 2;
   });
 
 export const toggleConfirmedItem = (state, { id }) =>
   produce(state, (draft) => {
-    const cd = currentDay();
+    const cd = state.currentDay;
     draft[cd].confirmedItem = toggle(state[cd].confirmedItem, id);
 
     const idx = state[cd].outOfStockIds.indexOf(id);
@@ -213,7 +258,7 @@ export const toggleConfirmedItem = (state, { id }) =>
 
 export const toggleOutOfStock = (state, { id }) =>
   produce(state, (draft) => {
-    const cd = currentDay();
+    const cd = state.currentDay;
     draft[cd].outOfStockIds = toggle(state[cd].outOfStockIds, id);
     const idx = state[cd].confirmedItem.indexOf(id);
     if (idx > -1) {
@@ -226,7 +271,7 @@ export const toggleOutOfStock = (state, { id }) =>
 
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
   produce(state, (draft) => {
-    const cd = currentDay();
+    const cd = state.currentDay;
     let dummyIndex = null;
     let returnPositionIndex = null;
     const stops = [
@@ -236,9 +281,9 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
         'CURRENT_LOCATION'
       )
     ];
-    for (const addressId of state[cd].orderedStopsIds) {
-      const item = state[cd].stops[addressId];
-      stops.push(new Point(item?.latitude, item?.longitude, addressId));
+    for (const key of draft[cd].orderedStopsIds) {
+      const item = draft[cd].stops[key];
+      stops.push(new Point(item?.latitude, item?.longitude, key));
     }
     if (returnPosition) {
       stops.push(
@@ -267,24 +312,25 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     draft[cd].orderedStopsIds = [];
     optimizedRoute.map((i) => draft[cd].orderedStopsIds.push(stops[i].key));
     draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
+    draft[cd].deliveryStatus = 2;
     draft.processing = false;
   });
 
 export const updateCurrentDayProps = (state, { props }) => {
-  let cd = currentDay(); //This will need to change with the current day prop
+  const cd = state.currentDay;
   return { ...state, [cd]: { ...state[cd], ...props } };
 };
 
 export const updateDirectionsPolyline = (state, { payload }) =>
   produce(state, (draft) => {
-    let cd = currentDay(); //This will need to change with the current day prop
+    const cd = state.currentDay;
     draft[cd].directionsPolyline = payload;
   });
 
 export const updateSelectedStop = (state, { sID }) =>
   produce(state, (draft) => {
-    let cd = currentDay(); //This will need to change with the current day prop
-    draft[cd].directionsPolyline = [];
+    const cd = state.currentDay;
+    resetSelectedStopInfo(draft[cd]);
     draft[cd].selectedStopId = sID;
   });
 
@@ -306,31 +352,25 @@ export default createReducer(initialState, {
 });
 
 export const deliveryStatus = (state) =>
-  state.delivery[currentDay()]?.deliveryStatus;
+  state.delivery[state.delivery.currentDay]?.deliveryStatus;
 
 export const hasItemsLeftToDeliver = (state) => {
   return checkAtLeastOneItem(
-    state.delivery[currentDay()]?.stockWithData?.items
+    state.delivery[state.delivery.currentDay]?.stockWithData?.items
   );
 };
 
 export const itemCount = (state) =>
-  state.delivery[currentDay()]?.stock?.length > 0
-    ? state.delivery[currentDay()].stock.reduce(
-        (ta, a) =>
-          a.vehicleStockItems.reduce((ti, i) => i.quantity + ti, 0) + ta,
-        0
-      )
-    : 0;
+  state.delivery[state.delivery.currentDay]?.itemCount || 0;
 
 export const outOfStockItems = (state) =>
-  state.delivery[currentDay()]?.outOfStockIds;
+  state.delivery[state.delivery.currentDay]?.outOfStockIds;
 
 export const orderedStopsIds = (state) =>
-  state.delivery[currentDay()]?.orderedStopsIds;
+  state.delivery[state.delivery.currentDay]?.orderedStopsIds;
 
 export const selectedStop = (state) => {
-  const todaysDelivery = state.delivery[currentDay()];
+  const todaysDelivery = state.delivery[state.delivery.currentDay];
   return todaysDelivery &&
     todaysDelivery.stops &&
     todaysDelivery.selectedStopId &&
@@ -339,4 +379,8 @@ export const selectedStop = (state) => {
     : null;
 };
 
-export const stops = (state) => state.delivery[currentDay()]?.stops;
+export const stops = (state) =>
+  state.delivery[state.delivery.currentDay]?.stops;
+
+export const stopCount = (state) =>
+  Object.keys(state.delivery[state.delivery.currentDay]?.stops).length || 0;

@@ -33,7 +33,7 @@ FullView.defaultProps = {
       }
     })
   },
-  bgColor: colors.background,
+  bgColor: colors.neutral,
   children: null
 };
 

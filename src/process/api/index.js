@@ -21,12 +21,16 @@ const Api = {
 
   repositories,
 
-  authToken(value = null) {
+  setToken(value = null) {
     if (value) {
       api.defaults.headers.common.Authorization = `Bearer ${value}`;
     } else {
       delete api.defaults.headers.common.Authorization;
     }
+  },
+
+  getToken() {
+    return api.defaults.headers.common.Authorization;
   },
 
   catchError(error) {

@@ -5,6 +5,12 @@ const style = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  mapMarkerWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end'
   }
 });
 

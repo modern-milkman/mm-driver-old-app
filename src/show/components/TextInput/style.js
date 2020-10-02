@@ -1,60 +1,34 @@
-import { Platform } from 'react-native';
 import { systemWeights } from 'react-native-typography';
 
-import { colors } from 'Theme';
+import { colors, defaults, sizes as themeSizes } from 'Theme';
 
-const iconCloseStyle = (disabledErrors) => ({
-  position: 'absolute',
-  right: 5,
-  ...Platform.select({
-    ios: {
-      bottom: disabledErrors ? 20 : 36
-    },
-    android: {
-      bottom: disabledErrors ? 20 : 40
-    }
-  })
-});
+export const sizes = {
+  borderRadius: defaults.borderRadius,
+  defaultPadding: defaults.paddingHorizontal,
+  doubleBorderWidth: 4,
+  errorsHeight: 28,
+  large: themeSizes.input.large,
+  normal: themeSizes.input.normal,
+  small: themeSizes.input.small
+};
 
 const style = {
-  h45: {
-    minHeight: 45
+  inputBorderWrapper: {
+    flex: 1,
+    borderWidth: 2,
+    borderRadius: sizes.borderRadius
   },
-  textInput: {
-    ...systemWeights.semibold,
-    color: colors.primary,
-    borderBottomWidth: 1,
-    borderColor: colors.secondaryLight,
-    paddingRight: 30,
-    paddingVertical: 12,
-    width: '100%',
-    ...Platform.select({
-      ios: {
-        fontSize: 16
-      },
-      android: {
-        fontSize: 14,
-        lineHeight: 16
-      }
-    })
+  inputWrapper: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: sizes.borderRadius,
+    backgroundColor: colors.white
   },
-  darkModeTextInput: {
-    color: colors.standard,
-    borderColor: colors.standard
-  },
-  textInputFocused: {
-    borderColor: colors.primary
-  },
-  textInputError: {
-    borderColor: colors.error
-  },
-  iconError: {
-    color: colors.error
-  },
-  iconClose: iconCloseStyle.bind(this),
-  iconCloseColor: {
-    color: colors.primary,
-    darkColor: colors.standard
+  input: {
+    flex: 1,
+    fontSize: 18,
+    color: colors.secondary,
+    ...systemWeights.semibold
   }
 };
 

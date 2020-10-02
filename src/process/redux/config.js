@@ -7,7 +7,11 @@ export const storeConfig = {
   timeout: null,
   blacklist: ['actionsheetandroid'],
   transforms: [
-    createBlacklistFilter('application', ['processing', 'sideBarOpen'])
+    createBlacklistFilter('application', [
+      'processing',
+      'sideBarOpen',
+      'mounted'
+    ])
   ]
 };
 

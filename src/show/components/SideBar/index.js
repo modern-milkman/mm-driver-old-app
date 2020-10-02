@@ -6,11 +6,11 @@ import SideBar from './view';
 
 export default connect(
   (state) => ({
+    driverId: state.user.driverId,
     name: state.user.name,
-    visible: state.application.sideBarOpen
+    sideBarOpen: state.application.sideBarOpen
   }),
   {
-    logout: applicationActions.logout,
     updateProps: applicationActions.updateProps
   }
 )(SideBar);

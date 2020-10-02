@@ -1547,6 +1547,11 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
+"@miblanchard/react-native-slider@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@miblanchard/react-native-slider/-/react-native-slider-1.5.0.tgz#32d5c4f786c6a527b48f127c4d65ea366b2ae851"
+  integrity sha512-8Zguehw7u0cgzpc4F31QjmmaWH1lZAQGXX2b6S6Ck1ABKhBp+F7SD5qH8g8VEu2z9LnDWgOvXMM2Txzw4rYpyA==
+
 "@react-native-community/async-storage@1.12.0":
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.12.0.tgz#d2fc65bc08aa1c3e9514bbe9fe7095eab8e8aca3"
@@ -6941,6 +6946,13 @@ react-native-gesture-handler@1.7.0:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-inset-shadow@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-inset-shadow/-/react-native-inset-shadow-1.0.3.tgz#9a0cd6d33b69cbc95d1aa5568e1b938e9a43506b"
+  integrity sha512-4UXuSrenJtOWKcV0zSqHLQ47Oxn+BXdmxFxYXf5rE8KletbTvQq8ziZsX8MSEegUGWDcJJ3Mw+1OVbPJxm4lZg==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-iphone-x-helper@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
@@ -6959,10 +6971,10 @@ react-native-ratings@^7.2.0:
     lodash "^4.17.4"
     prop-types "^15.5.10"
 
-react-native-safe-area-context@3.1.7:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.1.7.tgz#fc9e636dfb168f992a2172d363509ce0611a8403"
-  integrity sha512-qSyg/pVMwVPgAy8yCvw349Q+uEUhtRBV33eVXHHkfoou1vCChJxI7SmNR47/6M3BLdjWcyc4lcd018Kx+jhQCw==
+react-native-safe-area-context@3.1.8:
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.1.8.tgz#7a9883aa0f38f9c77d4bef2b89e4e285bc1024a3"
+  integrity sha512-9gUlsDZ96QwT9AKzA6aVWM/NX5rlJgauZ9HgCDVzKbe29UQYT1740QJnnaI2GExmkFGp6o7ZLNhCXZW95eYVFA==
 
 react-native-safe-area-view@^0.14.9:
   version "0.14.9"

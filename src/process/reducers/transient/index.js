@@ -1,6 +1,8 @@
 import { createActions, createReducer } from 'reduxsauce';
 
-import { updateProps } from '../shared';
+import validations from './validations';
+
+import { produce } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
@@ -13,6 +15,23 @@ export const { Types, Creators } = createActions(
 const initialState = {};
 
 export const reset = () => initialState;
+
+export const updateProps = (state, { props }) => {
+  return produce(state, (draft) => {
+    for (const [prop, value] of Object.entries(props)) {
+      draft[prop] = value;
+      if (validations[prop]) {
+        if (validations[prop].isValid(value)) {
+          draft[`${prop}HasError`] = false;
+          draft[`${prop}ErrorMessage`] = '';
+        } else {
+          draft[`${prop}HasError`] = true;
+          draft[`${prop}ErrorMessage`] = validations[prop].message;
+        }
+      }
+    }
+  });
+};
 
 export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps,

@@ -1,173 +1,178 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Animated, View, TouchableOpacity, Keyboard } from 'react-native';
+import { Animated, Platform, View } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors } from 'Theme';
-import { ColumnView } from 'Containers';
-import { deviceFrame, mock } from 'Helpers';
-import { Icon, SearchBar, ListItem } from 'Components';
+import I18n from 'Locales/I18n';
+import List from 'Components/List';
+import { RowView } from 'Containers';
+import { colors, defaults } from 'Theme';
+import { statusBarHeight, mock } from 'Helpers';
+import SafeKeyboardAreaView from 'Containers/SafeKeyboardAreaView';
+import TextInput, { height as textInputHeight } from 'Components/TextInput';
 
 import style from './style';
 
-const deviceHeight = deviceFrame().height;
+const searchReference = React.createRef();
 
 const handleSearchFilter = (items, searchValue) => {
   return items.filter(
     (item) =>
-      item.fullAddress.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
       item.forename.toLowerCase().includes(searchValue.toLowerCase()) ||
       item.surname.toLowerCase().includes(searchValue.toLowerCase())
   );
 };
 
-const onPressAddress = (updateSelectedStop, aId) => {
-  updateSelectedStop(aId);
-  Keyboard.dismiss();
-};
-
-//TODO use SafeKeyboardAreaView
-const useKeyboardEvent = (event, callback) => {
-  useEffect(() => {
-    Keyboard.addListener(event, callback);
-
-    return () => {
-      Keyboard.removeListener(event, callback);
-    };
-  }, [event, callback]);
-};
-
-const searchBarLeftIcon = (
-  <Icon
-    name={'chevron-left'}
-    color={colors.primary}
-    size={24}
-    containerSize={44}
-    onPress={Keyboard.dismiss}
-  />
-);
-
 const Search = (props) => {
   const {
-    bottomHeight,
-    itemsToSearch,
-    focused,
+    panY,
     searchValue,
-    updateTransientProps,
+    selectedStopId,
     stops,
-    updateSelectedStop
+    updateSelectedStop,
+    updateTransientProps
   } = props;
 
-  const height = useRef(new Animated.Value(0)).current;
-  const [bottomPadding] = useState(new Animated.Value(bottomHeight));
+  const [focused, setFocused] = useState(false);
+
+  const top = Platform.select({
+    android: statusBarHeight(),
+    ios: useSafeAreaInsets().top
+  });
+
+  const inputHeight = textInputHeight('normal', true);
+
+  let height = useRef(new Animated.Value(0)).current;
 
   const handleChange = (val) => {
     updateTransientProps({ searchValue: val });
   };
 
   const handleFocus = (isFocused) => {
-    if (isFocused) {
-      updateTransientProps({ focused: true });
-    }
-
-    Animated.timing(height, {
-      toValue: isFocused ? 1 : 0,
-      duration: 250,
-      useNativeDriver: false
-    }).start(() => {
-      if (!isFocused) {
-        updateTransientProps({ focused: false });
-      }
-    });
+    setFocused(isFocused);
   };
 
-  //TODO use SafeKeyboardAreaView
-  const keyboardEvent = useCallback(
-    (size = null, e) => {
-      const searchBarHeight = 120;
-      const value =
-        deviceHeight -
-        (searchBarHeight + (size ? size : e.endCoordinates.height));
+  const onPressAddress = (key) => {
+    updateSelectedStop(key);
+    handleFocus(false);
+  };
 
-      Animated.timing(bottomPadding, {
-        toValue: value,
+  const search = {
+    title: I18n.t('general:upNext'),
+    data: handleSearchFilter(stops, searchValue)
+  };
+
+  if (searchValue.length > 0) {
+    if (search.data.length > 0) {
+      search.title = I18n.t('screens:main.search.results');
+    } else {
+      search.title = I18n.t('screens:main.search.noResults');
+    }
+  }
+
+  useEffect(() => {
+    if (focused) {
+      Animated.timing(height, {
+        toValue: 1,
         duration: 250,
         useNativeDriver: false
       }).start();
-    },
-    [bottomPadding]
-  );
-
-  useKeyboardEvent('keyboardWillShow', keyboardEvent.bind(null, null));
-  useKeyboardEvent('keyboardWillHide', keyboardEvent.bind(null, bottomHeight));
+    } else {
+      searchReference?.current?.blur();
+      Animated.timing(height, {
+        toValue: 0,
+        duration: 0,
+        useNativeDriver: false
+      }).start();
+    }
+  }, [focused, height]);
 
   return (
-    <View style={[style.container, focused && style.height100]}>
-      <TouchableOpacity
-        onPress={Keyboard.dismiss}
-        style={focused && style.height100}>
-        <View style={style.searchWrapper}>
-          {stops && (
-            <SearchBar
-              value={searchValue}
-              onFocusChanged={handleFocus.bind(null)}
-              onChangeText={handleChange.bind(this)}
-              {...(focused && { leftIcon: searchBarLeftIcon })}
-            />
-          )}
-        </View>
-        {focused && (
+    (selectedStopId && (
+      <>
+        <View
+          style={[
+            style.container,
+            {
+              height: top + inputHeight + defaults.marginVertical / 4
+            },
+            focused && { backgroundColor: colors.neutral, ...style.elevation7 }
+          ]}>
           <Animated.View
-            maxHeight={bottomPadding}
             style={[
-              style.listWrapper,
-              style.overflowHidden,
               {
-                height: height.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ['0%', '100%']
-                })
+                top,
+                transform: [{ translateY: panY }]
               }
             ]}>
-            <ColumnView scrollable>
-              {handleSearchFilter(itemsToSearch, searchValue).map((item) => {
-                return (
-                  <ListItem
-                    leftIcon={'package-variant'}
-                    title={item?.fullAddress}
-                    description={`${item?.forename} ${item.surname}`}
-                    onPress={onPressAddress.bind(
-                      null,
-                      updateSelectedStop,
-                      item.addressId
-                    )}
-                    key={item.addressId}
-                  />
-                );
-              })}
-            </ColumnView>
+            <RowView
+              marginHorizontal={defaults.marginHorizontal}
+              width={'auto'}>
+              <TextInput
+                disableErrors
+                leftIcon={focused ? 'chevron-back' : 'search'}
+                onChangeText={handleChange.bind(this)}
+                onFocusChanged={handleFocus.bind(null)}
+                onLeftIconPress={handleFocus.bind(null, false)}
+                placeholder={I18n.t('screens:main.search.placeholder')}
+                ref={searchReference}
+                shadow
+                size={'normal'}
+                value={searchValue}
+              />
+            </RowView>
           </Animated.View>
+        </View>
+        {focused && (
+          <View
+            style={[
+              style.listWrapper,
+              style.elevation7,
+              {
+                top: top + inputHeight
+              }
+            ]}>
+            <SafeKeyboardAreaView style={style.safeArea} scrollEnabled={false}>
+              <Animated.View
+                style={[
+                  {
+                    height: height.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0%', '100%']
+                    })
+                  },
+                  style.animatedList
+                ]}>
+                <List
+                  onPress={onPressAddress}
+                  data={[search]}
+                  hasSections
+                  renderListEmptyComponent={null}
+                />
+              </Animated.View>
+            </SafeKeyboardAreaView>
+          </View>
         )}
-      </TouchableOpacity>
-    </View>
+      </>
+    )) ||
+    null
   );
 };
 
 Search.propTypes = {
-  bottomHeight: PropTypes.number,
-  focused: PropTypes.bool,
-  itemsToSearch: PropTypes.array,
+  panY: PropTypes.object,
   searchValue: PropTypes.string,
-  stops: PropTypes.bool,
+  selectedStopId: PropTypes.number,
+  stops: PropTypes.array,
   updateSelectedStop: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
 
 Search.defaultProps = {
-  bottomHeight: 0,
-  focused: false,
-  itemsToSearch: [],
+  panY: new Animated.Value(0),
   searchValue: '',
-  stops: false,
+  stops: [],
   updateSelectedStop: mock,
   updateTransientProps: mock
 };

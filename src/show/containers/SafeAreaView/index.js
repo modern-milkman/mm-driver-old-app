@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
 
+import { colors } from 'Theme';
 import SafeKeyboardAreaView from 'Containers/SafeKeyboardAreaView';
 
 const SafeAreaView = (props) => {
   const { bottom, top } = props;
-  const defaultTransparency = {
-    backgroundColor: 'transparent'
+  const defaultStyle = {
+    backgroundColor: colors.neutral,
+    flex: 1
   };
 
   const edges = ['right', 'left'];
@@ -20,7 +22,7 @@ const SafeAreaView = (props) => {
   }
 
   return (
-    <SafeAreaViewRN style={[defaultTransparency, props.style]} edges={edges}>
+    <SafeAreaViewRN style={[defaultStyle, props.style]} edges={edges}>
       {props.keyboardSafe && (
         <SafeKeyboardAreaView style={props.keyboardSafeStyle}>
           {props.children}

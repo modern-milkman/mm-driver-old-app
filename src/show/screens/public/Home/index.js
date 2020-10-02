@@ -12,7 +12,7 @@ export default connect(
   }),
   {
     login: applicationActions.login,
-    updateProps: applicationActions.updateProps,
+    updateApplicationProps: applicationActions.updateProps,
     updateTransientProps: transientActions.updateProps
   }
 )(Home);

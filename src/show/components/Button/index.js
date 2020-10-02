@@ -1,65 +1,85 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ActivityIndicator, View, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import {
+  ActivityIndicator,
+  Animated,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
+import Icon from 'Components/Icon';
+import Text from 'Components/Text';
 import { RowView } from 'Containers';
-import { Icon, Text } from 'Components';
-import { colors } from 'Theme';
+import { colors, sizes } from 'Theme';
 
 import Types from './Types';
 import { style } from './style';
 
-const CallToAction = (props) => <Button {...props} type={Types.CTA} />;
-const Destroy = (props) => <Button {...props} type={Types.DESTROY} />;
-const Plain = (props) => <Button {...props} type={Types.PLAIN} />;
-const Primary = (props) => <Button {...props} shadow type={Types.PRIMARY} />;
+const wrapButtonComponent = (props, type) => <Button {...props} type={type} />;
 
 const Button = (props) => {
   const {
+    backgroundOpacity,
+    buttonAccessibility,
     disabled,
     icon,
     iconType,
     leftIcon: LeftIcon,
     onPress,
-    noMargin,
     processing,
     rightIcon: RightIcon,
-    shadow,
     textAlign,
     title,
+    titleColor,
     type,
     weight,
-    width
+    width,
+    noBorderRadius
   } = props;
-  const textIconColor = disabled
+  const computedTitleColor = disabled
     ? style.disabled.textStyle.color
+    : titleColor
+    ? titleColor
     : style[type].textStyle.color;
 
   return (
     <View
       style={[
-        shadow && style.shadow,
         style.container,
-        style[type].backgroundStyle,
-        disabled && !processing ? style.disabled.backgroundStyle : null,
         width && { width: width },
-        noMargin && style.noMargin
+        { height: buttonAccessibility }
       ]}>
+      <Animated.View
+        style={[
+          style.container,
+          style.absolute,
+          style[type].backgroundStyle,
+          disabled &&
+            !processing && {
+              backgroundColor: style.disabled.backgroundColor
+            },
+          { height: buttonAccessibility },
+          noBorderRadius && { ...style.noBorderRadius },
+          backgroundOpacity && { opacity: backgroundOpacity }
+        ]}
+      />
+
       <TouchableOpacity
         disabled={disabled}
         onPress={onPress}
         style={style.touchableWrapper}>
         {!processing && (
-          <RowView minHeight={46}>
+          <RowView>
             {LeftIcon && <View style={style.leftIcon}>{LeftIcon}</View>}
-            <Text.Callout
+            <Text.Button
               flex={1}
-              noMargin={noMargin}
-              color={textIconColor}
+              color={computedTitleColor}
               align={textAlign}
-              weight={weight}>
+              weight={weight}
+              lineHeight={buttonAccessibility}>
               {title}
-            </Text.Callout>
+            </Text.Button>
             {RightIcon && <View style={style.rightIcon}>{RightIcon}</View>}
             {!!icon && (
               <View style={style.iconStyleContainer}>
@@ -77,39 +97,41 @@ const Button = (props) => {
             )}
           </RowView>
         )}
-        {processing && <ActivityIndicator color={colors.standard} />}
+        {processing && <ActivityIndicator color={colors.white} />}
       </TouchableOpacity>
     </View>
   );
 };
 
 Button.propTypes = {
+  backgroundOpacity: PropTypes.object,
+  buttonAccessibility: PropTypes.number,
   disabled: PropTypes.bool,
   icon: PropTypes.bool,
   iconType: PropTypes.string,
   leftIcon: PropTypes.node,
+  noBorderRadius: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
-  noMargin: PropTypes.bool,
   processing: PropTypes.bool,
   rightIcon: PropTypes.node,
-  shadow: PropTypes.bool,
   textAlign: PropTypes.string,
   title: PropTypes.string.isRequired,
+  titleColor: PropTypes.object,
   type: PropTypes.string,
   weight: PropTypes.string,
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 Button.defaultProps = {
+  buttonAccessibility: sizes.button.large,
   disabled: false,
   icon: false,
   iconType: 'arrow',
   leftIcon: null,
+  noBorderRadius: false,
   onPress: () => {},
-  noMargin: false,
   processing: false,
   rightIcon: null,
-  shadow: false,
   textAlign: 'center',
   title: '',
   type: Types.PRIMARY,
@@ -117,9 +139,15 @@ Button.defaultProps = {
   width: null
 };
 
-export default {
-  CallToAction,
-  Destroy,
-  Plain,
-  Primary
-};
+const exports = {};
+
+Object.values(Types).forEach((type) => {
+  exports[type] = connect(
+    (state) => ({
+      buttonAccessibility: state.device.buttonAccessibility
+    }),
+    {}
+  )((props) => wrapButtonComponent(props, type));
+});
+
+export default exports;

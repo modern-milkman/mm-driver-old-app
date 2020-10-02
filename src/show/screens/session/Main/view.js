@@ -1,25 +1,24 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
+import React, { useRef } from 'react';
 import { NavigationEvents } from 'react-navigation';
-import {
-  ActivityIndicator,
-  Animated,
-  PanResponder,
-  Platform
-} from 'react-native';
-import { initialWindowMetrics } from 'react-native-safe-area-context';
+import { Animated, PanResponder, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors } from 'Theme';
-import { deviceFrame } from 'Helpers';
-import { Button, Text } from 'Components';
 import { ColumnView } from 'Containers';
 import NavigationService from 'Navigation/service';
-
-import I18n from 'Locales/I18n';
+import { deviceFrame, statusBarHeight } from 'Helpers';
+import { height as textInputHeight } from 'Components/TextInput';
 
 import { configuration } from './helpers';
-import { Foreground, Navigation, Map, PullHandle, Search } from './subviews';
+import {
+  Foreground,
+  ForegroundContent,
+  Navigation,
+  Map,
+  PullHandle,
+  Search
+} from './subviews';
 
 const springForeground = ({
   animatedValues,
@@ -27,8 +26,8 @@ const springForeground = ({
   snapTopY,
   pullHandleMoveY,
   foregroundPaddingTop,
-  top,
-  routeName
+  routeName,
+  top
 }) => {
   Animated.parallel([
     Animated.spring(animatedValues[0], {
@@ -71,31 +70,31 @@ const triggerNavigation = (routeName) => {
 
 const Main = (props) => {
   const {
+    buttonAccessibility,
+    canPanForeground,
     deliveryStatus,
-    hasRoutes,
-    itemCount,
-    processing,
-    routeDescription,
-    selectedStop,
     startDelivering
   } = props;
-  const { top, bottom } = initialWindowMetrics.insets;
+
+  const { top, bottom } = useSafeAreaInsets();
   const { height, width } = deviceFrame();
+  const bottomMapPadding = configuration.navigation.height + bottom;
+
   const snapBottomY =
     height -
     bottom -
     configuration.navigation.height -
-    configuration.foreground.defaultHeight;
+    configuration.foreground.defaultHeight -
+    buttonAccessibility;
   const snapTopY = top;
-  const hourNow = new Date().getHours();
 
   const interpolations = {
-    chevronDownOpacity: {
+    buttonTitleColor: {
       inputRange: [
         top + configuration.navigation.height,
         top + configuration.foreground.collapseBackThreshold
       ],
-      outputRange: [configuration.opacity.max, configuration.opacity.min],
+      outputRange: [colors.secondary, colors.white],
       extrapolate: 'clamp'
     },
     foregroundDetailsOpacity: {
@@ -111,7 +110,7 @@ const Main = (props) => {
         top + configuration.navigation.height,
         top + configuration.foreground.collapseBackThreshold
       ],
-      outputRange: [Platform.OS === 'ios' ? -72 : -68, 0],
+      outputRange: [Platform.OS === 'ios' ? -90 : -94, 0], // button transition to title top
       extrapolate: 'clamp'
     },
     foregroundHeight: {
@@ -121,12 +120,19 @@ const Main = (props) => {
         height -
           bottom -
           configuration.navigation.height -
-          configuration.foreground.defaultHeight
+          configuration.foreground.defaultHeight -
+          buttonAccessibility
       ],
       outputRange: [
         height,
-        height - top - bottom - configuration.navigation.height,
-        configuration.foreground.defaultHeight
+        height -
+          top -
+          bottom -
+          configuration.navigation.height +
+          (Platform.OS === 'android' ? statusBarHeight() : 0),
+        configuration.foreground.defaultHeight +
+          buttonAccessibility +
+          (Platform.OS === 'android' ? statusBarHeight() : 0)
       ],
       extrapolate: 'clamp'
     },
@@ -136,9 +142,13 @@ const Main = (props) => {
         height -
           bottom -
           configuration.navigation.height -
-          configuration.foreground.defaultHeight
+          configuration.foreground.defaultHeight -
+          buttonAccessibility
       ],
-      outputRange: [bottom + configuration.navigation.height, 0],
+      outputRange: [
+        bottom + configuration.navigation.height,
+        Platform.OS === 'android' ? -statusBarHeight() : 0
+      ],
       extrapolate: 'clamp'
     },
     pullHandleWidth: {
@@ -147,9 +157,22 @@ const Main = (props) => {
         height -
           bottom -
           configuration.navigation.height -
-          configuration.foreground.defaultHeight
+          configuration.foreground.defaultHeight -
+          buttonAccessibility
       ],
       outputRange: [44, width],
+      extrapolate: 'clamp'
+    },
+    searchY: {
+      inputRange: [
+        top + configuration.foreground.collapseBackThreshold,
+        height -
+          bottom -
+          configuration.navigation.height -
+          configuration.foreground.defaultHeight -
+          buttonAccessibility
+      ],
+      outputRange: [-top - textInputHeight('normal'), 0],
       extrapolate: 'clamp'
     },
     topBorderRadius: {
@@ -166,23 +189,30 @@ const Main = (props) => {
   };
 
   let currentLocationY = 0;
-  const foregroundPaddingTop = new Animated.Value(0);
-  const pullHandleMoveY = new Animated.Value(
-    height -
-      bottom -
-      configuration.navigation.height -
-      configuration.foreground.defaultHeight
-  );
-  const pullHandlePan = new Animated.ValueXY({
-    x: 0,
-    y:
+
+  const foregroundPaddingTop = useRef(new Animated.Value(0)).current;
+  const pullHandleMoveY = useRef(
+    new Animated.Value(
       height -
-      bottom -
-      configuration.navigation.height -
-      configuration.foreground.defaultHeight
-  });
+        bottom -
+        configuration.navigation.height -
+        configuration.foreground.defaultHeight -
+        buttonAccessibility
+    )
+  ).current;
+  const pullHandlePan = useRef(
+    new Animated.ValueXY({
+      x: 0,
+      y:
+        height -
+        bottom -
+        configuration.navigation.height -
+        configuration.foreground.defaultHeight -
+        buttonAccessibility
+    })
+  ).current;
   const pullHandlePanResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: () => hasRoutes,
+    onMoveShouldSetPanResponder: () => canPanForeground,
     onPanResponderGrant: (e, gestureState) => {
       currentLocationY = e.nativeEvent.locationY;
       pullHandlePan.setOffset({
@@ -215,16 +245,16 @@ const Main = (props) => {
         snapTopY,
         pullHandleMoveY,
         foregroundPaddingTop,
-        top,
-        routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn'
+        routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn',
+        top
       });
       currentLocationY = 0;
     }
   });
 
   const interpolatedValues = {
-    chevronDownOpacity: pullHandleMoveY.interpolate(
-      interpolations.chevronDownOpacity
+    buttonTitleColor: pullHandleMoveY.interpolate(
+      interpolations.buttonTitleColor
     ),
     foregroundDetailsOpacity: pullHandleMoveY.interpolate(
       interpolations.foregroundDetailsOpacity
@@ -239,21 +269,13 @@ const Main = (props) => {
     pullHandleWidth: pullHandleMoveY.interpolate(
       interpolations.pullHandleWidth
     ),
+    searchY: pullHandleMoveY.interpolate(interpolations.searchY),
     topBorderRadius: pullHandleMoveY.interpolate(interpolations.topBorderRadius)
   };
 
-  const bottomMapPadding = configuration.navigation.height + bottom;
-
   return (
     <ColumnView flex={1} justifyContent={'flex-start'}>
-      <Search
-        bottomHeight={
-          configuration.navigation.height +
-          configuration.foreground.defaultHeight +
-          configuration.topBorderRadius.max +
-          bottom
-        }
-      />
+      <Search panY={interpolatedValues.searchY} />
       <NavigationEvents
         onWillFocus={setTimeout.bind(
           null,
@@ -282,114 +304,44 @@ const Main = (props) => {
         paddingBottom={configuration.navigation.height + bottom}
         topBorderRadius={interpolatedValues.topBorderRadius}>
         <PullHandle
-          chevronDownOnPress={springForeground.bind(null, {
-            animatedValues: [pullHandlePan.y, pullHandleMoveY],
-            toValue: snapBottomY,
-            snapTopY,
-            pullHandleMoveY,
-            foregroundPaddingTop,
-            top
-          })}
-          chevronDownOpacity={interpolatedValues.chevronDownOpacity}
           pullHandlePanResponder={pullHandlePanResponder}
           width={interpolatedValues.pullHandleWidth}
         />
-        {processing ? (
-          <ColumnView flex={1}>
-            <ActivityIndicator color={colors.primary} />
-          </ColumnView>
-        ) : (
-          <ColumnView>
-            <Animated.View
-              style={{ opacity: interpolatedValues.foregroundDetailsOpacity }}>
-              <Text.Callout color={colors.black} align={'center'}>
-                {deliveryStatus === 2
-                  ? selectedStop.fullAddress
-                  : deliveryStatus === 3
-                  ? hourNow < Config.RESET_HOUR_DAY
-                    ? I18n.t('screens:main.titles.comeBackLater')
-                    : I18n.t('screens:main.titles.noDelivery')
-                  : routeDescription}
-              </Text.Callout>
-              <Text.Caption
-                color={colors.black}
-                align={'center'}
-                noMargin
-                noPadding>
-                {deliveryStatus === 2
-                  ? I18n.t('screens:main.activeDeliveryFor', {
-                      itemCount: selectedStop.itemCount,
-                      fullName: `${selectedStop.forename} ${selectedStop.surname}`
-                    })
-                  : deliveryStatus === 3
-                  ? hourNow < Config.RESET_HOUR_DAY
-                    ? I18n.t('screens:main.descriptions.comeBackLater')
-                    : I18n.t('screens:main.descriptions.noDelivery')
-                  : I18n.t('screens:main.descriptions.deliveryActive', {
-                      itemCount
-                    })}
-              </Text.Caption>
-            </Animated.View>
-            <Animated.View
-              style={{
-                transform: [
-                  { translateY: interpolatedValues.foregroundActionTop }
-                ]
-              }}>
-              <Button.Primary
-                title={
-                  deliveryStatus === 2
-                    ? I18n.t('general:details')
-                    : deliveryStatus === 0 || deliveryStatus === 3
-                    ? I18n.t('screens:checkIn.checkIn')
-                    : I18n.t('general:go')
-                }
-                disabled={deliveryStatus === 3}
-                onPress={
-                  deliveryStatus === 1
-                    ? startDelivering.bind(null)
-                    : springForeground.bind(null, {
-                        animatedValues: [pullHandlePan.y, pullHandleMoveY],
-                        toValue: snapTopY,
-                        snapTopY,
-                        pullHandleMoveY,
-                        foregroundPaddingTop,
-                        top,
-                        routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn'
-                      })
-                }
-                width={'70%'}
-              />
-            </Animated.View>
-          </ColumnView>
-        )}
+        <ForegroundContent
+          interpolatedValues={interpolatedValues}
+          onButtonPress={
+            deliveryStatus === 1
+              ? startDelivering.bind(null)
+              : springForeground.bind(null, {
+                  animatedValues: [pullHandlePan.y, pullHandleMoveY],
+                  toValue: snapTopY,
+                  snapTopY,
+                  pullHandleMoveY,
+                  foregroundPaddingTop,
+                  routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn',
+                  top
+                })
+          }
+        />
       </Foreground>
       <Navigation
         panY={interpolatedValues.navigationY}
         paddingBottom={bottom}
-        top={height - top - bottom}
       />
     </ColumnView>
   );
 };
 
 Main.propTypes = {
+  buttonAccessibility: PropTypes.number,
+  canPanForeground: PropTypes.bool,
   deliveryStatus: PropTypes.number,
-  hasRoutes: PropTypes.bool,
-  itemCount: PropTypes.number,
-  processing: PropTypes.bool,
-  routeDescription: PropTypes.string,
-  selectedStop: PropTypes.object,
   startDelivering: PropTypes.func
 };
 
 Main.defaultProps = {
-  deliveryStatus: 0,
-  hasRoutes: false,
-  itemCount: 0,
-  processing: true,
-  routeDescription: '',
-  selectedStop: {}
+  canPanForeground: false,
+  deliveryStatus: 0
 };
 
 export default Main;

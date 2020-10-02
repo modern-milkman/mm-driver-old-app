@@ -1,4 +1,4 @@
-package com.modernmilkmandriver;
+package com.luminos.modernmilkmandriver.app;
 import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;

@@ -1,10 +1,10 @@
 export default {
   foreground: {
-    defaultHeight: 130,
-    collapseBackThreshold: 200
+    defaultHeight: 120,
+    collapseBackThreshold: 100
   },
   navigation: {
-    height: 44
+    height: 48
   },
   pullHandle: {
     height: 44

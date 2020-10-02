@@ -1,5 +1,11 @@
 import Config from 'react-native-config';
-import { Animated, Dimensions, Easing, Linking } from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  Easing,
+  Linking,
+  NativeModules
+} from 'react-native';
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -17,10 +23,15 @@ const checkAtLeastOneItem = (items, statusId, exclude = false) => {
 
 const currentDay = () => {
   const date = new Date();
-  if (Config.RESET_HOUR_DAY <= new Date().getHours()) {
+  if (parseInt(Config.RESET_HOUR_DAY) <= ukTimeNow()) {
     date.setDate(date.getDate() + 1);
   }
   return formatDate(date);
+};
+
+const defaultRoutes = {
+  public: 'Home',
+  session: 'Main'
 };
 
 const deviceFrame = () => Dimensions.get('window');
@@ -73,7 +84,7 @@ const jiggleAnimation = (animatedValue, callback) => {
   }
 };
 
-const mock = () => {};
+const mock = () => null;
 
 const toggle = (collection, item) => {
   const duplicate = [...collection];
@@ -92,15 +103,35 @@ const randomKey = () =>
     .toString(36)
     .replace(/[^a-z]+/g, '');
 
+const statusBarHeight = () => {
+  const { StatusBarManager } = NativeModules;
+  return StatusBarManager.HEIGHT;
+};
+
+const ukTimeNow = () => {
+  const date = new Date();
+  return parseInt(
+    date
+      .toLocaleTimeString(undefined, {
+        timeZone: 'Europe/London',
+        hour12: false
+      })
+      .substring(0, 2)
+  );
+};
+
 export {
   capitalize,
   checkAtLeastOneItem,
   currentDay,
   deviceFrame,
+  defaultRoutes,
   formatDate,
   isAppInstalled,
   jiggleAnimation,
   mock,
   toggle,
-  randomKey
+  randomKey,
+  statusBarHeight,
+  ukTimeNow
 };

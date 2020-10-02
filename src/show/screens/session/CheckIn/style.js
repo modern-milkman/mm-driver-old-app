@@ -1,6 +1,5 @@
 export default {
-  container: {
-    flex: 1,
-    paddingTop: 0
+  fullWidth: {
+    width: '100%'
   }
 };

@@ -1,46 +1,63 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { View } from 'react-native';
 
-import { RowView } from 'Containers';
 import { colors } from 'Theme';
 
 const Separator = (props) => {
-  let height, width;
-  if (props.vertical) {
-    width = props.width ? props.width : 1;
-    height = props.height ? props.height : 'auto';
+  const {
+    borderRadius,
+    color,
+    height,
+    marginHorizontal,
+    marginLeft,
+    marginRight,
+    vertical,
+    width
+  } = props;
+  let computedHeight, computedWidth;
+  if (vertical) {
+    computedWidth = width ? width : 1;
+    computedHeight = height ? height : 'auto';
   } else {
-    width = props.width ? props.width : 'auto';
-    height = props.height ? props.height : 1;
+    computedWidth = width ? width : 'auto';
+    computedHeight = height ? height : 1;
   }
 
-  return (
-    <RowView
-      width={width}
-      marginLeft={props.marginLeft}
-      marginRight={props.marginRight}
-      height={height}
-      flex={props.flex}
-      backgroundColor={props.color || colors.secondary}
-    />
-  );
+  const composeStyles = {
+    backgroundColor: color,
+    borderRadius: borderRadius,
+    height: computedHeight,
+    marginLeft: marginLeft || marginHorizontal || 0,
+    marginRight: marginRight || marginHorizontal || 0,
+    width: computedWidth
+  };
+
+  return <View style={composeStyles} />;
 };
 
 Separator.propTypes = {
+  borderRadius: PropTypes.oneOfType(PropTypes.number, PropTypes.string),
+  color: PropTypes.string,
+  flex: PropTypes.number,
+  height: PropTypes.oneOfType(PropTypes.number, PropTypes.string),
+  justifyContent: PropTypes.string,
+  marginHorizontal: PropTypes.number,
   marginLeft: PropTypes.number,
   marginRight: PropTypes.number,
   vertical: PropTypes.bool,
-  color: PropTypes.any,
-  flex: PropTypes.number,
-  width: PropTypes.number,
-  height: PropTypes.number
+  width: PropTypes.oneOfType(PropTypes.number, PropTypes.string)
 };
 
 Separator.defaultProps = {
-  marginLeft: 15,
-  marginRight: 15,
+  borderRadius: undefined,
+  color: colors.input,
+  height: undefined,
+  marginHorizontal: 0,
+  marginLeft: 0,
+  marginRight: 0,
   vertical: false,
-  flex: undefined
+  width: 'auto'
 };
 
 export default Separator;

@@ -1,5 +1,4 @@
 import Api from 'Api';
-import Config from 'react-native-config';
 
 export default {
   getForDriver() {
@@ -21,9 +20,14 @@ export default {
       description
     });
   },
-  updateDirectionsPolyline({ origin, destination }) {
+  updateDirectionsPolyline({
+    originLatitude,
+    originLongitude,
+    destinationLatitude,
+    destinationLongitude
+  }) {
     return Api.get(
-      `${Config.DIRECTIONS_API_URL}?origin=${origin}&destination=${destination}`
+      `/Routing/GetDirections/${originLatitude}/${originLongitude}/${destinationLatitude}/${destinationLongitude}`
     );
   }
 };

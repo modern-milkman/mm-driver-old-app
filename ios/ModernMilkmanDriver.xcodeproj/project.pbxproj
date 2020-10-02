@@ -738,13 +738,13 @@
 				);
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.10.0;
+				MARKETING_VERSION = 2.12.65;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.modernmilkmandriver;
+				PRODUCT_BUNDLE_IDENTIFIER = com.luminos.modernmilkmandriver.app;
 				PRODUCT_NAME = ModernMilkmanDriver;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -759,16 +759,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = VW7823QN3U;
+				DEVELOPMENT_TEAM = HHZUS5J79B;
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.10.0;
+				MARKETING_VERSION = 2.12.65;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.modernmilkmandriver;
+				PRODUCT_BUNDLE_IDENTIFIER = com.luminos.modernmilkmandriver.app;
 				PRODUCT_NAME = ModernMilkmanDriver;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

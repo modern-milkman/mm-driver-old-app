@@ -7,13 +7,14 @@ export const { Types, Creators } = createActions(
     addToStackRoute: ['routeName', 'params'],
     dismissKeyboard: null,
     init: null,
-    initRefreshToken: null,
     login_error: ['payload'],
     login_success: ['payload'],
     login: null,
     logout: null,
+    mounted: null,
     navigate: null,
     navigateBack: null,
+    refreshDriverData: null,
     refreshTokenSuccess: ['payload'],
     rehydrated: null,
     removeLastStackRoute: null,
@@ -24,6 +25,7 @@ export const { Types, Creators } = createActions(
 
 const initialState = {
   lastRouteParams: null,
+  mounted: false,
   processing: false,
   sideBarOpen: false,
   stackRoute: ['Home'],
@@ -58,7 +60,6 @@ export const removeLastStackRoute = (state = initialState) =>
 export const loginSuccess = (state = initialState) =>
   produce(state, (draft) => {
     draft.userSessionPresent = true;
-    draft.processing = false;
   });
 
 export const loginError = (state = initialState) =>
@@ -79,5 +80,6 @@ export default createReducer(initialState, {
 export const lastRoute = (state) =>
   state.application.stackRoute[state.application.stackRoute.length - 1];
 export const lastRouteParams = (state) => state.application.lastRouteParams;
+export const mounted = (state) => state.application.mounted;
 export const userSessionPresent = (state) =>
   state.application.userSessionPresent;

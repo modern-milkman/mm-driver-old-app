@@ -1,4 +1,4 @@
-import { call, put, select } from 'redux-saga/effects';
+import { call, delay, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
 import { user as userSelector } from 'Reducers/user';
@@ -14,6 +14,8 @@ import {
   Types as DeviceTypes,
   device as deviceSelector
 } from 'Reducers/device';
+
+import { currentDay as cDay } from 'Helpers';
 
 const updateTrackerData = function* ({ deliveryStatus }) {
   const user = yield select(userSelector);
@@ -31,7 +33,7 @@ const updateTrackerData = function* ({ deliveryStatus }) {
   yield put({
     type: Api.API_CALL,
     promise: Api.repositories.fleet.drivers({
-      id: `${user.id}`,
+      id: `${user.driverId}`,
       deliveryStatus: stringifiedDeliveryStatus,
       ...(device.position?.coords && { location: device.position.coords })
     })
@@ -52,7 +54,6 @@ export const getForDriver = function* () {
 };
 
 export const getForDriverSuccess = function* ({ payload }) {
-  const deliveryStatus = yield select(deliveryStatusSelector);
   yield put({
     type: Api.API_CALL,
     actions: {
@@ -65,10 +66,18 @@ export const getForDriverSuccess = function* ({ payload }) {
     deliveryDate: payload.deliveryDate,
     props: { processing: false }
   });
+};
 
+export const getVehicleStockForDriverSuccess = function* () {
+  const deliveryStatus = yield select(deliveryStatusSelector);
   if (deliveryStatus === 2) {
     yield put({
       type: DeliveryTypes.START_DELIVERING
+    });
+  } else {
+    yield put({
+      type: DeliveryTypes.UPDATE_PROPS,
+      props: { processing: false }
     });
   }
   yield call(updateTrackerData, { deliveryStatus });
@@ -105,7 +114,7 @@ export const setDeliveredOrRejectedSuccess = function* () {
   yield put({
     type: Api.API_CALL,
     promise: Api.repositories.fleet.drivers({
-      id: `${user.id}`,
+      id: `${user.driverId}`,
       deliveries: {
         completed: totalDeliveries - deliveriesLeft,
         total: totalDeliveries
@@ -139,8 +148,14 @@ export const optimizeStops = function* () {
   yield call(updatedSelectedStop);
 };
 
+export function* setCurrentDay({}) {
+  const currentDay = cDay();
+  yield put({ type: DeviceTypes.UPDATE_PROPS, props: { currentDay } });
+}
+
 export const startDelivering = function* () {
   const device = yield select(deviceSelector);
+  yield delay(750); // delay required because lots of animations + transitions + navigation + processing result in sluggish interface dropping frames. slight delay here makes everything smooth
   yield put({
     type: DeliveryTypes.OPTIMIZE_STOPS,
     currentLocation: device.position.coords,
@@ -177,8 +192,10 @@ export const updatedSelectedStop = function* () {
         success: { type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE }
       },
       promise: Api.repositories.delivery.updateDirectionsPolyline({
-        origin: `${device.position.coords.latitude},${device.position.coords.longitude}`,
-        destination: `${selectedStop.latitude},${selectedStop.longitude}`
+        originLatitude: device.position.coords.latitude,
+        originLongitude: device.position.coords.longitude,
+        destinationLatitude: selectedStop.latitude,
+        destinationLongitude: selectedStop.longitude
       })
     });
   }

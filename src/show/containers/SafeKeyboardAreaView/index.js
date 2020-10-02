@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Animated, Keyboard } from 'react-native';
+import { Animated, Keyboard, Platform } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,7 +17,7 @@ const useKeyboardEvent = (event, callback) => {
   }, [event, callback]);
 };
 
-const SafeKeyboardAreaView = (props) => {
+const SafeKeyboardAreaView = ({ children, scrollEnabled, style }) => {
   const { bottom, top } = useSafeAreaInsets();
   const SKAVmaxHeight = height - (bottom + top);
   const [SKAVheight] = useState(new Animated.Value(SKAVmaxHeight));
@@ -42,15 +42,22 @@ const SafeKeyboardAreaView = (props) => {
     [bottom, SKAVheight, SKAVmaxHeight]
   );
 
-  useKeyboardEvent('keyboardWillShow', keyboardEvent.bind(null, 'show'));
-  useKeyboardEvent('keyboardWillHide', keyboardEvent.bind(null, 'hide'));
+  useKeyboardEvent(
+    `keyboard${Platform.OS === 'ios' ? 'Will' : 'Did'}Show`,
+    keyboardEvent.bind(null, 'show')
+  );
+  useKeyboardEvent(
+    `keyboard${Platform.OS === 'ios' ? 'Will' : 'Did'}Hide`,
+    keyboardEvent.bind(null, 'hide')
+  );
 
   return (
     <Animated.ScrollView
       keyboardShouldPersistTaps={'handled'}
       style={automatedStyle}
-      contentContainerStyle={props.style}>
-      {props.children}
+      contentContainerStyle={style}
+      scrollEnabled={scrollEnabled}>
+      {children}
     </Animated.ScrollView>
   );
 };
@@ -58,12 +65,14 @@ const SafeKeyboardAreaView = (props) => {
 SafeKeyboardAreaView.defaultProps = {
   children: null,
   maxHeight: undefined,
+  scrollEnabled: true,
   style: {}
 };
 
 SafeKeyboardAreaView.propTypes = {
   children: PropTypes.node,
   maxHeight: PropTypes.number,
+  scrollEnabled: PropTypes.bool,
   style: PropTypes.any
 };
 

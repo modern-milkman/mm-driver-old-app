@@ -6,7 +6,10 @@ import { call, delay, put, select } from 'redux-saga/effects';
 import Api from 'Api';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
-import { Types as DeliveryTypes } from 'Reducers/delivery';
+import {
+  Types as DeliveryTypes,
+  deliveryStatus as deliveryStatusSelector
+} from 'Reducers/delivery';
 import {
   Types as TransientTypes,
   transient as transientSelector
@@ -20,15 +23,11 @@ import {
 import {
   lastRoute as lastRouteSelector,
   Types as ApplicationTypes,
-  userSessionPresent as userSessionPresentSelector
+  userSessionPresent as userSessionPresentSelector,
+  mounted as mountedSelector
 } from 'Reducers/application';
-import { isAppInstalled } from 'Helpers';
+import { defaultRoutes, isAppInstalled } from 'Helpers';
 import { onNavigateSideEffects } from './onNavigateSideEffects';
-
-const defaultRoutes = {
-  public: 'Home',
-  session: 'Main'
-};
 
 const navigationAppList = Platform.select({
   android: ['geo', 'waze'],
@@ -47,17 +46,6 @@ const refreshToken = function* (jwtToken, jwtRefreshToken) {
 };
 
 // EXPORTED
-
-export const getId = function* () {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: UserTypes.UPDATE_PROPS }
-    },
-    promise: Api.repositories.user.getId()
-  });
-};
-
 export const dismissKeyboard = function () {
   Keyboard.dismiss();
 };
@@ -78,6 +66,8 @@ export const init = function* () {
       availableNavApps
     }
   });
+
+  yield put({ type: DeliveryTypes.SET_CURRENT_DAY });
 };
 
 export const login = function* () {
@@ -101,19 +91,18 @@ export const login_error = function* ({ status, data }) {
 };
 
 export const login_success = function* ({ payload }) {
-  yield Api.authToken(payload.jwtToken);
-  yield delay(500); // TODO - remove this & implement better solution for API calls reaching BE without authToken
-  yield put({ type: UserTypes.GET_ID });
+  yield call(Api.setToken, payload.jwtToken);
+  //TODO make sure token set before sending new requests
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
+  yield put({ type: UserTypes.GET_DRIVER });
   yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
   yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
-  yield put({ type: DeliveryTypes.UPDATE_RETURN_POSITION, clear: true });
   NavigationService.navigate({ routeName: defaultRoutes.session });
 };
 
 export const logout = function* () {
   yield put({ type: 'state/RESET' });
-  Api.authToken();
+  Api.setToken();
   NavigationService.navigate({ routeName: defaultRoutes.public });
 };
 
@@ -127,36 +116,31 @@ export const onNavigateBack = function* () {
   Analytics.trackEvent(EVENTS.NAVIGATE, { back: true });
 };
 
-export const initRefreshToken = function* () {
+export const refreshDriverData = function* () {
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
+  const deliveryStatus = yield select(deliveryStatusSelector);
   if (user_session) {
     yield call(refreshToken.bind(null, user.jwtToken, user.refreshToken));
+  }
+  if (deliveryStatus === 0) {
+    yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
+    yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
   }
 };
 
 export const refreshTokenSuccess = function* ({ payload }) {
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
 
-  Api.authToken(payload.jwtToken);
+  Api.setToken(payload.jwtToken);
 };
 
 export const rehydrated = function* () {
   const device = yield select(deviceSelector);
-  const lastRoute = yield select(lastRouteSelector);
-  const user = yield select(userSelector);
-  const user_session = yield select(userSessionPresentSelector);
+  const mounted = yield select(mountedSelector);
 
-  if (user_session) {
-    if (new Date(user.jwtExpiry) < new Date()) {
-      yield call(logout);
-    } else {
-      yield call(initRefreshToken);
-
-      NavigationService.navigate({ routeName: lastRoute });
-    }
-  } else {
-    NavigationService.navigate({ routeName: defaultRoutes.public });
+  if (mounted) {
+    yield call(rehydratedAndMounted);
   }
 
   if (device.uniqueID === 'uninitialized') {
@@ -167,10 +151,39 @@ export const rehydrated = function* () {
       }
     });
   }
+};
 
-  yield delay(1000);
+export const mounted = function* () {
+  yield call(rehydratedAndMounted);
+};
 
-  InteractionManager.runAfterInteractions(() => {
-    RNBootSplash.hide();
-  });
+export const rehydratedAndMounted = function* () {
+  const lastRoute = yield select(lastRouteSelector);
+  const user = yield select(userSelector);
+  const user_session = yield select(userSessionPresentSelector);
+
+  if (user_session) {
+    if (new Date(user.jwtExpiry) < new Date()) {
+      yield call(logout);
+      RNBootSplash.hide();
+    } else {
+      yield call(refreshDriverData);
+
+      NavigationService.navigate({ routeName: lastRoute });
+      yield delay(1000);
+      InteractionManager.runAfterInteractions(() => {
+        RNBootSplash.hide();
+      });
+    }
+  } else {
+    if (lastRoute !== defaultRoutes.public) {
+      NavigationService.navigate({ routeName: defaultRoutes.public });
+      yield delay(1000);
+      InteractionManager.runAfterInteractions(() => {
+        RNBootSplash.hide();
+      });
+    } else {
+      RNBootSplash.hide();
+    }
+  }
 };

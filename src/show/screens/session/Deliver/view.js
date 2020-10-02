@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { Animated } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
-import { colors } from 'Theme';
+import { colors, defaults } from 'Theme';
 import { deviceFrame, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
-import { Button, Icon, ListItem, Text, TextInput } from 'Components';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
+import { Button, List, NavBar, Text, TextInput, Separator } from 'Components';
 
 import style from './style';
 
@@ -88,11 +88,27 @@ const Deliver = (props) => {
     updateTransientProps
   } = props;
 
+  const optimizedStopOrders = selectedStop
+    ? selectedStop.orders.map((order) => {
+        const isOutOfStock = outOfStock.includes(order.key);
+        return {
+          ...order,
+          disabled: selectedStop.status === 'completed',
+          rightIcon: isOutOfStock
+            ? 'alert'
+            : confirmedItem.includes(order.key)
+            ? 'check'
+            : null,
+          ...(isOutOfStock && {
+            rightIconColor: colors.error,
+            miscelaneousColor: colors.error
+          })
+        };
+      })
+    : null;
+
   return (
-    <SafeAreaView
-      top
-      bottom
-      style={[style.container, { backgroundColor: colors.standard }]}>
+    <SafeAreaView top bottom>
       <NavigationEvents
         onDidFocus={animateContent.bind(null, {
           contentTranslateYValue: 0,
@@ -100,39 +116,56 @@ const Deliver = (props) => {
         })}
       />
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
-        <ColumnView marginHorizontal={25} width={width - 50} flex={1}>
-          {/*TODO margins / width above should be updated based on branding */}
+        <ColumnView
+          marginHorizontal={defaults.marginHorizontal}
+          width={width - defaults.marginHorizontal * 2}
+          flex={1}>
           <ColumnView
-            justifyContent={'flex-start'}
             alignItems={'flex-start'}
-            backgroundColor={colors.standard}>
-            <Text.Callout color={colors.black}>
-              {I18n.t('screens:deliver.modal.title')}
-            </Text.Callout>
+            backgroundColor={colors.neutral}
+            borderRadius={defaults.borderRadius}
+            overflow={'hidden'}>
+            <ColumnView
+              alignItems={'flex-start'}
+              paddingTop={defaults.marginVertical}
+              paddingHorizontal={defaults.marginHorizontal}>
+              <Text.Heading color={colors.secondary}>
+                {I18n.t('screens:deliver.modal.title')}
+              </Text.Heading>
 
-            <TextInput
-              style={style.maxInputHeight}
-              multiline
-              value={reasonMessage}
-              placeholder={I18n.t('screens:deliver.modal.inputPlaceholder')}
-              onChangeText={handleChangeSkip.bind(null, updateTransientProps)}
-            />
+              <RowView paddingTop={defaults.marginVertical}>
+                <TextInput
+                  style={style.maxInputHeight}
+                  multiline
+                  value={reasonMessage}
+                  placeholder={I18n.t('screens:deliver.modal.inputPlaceholder')}
+                  onChangeText={handleChangeSkip.bind(
+                    null,
+                    updateTransientProps
+                  )}
+                />
+              </RowView>
+            </ColumnView>
 
-            <RowView backgroundColor={colors.standard}>
-              <Button.Plain
+            <Separator color={colors.input} width={'100%'} />
+
+            <RowView>
+              <Button.Tertiary
                 title={I18n.t('general:cancel')}
                 onPress={setModalVisible.bind(null, false)}
-                width={'40%'}
+                width={'50%'}
+                noBorderRadius
               />
               {selectedStop && (
                 <Button.Primary
                   title={I18n.t('general:skip')}
-                  width={'40%'}
+                  width={'50%'}
                   disabled={reasonMessage === ''}
                   onPress={navigateBack.bind(
                     null,
                     setRejected.bind(null, selectedStop.orderID, reasonMessage)
                   )}
+                  noBorderRadius
                 />
               )}
             </RowView>
@@ -141,75 +174,59 @@ const Deliver = (props) => {
       </Modal>
 
       <ColumnView
-        backgroundColor={colors.standard}
+        backgroundColor={colors.neutral}
         flex={1}
         justifyContent={'flex-start'}>
-        <RowView
-          justifyContent={'space-between'}
-          height={44}
-          alignItems={'center'}>
-          <Icon
-            name={'chevron-down'}
-            color={colors.primary}
-            size={32}
-            containerSize={44}
-            onPress={navigateBack.bind(null, null)}
-          />
-          <Text.Callout color={colors.black}>
-            {I18n.t('general:details')}
-          </Text.Callout>
-          <RowView width={44} height={44} />
-        </RowView>
+        <NavBar
+          leftIcon={'chevron-down'}
+          leftIconAction={navigateBack.bind(null, null)}
+          title={I18n.t('general:details')}
+        />
         <Animated.View
-          style={{
-            transform: [{ translateY: contentTranslateY[0] }],
-            opacity: contentOpacity[0]
-          }}>
-          <ColumnView>
-            {selectedStop &&
-              selectedStop.orders.map((i) => (
-                <ListItem
-                  disabled={selectedStop.status === 'completed'}
-                  title={i.productName}
-                  description={i.measureDescription}
-                  rightText={i.quantity}
-                  onLongPress={toggleOutOfStock.bind(null, i.orderItemId)}
-                  onPress={toggleConfirmedItem.bind(null, i.orderItemId)}
-                  rightIcon={
-                    outOfStock.includes(i.orderItemId)
-                      ? 'alert'
-                      : confirmedItem.includes(i.orderItemId)
-                      ? 'check'
-                      : null
-                  }
-                  key={i.orderItemId}
-                />
-              ))}
-          </ColumnView>
+          style={[
+            style.fullWidth,
+            {
+              transform: [{ translateY: contentTranslateY[0] }],
+              opacity: contentOpacity[0]
+            }
+          ]}>
+          {optimizedStopOrders && (
+            <List
+              data={optimizedStopOrders}
+              onLongPress={toggleOutOfStock}
+              onPress={toggleConfirmedItem}
+            />
+          )}
         </Animated.View>
       </ColumnView>
       {selectedStop && selectedStop.status === 'pending' && (
         <Animated.View
-          style={{
-            transform: [{ translateY: contentTranslateY[1] }],
-            opacity: contentOpacity[1]
-          }}>
-          <ColumnView>
-            <Button.Primary
-              title={I18n.t('general:done')}
-              onPress={navigateBack.bind(
-                null,
-                setDelivered.bind(null, selectedStop.orderID)
-              )}
-              disabled={!allItemsDone}
-              width={'70%'}
-            />
-
-            <Button.Destroy
-              title={I18n.t('general:skip')}
-              onPress={setModalVisible.bind(null, true)}
-              width={'70%'}
-            />
+          style={[
+            style.fullWidth,
+            {
+              transform: [{ translateY: contentTranslateY[1] }],
+              opacity: contentOpacity[1]
+            }
+          ]}>
+          <ColumnView
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}>
+            <RowView>
+              <Button.Primary
+                title={I18n.t('general:done')}
+                onPress={navigateBack.bind(
+                  null,
+                  setDelivered.bind(null, selectedStop.orderID)
+                )}
+                disabled={!allItemsDone}
+              />
+            </RowView>
+            <RowView marginVertical={defaults.marginVertical}>
+              <Button.Error
+                title={I18n.t('general:skip')}
+                onPress={setModalVisible.bind(null, true)}
+              />
+            </RowView>
           </ColumnView>
         </Animated.View>
       )}

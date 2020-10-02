@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
-import { Icon } from 'Components';
 import { colors } from 'Theme';
+import Icon from 'Components/Icon';
 
 import styles from './style';
 

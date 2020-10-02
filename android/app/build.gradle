@@ -139,7 +139,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.modernmilkmandriver"
+        applicationId "com.luminos.modernmilkmandriver.app"
         minSdkVersion rootProject.ext.minSdkVersion
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion

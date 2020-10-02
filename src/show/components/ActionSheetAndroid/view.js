@@ -1,12 +1,14 @@
+// TODO branding fixes
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 
 import { mock } from 'Helpers';
-import I18n from 'Locales/I18n';
-import { Button } from 'Components';
 import { colors } from 'Theme';
-import { ColumnView, Modal, RowView } from 'Containers';
+import I18n from 'Locales/I18n';
+import List from 'Components/List';
+import Separator from 'Components/Separator';
+import { ColumnView, Modal } from 'Containers';
 
 import style from './style';
 
@@ -22,39 +24,44 @@ class ActionSheetAndroid extends React.Component {
   };
 
   render = () => {
-    const { visible, optionKeys } = this.props;
+    const { visible, optionKeys, destructiveButtonIndex } = this.props;
+
+    const data = optionKeys.map((optK, idx) =>
+      idx !== destructiveButtonIndex - 1
+        ? { title: optK, key: optK }
+        : { title: optK, titleColor: colors.error, key: optK }
+    );
+
+    data.push({
+      onPress: this.dismissSheet,
+      title: I18n.t('general:cancel'),
+      titleColor: colors.secondaryLight
+    });
 
     return (
       <Modal visible={visible} transparent onRequestClose={this.dismissSheet}>
-        <ColumnView flex={1} justifyContent={'flex-end'} alignItems={'stretch'}>
+        <ColumnView
+          flex={1}
+          justifyContent={'flex-end'}
+          alignItems={'stretch'}
+          width={'auto'}>
           <TouchableOpacity
             onPress={this.dismissSheet}
             style={style.touchToExit}
           />
-          {optionKeys.map(this.renderOption)}
-          <RowView backgroundColor={colors.standard}>
-            <Button.Plain
-              onPress={this.dismissSheet}
-              textAlign={'left'}
-              title={I18n.t('general:cancel')}
-              width={'100%'}
+          <Separator />
+
+          <ColumnView backgroundColor={colors.neutral}>
+            <List
+              onPress={this.actionAndDismiss.bind(null)}
+              data={data}
+              renderListEmptyComponent={null}
             />
-          </RowView>
+          </ColumnView>
         </ColumnView>
       </Modal>
     );
   };
-
-  renderOption = (optionName, optionIndex) => (
-    <RowView key={optionIndex} backgroundColor={colors.standard}>
-      <Button.Plain
-        onPress={this.actionAndDismiss.bind(null, optionName)}
-        textAlign={'left'}
-        title={optionName}
-        width={'100%'}
-      />
-    </RowView>
-  );
 }
 
 ActionSheetAndroid.defaultProps = {
@@ -67,6 +74,7 @@ ActionSheetAndroid.defaultProps = {
 
 ActionSheetAndroid.propTypes = {
   config: PropTypes.object,
+  destructiveButtonIndex: PropTypes.number,
   options: PropTypes.object,
   optionKeys: PropTypes.array,
   updateProps: PropTypes.func.isRequired,

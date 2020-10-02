@@ -1,0 +1,163 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+import I18n from 'Locales/I18n';
+import Vibration from 'Services/vibration';
+import { colors, defaults, sizes } from 'Theme';
+import NavigationService from 'Navigation/service';
+import { ColumnView, RowView, SafeAreaView } from 'Containers';
+import { Button, NavBar, Text, Separator, Slider, Switch } from 'Components';
+
+const onSliderChange = (updateDeviceProps, prop, value) => {
+  const updateProps = {};
+  updateProps[prop] = value[0];
+  updateDeviceProps(updateProps);
+};
+
+const onVibrateChange = (updateDeviceProps, vibrate) => {
+  updateDeviceProps({ vibrate });
+  if (vibrate) {
+    Vibration.vibrate();
+  }
+};
+
+const onShowDoneDeliveries = (updateDeviceProps, showDoneDeliveries) => {
+  updateDeviceProps({ showDoneDeliveries });
+};
+
+const Settings = (props) => {
+  const {
+    buttonAccessibility,
+    logout,
+    mapMarkerSize,
+    showDoneDeliveries,
+    updateDeviceProps,
+    vibrate
+  } = props;
+
+  return (
+    <SafeAreaView top bottom>
+      <ColumnView
+        flex={1}
+        justifyContent={'space-between'}
+        alignItems={'stretch'}
+        backgroundColor={colors.neutral}>
+        <NavBar
+          leftIcon={'chevron-left'}
+          leftIconAction={NavigationService.goBack}
+          title={I18n.t('routes:settings')}
+          marginHorizontal={defaults.marginHorizontal / 3}
+        />
+        <ColumnView
+          flex={1}
+          justifyContent={'flex-start'}
+          alignItems={'stretch'}
+          width={'auto'}>
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.showDoneDeliveries')}
+            </Text.List>
+            <Switch
+              value={showDoneDeliveries}
+              onValueChange={onShowDoneDeliveries.bind(null, updateDeviceProps)}
+            />
+          </RowView>
+
+          <Separator />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.vibrations')}
+            </Text.List>
+            <Switch
+              value={vibrate}
+              onValueChange={onVibrateChange.bind(null, updateDeviceProps)}
+            />
+          </RowView>
+
+          <Separator />
+
+          <ColumnView
+            alignItems={'flex-start'}
+            marginVertical={defaults.marginVertical}
+            marginHorizontal={defaults.marginHorizontal}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.sliders.buttons')}
+            </Text.List>
+            <Text.Caption color={colors.secondary}>
+              {I18n.t('screens:settings.sliders.drag')}
+            </Text.Caption>
+
+            <Slider
+              onSlidingComplete={onSliderChange.bind(
+                null,
+                updateDeviceProps,
+                'buttonAccessibility'
+              )}
+              minimumValue={sizes.button.small}
+              maximumValue={sizes.button.large}
+              step={sizes.button.step}
+              value={buttonAccessibility}
+            />
+          </ColumnView>
+
+          <Separator />
+
+          <ColumnView
+            alignItems={'flex-start'}
+            marginVertical={defaults.marginVertical}
+            marginHorizontal={defaults.marginHorizontal}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.sliders.mapMarkers')}
+            </Text.List>
+            <Text.Caption color={colors.secondary}>
+              {I18n.t('screens:settings.sliders.drag')}
+            </Text.Caption>
+
+            <Slider
+              onSlidingComplete={onSliderChange.bind(
+                null,
+                updateDeviceProps,
+                'mapMarkerSize'
+              )}
+              minimumValue={sizes.marker.small}
+              maximumValue={sizes.marker.large}
+              step={sizes.marker.step}
+              value={mapMarkerSize}
+            />
+          </ColumnView>
+        </ColumnView>
+        <RowView
+          alignItems={'stretch'}
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}
+          marginVertical={defaults.marginVertical}>
+          <Button.Error title={I18n.t('general:logout')} onPress={logout} />
+        </RowView>
+      </ColumnView>
+    </SafeAreaView>
+  );
+};
+
+Settings.propTypes = {
+  buttonAccessibility: PropTypes.number,
+  logout: PropTypes.func,
+  mapMarkerSize: PropTypes.number,
+  showDoneDeliveries: PropTypes.bool,
+  updateDeviceProps: PropTypes.func,
+  vibrate: PropTypes.bool
+};
+
+Settings.defaultProps = {};
+
+export default Settings;

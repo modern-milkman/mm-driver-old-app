@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 
-import { currentDay } from 'Helpers';
 import { Creators as deliveryActions, selectedStop } from 'Reducers/delivery';
 import { Creators as transientActions } from 'Reducers/transient';
 
@@ -8,7 +7,7 @@ import Deliver from './view';
 
 export default connect(
   (state) => {
-    const today = currentDay();
+    const today = state.delivery.currentDay;
 
     return {
       allItemsDone: state.delivery[today]?.allItemsDone,

@@ -4,8 +4,11 @@ import I18n from 'Locales/I18n';
 
 import { colors } from 'Theme';
 
-export default ({ optionKeys, options, config }) => {
-  const { destructiveButtonIndex } = config;
+export default ({
+  optionKeys,
+  options,
+  config: { destructiveButtonIndex }
+}) => {
   ActionSheetIOS.showActionSheetWithOptions(
     {
       options: [I18n.t('general:cancel'), ...optionKeys],

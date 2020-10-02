@@ -13,13 +13,14 @@ import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/act
 import {
   dismissKeyboard,
   init,
-  initRefreshToken,
   login_error,
   login_success,
   login,
   logout,
+  mounted,
   onNavigate,
   onNavigateBack,
+  refreshDriverData,
   refreshTokenSuccess,
   rehydrated
 } from './application';
@@ -27,26 +28,28 @@ import {
 import {
   getForDriver,
   getForDriverSuccess,
+  getVehicleStockForDriverSuccess,
   optimizeStops,
+  setCurrentDay,
   setDelivered,
   setDeliveredOrRejectedSuccess,
   setItemOutOfStock,
   setRejected,
   startDelivering,
   updateCurrentDayProps,
-  updateReturnPosition,
-  updatedSelectedStop
+  updatedSelectedStop,
+  updateReturnPosition
 } from './delivery';
 
 import { requestLocationPermissionAndWatch, setLocation } from './device';
 
-import { getId } from './user';
+import { getDriver } from './user';
 
 export default function* root() {
   yield all([
     spawn(watchLocationChannel),
-
-    takeLatest('APP_STATE.FOREGROUND', initRefreshToken),
+    takeLatest('APP_STATE.FOREGROUND', refreshDriverData),
+    takeLatest('APP_STATE.FOREGROUND', setCurrentDay),
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
     takeLatest(ApplicationTypes.INIT, init),
@@ -54,6 +57,7 @@ export default function* root() {
     takeLatest(ApplicationTypes.LOGIN_SUCCESS, login_success),
     takeLatest(ApplicationTypes.LOGIN, login),
     takeLatest(ApplicationTypes.LOGOUT, logout),
+    takeLatest(ApplicationTypes.MOUNTED, mounted),
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.REFRESH_TOKEN_SUCCESS, refreshTokenSuccess),
@@ -61,6 +65,10 @@ export default function* root() {
 
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
+    takeLatest(
+      DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
+      getVehicleStockForDriverSuccess
+    ),
     takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
     takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
     takeLatest(DeliveryTypes.SET_DELIVERED, setDelivered),
@@ -74,7 +82,7 @@ export default function* root() {
     takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updatedSelectedStop),
 
-    takeLatest(UserTypes.GET_ID, getId),
+    takeLatest(UserTypes.GET_DRIVER, getDriver),
 
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,

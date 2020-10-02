@@ -4,8 +4,8 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
-    getId: null,
-    setId: ['id'],
+    getDriver: null,
+    setDriver: ['payload'],
     updateProps: ['props']
   },
   { prefix: 'user/' }
@@ -15,13 +15,14 @@ const initialState = {};
 
 export const reset = () => initialState;
 
-export const setId = (state, { payload }) =>
+export const setDriver = (state, { payload }) =>
   produce(state, (draft) => {
-    draft.id = payload;
+    draft = { ...state, ...payload };
+    return draft;
   });
 
 export default createReducer(initialState, {
-  [Types.SET_ID]: setId,
+  [Types.SET_DRIVER]: setDriver,
   [Types.UPDATE_PROPS]: updateProps
 });
 

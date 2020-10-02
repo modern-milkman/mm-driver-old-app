@@ -1,15 +1,16 @@
 {
+  "appInstalled": "Please make sure you have {{type}} app installed",
   "cancel": "Cancel",
+  "details": "Details",
+  "done": "Done",
+  "go": "Go!",
   "login": "Login",
   "logout": "Logout",
   "permisions": {
     "location": {
-      "whyLocationUsage": "Your location is required for searching within the app."
+      "whyLocationUsage": "Your location is required for delivery feature."
     }
   },
-  "go": "Go!",
-  "details": "Details",
-  "done": "Done",
   "skip": "Skip",
-  "appInstalled": "Please make sure you have {{type}} app installed"
+  "upNext": "Up next"
 }

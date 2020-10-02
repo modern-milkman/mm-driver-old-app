@@ -15,6 +15,7 @@ const ColumnRowView = (props) => {
   };
   const composeScrollableStyles = {
     alignItems: props.alignItems,
+    borderRadius: props.borderRadius,
     justifyContent: props.justifyContent,
     flex: props.flex,
     flexDirection: props.flexDirection,
@@ -25,6 +26,7 @@ const ColumnRowView = (props) => {
     marginLeft: props.marginLeft || props.marginHorizontal || 0,
     marginRight: props.marginRight || props.marginHorizontal || 0,
     marginTop: props.marginTop || props.marginVertical || 0,
+    overflow: props.overflow,
     paddingBottom: props.paddingBottom || props.paddingVertical || 0,
     paddingLeft: props.paddingLeft || props.paddingHorizontal || 0,
     paddingRight: props.paddingRight || props.paddingHorizontal || 0,
@@ -58,6 +60,7 @@ ColumnRowView.propTypes = {
   animated: PropTypes.bool,
   animatedStyle: PropTypes.any,
   backgroundColor: PropTypes.string,
+  borderRadius: PropTypes.number,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -82,6 +85,7 @@ ColumnRowView.propTypes = {
   maxHeight: PropTypes.number,
   minHeight: PropTypes.number,
   onLayout: PropTypes.func,
+  overflow: PropTypes.string,
   scrollable: PropTypes.bool,
   width: PropTypes.oneOfType(PropTypes.number, PropTypes.string)
 };
@@ -90,6 +94,7 @@ ColumnRowView.defaultProps = {
   alignItems: 'center',
   animated: false,
   animatedStyle: null,
+  borderRadius: 0,
   children: null,
   flex: 0,
   flexDirection: 'column',
@@ -101,6 +106,7 @@ ColumnRowView.defaultProps = {
   marginRight: undefined,
   marginTop: undefined,
   marginVertical: undefined,
+  overflow: undefined,
   paddingBottom: undefined,
   paddingHorizontal: undefined,
   paddingLeft: undefined,

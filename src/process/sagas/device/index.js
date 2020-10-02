@@ -14,11 +14,11 @@ export function* setLocation({ position }) {
 
   yield put({ type: DeviceTypes.SET_LOCATION, position });
 
-  if (user_session && user.id) {
+  if (user_session && user.driverId) {
     yield put({
       type: Api.API_CALL,
       promise: Api.repositories.fleet.drivers({
-        id: `${user.id}`,
+        id: `${user.driverId}`,
         location: position.coords
       })
     });
