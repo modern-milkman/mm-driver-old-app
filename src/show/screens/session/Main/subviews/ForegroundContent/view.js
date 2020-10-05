@@ -55,6 +55,10 @@ const renderSubHeading = (foregroundState, { stopCount, selectedStop }) => {
   }
 };
 
+const onLayout = (onTitleLayoutChange, e) => {
+  onTitleLayoutChange(e.nativeEvent.layout.height);
+};
+
 const ForegroundContent = (props) => {
   const {
     deliveryStatus,
@@ -62,7 +66,8 @@ const ForegroundContent = (props) => {
     onButtonPress,
     processing,
     selectedStop,
-    stopCount
+    stopCount,
+    onTitleLayoutChange
   } = props;
 
   let foregroundState = 'COME_BACK_LATER';
@@ -107,7 +112,10 @@ const ForegroundContent = (props) => {
                 />
               </RowView>
 
-              <RowView marginTop={defaults.marginVertical / 3} width={'auto'}>
+              <RowView
+                marginTop={defaults.marginVertical / 3}
+                width={'auto'}
+                onLayout={onLayout.bind(this, onTitleLayoutChange)}>
                 <Text.Heading color={colors.secondary} align={'center'}>
                   {renderHeading(foregroundState, props)}
                 </Text.Heading>
@@ -151,6 +159,7 @@ ForegroundContent.propTypes = {
   deliveryStatus: PropTypes.number,
   interpolatedValues: PropTypes.object,
   onButtonPress: PropTypes.func,
+  onTitleLayoutChange: PropTypes.func,
   processing: PropTypes.bool,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,

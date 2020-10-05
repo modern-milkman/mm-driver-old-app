@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { NavigationEvents } from 'react-navigation';
 import { Animated, PanResponder, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors } from 'Theme';
+import { colors, sizes } from 'Theme';
 import { ColumnView } from 'Containers';
 import NavigationService from 'Navigation/service';
 import { deviceFrame, statusBarHeight } from 'Helpers';
@@ -76,6 +76,7 @@ const Main = (props) => {
     startDelivering
   } = props;
 
+  const [foregroundTitleHeight, setForegroundTitleHeight] = useState(0);
   const { top, bottom } = useSafeAreaInsets();
   const { height, width } = deviceFrame();
   const bottomMapPadding = configuration.navigation.height + bottom;
@@ -110,7 +111,16 @@ const Main = (props) => {
         top + configuration.navigation.height,
         top + configuration.foreground.collapseBackThreshold
       ],
-      outputRange: [Platform.OS === 'ios' ? -90 : -94, 0], // button transition to title top
+      outputRange: [
+        (Platform.OS === 'ios' ? -62 : -66) +
+          (buttonAccessibility === sizes.button.small
+            ? 5
+            : buttonAccessibility === sizes.button.large
+            ? -5
+            : 0) -
+          foregroundTitleHeight,
+        0
+      ], // button transition to title top
       extrapolate: 'clamp'
     },
     foregroundHeight: {
@@ -308,6 +318,7 @@ const Main = (props) => {
           width={interpolatedValues.pullHandleWidth}
         />
         <ForegroundContent
+          onTitleLayoutChange={setForegroundTitleHeight}
           interpolatedValues={interpolatedValues}
           onButtonPress={
             deliveryStatus === 1
