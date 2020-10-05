@@ -4,6 +4,8 @@ import Config from 'react-native-config';
 import repositories from 'Repositories';
 import Analytics, { EVENTS } from 'Services/analytics';
 
+let TOKEN = null;
+
 const api = axios.create({
   baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
   headers: {
@@ -12,6 +14,13 @@ const api = axios.create({
     'x-api-version': Config.X_API_VERSION
   },
   timeout: parseInt(Config.API_TIMEOUT)
+});
+
+api.interceptors.request.use((config) => {
+  if (TOKEN) {
+    config.headers.Authorization = 'Bearer ' + TOKEN;
+  }
+  return config;
 });
 
 const Api = {
@@ -23,14 +32,14 @@ const Api = {
 
   setToken(value = null) {
     if (value) {
-      api.defaults.headers.common.Authorization = `Bearer ${value}`;
+      TOKEN = value;
     } else {
-      delete api.defaults.headers.common.Authorization;
+      TOKEN = null;
     }
   },
 
   getToken() {
-    return api.defaults.headers.common.Authorization;
+    return TOKEN;
   },
 
   catchError(error) {
