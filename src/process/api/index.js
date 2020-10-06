@@ -2,6 +2,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 
 import repositories from 'Repositories';
+import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
 
 let TOKEN = null;
@@ -38,6 +39,17 @@ const Api = {
     }
   },
 
+  testMinVersion({ headers }) {
+    if (headers && headers['x-app-version']) {
+      if (headers['x-app-version'] > Config.APP_VERSION_NAME) {
+        NavigationService.navigate({
+          routeName: 'UpgradeApp',
+          params: { minimumVersion: headers['x-app-version'] }
+        });
+      }
+    }
+  },
+
   getToken() {
     return TOKEN;
   },
@@ -50,30 +62,35 @@ const Api = {
 
   get(path) {
     const request = api.get(path);
+    request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   },
 
   post(path, body) {
     const request = api.post(path, body);
+    request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   },
 
   put(path, body) {
     const request = api.put(path, body);
+    request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   },
 
   patch(path, body) {
     const request = api.patch(path, body);
+    request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   },
 
   delete(path) {
     const request = api.delete(path);
+    request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   }

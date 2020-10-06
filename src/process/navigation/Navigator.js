@@ -2,7 +2,15 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import { CheckIn, Deliver, Home, LoadVan, Main, Settings } from 'Screens';
+import {
+  CheckIn,
+  Deliver,
+  Home,
+  LoadVan,
+  Main,
+  Settings,
+  UpgradeApp
+} from 'Screens';
 
 const MainNavigator = createStackNavigator(
   {
@@ -35,7 +43,8 @@ const MainNavigator = createStackNavigator(
 const TopNavigator = createStackNavigator(
   {
     Home,
-    MainNavigator
+    MainNavigator,
+    UpgradeApp
   },
   {
     defaultNavigationOptions: {

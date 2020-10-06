@@ -32,20 +32,23 @@ const initialState = {
   userSessionPresent: false
 };
 
+const blackListRoutes = ['UpgradeApp'];
 const resetStackDepthRoutes = [];
 
 export const addToStackRoute = (state = initialState, action) =>
   produce(state, (draft) => {
     const { routeName, params } = action;
-    if (draft.stackRoute[draft.stackRoute.length - 1] !== routeName) {
-      if (resetStackDepthRoutes.includes(routeName)) {
-        draft.stackRoute = [routeName];
-      } else {
-        draft.stackRoute.push(routeName);
+    if (!blackListRoutes.includes(routeName)) {
+      if (draft.stackRoute[draft.stackRoute.length - 1] !== routeName) {
+        if (resetStackDepthRoutes.includes(routeName)) {
+          draft.stackRoute = [routeName];
+        } else {
+          draft.stackRoute.push(routeName);
+        }
       }
-    }
-    if (params) {
-      draft.lastRouteParams = params;
+      if (params) {
+        draft.lastRouteParams = params;
+      }
     }
   });
 
