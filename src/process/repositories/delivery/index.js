@@ -1,6 +1,10 @@
 import Api from 'Api';
 
 export default {
+  getCustomerAddressImage({ customerId, addressId }) {
+    return Api.get(`/Customer/CustomerImage/${customerId}/${addressId}`);
+  },
+
   getForDriver() {
     return Api.get('/Delivery/GetForDriver');
   },

@@ -162,6 +162,7 @@ const List = (props) => {
     hasSections,
     onPress,
     onLongPress,
+    renderFooterComponent,
     renderHeaderComponent,
     renderItem,
     renderItemSeparator,
@@ -180,6 +181,7 @@ const List = (props) => {
       renderItem={renderItem.bind(null, { onPress, onLongPress })}
       renderSectionFooter={renderSectionFooter}
       renderSectionHeader={renderSectionHeader}
+      ListFooterComponent={renderFooterComponent}
       ListHeaderComponent={renderHeaderComponent}
       ItemSeparatorComponent={renderItemSeparator}
       style={[style.renderWrapper, styleProps]}
@@ -214,6 +216,7 @@ List.propTypes = {
   hasSections: PropTypes.bool,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
+  renderFooterComponent: PropTypes.func,
   renderHeaderComponent: PropTypes.func,
   renderItem: PropTypes.func.isRequired,
   renderItemSeparator: PropTypes.func,
@@ -228,6 +231,7 @@ List.defaultProps = {
   hasSections: false,
   onLongPress: mock,
   onPress: mock,
+  renderFooterComponent: mock,
   renderHeaderComponent: mock,
   renderItem: renderItemInterface,
   renderItemSeparator: defaultRenderItemSeparator,

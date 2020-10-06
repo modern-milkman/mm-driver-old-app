@@ -49,6 +49,7 @@ Text.propTypes = {
   color: PropTypes.any,
   flex: PropTypes.number,
   lineHeight: PropTypes.number,
+  numberOfLines: PropTypes.number,
   type: PropTypes.string,
   weight: PropTypes.string
 };

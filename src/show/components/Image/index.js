@@ -20,7 +20,7 @@ const Image = (props) => {
 
   const imageSource = () => {
     const headers = {
-      Authorization: Api.getToken()
+      Authorization: `Bearer ${Api.getToken()}`
     };
 
     return source && source.uri

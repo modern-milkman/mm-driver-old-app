@@ -24,6 +24,7 @@ export const { Types, Creators } = createActions(
     setDeliveredOrRejectedSuccess: null,
     setItemOutOfStock: ['id'],
     setRejected: ['id', 'reasonMessage'],
+    setSelectedStopImage: ['payload', 'props'],
     startDelivering: [],
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
@@ -44,8 +45,7 @@ Delivery status:
   3-DELIVERY_COMPLETE
 */
 
-const imageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
-
+const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 const initialCurrentDay = cDay();
 
 const initialState = {
@@ -108,7 +108,7 @@ export const getVehicleStockForDriverSuccess = (
             categoryProducts.data.push({
               description: item.measureDescription,
               disabled: true, // items in load van should not be tappable
-              image: `${imageUri}${item.productId}`,
+              image: `${productImageUri}${item.productId}`,
               key: item.productId,
               miscelaneousLarge: item.quantity,
               title: item.productName
@@ -124,7 +124,7 @@ export const getVehicleStockForDriverSuccess = (
               {
                 description: item.measureDescription,
                 disabled: true, // items in load van should not be tappable
-                image: `${imageUri}${item.productId}`,
+                image: `${productImageUri}${item.productId}`,
                 key: item.productId,
                 miscelaneousLarge: item.quantity,
                 title: item.productName
@@ -160,7 +160,7 @@ export const getForDriverSuccess = (state, { payload }) =>
     // PREPARE RAW STOPS
     for (const item of draft[cd].stockWithData.items) {
       const {
-        address: { addressId: key, latitude, longitude }
+        address: { addressId: key, latitude, longitude, deliveryInstructions }
       } = item;
 
       if (!draft[cd].stops[key]) {
@@ -173,8 +173,17 @@ export const getForDriverSuccess = (state, { payload }) =>
           key,
           customerId: item.customerId,
           description: `${item.forename} ${item.surname}`,
+          deliveryInstructions,
           forename: item.forename,
           icon: null,
+          latitude,
+          longitude,
+          orderID: item.orderID,
+          orders: [],
+
+          phoneNumber: item.phoneNumber,
+          surname: item.surname,
+          status: item.delivery_stateID === 1 ? 'pending' : 'completed',
           title:
             (item.address.name_number ? `${item.address.name_number}` : '') +
             (item.address.line1 ? ` ${item.address.line1}` : '') +
@@ -183,20 +192,12 @@ export const getForDriverSuccess = (state, { payload }) =>
               : '') +
             (item.address.postcodeOutward
               ? `${item.address.postcodeOutward}`
-              : ''),
-          latitude,
-          longitude,
-          orderID: item.orderID,
-          orders: [],
-
-          phoneNumber: item.phoneNumber,
-          surname: item.surname,
-          status: item.delivery_stateID === 1 ? 'pending' : 'completed'
+              : '')
         };
       }
       draft[cd].stops[key].orders.push({
         description: item.measureDescription,
-        image: `${imageUri}${item.productId}`,
+        image: `${productImageUri}${item.productId}`,
         key: item.orderItemId,
         miscelaneousLarge: item.quantity,
         title: item.productName
@@ -234,6 +235,15 @@ export const setDeliveredOrRejectedSuccess = (state) =>
       draft[cd].deliveryStatus = 3;
     }
     draft.processing = false;
+  });
+
+export const setSelectedStopImage = (
+  state,
+  { payload: { base64Image }, props: { key } }
+) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].stops[key].customerAddressImage = base64Image;
   });
 
 export const startDelivering = (state) =>
@@ -342,6 +352,7 @@ export default createReducer(initialState, {
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
   [Types.SET_REJECTED]: processingTrue,
+  [Types.SET_SELECTED_STOP_IMAGE]: setSelectedStopImage,
   [Types.START_DELIVERING]: startDelivering,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,

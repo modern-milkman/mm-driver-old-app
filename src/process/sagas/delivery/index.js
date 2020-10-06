@@ -199,4 +199,18 @@ export const updatedSelectedStop = function* () {
       })
     });
   }
+
+  if (!selectedStop.customerAddressImage) {
+    yield put({
+      type: Api.API_CALL,
+      actions: {
+        success: { type: DeliveryTypes.SET_SELECTED_STOP_IMAGE }
+      },
+      promise: Api.repositories.delivery.getCustomerAddressImage({
+        customerId: selectedStop.customerId,
+        addressId: selectedStop.key
+      }),
+      props: { key: selectedStop.key }
+    });
+  }
 };

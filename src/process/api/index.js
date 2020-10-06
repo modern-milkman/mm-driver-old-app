@@ -30,7 +30,7 @@ const Api = {
 
   repositories,
 
-  setToken(value = null) {
+  async setToken(value = null) {
     if (value) {
       TOKEN = value;
     } else {
