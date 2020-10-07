@@ -21,6 +21,7 @@
 		CB922AC1917C4CB0C7E70DE9 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5541778A25CB0A13AD3E0B6 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
 		F1B0394FFCC6A2B27D61020A /* libPods-ModernMilkmanDriver-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C925932F8487F1E00C4C9489 /* libPods-ModernMilkmanDriver-tvOS.a */; };
 		FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */; };
+		FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "ModernMilkmanDriver/AppCenter-Config.plist"; sourceTree = "<group>"; };
+		FF6F542F252DFE9000CB07B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +137,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				9D9B5EE824B365C80047134F /* BootSplash.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */,
 			);
 			name = ModernMilkmanDriver;
 			sourceTree = "<group>";
@@ -344,6 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */,
 				FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */,
 				9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */,
 			);
@@ -676,6 +680,17 @@
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FF6F542F252DFE9000CB07B8 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {

@@ -1,6 +1,7 @@
 import general from './general';
 import input from './input';
-import routes from './routes';
-import screens from './screens';
 import validations from './validations';
-export default { general, input, routes, screens, validations };
+import screens from './screens';
+import ios from './ios';
+import routes from './routes';
+export default { general, input, validations, screens, ios, routes };

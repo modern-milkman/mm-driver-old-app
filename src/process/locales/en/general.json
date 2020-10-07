@@ -8,7 +8,7 @@
   "logout": "Logout",
   "permisions": {
     "location": {
-      "whyLocationUsage": "Your location is required for delivery feature."
+      "whyLocationUsage": "Your location is required to make deliveries."
     }
   },
   "skip": "Skip",

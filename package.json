@@ -1,13 +1,14 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "2.12.70",
+  "version": "2.12.71",
   "versionCode": "4",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock; yarn; cd android && ./gradlew clean",
     "postinstall": "./scripts/infuse_version.sh; cd ios && pod install",
     "precommit": "lint-staged",
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "sync-translations": "./scripts/infuse_locale.sh"
   },
   "dependencies": {
     "@miblanchard/react-native-slider": "1.5.0",
