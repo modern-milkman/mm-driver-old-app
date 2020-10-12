@@ -12,11 +12,13 @@ const Image = (props) => {
     requiresAuthentication,
     source,
     style,
+    width,
     ...otherProps
   } = props;
 
   const [loading, setLoading] = useState(false);
   const [reloaded, setReloaded] = useState(false);
+  const [ratio, setRatio] = useState(1);
 
   const imageSource = () => {
     const headers = {
@@ -31,8 +33,21 @@ const Image = (props) => {
       : { ...fallbackSource, headers: requiresAuthentication ? headers : {} };
   };
 
+  RNImage.getSizeWithHeaders(
+    imageSource().uri,
+    imageSource().headers,
+    (w, h) => {
+      setRatio(w / h);
+    }
+  );
+
   return (
-    <View style={[style, styles.noBorder]}>
+    <View
+      style={[
+        style,
+        styles.noBorder,
+        width && { width: width, height: width / ratio }
+      ]}>
       <RNImage
         {...otherProps}
         source={imageSource()}
@@ -52,11 +67,13 @@ Image.propTypes = {
   fallbackSource: PropTypes.any,
   requiresAuthentication: PropTypes.bool,
   source: PropTypes.any,
-  style: PropTypes.any
+  style: PropTypes.any,
+  width: PropTypes.number
 };
 
 Image.defaultProps = {
-  requiresAuthentication: false
+  requiresAuthentication: false,
+  width: null
 };
 
 export default Image;

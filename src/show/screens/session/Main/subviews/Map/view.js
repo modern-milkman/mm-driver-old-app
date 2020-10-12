@@ -6,6 +6,7 @@ import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import I18n from 'Locales/I18n';
 import { Fab } from 'Components';
+import Alert from 'Services/alert';
 import { deviceFrame } from 'Helpers';
 import actionSheet from 'Services/actionSheet';
 import { colors, defaults, sizes } from 'Theme';
@@ -37,6 +38,7 @@ const defaultMapZoom = 16;
 const changeReturnPosition = (props) => {
   const { returnPosition, updateReturnPosition } = props;
   const actions = {};
+
   actions[
     `${I18n.t('screens:main.actions.setReturnPosition')}`
   ] = updateReturnPosition.bind(null, false);
@@ -106,7 +108,10 @@ const openNavigation = ({
   }
 
   Linking.openURL(url).catch(() => {
-    alert(I18n.t('general:appInstalled', { type })); // eslint-disable-line no-alert
+    Alert({
+      title: I18n.t('general:alert.appInstalled.title'),
+      message: I18n.t('general:alert.appInstalled.message', { type })
+    });
   });
 };
 

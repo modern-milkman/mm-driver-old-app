@@ -6,6 +6,9 @@
     "loadVan": "Load Van"
   },
   "deliver": {
+    "customerID": "Customer ID #{{customerId}}",
+    "deliveryItems": "Delivery items",
+    "routeDescription": "Route ID #{{routeDescription}}",
     "modal": {
       "inputPlaceholder": "Type your reason here",
       "title": "Please provide a reason for skipping delivery"

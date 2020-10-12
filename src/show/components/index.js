@@ -1,7 +1,6 @@
 import ActionSheetAndroid from './ActionSheetAndroid';
 import Button from './Button';
 import CustomBackHandler from './CustomBackHandler';
-import ExpandingRows from './ExpandingRows';
 import Fab from './Fab';
 import Icon from './Icon';
 import Image from './Image';
@@ -19,7 +18,6 @@ export {
   ActionSheetAndroid,
   Button,
   CustomBackHandler,
-  ExpandingRows,
   Fab,
   Icon,
   Image,

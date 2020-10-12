@@ -1,5 +1,10 @@
 {
-  "appInstalled": "Please make sure you have {{type}} app installed",
+  "alert": {
+    "appInstalled": {
+      "title": "Application missing",
+      "message": "Please make sure you have {{type}} app installed"
+    }
+  },
   "cancel": "Cancel",
   "details": "Details",
   "done": "Done",

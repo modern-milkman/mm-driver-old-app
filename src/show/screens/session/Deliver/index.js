@@ -15,6 +15,7 @@ export default connect(
       confirmedItem: state.delivery[today]?.confirmedItem,
       outOfStock: state.delivery[today]?.outOfStockIds,
       selectedStopId: state.delivery[today]?.selectedStopId,
+      routeDescription: state.delivery[today]?.stockWithData?.routeDescription,
       ...state.transient
     };
   },

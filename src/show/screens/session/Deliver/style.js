@@ -6,9 +6,15 @@ const style = StyleSheet.create({
   flex1: {
     flex: 1
   },
+  fullView: {
+    width: '100%',
+    height: '100%'
+  },
   fullImage: {
-    minWidth: '100%',
-    minHeight: '100%'
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    marginVertical: defaults.marginVertical
   },
   fullWidth: {
     width: '100%'
@@ -17,11 +23,6 @@ const style = StyleSheet.create({
     height: sizes.list.image,
     width: sizes.list.image,
     borderRadius: defaults.borderRadius
-  },
-  navigationWrapper: {
-    position: 'absolute',
-    zIndex: 2,
-    width: '100%'
   }
 });
 

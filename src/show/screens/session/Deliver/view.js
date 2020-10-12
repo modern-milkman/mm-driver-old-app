@@ -1,19 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { NavigationEvents } from 'react-navigation';
-import { Animated, TouchableOpacity, View } from 'react-native';
+import { Animated, TouchableOpacity } from 'react-native';
 
 import I18n from 'Locales/I18n';
-import { CustomIcon } from 'Images';
 import { colors, defaults } from 'Theme';
 import { deviceFrame, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import {
   Button,
-  ExpandingRows,
   Image,
   List,
+  ListItem,
   NavBar,
   Text,
   TextInput,
@@ -27,7 +26,6 @@ const forFade = ({ current, closing }) => ({
     opacity: current.progress
   }
 });
-const widthReducer = 0.8;
 
 const { width } = deviceFrame();
 
@@ -69,9 +67,13 @@ const animateContent = ({
 const contentTranslateY = [
   new Animated.Value(100),
   new Animated.Value(100),
+  new Animated.Value(100),
+  new Animated.Value(100),
   new Animated.Value(100)
 ];
 const contentOpacity = [
+  new Animated.Value(0),
+  new Animated.Value(0),
   new Animated.Value(0),
   new Animated.Value(0),
   new Animated.Value(0)
@@ -154,30 +156,25 @@ const renderSkipModal = ({
 
 const renderImageModal = ({ selectedStop, setModalVisible }) => (
   <TouchableOpacity
-    style={style.fullImage}
+    style={style.fullView}
     onPress={setModalVisible.bind(null, false)}>
-    <View style={style.navigationWrapper}>
+    <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
+      <Image
+        requiresAuthentication
+        style={style.fullImage}
+        resizeMode={'center'}
+        source={{
+          uri: selectedStop.customerAddressImage
+        }}
+        width={width}
+      />
       <RowView
-        justifyContent={'flex-end'}
-        marginHorizontal={defaults.marginHorizontal}
-        width={'auto'}>
-        <CustomIcon
-          width={style.image.width * widthReducer}
-          containerWidth={style.image.width}
-          icon={'close'}
-          iconColor={colors.input}
-          disabled
-        />
+        height={'auto'}
+        alignItems={'flex-start'}
+        marginVertical={defaults.marginVertical}>
+        <Text.List>{selectedStop.deliveryInstructions}</Text.List>
       </RowView>
-    </View>
-    <Image
-      requiresAuthentication
-      style={style.fullImage}
-      resizeMode={'contain'}
-      source={{
-        uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
-      }}
-    />
+    </ColumnView>
   </TouchableOpacity>
 );
 
@@ -192,8 +189,9 @@ const Deliver = (props) => {
   const {
     allItemsDone,
     confirmedItem,
-    selectedStop,
     outOfStock,
+    routeDescription,
+    selectedStop,
     setDelivered,
     toggleConfirmedItem,
     toggleOutOfStock
@@ -249,54 +247,38 @@ const Deliver = (props) => {
               opacity: contentOpacity[0]
             }
           ]}>
-          {selectedStop && selectedStop.deliveryInstructions && (
-            <>
-              <Separator />
-              <ExpandingRows
-                leftIcon={'list'}
-                title={selectedStop.deliveryInstructions}>
-                {selectedStop.customerAddressImage && (
-                  <TouchableOpacity
-                    onPress={showModal.bind(
-                      null,
-                      'image',
-                      setModalType,
-                      setModalVisible
-                    )}>
-                    <Image
-                      requiresAuthentication
-                      style={style.image}
-                      source={{
-                        uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
-                      }}
-                    />
-                  </TouchableOpacity>
-                )}
-              </ExpandingRows>
-              <Separator />
-            </>
-          )}
+          <Separator />
+          <ListItem
+            miscelaneousSmall={I18n.t('screens:deliver.routeDescription', {
+              routeDescription
+            })}
+            miscelaneousColor={colors.Primarylight}
+            icon={null}
+            title={`${selectedStop.forename} ${selectedStop.surname}`}
+            description={I18n.t('screens:deliver.customerID', {
+              customerId: selectedStop.customerId
+            })}
+            disabled
+          />
         </Animated.View>
         <Animated.View
           style={[
-            style.flex1,
             style.fullWidth,
             {
               transform: [{ translateY: contentTranslateY[1] }],
               opacity: contentOpacity[1]
             }
           ]}>
-          {optimizedStopOrders && (
-            <List
-              data={optimizedStopOrders}
-              onLongPress={toggleOutOfStock}
-              onPress={toggleConfirmedItem}
-              renderFooterComponent={<Separator />}
+          <>
+            <Separator />
+            <ListItem
+              customIcon={'location'}
+              title={selectedStop.title}
+              titleExpands
+              disabled
             />
-          )}
+          </>
         </Animated.View>
-      </ColumnView>
-      {selectedStop && selectedStop.status === 'pending' && (
         <Animated.View
           style={[
             style.fullWidth,
@@ -305,9 +287,82 @@ const Deliver = (props) => {
               opacity: contentOpacity[2]
             }
           ]}>
+          {selectedStop &&
+            (selectedStop.deliveryInstructions ||
+              selectedStop.customerAddressImage) && (
+              <>
+                <Separator />
+                <ListItem
+                  onPress={showModal.bind(
+                    null,
+                    'image',
+                    setModalType,
+                    setModalVisible
+                  )}
+                  image={
+                    selectedStop.customerAddressImage
+                      ? selectedStop.customerAddressImage
+                      : null
+                  }
+                  customIcon={
+                    selectedStop.customerAddressImage
+                      ? null
+                      : 'frontDeliveryPlaceholder'
+                  }
+                  customIconProps={{ color: colors.primary }}
+                  customRightIconProps={{
+                    color: selectedStop.customerAddressImage
+                      ? colors.primary
+                      : colors.input
+                  }}
+                  customRightIcon={'expand'}
+                  title={selectedStop.deliveryInstructions}
+                  titleExpands
+                  disabled={!selectedStop.customerAddressImage}
+                />
+              </>
+            )}
+        </Animated.View>
+        <Animated.View
+          style={[
+            style.flex1,
+            style.fullWidth,
+            {
+              transform: [{ translateY: contentTranslateY[3] }],
+              opacity: contentOpacity[3]
+            }
+          ]}>
+          {optimizedStopOrders && (
+            <>
+              <Separator />
+              <List
+                data={[
+                  {
+                    title: I18n.t('screens:deliver.deliveryItems'),
+                    data: optimizedStopOrders
+                  }
+                ]}
+                onLongPress={toggleOutOfStock}
+                onPress={toggleConfirmedItem}
+                hasSections
+              />
+            </>
+          )}
+        </Animated.View>
+      </ColumnView>
+      {selectedStop && selectedStop.status === 'pending' && (
+        <Animated.View
+          style={[
+            style.fullWidth,
+            {
+              transform: [{ translateY: contentTranslateY[4] }],
+              opacity: contentOpacity[4]
+            }
+          ]}>
           <ColumnView
             width={'auto'}
-            marginHorizontal={defaults.marginHorizontal}>
+            marginHorizontal={defaults.marginHorizontal}
+            marginTop={defaults.marginVertical / 2}>
             <RowView>
               <Button.Primary
                 title={I18n.t('general:done')}
@@ -319,7 +374,7 @@ const Deliver = (props) => {
               />
             </RowView>
             <RowView marginVertical={defaults.marginVertical}>
-              <Button.Error
+              <Button.Outline
                 title={I18n.t('general:skip')}
                 onPress={showModal.bind(
                   null,
@@ -339,6 +394,7 @@ const Deliver = (props) => {
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
   confirmedItem: PropTypes.array,
+  routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
   outOfStock: PropTypes.array,
   reasonMessage: PropTypes.string,
@@ -352,6 +408,7 @@ Deliver.propTypes = {
 Deliver.defaultProps = {
   allItemsDone: false,
   confirmedItem: [],
+  routeDescription: null,
   selectedStop: {},
   outOfStock: [],
   reasonMessage: '',

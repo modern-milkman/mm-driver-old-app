@@ -18,7 +18,13 @@ const defaultRenderItemSeparator = () => <Separator marginLeft={20} />;
 const defaultSectionFooter = () => <Separator />;
 const widthReducer = 0.8;
 
-const renderImageIcon = (customIcon, icon, image) => {
+const renderImageIcon = (
+  customIcon,
+  customIconProps,
+  icon,
+  iconColor,
+  image
+) => {
   if (image) {
     return (
       <Image
@@ -33,9 +39,12 @@ const renderImageIcon = (customIcon, icon, image) => {
   if (customIcon) {
     return (
       <CustomIcon
-        width={style.image.width * widthReducer}
+        width={style.image.width}
         containerWidth={style.image.width}
         icon={customIcon}
+        iconColor={customIconProps?.color}
+        bgColor={customIconProps?.bgColor}
+        disabled
       />
     );
   }
@@ -43,9 +52,10 @@ const renderImageIcon = (customIcon, icon, image) => {
     return (
       <Icon
         name={icon}
-        color={colors.secondary}
+        color={iconColor}
         size={style.image.width * widthReducer}
-        containerSize={style.image.width * widthReducer}
+        containerSize={style.image.width}
+        disabled
       />
     );
   }
@@ -57,9 +67,13 @@ const renderItemInterface = (
 ) => {
   const {
     customIcon,
+    customIconProps,
+    customRightIcon,
+    customRightIconProps,
     description,
-    disabled,
-    icon,
+    disabled = false,
+    icon = 'package-variant',
+    iconColor = colors.secondary,
     image,
     key,
     miscelaneousColor,
@@ -68,8 +82,10 @@ const renderItemInterface = (
     onLongPress,
     onPress,
     rightIcon,
-    rightIconColor,
+    rightIconColor = colors.primary,
+    rightImage,
     title,
+    titleExpands = false,
     titleColor = colors.secondary
   } = item;
 
@@ -89,29 +105,32 @@ const renderItemInterface = (
         <RowView
           width={style.image.width + defaults.marginHorizontal / 2}
           justifyContent={'flex-start'}>
-          {renderImageIcon(customIcon, icon, image)}
+          {renderImageIcon(customIcon, customIconProps, icon, iconColor, image)}
         </RowView>
       )}
+
       <ColumnView
-        flex={4}
+        flex={1}
         justifyContent={title && description ? 'space-between' : 'center'}
         alignItems={'flex-start'}
         height={style.listItemWrapper.height - defaults.marginVertical}>
         {title && (
-          <Text.List color={titleColor} noPadding>
+          <Text.List
+            align={'left'}
+            color={titleColor}
+            {...(titleExpands && { numberOfLines: 2 })}>
             {title}
           </Text.List>
         )}
 
         {description && (
-          <Text.Caption color={colors.secondary} noPadding>
-            {description}
-          </Text.Caption>
+          <Text.Caption color={colors.secondary}>{description}</Text.Caption>
         )}
       </ColumnView>
+
       {(miscelaneousLarge || miscelaneousSmall) && (
         <RowView
-          flex={2}
+          flex={1}
           justifyContent={'flex-end'}
           alignItems={
             miscelaneousLarge && miscelaneousSmall ? 'space-between' : 'center'
@@ -134,21 +153,15 @@ const renderItemInterface = (
           )}
         </RowView>
       )}
-      {rightIcon && (
-        <RowView
-          width={style.image.width * widthReducer}
-          justifyContent={'flex-end'}>
-          <Icon
-            name={rightIcon}
-            color={rightIconColor || colors.primary}
-            size={style.image.width * widthReducer}
-            containerSize={style.image.width * widthReducer}
-            onPress={computedOnPress}
-            onLongPress={computedOnLongPress}
-            // style={{ TODO FIX ALIGMENT HERE
-            //   transform: [{ translateX: style.image.width * 0.2 }]
-            // }}
-          />
+      {(customRightIcon || rightImage || rightIcon) && (
+        <RowView width={style.image.width} justifyContent={'flex-end'}>
+          {renderImageIcon(
+            customRightIcon,
+            customRightIconProps,
+            rightIcon,
+            rightIconColor,
+            rightImage
+          )}
         </RowView>
       )}
     </TouchableOpacity>
@@ -243,9 +256,13 @@ List.defaultProps = {
 
 ListItem.propTypes = {
   customIcon: PropTypes.string,
+  customIconProps: PropTypes.object,
+  customRightIcon: PropTypes.string,
+  customRightIconProps: PropTypes.object,
   description: PropTypes.string,
   disabled: PropTypes.bool,
   icon: PropTypes.string,
+  iconColor: PropTypes.string,
   image: PropTypes.string,
   item: PropTypes.object,
   miscelaneousLarge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -253,22 +270,33 @@ ListItem.propTypes = {
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
   rightIcon: PropTypes.string,
+  rightIconColor: PropTypes.string,
+  rightImage: PropTypes.string,
   title: PropTypes.string,
+  titleExpands: PropTypes.bool,
   titleColor: PropTypes.string
 };
 
 ListItem.defaultProps = {
+  // should also be added to renderItemInterface method
   customIcon: null,
+  customIconProps: null,
+  customRightIcon: null,
+  customRightIconProps: null,
   description: null,
   disabled: false,
   icon: 'package-variant',
+  iconColor: colors.secondary,
   image: null,
   onLongPress: mock,
   onPress: mock,
   rightIcon: null,
+  rightIconColor: colors.primary,
+  rightImage: null,
   miscelaneousLarge: null,
   miscelaneousSmall: null,
   title: null,
+  titleExpands: false,
   titleColor: colors.secondary
 };
 
