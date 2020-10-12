@@ -12,6 +12,8 @@ import Separator from 'Components/Separator';
 import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
 
+import { navigateInSheet } from 'Screens/session/Main/helpers';
+
 import styles from './styles';
 
 const { width } = deviceFrame();
@@ -23,7 +25,14 @@ const navigateAndClose = (updateProps, routeName) => {
 };
 
 const SideBar = (props) => {
-  const { driverId, name, updateProps, sideBarOpen } = props;
+  const {
+    availableNavApps,
+    driverId,
+    name,
+    updateProps,
+    sideBarOpen,
+    source
+  } = props;
   const [left] = useState(new Animated.Value(-sidebarWidth));
   const [opacity] = useState(new Animated.Value(0));
   const [show, setShow] = useState(sideBarOpen);
@@ -102,15 +111,30 @@ const SideBar = (props) => {
                 </ColumnView>
               </ColumnView>
 
-              <RowView
+              <ColumnView
                 justifyContent={'flex-start'}
-                paddingHorizontal={defaults.marginHorizontal}
+                alignItems={'flex-start'}
                 marginVertical={defaults.marginVertical}>
-                <Text.List
-                  color={
-                    colors.inputDark
-                  }>{`Version: ${Config.APP_VERSION_NAME}`}</Text.List>
-              </RowView>
+                <ListItem
+                  customIcon={'gas'}
+                  title={I18n.t('screens:panel.gasStation')}
+                  rightIcon={'chevron-right'}
+                  onPress={navigateInSheet.bind(null, {
+                    availableNavApps,
+                    source,
+                    lookForGasStation: true
+                  })}
+                />
+
+                <RowView
+                  justifyContent={'flex-start'}
+                  marginHorizontal={defaults.marginHorizontal}>
+                  <Text.List
+                    color={
+                      colors.inputDark
+                    }>{`Version: ${Config.APP_VERSION_NAME}`}</Text.List>
+                </RowView>
+              </ColumnView>
             </ColumnView>
           </SafeAreaView>
         </Animated.View>
@@ -120,9 +144,11 @@ const SideBar = (props) => {
 };
 
 SideBar.propTypes = {
+  availableNavApps: PropTypes.array,
   driverId: PropTypes.number,
   name: PropTypes.string,
   sideBarOpen: PropTypes.bool,
+  source: PropTypes.object,
   updateProps: PropTypes.func,
   userId: PropTypes.func
 };

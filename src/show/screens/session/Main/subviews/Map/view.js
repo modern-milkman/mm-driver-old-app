@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import React, { useState, useEffect } from 'react';
-import { Linking, PixelRatio, Platform, View } from 'react-native';
+import { PixelRatio, Platform, View } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import I18n from 'Locales/I18n';
 import { Fab } from 'Components';
-import Alert from 'Services/alert';
 import { deviceFrame } from 'Helpers';
 import actionSheet from 'Services/actionSheet';
 import { colors, defaults, sizes } from 'Theme';
@@ -15,30 +14,15 @@ import { CurrentLocation, MapMarker } from 'Images';
 import styles from './style';
 import mapStyle from './mapStyle';
 
-import { configuration } from '../../helpers';
+import { configuration, navigateInSheet } from '../../helpers';
 
 const deviceHeight = deviceFrame().height;
-
-const appName = (type) => {
-  switch (type) {
-    case 'maps':
-      return 'Apple Maps';
-
-    case 'comgooglemaps':
-    case 'geo':
-      return 'Google Maps';
-
-    case 'waze':
-      return 'Waze';
-  }
-};
 
 const defaultMapZoom = 16;
 
 const changeReturnPosition = (props) => {
   const { returnPosition, updateReturnPosition } = props;
   const actions = {};
-
   actions[
     `${I18n.t('screens:main.actions.setReturnPosition')}`
   ] = updateReturnPosition.bind(null, false);
@@ -62,57 +46,6 @@ const fitMapToDirections = (mapRef, directionsPolyline) => {
       animated: true
     });
   }
-};
-
-const navigateInSheet = ({ availableNavApps, source, destination }) => {
-  const actions = {};
-  if (availableNavApps.length === 1) {
-    openNavigation({ type: availableNavApps[0], source, destination });
-    return;
-  }
-
-  for (const type of availableNavApps) {
-    actions[
-      `${I18n.t('screens:main.actions.openIn', { appName: appName(type) })}`
-    ] = openNavigation.bind(null, {
-      type,
-      source,
-      destination
-    });
-  }
-
-  actionSheet(actions);
-};
-
-const openNavigation = ({
-  type,
-  source: { latitude: sLatitude, longitude: sLongitude },
-  destination: { latitude: dLatitude, longitude: dLongitude }
-}) => {
-  let url;
-
-  switch (type) {
-    case 'maps': {
-      url = `maps://${sLatitude},${sLongitude}?daddr=${dLatitude},${dLongitude}&saddr=${sLatitude},${sLongitude}`;
-      break;
-    }
-    case 'comgooglemaps':
-    case 'geo': {
-      url = `https://www.google.com/maps/dir/?api=1&center=${sLatitude},${sLongitude}&origin=${sLatitude},${sLongitude}&destination=${dLatitude},${dLongitude}&travelmode=driving&dir_action=navigate`;
-      break;
-    }
-    case 'waze': {
-      url = `https://waze.com/ul?ll=${dLatitude},${dLongitude}&navigate=yes`;
-      break;
-    }
-  }
-
-  Linking.openURL(url).catch(() => {
-    Alert({
-      title: I18n.t('general:alert.appInstalled.title'),
-      message: I18n.t('general:alert.appInstalled.message', { type })
-    });
-  });
 };
 
 const renderMarker = ({
