@@ -345,7 +345,9 @@ export const updateSelectedStop = (state, { sID }) =>
   });
 
 export default createReducer(initialState, {
+  [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
+  [Types.GET_VEHICLE_STOCK_FOR_DRIVER]: processingTrue,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.SET_DELIVERED]: processingTrue,
