@@ -49,13 +49,15 @@ const Search = (props) => {
     updateTransientProps({ searchValue: val });
   };
 
-  const handleFocus = (isFocused) => {
-    setFocused(isFocused);
+  const handleFocus = (isSearchBar, isFocused) => {
+    if ((isSearchBar && isFocused) || !isSearchBar) {
+      setFocused(isFocused);
+    }
   };
 
   const onPressAddress = (key) => {
     updateSelectedStop(key);
-    handleFocus(false);
+    handleFocus(false, false);
   };
 
   const search = {
@@ -113,8 +115,8 @@ const Search = (props) => {
                 disableErrors
                 leftIcon={focused ? 'chevron-back' : 'search'}
                 onChangeText={handleChange.bind(this)}
-                onFocusChanged={handleFocus.bind(null)}
-                onLeftIconPress={handleFocus.bind(null, false)}
+                onFocusChanged={handleFocus.bind(null, true)}
+                onLeftIconPress={handleFocus.bind(null, false, false)}
                 placeholder={I18n.t('screens:main.search.placeholder')}
                 ref={searchReference}
                 shadow
