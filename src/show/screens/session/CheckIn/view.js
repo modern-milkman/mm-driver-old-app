@@ -50,14 +50,14 @@ const animateContent = ({
       Animated.timing(contentTranslateY[index], {
         toValue: contentTranslateYValue,
         useNativeDriver: false,
-        duration: 125,
-        delay: delayIndex * 150
+        duration: 75,
+        delay: delayIndex * 100
       }),
       Animated.timing(contentOpacity[index], {
         toValue: contentOpacityValue,
         useNativeDriver: false,
-        duration: 125,
-        delay: delayIndex * 150
+        duration: 75,
+        delay: delayIndex * 100
       })
     );
   }

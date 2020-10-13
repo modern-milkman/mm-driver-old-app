@@ -4,6 +4,7 @@ import { NavigationEvents } from 'react-navigation';
 import { Animated, TouchableOpacity } from 'react-native';
 
 import I18n from 'Locales/I18n';
+import { CustomIcon } from 'Images';
 import { colors, defaults } from 'Theme';
 import { deviceFrame, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
@@ -50,14 +51,14 @@ const animateContent = ({
       Animated.timing(contentTranslateY[index], {
         toValue: contentTranslateYValue,
         useNativeDriver: false,
-        duration: 125,
-        delay: delayIndex * 150
+        duration: 75,
+        delay: delayIndex * 100
       }),
       Animated.timing(contentOpacity[index], {
         toValue: contentOpacityValue,
         useNativeDriver: false,
-        duration: 125,
-        delay: delayIndex * 150
+        duration: 75,
+        delay: delayIndex * 100
       })
     );
   }
@@ -159,19 +160,32 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
     style={style.fullView}
     onPress={setModalVisible.bind(null, false)}>
     <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
-      <Image
-        requiresAuthentication
-        style={style.fullImage}
-        resizeMode={'center'}
-        source={{
-          uri: selectedStop.customerAddressImage
-        }}
-        width={width}
-      />
+      <RowView height={width - defaults.marginHorizontal * 2}>
+        {selectedStop.customerAddressImage && (
+          <Image
+            requiresAuthentication
+            resizeMode={'cover'}
+            source={{
+              uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
+            }}
+            style={style.image}
+            width={width - defaults.marginHorizontal * 2}
+          />
+        )}
+        {!selectedStop.customerAddressImage && (
+          <CustomIcon
+            width={width - defaults.marginHorizontal * 2}
+            icon={'frontDeliveryPlaceholder'}
+            disabled
+          />
+        )}
+      </RowView>
       <RowView
         height={'auto'}
         alignItems={'flex-start'}
-        marginVertical={defaults.marginVertical}>
+        marginVertical={defaults.marginVertical}
+        width={'auto'}
+        marginHorizontal={defaults.marginHorizontal}>
         <Text.List>{selectedStop.deliveryInstructions}</Text.List>
       </RowView>
     </ColumnView>
@@ -301,7 +315,7 @@ const Deliver = (props) => {
                   )}
                   image={
                     selectedStop.customerAddressImage
-                      ? selectedStop.customerAddressImage
+                      ? `data:image/png;base64,${selectedStop.customerAddressImage}`
                       : null
                   }
                   customIcon={
@@ -311,14 +325,11 @@ const Deliver = (props) => {
                   }
                   customIconProps={{ color: colors.primary }}
                   customRightIconProps={{
-                    color: selectedStop.customerAddressImage
-                      ? colors.primary
-                      : colors.input
+                    color: colors.primary
                   }}
                   customRightIcon={'expand'}
                   title={selectedStop.deliveryInstructions}
                   titleExpands
-                  disabled={!selectedStop.customerAddressImage}
                 />
               </>
             )}

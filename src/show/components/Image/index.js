@@ -38,6 +38,9 @@ const Image = (props) => {
     imageSource().headers,
     (w, h) => {
       setRatio(w / h);
+    },
+    (e) => {
+      setRatio(1);
     }
   );
 
@@ -54,7 +57,7 @@ const Image = (props) => {
         onError={!reloaded && setReloaded.bind(null, reloaded)}
         onLoadStart={setLoading.bind(null, true)}
         onLoadEnd={setLoading.bind(null, false)}
-        style={style}
+        style={[style, width && { width: width, height: width / ratio }]}
       />
       {loading && (
         <ActivityIndicator style={styles.activityIndicator} size="small" />

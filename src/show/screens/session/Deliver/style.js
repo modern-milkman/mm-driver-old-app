@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { defaults, sizes } from 'Theme';
+import { defaults } from 'Theme';
 
 const style = StyleSheet.create({
   flex1: {
@@ -10,18 +10,10 @@ const style = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
-  fullImage: {
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-    marginVertical: defaults.marginVertical
-  },
   fullWidth: {
     width: '100%'
   },
   image: {
-    height: sizes.list.image,
-    width: sizes.list.image,
     borderRadius: defaults.borderRadius
   }
 });

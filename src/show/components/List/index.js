@@ -33,6 +33,7 @@ const renderImageIcon = (
         source={{
           uri: image
         }}
+        width={style.image.width}
       />
     );
   }
@@ -110,7 +111,7 @@ const renderItemInterface = (
       )}
 
       <ColumnView
-        flex={1}
+        flex={4}
         justifyContent={title && description ? 'space-between' : 'center'}
         alignItems={'flex-start'}
         height={style.listItemWrapper.height - defaults.marginVertical}>
@@ -130,13 +131,14 @@ const renderItemInterface = (
 
       {(miscelaneousLarge || miscelaneousSmall) && (
         <RowView
-          flex={1}
+          flex={2}
           justifyContent={'flex-end'}
           alignItems={
             miscelaneousLarge && miscelaneousSmall ? 'space-between' : 'center'
           }>
           {miscelaneousLarge && (
             <Text.Button
+              align={'right'}
               color={miscelaneousColor || colors.secondaryLight}
               noMargin
               noPadding>
@@ -145,6 +147,7 @@ const renderItemInterface = (
           )}
           {miscelaneousSmall && (
             <Text.Caption
+              align={'right'}
               color={miscelaneousColor || colors.inputDark}
               noMargin
               noPadding>

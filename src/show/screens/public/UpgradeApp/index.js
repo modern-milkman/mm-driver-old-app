@@ -31,11 +31,11 @@ const UpgradeApp = (props) => {
             {I18n.t('screens:upgradeApp.description')}
           </Text.List>
 
-          {params.minimumVersionRequired && (
+          {params.minimumVersion && (
             <ColumnView marginTop={24}>
               <Text.Caption align={'center'} marginTop={24}>
                 {I18n.t('screens:upgradeApp.minimumVersion', {
-                  minimumVersionRequired: params.minimumVersionRequired
+                  minimumVersion: params.minimumVersion
                 })}
               </Text.Caption>
             </ColumnView>
