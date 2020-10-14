@@ -27,7 +27,7 @@ const NavBar = ({
         containerSize={defaults.topNavigation.height}
         onPress={leftIconAction}
       />
-      {title && <Text.Input color={colors.secondary}>{title}</Text.Input>}
+      <Text.Input color={colors.secondary}>{title}</Text.Input>
       {(RightComponent && <RightComponent />) || (
         <RowView
           width={defaults.topNavigation.height}

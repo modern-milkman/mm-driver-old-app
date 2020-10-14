@@ -180,14 +180,16 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
           />
         )}
       </RowView>
-      <RowView
-        height={'auto'}
-        alignItems={'flex-start'}
-        marginVertical={defaults.marginVertical}
-        width={'auto'}
-        marginHorizontal={defaults.marginHorizontal}>
-        <Text.List>{selectedStop.deliveryInstructions}</Text.List>
-      </RowView>
+      {selectedStop.deliveryInstructions && (
+        <RowView
+          height={'auto'}
+          alignItems={'flex-start'}
+          marginVertical={defaults.marginVertical}
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}>
+          <Text.List>{selectedStop.deliveryInstructions}</Text.List>
+        </RowView>
+      )}
     </ColumnView>
   </TouchableOpacity>
 );

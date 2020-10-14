@@ -15,26 +15,41 @@ import style from './style';
 const wrapTextComponent = (props, type) => <Text {...props} type={type} />;
 
 const Text = (props) => {
-  const { align, color, flex, lineHeight, type, weight, ...rest } = props;
+  const {
+    align,
+    color,
+    flex,
+    lineHeight,
+    type,
+    weight,
+    children,
+    ...rest
+  } = props;
   let humanoidMaterialStyles = null;
 
   return (
-    <Animated.Text
-      {...rest}
-      style={[
-        humanoidMaterialStyles,
-        style[type].textStyle,
-        weight && style.fontWeight(weight),
-        {
-          color,
-          textAlign: align,
-          ...(align === 'left' &&
-            type === 'Button' && { marginLeft: defaults.paddingHorizontal / 2 })
-        },
-        flex && style.flex,
-        lineHeight && { lineHeight }
-      ]}
-    />
+    (!!children && (
+      <Animated.Text
+        {...rest}
+        style={[
+          humanoidMaterialStyles,
+          style[type].textStyle,
+          weight && style.fontWeight(weight),
+          {
+            color,
+            textAlign: align,
+            ...(align === 'left' &&
+              type === 'Button' && {
+                marginLeft: defaults.paddingHorizontal / 2
+              })
+          },
+          flex && style.flex,
+          lineHeight && { lineHeight }
+        ]}>
+        {children}
+      </Animated.Text>
+    )) ||
+    null
   );
 };
 

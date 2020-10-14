@@ -110,24 +110,21 @@ const renderItemInterface = (
         </RowView>
       )}
 
-      <ColumnView
-        flex={4}
-        justifyContent={title && description ? 'space-between' : 'center'}
-        alignItems={'flex-start'}
-        height={style.listItemWrapper.height - defaults.marginVertical}>
-        {title && (
+      {(title || description) && (
+        <ColumnView
+          flex={4}
+          justifyContent={title && description ? 'space-between' : 'center'}
+          alignItems={'flex-start'}
+          height={style.listItemWrapper.height - defaults.marginVertical}>
           <Text.List
             align={'left'}
             color={titleColor}
             {...(titleExpands && { numberOfLines: 2 })}>
             {title}
           </Text.List>
-        )}
-
-        {description && (
           <Text.Caption color={colors.secondary}>{description}</Text.Caption>
-        )}
-      </ColumnView>
+        </ColumnView>
+      )}
 
       {(miscelaneousLarge || miscelaneousSmall) && (
         <RowView
@@ -136,24 +133,20 @@ const renderItemInterface = (
           alignItems={
             miscelaneousLarge && miscelaneousSmall ? 'space-between' : 'center'
           }>
-          {miscelaneousLarge && (
-            <Text.Button
-              align={'right'}
-              color={miscelaneousColor || colors.secondaryLight}
-              noMargin
-              noPadding>
-              {miscelaneousLarge}
-            </Text.Button>
-          )}
-          {miscelaneousSmall && (
-            <Text.Caption
-              align={'right'}
-              color={miscelaneousColor || colors.inputDark}
-              noMargin
-              noPadding>
-              {miscelaneousSmall}
-            </Text.Caption>
-          )}
+          <Text.Button
+            align={'right'}
+            color={miscelaneousColor || colors.secondaryLight}
+            noMargin
+            noPadding>
+            {miscelaneousLarge}
+          </Text.Button>
+          <Text.Caption
+            align={'right'}
+            color={miscelaneousColor || colors.inputDark}
+            noMargin
+            noPadding>
+            {miscelaneousSmall}
+          </Text.Caption>
         </RowView>
       )}
       {(customRightIcon || rightImage || rightIcon) && (
