@@ -70,13 +70,13 @@ const openNavigation = ({
     case 'geo': {
       url = lookForGasStation
         ? 'https://www.google.com/maps/search/Gas+stations'
-        : `dir/?api=1&center=${sLatitude},${sLongitude}&origin=${sLatitude},${sLongitude}&destination=${dLatitude},${dLongitude}&travelmode=driving&dir_action=navigate`;
+        : `https://www.google.com/maps/dir/?api=1&center=${sLatitude},${sLongitude}&origin=${sLatitude},${sLongitude}&destination=${dLatitude},${dLongitude}&travelmode=driving&dir_action=navigate`;
       break;
     }
     case 'waze': {
       url = lookForGasStation
         ? 'https://waze.com/ul?q=Gas+stations'
-        : `&ll=${dLatitude},${dLongitude}&navigate=yes`;
+        : `https://waze.com/ul?ll=${dLatitude},${dLongitude}&navigate=yes`;
       break;
     }
   }
