@@ -2,7 +2,8 @@
   "alert": {
     "appInstalled": {
       "title": "Application missing",
-      "message": "Please make sure you have {{type}} app installed"
+      "message": "Please make sure you have {{type}} app installed",
+      "noAppMessage": "Plase make sure you have at least one of Google Maps, Apple Maps or Waze installed"
     }
   },
   "cancel": "Cancel",

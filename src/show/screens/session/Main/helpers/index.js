@@ -34,21 +34,31 @@ const navigateInSheet = ({
       destination,
       lookForGasStation
     });
-    return;
-  }
+  } else if (availableNavApps.length > 1) {
+    for (const type of availableNavApps) {
+      actions[
+        `${I18n.t('screens:main.actions.openIn', { appName: appName(type) })}`
+      ] = openNavigation.bind(null, {
+        type,
+        source,
+        destination,
+        lookForGasStation
+      });
+    }
 
-  for (const type of availableNavApps) {
-    actions[
-      `${I18n.t('screens:main.actions.openIn', { appName: appName(type) })}`
-    ] = openNavigation.bind(null, {
-      type,
-      source,
-      destination,
-      lookForGasStation
+    actionSheet(actions);
+  } else {
+    Alert({
+      title: I18n.t('general:alert.appInstalled.title'),
+      message: I18n.t('general:alert.appInstalled.noAppMessage'),
+      buttons: [
+        {
+          text: I18n.t('general:ok'),
+          style: 'cancel'
+        }
+      ]
     });
   }
-
-  actionSheet(actions);
 };
 
 const openNavigation = ({
