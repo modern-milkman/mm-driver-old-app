@@ -11,6 +11,7 @@
   "go": "Go!",
   "login": "Login",
   "logout": "Logout",
+  "ok": "Ok",
   "permisions": {
     "location": {
       "whyLocationUsage": "Your location is required to make deliveries."

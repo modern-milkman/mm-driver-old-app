@@ -84,7 +84,13 @@ const openNavigation = ({
   Linking.openURL(url).catch(() => {
     Alert({
       title: I18n.t('general:alert.appInstalled.title'),
-      message: I18n.t('general:alert.appInstalled.message', { type })
+      message: I18n.t('general:alert.appInstalled.message', { type }),
+      buttons: [
+        {
+          text: I18n.t('general:ok'),
+          style: 'cancel'
+        }
+      ]
     });
   });
 };
