@@ -173,7 +173,10 @@ export const getForDriverSuccess = (state, { payload }) =>
           key,
           customerId: item.customerId,
           description: `${item.forename} ${item.surname}`,
-          deliveryInstructions,
+          deliveryInstructions:
+            deliveryInstructions && deliveryInstructions.length > 0
+              ? deliveryInstructions
+              : null,
           forename: item.forename,
           icon: null,
           latitude,
