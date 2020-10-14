@@ -5,7 +5,9 @@ import { defaults, sizes } from 'Theme';
 const styles = StyleSheet.create({
   image: {
     height: sizes.list.image,
+    maxHeight: sizes.list.image,
     width: sizes.list.image,
+    maxWidth: sizes.list.image,
     borderRadius: defaults.borderRadius
   },
   listItemWrapper: {

@@ -28,7 +28,7 @@ const forFade = ({ current, closing }) => ({
   }
 });
 
-const { width } = deviceFrame();
+const { width, height } = deviceFrame();
 
 const animateContent = ({
   contentTranslateYValue,
@@ -160,26 +160,26 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
     style={style.fullView}
     onPress={setModalVisible.bind(null, false)}>
     <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
-      <RowView height={width - defaults.marginHorizontal * 2}>
-        {selectedStop.customerAddressImage && (
-          <Image
-            requiresAuthentication
-            resizeMode={'cover'}
-            source={{
-              uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
-            }}
-            style={style.image}
-            width={width - defaults.marginHorizontal * 2}
-          />
-        )}
-        {!selectedStop.customerAddressImage && (
+      {selectedStop.customerAddressImage && (
+        <Image
+          requiresAuthentication
+          source={{
+            uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
+          }}
+          style={style.image}
+          width={width - defaults.marginHorizontal * 2}
+          maxHeight={height * 0.7}
+        />
+      )}
+      {!selectedStop.customerAddressImage && (
+        <RowView height={width - defaults.marginHorizontal * 2}>
           <CustomIcon
             width={width - defaults.marginHorizontal * 2}
             icon={'frontDeliveryPlaceholder'}
             disabled
           />
-        )}
-      </RowView>
+        </RowView>
+      )}
       {selectedStop.deliveryInstructions && (
         <RowView
           height={'auto'}

@@ -9,6 +9,7 @@ import styles from './style';
 const Image = (props) => {
   const {
     fallbackSource,
+    maxHeight,
     requiresAuthentication,
     source,
     style,
@@ -44,12 +45,20 @@ const Image = (props) => {
     }
   );
 
+  let computedHeight = width / ratio;
+  let computedWidth = width;
+
+  if (computedHeight > maxHeight) {
+    computedHeight = maxHeight;
+    computedWidth = computedHeight * ratio;
+  }
+
   return (
     <View
       style={[
         style,
         styles.noBorder,
-        width && { width: width, height: width / ratio }
+        width && { width: computedWidth, height: computedHeight }
       ]}>
       <RNImage
         {...otherProps}
@@ -57,7 +66,10 @@ const Image = (props) => {
         onError={!reloaded && setReloaded.bind(null, reloaded)}
         onLoadStart={setLoading.bind(null, true)}
         onLoadEnd={setLoading.bind(null, false)}
-        style={[style, width && { width: width, height: width / ratio }]}
+        style={[
+          style,
+          width && { width: computedWidth, height: computedHeight }
+        ]}
       />
       {loading && (
         <ActivityIndicator style={styles.activityIndicator} size="small" />
@@ -68,6 +80,7 @@ const Image = (props) => {
 
 Image.propTypes = {
   fallbackSource: PropTypes.any,
+  maxHeight: PropTypes.number,
   requiresAuthentication: PropTypes.bool,
   source: PropTypes.any,
   style: PropTypes.any,

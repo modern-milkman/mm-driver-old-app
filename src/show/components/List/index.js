@@ -33,6 +33,7 @@ const renderImageIcon = (
         source={{
           uri: image
         }}
+        resizeMode={'contain'}
         width={style.image.width}
       />
     );
