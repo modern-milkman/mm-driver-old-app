@@ -214,7 +214,7 @@ const Deliver = (props) => {
   } = props;
 
   const optimizedStopOrders = selectedStop
-    ? selectedStop.orders.map((order) => {
+    ? Object.values(selectedStop.orders).map((order) => {
         const isOutOfStock = outOfStock.includes(order.key);
         return {
           ...order,

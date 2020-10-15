@@ -182,7 +182,7 @@ export const getForDriverSuccess = (state, { payload }) =>
           latitude,
           longitude,
           orderID: item.orderID,
-          orders: [],
+          orders: {},
 
           phoneNumber: item.phoneNumber,
           surname: item.surname,
@@ -197,19 +197,19 @@ export const getForDriverSuccess = (state, { payload }) =>
               ? `${item.address.postcodeOutward}`
               : '')
         };
-        draft[cd].stops[key].orders.push({
-          description: item.measureDescription,
-          image: `${productImageUri}${item.productId}`,
-          key: item.orderItemId,
-          miscelaneousLarge: item.quantity,
-          title: item.productName
-        });
-
-        draft[cd].stops[key].itemCount =
-          (draft[cd].stops[key]?.itemCount
-            ? draft[cd].stops[key].itemCount
-            : 0) + item.quantity;
       }
+
+      draft[cd].stops[key].orders[item.orderItemId] = {
+        description: item.measureDescription,
+        image: `${productImageUri}${item.productId}`,
+        key: item.orderItemId,
+        miscelaneousLarge: item.quantity,
+        title: item.productName
+      };
+
+      draft[cd].stops[key].itemCount =
+        (draft[cd].stops[key]?.itemCount ? draft[cd].stops[key].itemCount : 0) +
+        item.quantity;
     }
   });
 
