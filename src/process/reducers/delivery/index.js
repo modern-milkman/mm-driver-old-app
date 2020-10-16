@@ -190,11 +190,11 @@ export const getForDriverSuccess = (state, { payload }) =>
           title:
             (item.address.name_number ? `${item.address.name_number}` : '') +
             (item.address.line1 ? ` ${item.address.line1}` : '') +
-            (item.address.postcodeInward
-              ? `, ${item.address.postcodeInward}`
-              : '') +
             (item.address.postcodeOutward
-              ? `${item.address.postcodeOutward}`
+              ? `, ${item.address.postcodeOutward}`
+              : '') +
+            (item.address.postcodeInward
+              ? `${item.address.postcodeInward}`
               : '')
         };
       }
