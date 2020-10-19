@@ -49,8 +49,9 @@ const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/I
 const initialCurrentDay = cDay();
 
 const initialState = {
-  processing: true,
   currentDay: initialCurrentDay,
+  optimizedRoutes: true,
+  processing: true,
   [initialCurrentDay]: {
     allItemsDone: false,
     completedStopsIds: [],
@@ -235,6 +236,9 @@ export const setDeliveredOrRejectedSuccess = (state) =>
 
     if (draft[cd].orderedStopsIds.length > 0) {
       draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
+      if (!draft.optimizedRoutes) {
+        draft[cd].selectedStopId = null;
+      }
     } else {
       draft[cd].selectedStopId = null;
       draft[cd].deliveryStatus = 3;
@@ -328,6 +332,7 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     optimizedRoute.map((i) => draft[cd].orderedStopsIds.push(stops[i].key));
     draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
     draft[cd].deliveryStatus = 2;
+    draft.optimizedRoutes = true;
     draft.processing = false;
   });
 
@@ -345,6 +350,7 @@ export const updateDirectionsPolyline = (state, { payload }) =>
 export const updateSelectedStop = (state, { sID }) =>
   produce(state, (draft) => {
     const cd = state.currentDay;
+    draft.optimizedRoutes = false;
     resetSelectedStopInfo(draft[cd]);
     draft[cd].previousStopId = draft[cd].selectedStopId;
     draft[cd].selectedStopId = sID;
@@ -403,3 +409,5 @@ export const stops = (state) =>
 
 export const stopCount = (state) =>
   Object.keys(state.delivery[state.delivery.currentDay]?.stops).length || 0;
+
+export const isOptimizedRoutes = (state) => state.delivery.optimizedRoutes;

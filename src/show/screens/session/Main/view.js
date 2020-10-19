@@ -73,6 +73,9 @@ const Main = (props) => {
     buttonAccessibility,
     canPanForeground,
     deliveryStatus,
+    optimizedRoutes,
+    selectedStop,
+    optimizeStops,
     startDelivering
   } = props;
 
@@ -323,7 +326,8 @@ const Main = (props) => {
           onButtonPress={
             deliveryStatus === 1
               ? startDelivering.bind(null)
-              : springForeground.bind(null, {
+              : selectedStop
+              ? springForeground.bind(null, {
                   animatedValues: [pullHandlePan.y, pullHandleMoveY],
                   toValue: snapTopY,
                   snapTopY,
@@ -332,6 +336,9 @@ const Main = (props) => {
                   routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn',
                   top
                 })
+              : !optimizedRoutes
+              ? optimizeStops.bind(null)
+              : null
           }
         />
       </Foreground>
@@ -347,6 +354,9 @@ Main.propTypes = {
   buttonAccessibility: PropTypes.number,
   canPanForeground: PropTypes.bool,
   deliveryStatus: PropTypes.number,
+  optimizedRoutes: PropTypes.bool,
+  selectedStop: PropTypes.any,
+  optimizeStops: PropTypes.func,
   startDelivering: PropTypes.func
 };
 

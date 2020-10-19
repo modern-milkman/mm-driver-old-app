@@ -25,13 +25,19 @@ const onShowDoneDeliveries = (updateDeviceProps, showDoneDeliveries) => {
   updateDeviceProps({ showDoneDeliveries });
 };
 
+const onOptimization = (updateDeliveryProps, optimizedRoutes) => {
+  updateDeliveryProps({ optimizedRoutes });
+};
+
 const Settings = (props) => {
   const {
     buttonAccessibility,
     logout,
     mapMarkerSize,
+    optimizedRoutes,
     showDoneDeliveries,
     updateDeviceProps,
+    updateDeliveryProps,
     vibrate
   } = props;
 
@@ -53,6 +59,21 @@ const Settings = (props) => {
           justifyContent={'flex-start'}
           alignItems={'stretch'}
           width={'auto'}>
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.manualRouting')}
+            </Text.List>
+            <Switch
+              value={!optimizedRoutes}
+              onValueChange={onOptimization.bind(null, updateDeliveryProps)}
+            />
+          </RowView>
+
+          <Separator />
           <RowView
             marginHorizontal={defaults.marginHorizontal}
             justifyContent={'space-between'}
@@ -153,7 +174,9 @@ Settings.propTypes = {
   buttonAccessibility: PropTypes.number,
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
+  optimizedRoutes: PropTypes.bool,
   showDoneDeliveries: PropTypes.bool,
+  updateDeliveryProps: PropTypes.func,
   updateDeviceProps: PropTypes.func,
   vibrate: PropTypes.bool
 };

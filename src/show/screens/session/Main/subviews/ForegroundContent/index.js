@@ -10,6 +10,7 @@ export default connect((state) => {
 
   return {
     deliveryStatus: state.delivery[today]?.deliveryStatus,
+    optimizedRoutes: state.delivery.optimizedRoutes,
     processing: state.delivery.processing,
     routeDescription:
       state.delivery[today]?.stockWithData?.routeDescription || null,

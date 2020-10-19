@@ -7,6 +7,7 @@ import {
   outOfStockItems as outOfStockItemsSelector,
   orderedStopsIds as orderedStopsIdsSelector,
   selectedStop as selectedStopSelector,
+  isOptimizedRoutes as optimizedRoutesSelector,
   stops as stopsSelector,
   Types as DeliveryTypes
 } from 'Reducers/delivery';
@@ -100,15 +101,19 @@ export const setDelivered = function* ({ id }) {
 };
 
 export const setDeliveredOrRejectedSuccess = function* () {
+  const deliveryStatus = yield select(deliveryStatusSelector);
+  const isOptimizedRoutes = yield select(optimizedRoutesSelector);
+  const orderedStopsIds = yield select(orderedStopsIdsSelector);
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
-  const deliveryStatus = yield select(deliveryStatusSelector);
-  const orderedStopsIds = yield select(orderedStopsIdsSelector);
+
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
-  if (deliveriesLeft > 0) {
+
+  if (deliveriesLeft > 0 && isOptimizedRoutes) {
     yield call(updatedSelectedStop);
   }
+
   yield call(updateTrackerData, { deliveryStatus });
 
   yield put({

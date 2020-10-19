@@ -270,9 +270,9 @@ const Deliver = (props) => {
             })}
             miscelaneousColor={colors.Primarylight}
             icon={null}
-            title={`${selectedStop.forename} ${selectedStop.surname}`}
+            title={`${selectedStop?.forename} ${selectedStop?.surname}`}
             description={I18n.t('screens:deliver.customerID', {
-              customerId: selectedStop.customerId
+              customerId: selectedStop?.customerId
             })}
             disabled
           />
@@ -289,7 +289,7 @@ const Deliver = (props) => {
             <Separator />
             <ListItem
               customIcon={'location'}
-              title={selectedStop.title}
+              title={selectedStop?.title}
               titleExpands
               disabled
             />

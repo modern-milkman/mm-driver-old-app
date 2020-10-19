@@ -31,7 +31,8 @@
     "descriptions": {
       "comeBackLater": "Come back later",
       "deliveryActive": "{{stopCount}} deliveries",
-      "noDelivery": "See you tomorrow"
+      "noDelivery": "See you tomorrow",
+      "or": "OR"
     },
     "navigation": {
       "deliveries": "Deliveries"
@@ -42,9 +43,11 @@
       "results": "Results"
     },
     "titles": {
+      "selectNextStop": "Please select next stop",
       "comeBackLater": "No delivery info yet",
       "noDelivery": "No deliveries tonight"
-    }
+    },
+    "useOptimizedRouting": "Use optimized routing"
   },
   "panel": {
     "driverID": "Driver ID #{{driverId}}",
@@ -61,8 +64,9 @@
       "mapMarkers": "Map pins size"
     },
     "switches": {
-      "vibrations": "Vibrations",
-      "showDoneDeliveries": "Show done deliveries"
+      "manualRouting": "Use manual routing",
+      "showDoneDeliveries": "Show done deliveries",
+      "vibrations": "Vibrations"
     }
   }
 }

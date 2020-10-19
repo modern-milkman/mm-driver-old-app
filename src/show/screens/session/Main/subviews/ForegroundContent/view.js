@@ -11,6 +11,8 @@ import { Button, Text, Separator } from 'Components';
 
 const renderButtonTitle = (foregroundState) => {
   switch (foregroundState) {
+    case 'MANUAL':
+      return I18n.t('screens:main.useOptimizedRouting');
     case 'CHECKIN':
     case 'NO_DELIVERIES':
     case 'COME_BACK_LATER':
@@ -24,6 +26,8 @@ const renderButtonTitle = (foregroundState) => {
 
 const renderHeading = (foregroundState, { routeDescription, selectedStop }) => {
   switch (foregroundState) {
+    case 'MANUAL':
+      return I18n.t('screens:main.titles.selectNextStop');
     case 'COME_BACK_LATER':
       return I18n.t('screens:main.titles.comeBackLater');
     case 'NO_DELIVERIES':
@@ -38,6 +42,8 @@ const renderHeading = (foregroundState, { routeDescription, selectedStop }) => {
 
 const renderSubHeading = (foregroundState, { stopCount, selectedStop }) => {
   switch (foregroundState) {
+    case 'MANUAL':
+      return I18n.t('screens:main.descriptions.or');
     case 'COME_BACK_LATER':
       return I18n.t('screens:main.descriptions.comeBackLater');
     case 'NO_DELIVERIES':
@@ -65,12 +71,14 @@ const ForegroundContent = (props) => {
     interpolatedValues,
     onButtonPress,
     processing,
-    selectedStop,
+    optimizedRoutes,
     stopCount,
+    selectedStop,
     onTitleLayoutChange
   } = props;
 
   let foregroundState = 'COME_BACK_LATER';
+
   if (deliveryStatus === 0) {
     if (stopCount === 0) {
       // < handled by default version
@@ -82,8 +90,12 @@ const ForegroundContent = (props) => {
     }
   } else if (deliveryStatus === 1) {
     foregroundState = 'START_ROUTE';
-  } else if (deliveryStatus === 2 && selectedStop) {
-    foregroundState = 'DELIVERING';
+  } else if (deliveryStatus === 2) {
+    if (selectedStop) {
+      foregroundState = 'DELIVERING';
+    } else if (!optimizedRoutes) {
+      foregroundState = 'MANUAL';
+    }
   } else if (deliveryStatus === 3) {
     if (ukTimeNow() < parseInt(Config.RESET_HOUR_DAY)) {
       foregroundState = 'COME_BACK_LATER';
@@ -160,6 +172,7 @@ ForegroundContent.propTypes = {
   interpolatedValues: PropTypes.object,
   onButtonPress: PropTypes.func,
   onTitleLayoutChange: PropTypes.func,
+  optimizedRoutes: PropTypes.bool,
   processing: PropTypes.bool,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
