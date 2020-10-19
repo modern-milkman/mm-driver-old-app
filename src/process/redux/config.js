@@ -11,7 +11,8 @@ export const storeConfig = {
       'processing',
       'sideBarOpen',
       'mounted'
-    ])
+    ]),
+    createBlacklistFilter('delivery', ['currentDay'])
   ]
 };
 
