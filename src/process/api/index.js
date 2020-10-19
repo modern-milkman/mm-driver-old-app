@@ -32,7 +32,7 @@ const interceptors = {
   responseError: async (error) => {
     const originalRequest = error.config;
     const { dispatch } = store().store;
-    if (error.response.status === 401) {
+    if (error?.response?.status === 401) {
       if (!originalRequest.url.includes('/Security/Refresh')) {
         const refreshResponse = await repositories.user.refreshToken(
           Api.getToken(),

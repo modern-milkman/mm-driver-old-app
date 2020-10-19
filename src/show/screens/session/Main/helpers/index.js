@@ -72,20 +72,20 @@ const openNavigation = ({
   switch (type) {
     case 'maps': {
       url = lookForGasStation
-        ? `maps://${sLatitude},${sLongitude}?q=Gas+stations`
+        ? `maps://${sLatitude},${sLongitude}?q=BP+Gas+stations`
         : `maps://${sLatitude},${sLongitude}?daddr=${dLatitude},${dLongitude}&saddr=${sLatitude},${sLongitude}`;
       break;
     }
     case 'comgooglemaps':
     case 'geo': {
       url = lookForGasStation
-        ? 'https://www.google.com/maps/search/Gas+stations'
+        ? 'https://www.google.com/maps/search/BP+Gas+stations'
         : `https://www.google.com/maps/dir/?api=1&center=${sLatitude},${sLongitude}&origin=${sLatitude},${sLongitude}&destination=${dLatitude},${dLongitude}&travelmode=driving&dir_action=navigate`;
       break;
     }
     case 'waze': {
       url = lookForGasStation
-        ? 'https://waze.com/ul?q=Gas+stations'
+        ? 'https://waze.com/ul?q=BP+Gas+stations'
         : `https://waze.com/ul?ll=${dLatitude},${dLongitude}&navigate=yes`;
       break;
     }

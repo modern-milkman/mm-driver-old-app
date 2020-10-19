@@ -19,8 +19,10 @@ import styles from './styles';
 const { width } = deviceFrame();
 const sidebarWidth = 0.8 * width;
 
-const navigateAndClose = (updateProps, routeName) => {
-  NavigationService.navigate({ routeName });
+const navigateAndClose = (updateProps, callback) => {
+  if (callback) {
+    callback();
+  }
   updateProps({ sideBarOpen: false });
 };
 
@@ -104,7 +106,9 @@ const SideBar = (props) => {
                     onPress={navigateAndClose.bind(
                       null,
                       updateProps,
-                      'Settings'
+                      NavigationService.navigate.bind(null, {
+                        routeName: 'Settings'
+                      })
                     )}
                     title={I18n.t('routes:settings')}
                   />
@@ -119,11 +123,15 @@ const SideBar = (props) => {
                   customIcon={'gas'}
                   title={I18n.t('screens:panel.gasStation')}
                   rightIcon={'chevron-right'}
-                  onPress={navigateInSheet.bind(null, {
-                    availableNavApps,
-                    source,
-                    lookForGasStation: true
-                  })}
+                  onPress={navigateAndClose.bind(
+                    null,
+                    updateProps,
+                    navigateInSheet.bind(null, {
+                      availableNavApps,
+                      source,
+                      lookForGasStation: true
+                    })
+                  )}
                 />
 
                 <RowView

@@ -1,321 +1,199 @@
 import PropTypes from 'prop-types';
+import { View } from 'react-native';
 import Config from 'react-native-config';
-import React, { useState, useEffect } from 'react';
-import { PixelRatio, Platform, View } from 'react-native';
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import React, { useEffect, useState } from 'react';
+import MapView, {
+  Marker as RNMMarker,
+  PROVIDER_GOOGLE
+} from 'react-native-maps';
 
-import I18n from 'Locales/I18n';
-import { Fab } from 'Components';
+import { sizes } from 'Theme';
 import { deviceFrame } from 'Helpers';
-import actionSheet from 'Services/actionSheet';
-import { colors, defaults, sizes } from 'Theme';
-import { CurrentLocation, MapMarker } from 'Images';
+import { CurrentLocation } from 'Images';
 
 import styles from './style';
 import mapStyle from './mapStyle';
-
-import { configuration, navigateInSheet } from '../../helpers';
+import { DirectionsPolyline, Fabs, Markers } from './subviews';
 
 const deviceHeight = deviceFrame().height;
 
-const defaultMapZoom = 16;
-
-const changeReturnPosition = (props) => {
-  const { returnPosition, updateReturnPosition } = props;
-  const actions = {};
-  actions[
-    `${I18n.t('screens:main.actions.setReturnPosition')}`
-  ] = updateReturnPosition.bind(null, false);
-  if (returnPosition) {
-    actions[
-      `${I18n.t('screens:main.actions.clearReturnPosition')}`
-    ] = updateReturnPosition.bind(null, true);
-  }
-  actionSheet(actions, { destructiveButtonIndex: 2 });
-};
-
-const fitMapToDirections = (mapRef, directionsPolyline) => {
-  if (directionsPolyline && directionsPolyline.length > 0 && mapRef) {
-    mapRef.fitToCoordinates(directionsPolyline, {
-      edgePadding: {
-        top: Platform.OS === 'ios' ? 150 : PixelRatio.get() * 150 - 50,
-        right: 50,
-        bottom: Platform.OS === 'ios' ? 150 : PixelRatio.get() * 200 - 50,
-        left: 50
-      },
-      animated: true
+const regionChangeComplete = (
+  {
+    mapNoTrackingHeading,
+    mapNoTrackingZoom,
+    mapRef,
+    mapTrackingZoom,
+    setUserIsInteracting,
+    shouldTrackLocation,
+    updateDeviceProps
+  },
+  region,
+  { isGesture }
+) => {
+  if (mapRef) {
+    mapRef.getCamera().then((currentCamera) => {
+      updateDeviceProps({
+        ...(shouldTrackLocation && {
+          mapTrackingZoom: currentCamera.zoom
+        }),
+        ...(!shouldTrackLocation && {
+          mapNoTrackingHeading: currentCamera.heading,
+          mapNoTrackingZoom: currentCamera.zoom
+        })
+      });
     });
+    if (isGesture) {
+      setUserIsInteracting(false);
+    }
   }
-};
-
-const renderMarker = ({
-  completed,
-  mapMarkerSize,
-  sID,
-  selectedStopId,
-  stop,
-  tracksViewChanges,
-  updateSelectedStop
-}) => {
-  return (
-    <Marker
-      key={sID}
-      coordinate={{
-        latitude: stop?.latitude,
-        longitude: stop?.longitude
-      }}
-      onPress={updateSelectedStop.bind(null, sID)}
-      anchor={{ x: 0, y: 1 }}
-      {...(selectedStopId === sID && { zIndex: 1 })}
-      tracksViewChanges={tracksViewChanges}>
-      <MapMarker
-        icon={completed ? 'check' : 'arrow-down'}
-        bgColor={
-          selectedStopId === sID
-            ? colors.secondary
-            : completed
-            ? colors.input
-            : colors.primary
-        }
-        size={mapMarkerSize}
-      />
-    </Marker>
-  );
 };
 
 const Map = (props) => {
   const {
-    availableNavApps,
-    buttonAccessibility,
-    completedStopsIds,
     height,
-    coords: { latitude, longitude },
-    directionsPolyline,
-    mapMarkerSize,
+    coords: { heading, latitude, longitude },
+    mapNoTrackingHeading,
+    mapNoTrackingZoom,
     mapPadding,
-    orderedStopsIds,
-    selectedStopId,
-    stops,
-    showDoneDeliveries,
-    updateSelectedStop
+    mapTrackingZoom,
+    updateDeviceProps
   } = props;
-  const source = { latitude, longitude };
-  const destination =
-    stops && selectedStopId && stops[selectedStopId]
-      ? { ...stops[selectedStopId] }
-      : null;
 
+  const [animateCamera, setAnimateCamera] = useState(null);
+  const [mapReady, setMapReady] = useState(false);
   const [mapRef, setRef] = useState(undefined);
-  const [animateCamera, setAnimateCamera] = useState({});
-  const [shouldTrackLocation, toggleLocationTracking] = useState({
-    gps: false,
-    directionsPolyline: true
-  });
-  const [camera, setCamera] = useState({
+  const [shouldTrackLocation, toggleLocationTracking] = useState(false);
+  const [userIsInteracting, setUserIsInteracting] = useState(false);
+
+  const initialCamera = {
+    altitude: 1000,
     center: {
       latitude,
       longitude
     },
-    heading: 0,
-    pitch: 0,
-    zoom: defaultMapZoom,
-    altitude: 1000
-  });
-  const [tracksViewChanges, setTracksViewChanges] = useState(false);
+    ...(shouldTrackLocation
+      ? {
+          pitch: 90,
+          zoom: mapTrackingZoom
+        }
+      : {
+          heading: mapNoTrackingHeading,
+          pitch: 0,
+          zoom: mapNoTrackingZoom
+        })
+  };
 
   useEffect(() => {
-    if (shouldTrackLocation.gps) {
-      const cameraUpdated = {
-        center: {
-          latitude,
-          longitude
-        },
-        heading: 0,
-        pitch: 0,
-        zoom: defaultMapZoom,
-        altitude: 1000
-      };
-
-      setAnimateCamera(cameraUpdated);
-
-      const animatedCameraCallback = setTimeout(() => {
-        setCamera(cameraUpdated);
-      }, 500);
-      return () => clearTimeout(animatedCameraCallback);
-    }
-    if (shouldTrackLocation.directionsPolyline) {
-      fitMapToDirections(mapRef, directionsPolyline);
-    }
-  }, [directionsPolyline, latitude, longitude, mapRef, shouldTrackLocation]);
-
-  useEffect(() => {
-    toggleLocationTracking({
-      gps: false,
-      directionsPolyline: true
+    // lat long changed should only affect if location is tracked
+    mapRef?.getCamera().then((currentCamera) => {
+      if (shouldTrackLocation) {
+        setAnimateCamera({
+          ...currentCamera,
+          center: {
+            latitude,
+            longitude
+          },
+          heading,
+          pitch: 90,
+          zoom: mapTrackingZoom
+        });
+      } else {
+        setAnimateCamera({
+          ...currentCamera,
+          heading: mapNoTrackingHeading,
+          pitch: 0,
+          zoom: mapNoTrackingZoom
+        });
+        setTimeout(() => {
+          setAnimateCamera(null);
+        }, 500);
+      }
     });
-    setTracksViewChanges(true);
-    setTimeout(setTracksViewChanges.bind(null, false), 500);
-  }, [selectedStopId]);
+  }, [
+    heading,
+    latitude,
+    longitude,
+    mapNoTrackingHeading,
+    mapNoTrackingZoom,
+    mapRef,
+    mapTrackingZoom,
+    shouldTrackLocation,
+    userIsInteracting
+  ]);
 
   return (
     <View style={[styles.map, { height: deviceHeight }]}>
       <MapView
-        key={mapMarkerSize}
-        ref={(ref) => setRef(ref)}
-        provider={PROVIDER_GOOGLE}
-        style={[styles.map, { height }]}
-        camera={camera}
         animateCamera={
-          shouldTrackLocation.gps && mapRef?.animateCamera(animateCamera)
+          mapReady &&
+          animateCamera &&
+          !userIsInteracting &&
+          mapRef?.animateCamera(animateCamera)
         }
+        customMapStyle={mapStyle}
+        initialCamera={initialCamera}
+        mapPadding={mapPadding}
+        onMapReady={setMapReady.bind(null, true)}
+        onStartShouldSetResponder={setUserIsInteracting.bind(null, true)}
+        onRegionChangeComplete={regionChangeComplete.bind(null, {
+          mapNoTrackingHeading,
+          mapNoTrackingZoom,
+          mapRef,
+          mapTrackingZoom,
+          setUserIsInteracting,
+          shouldTrackLocation,
+          updateDeviceProps
+        })}
+        pitchEnabled={false}
+        provider={PROVIDER_GOOGLE}
+        ref={(ref) => setRef(ref)}
         showsCompass={false}
         showsMyLocationButton={false}
         showsUserLocation={false}
-        onPanDrag={toggleLocationTracking.bind(null, {
-          gps: false,
-          directionsPolyline: false
-        })}
-        mapPadding={mapPadding}
-        customMapStyle={mapStyle}>
+        style={[styles.map, { height }]}>
         {latitude && longitude && (
-          <Marker
+          <RNMMarker
             key={'current-location'}
             coordinate={{
               latitude: latitude,
               longitude: longitude
             }}
             anchor={{ x: 0.5, y: 0.5 }}
-            tracksViewChanges={true}>
+            tracksViewChanges={false}>
             <CurrentLocation width={25} />
-          </Marker>
+          </RNMMarker>
         )}
-        {orderedStopsIds?.map((sID) => {
-          const stop = stops[sID];
-          return (
-            stop &&
-            renderMarker({
-              sID,
-              stop,
-              selectedStopId,
-              updateSelectedStop,
-              tracksViewChanges,
-              mapMarkerSize
-            })
-          );
-        })}
-        {showDoneDeliveries &&
-          completedStopsIds?.map((sID) => {
-            const stop = stops[sID];
-            return (
-              stop &&
-              renderMarker({
-                sID,
-                stop,
-                selectedStopId,
-                updateSelectedStop,
-                tracksViewChanges,
-                mapMarkerSize,
-                completed: true
-              })
-            );
-          })}
-        {!showDoneDeliveries &&
-          completedStopsIds.includes(selectedStopId) &&
-          stops[selectedStopId] &&
-          renderMarker({
-            sID: selectedStopId,
-            stop: stops[selectedStopId],
-            selectedStopId,
-            updateSelectedStop,
-            tracksViewChanges,
-            mapMarkerSize,
-            completed: true
-          })}
-        {directionsPolyline && directionsPolyline.length > 1 && (
-          <Polyline
-            strokeWidth={3}
-            strokeColor={colors.secondary}
-            coordinates={directionsPolyline}
-            geodesic
-          />
-        )}
+        <Markers />
+        <DirectionsPolyline />
       </MapView>
-      <Fab
-        type={'material-community'}
-        iconName={'crosshairs-gps'}
-        size={24}
-        containerSize={56}
-        color={shouldTrackLocation.gps ? colors.primary : colors.secondary}
-        right={10}
-        bottom={
-          mapPadding.bottom +
-          configuration.foreground.defaultHeight +
-          buttonAccessibility +
-          defaults.paddingHorizontal
-        }
-        onPress={toggleLocationTracking.bind(null, {
-          gps: !shouldTrackLocation.gps,
-          directionsPolyline: shouldTrackLocation.gps
-        })}
-        onLongPress={changeReturnPosition.bind(null, props)}
+      <Fabs
+        mapPadding={mapPadding}
+        shouldTrackLocation={shouldTrackLocation}
+        toggleLocationTracking={toggleLocationTracking}
       />
-
-      {destination && (
-        <Fab
-          type="material-community"
-          iconName="directions"
-          size={24}
-          containerSize={56}
-          color={colors.primary}
-          right={10}
-          bottom={
-            mapPadding.bottom +
-            configuration.foreground.defaultHeight +
-            buttonAccessibility +
-            defaults.paddingHorizontal * 2 +
-            56
-          }
-          onPress={navigateInSheet.bind(null, {
-            availableNavApps,
-            source,
-            destination
-          })}
-        />
-      )}
     </View>
   );
 };
 
 Map.defaultProps = {
-  availableNavApps: [],
-  height: 0,
   coords: {
+    heading: 0,
     latitude: parseFloat(Config.DEFAULT_LATITUDE),
     longitude: parseFloat(Config.DEFAULT_LONGITUDE)
   },
-  directionsPolyline: [],
+  height: 0,
   mapMarkerSize: sizes.marker.normal,
-  mapPadding: { bottom: 0 },
-  returnPosition: null,
-  showDoneDeliveries: true
+  mapPadding: { bottom: 0 }
 };
 
 Map.propTypes = {
-  availableNavApps: PropTypes.array,
-  buttonAccessibility: PropTypes.number,
-  completedStopsIds: PropTypes.array,
   coords: PropTypes.object,
-  directionsPolyline: PropTypes.array,
   height: PropTypes.number,
-  mapMarkerSize: PropTypes.number,
+  mapNoTrackingZoom: PropTypes.number,
+  mapNoTrackingHeading: PropTypes.number,
   mapPadding: PropTypes.object,
-  orderedStopsIds: PropTypes.array,
-  returnPosition: PropTypes.object,
-  selectedStopId: PropTypes.number,
-  showDoneDeliveries: PropTypes.bool,
-  stops: PropTypes.object,
-  updateReturnPosition: PropTypes.func,
-  updateSelectedStop: PropTypes.func
+  mapTrackingZoom: PropTypes.number,
+  updateDeviceProps: PropTypes.func
 };
 
 export default Map;

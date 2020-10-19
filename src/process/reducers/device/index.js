@@ -15,10 +15,13 @@ export const { Types, Creators } = createActions(
 
 const initialState = {
   buttonAccessibility: sizes.button.normal,
+  mapNoTrackingZoom: 12,
+  mapNoTrackingHeading: 0,
   mapMarkerSize: sizes.marker.normal,
+  mapTrackingZoom: 19,
   position: null,
   returnPosition: null,
-  showDoneDeliveries: true,
+  showDoneDeliveries: false,
   uniqueID: 'uninitialized',
   vibrate: true
 };

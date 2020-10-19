@@ -60,6 +60,7 @@ const initialState = {
     groupedStock: {},
     hasRoutes: false,
     orderedStopsIds: [],
+    previousStopId: null,
     outOfStockIds: [],
     selectedStopId: null,
     stock: [],
@@ -345,6 +346,7 @@ export const updateSelectedStop = (state, { sID }) =>
   produce(state, (draft) => {
     const cd = state.currentDay;
     resetSelectedStopInfo(draft[cd]);
+    draft[cd].previousStopId = draft[cd].selectedStopId;
     draft[cd].selectedStopId = sID;
   });
 
