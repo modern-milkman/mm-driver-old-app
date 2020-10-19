@@ -1,11 +1,15 @@
 import axios from 'axios';
 import Config from 'react-native-config';
 
+import store from 'Redux/store';
 import repositories from 'Repositories';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { Creators as UserActions } from 'Reducers/user';
+import { Creators as ApplicationActions } from 'Reducers/application';
 
 let TOKEN = null;
+let REFRESH_TOKEN = null;
 
 const api = axios.create({
   baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
@@ -17,12 +21,50 @@ const api = axios.create({
   timeout: parseInt(Config.API_TIMEOUT)
 });
 
-api.interceptors.request.use((config) => {
-  if (TOKEN) {
-    config.headers.Authorization = 'Bearer ' + TOKEN;
+const interceptors = {
+  config: (config) => {
+    if (TOKEN) {
+      config.headers.Authorization = 'Bearer ' + TOKEN;
+    }
+    return config;
+  },
+  responseSuccess: (response) => response,
+  responseError: async (error) => {
+    const originalRequest = error.config;
+    const { dispatch } = store().store;
+    if (error.response.status === 401) {
+      if (!originalRequest.url.includes('/Security/Refresh')) {
+        const refreshResponse = await repositories.user.refreshToken(
+          Api.getToken(),
+          Api.getRefreshToken()
+        );
+
+        Api.setToken(
+          refreshResponse.data.jwtToken,
+          refreshResponse.data.refreshToken
+        );
+
+        dispatch(UserActions.updateProps({ ...refreshResponse.data }));
+
+        return api(originalRequest);
+      } else {
+        dispatch(ApplicationActions.logout());
+      }
+    } else if (originalRequest.url.includes('/Security/Refresh')) {
+      // refresh token failed for other reasons
+      dispatch(ApplicationActions.logout());
+    }
+
+    return Promise.reject(error);
   }
-  return config;
-});
+};
+
+api.interceptors.request.use(interceptors.config);
+
+api.interceptors.response.use(
+  interceptors.responseSuccess,
+  interceptors.responseError
+);
 
 const Api = {
   API_CALL: 'API_CALL',
@@ -31,11 +73,16 @@ const Api = {
 
   repositories,
 
-  async setToken(value = null) {
-    if (value) {
-      TOKEN = value;
+  async setToken(jwtToken = null, refreshToken = null) {
+    if (jwtToken) {
+      TOKEN = jwtToken;
     } else {
       TOKEN = null;
+    }
+    if (refreshToken) {
+      REFRESH_TOKEN = refreshToken;
+    } else {
+      REFRESH_TOKEN = null;
     }
   },
 
@@ -52,6 +99,10 @@ const Api = {
 
   getToken() {
     return TOKEN;
+  },
+
+  getRefreshToken() {
+    return REFRESH_TOKEN;
   },
 
   catchError(error) {

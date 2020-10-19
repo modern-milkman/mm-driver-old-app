@@ -21,7 +21,6 @@ import {
   onNavigate,
   onNavigateBack,
   refreshDriverData,
-  refreshTokenSuccess,
   rehydrated
 } from './application';
 
@@ -60,7 +59,6 @@ export default function* root() {
     takeLatest(ApplicationTypes.MOUNTED, mounted),
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
-    takeLatest(ApplicationTypes.REFRESH_TOKEN_SUCCESS, refreshTokenSuccess),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
 
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),

@@ -15,7 +15,6 @@ export const { Types, Creators } = createActions(
     navigate: null,
     navigateBack: null,
     refreshDriverData: null,
-    refreshTokenSuccess: ['payload'],
     rehydrated: null,
     removeLastStackRoute: null,
     updateProps: ['props']

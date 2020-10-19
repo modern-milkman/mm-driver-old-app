@@ -34,17 +34,6 @@ const navigationAppList = Platform.select({
   ios: ['maps', 'comgooglemaps', 'waze']
 });
 
-const refreshToken = function* (jwtToken, jwtRefreshToken) {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: ApplicationTypes.REFRESH_TOKEN_SUCCESS },
-      fail: { type: ApplicationTypes.LOGOUT }
-    },
-    promise: Api.repositories.user.refreshToken(jwtToken, jwtRefreshToken)
-  });
-};
-
 // EXPORTED
 export const dismissKeyboard = function () {
   Keyboard.dismiss();
@@ -91,7 +80,7 @@ export const login_error = function* ({ status, data }) {
 };
 
 export const login_success = function* ({ payload }) {
-  yield call(Api.setToken, payload.jwtToken);
+  yield call(Api.setToken, payload.jwtToken, payload.refreshToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
   yield put({ type: UserTypes.GET_DRIVER });
   yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
@@ -116,22 +105,12 @@ export const onNavigateBack = function* () {
 };
 
 export const refreshDriverData = function* () {
-  const user = yield select(userSelector);
-  const user_session = yield select(userSessionPresentSelector);
   const deliveryStatus = yield select(deliveryStatusSelector);
-  if (user_session) {
-    yield call(refreshToken.bind(null, user.jwtToken, user.refreshToken));
-  }
+
   if (deliveryStatus === 0) {
     yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
     yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
   }
-};
-
-export const refreshTokenSuccess = function* ({ payload }) {
-  yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
-
-  Api.setToken(payload.jwtToken);
 };
 
 export const rehydrated = function* () {
@@ -160,12 +139,12 @@ export const rehydratedAndMounted = function* () {
   const lastRoute = yield select(lastRouteSelector);
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
-
   if (user_session) {
     if (new Date(user.jwtExpiry) < new Date()) {
       yield call(logout);
       RNBootSplash.hide();
     } else {
+      yield call(Api.setToken, user.jwtToken, user.refreshToken);
       yield call(refreshDriverData);
 
       NavigationService.navigate({ routeName: lastRoute });
