@@ -43,7 +43,7 @@ const regionChangeComplete = (
       });
     });
     if (isGesture) {
-      setUserIsInteracting(false);
+      setTimeout(setUserIsInteracting.bind(null, false), 500);
     }
   }
 };
