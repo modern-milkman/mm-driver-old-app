@@ -9,12 +9,11 @@ export default connect(
   (state) => {
     const today = state.delivery.currentDay;
     const stops = Object.values(state.delivery[today]?.stops || {});
-    const selectedStopId = state.delivery[today]?.selectedStopId;
 
     return {
       searchValue: state.transient.searchValue,
-      selectedStopId,
-      stops
+      stops,
+      deliveryStatus: state.delivery[today]?.deliveryStatus
     };
   },
   {

@@ -26,9 +26,9 @@ const handleSearchFilter = (items, searchValue) => {
 
 const Search = (props) => {
   const {
+    deliveryStatus,
     panY,
     searchValue,
-    selectedStopId,
     stops,
     updateSelectedStop,
     updateTransientProps
@@ -91,7 +91,7 @@ const Search = (props) => {
   }, [focused, height]);
 
   return (
-    (selectedStopId && (
+    deliveryStatus === 2 && (
       <>
         <View
           style={[
@@ -157,16 +157,15 @@ const Search = (props) => {
           </View>
         )}
       </>
-    )) ||
-    null
+    )
   );
 };
 
 Search.propTypes = {
   panY: PropTypes.object,
   searchValue: PropTypes.string,
-  selectedStopId: PropTypes.number,
   stops: PropTypes.array,
+  deliveryStatus: PropTypes.number,
   updateSelectedStop: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
