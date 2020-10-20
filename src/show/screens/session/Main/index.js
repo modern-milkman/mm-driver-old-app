@@ -7,14 +7,17 @@ import Main from './view';
 export default connect(
   (state) => {
     const today = state.delivery.currentDay;
+    const currentSelectedStop = selectedStop(state);
 
     return {
       buttonAccessibility: state.device.buttonAccessibility,
       canPanForeground:
-        state.delivery[today]?.hasRoutes &&
-        state.delivery[today]?.deliveryStatus !== 3,
+        (state.delivery[today]?.hasRoutes &&
+          state.delivery[today]?.deliveryStatus !== 3 &&
+          state.delivery.optimizedRoutes) ||
+        (!state.delivery.optimizedRoutes && currentSelectedStop),
       deliveryStatus: state.delivery[today]?.deliveryStatus,
-      selectedStop: selectedStop(state),
+      selectedStop: currentSelectedStop,
       optimizedRoutes: state.delivery.optimizedRoutes
     };
   },
