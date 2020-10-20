@@ -272,7 +272,7 @@ export const toggleConfirmedItem = (state, { id }) =>
     // TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
     draft[cd].allItemsDone =
       draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
-      state[cd].stops[state[cd].selectedStopId]?.orders.length;
+      Object.keys(state[cd].stops[state[cd].selectedStopId]?.orders).length;
   });
 
 export const toggleOutOfStock = (state, { id }) =>
@@ -285,7 +285,7 @@ export const toggleOutOfStock = (state, { id }) =>
     }
     draft[cd].allItemsDone =
       draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
-      state[cd].stops[state[cd].selectedStopId]?.orders.length;
+      Object.keys(state[cd].stops[state[cd].selectedStopId]?.orders).length;
   });
 
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>

@@ -20,6 +20,51 @@ import {
   Search
 } from './subviews';
 
+const mainForegroundAction = ({
+  deliveryStatus,
+  foregroundPaddingTop,
+  optimizedRoutes,
+  optimizeStops,
+  pullHandlePan,
+  pullHandleMoveY,
+  snapTopY,
+  selectedStop,
+  startDelivering,
+  top
+}) => {
+  switch (deliveryStatus) {
+    case 0:
+      springForeground({
+        animatedValues: [pullHandlePan.y, pullHandleMoveY],
+        toValue: snapTopY,
+        snapTopY,
+        pullHandleMoveY,
+        foregroundPaddingTop,
+        routeName: 'CheckIn',
+        top
+      });
+      break;
+    case 1:
+      startDelivering();
+      break;
+    case 2:
+      if (selectedStop) {
+        springForeground({
+          animatedValues: [pullHandlePan.y, pullHandleMoveY],
+          toValue: snapTopY,
+          snapTopY,
+          pullHandleMoveY,
+          foregroundPaddingTop,
+          routeName: 'Deliver',
+          top
+        });
+      } else if (!optimizedRoutes) {
+        optimizeStops();
+      }
+      break;
+  }
+};
+
 const springForeground = ({
   animatedValues,
   toValue,
@@ -323,23 +368,18 @@ const Main = (props) => {
         <ForegroundContent
           onTitleLayoutChange={setForegroundTitleHeight}
           interpolatedValues={interpolatedValues}
-          onButtonPress={
-            deliveryStatus === 1
-              ? startDelivering.bind(null)
-              : selectedStop
-              ? springForeground.bind(null, {
-                  animatedValues: [pullHandlePan.y, pullHandleMoveY],
-                  toValue: snapTopY,
-                  snapTopY,
-                  pullHandleMoveY,
-                  foregroundPaddingTop,
-                  routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn',
-                  top
-                })
-              : !optimizedRoutes
-              ? optimizeStops.bind(null)
-              : null
-          }
+          onButtonPress={mainForegroundAction.bind(null, {
+            deliveryStatus,
+            foregroundPaddingTop,
+            optimizedRoutes,
+            optimizeStops,
+            pullHandlePan,
+            pullHandleMoveY,
+            snapTopY,
+            selectedStop,
+            startDelivering,
+            top
+          })}
         />
       </Foreground>
       <Navigation

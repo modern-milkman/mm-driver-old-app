@@ -17,7 +17,7 @@ const initialState = {
   buttonAccessibility: sizes.button.normal,
   mapNoTrackingZoom: 12,
   mapNoTrackingHeading: 0,
-  mapMarkerSize: sizes.marker.normal,
+  mapMarkerSize: sizes.marker.large,
   mapTrackingZoom: 19,
   position: null,
   returnPosition: null,
