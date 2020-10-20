@@ -16,6 +16,7 @@ export default connect(
   }),
   {
     logout: applicationActions.logout,
+    optimizeStops: deliveryActions.optimizeStops,
     updateDeliveryProps: deliveryActions.updateProps,
     updateDeviceProps: deviceActions.updateProps
   }

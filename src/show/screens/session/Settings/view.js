@@ -25,8 +25,14 @@ const onShowDoneDeliveries = (updateDeviceProps, showDoneDeliveries) => {
   updateDeviceProps({ showDoneDeliveries });
 };
 
-const onOptimization = (updateDeliveryProps, optimizedRoutes) => {
-  updateDeliveryProps({ optimizedRoutes });
+const onOptimization = (
+  { updateDeliveryProps, optimizeStops },
+  optimizedRoutes
+) => {
+  updateDeliveryProps({ optimizedRoutes: !optimizedRoutes });
+  if (!optimizedRoutes) {
+    optimizeStops();
+  }
 };
 
 const Settings = (props) => {
@@ -35,6 +41,7 @@ const Settings = (props) => {
     logout,
     mapMarkerSize,
     optimizedRoutes,
+    optimizeStops,
     showDoneDeliveries,
     updateDeviceProps,
     updateDeliveryProps,
@@ -69,7 +76,10 @@ const Settings = (props) => {
             </Text.List>
             <Switch
               value={!optimizedRoutes}
-              onValueChange={onOptimization.bind(null, updateDeliveryProps)}
+              onValueChange={onOptimization.bind(null, {
+                optimizeStops,
+                updateDeliveryProps
+              })}
             />
           </RowView>
 
@@ -175,6 +185,7 @@ Settings.propTypes = {
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
   optimizedRoutes: PropTypes.bool,
+  optimizeStops: PropTypes.func,
   showDoneDeliveries: PropTypes.bool,
   updateDeliveryProps: PropTypes.func,
   updateDeviceProps: PropTypes.func,
