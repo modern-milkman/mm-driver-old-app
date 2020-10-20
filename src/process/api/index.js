@@ -6,7 +6,6 @@ import repositories from 'Repositories';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
-import { Creators as ApplicationActions } from 'Reducers/application';
 
 let TOKEN = null;
 let REFRESH_TOKEN = null;
@@ -47,12 +46,7 @@ const interceptors = {
         dispatch(UserActions.updateProps({ ...refreshResponse.data }));
 
         return api(originalRequest);
-      } else {
-        dispatch(ApplicationActions.logout());
       }
-    } else if (originalRequest.url.includes('/Security/Refresh')) {
-      // refresh token failed for other reasons
-      dispatch(ApplicationActions.logout());
     }
 
     return Promise.reject(error);
