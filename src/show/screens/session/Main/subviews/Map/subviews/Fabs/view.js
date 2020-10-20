@@ -103,8 +103,8 @@ Fabs.propTypes = {
 
 const areEqual = (prevProps, nextProps) => {
   return !(
-    prevProps.coords.latitude !== nextProps.coords.latitude ||
-    prevProps.coords.longitude !== nextProps.coords.longitude ||
+    prevProps.coords?.latitude !== nextProps.coords?.latitude ||
+    prevProps.coords?.longitude !== nextProps.coords?.longitude ||
     prevProps.selectedStopId !== nextProps.selectedStopId ||
     prevProps.shouldTrackLocation !== nextProps.shouldTrackLocation ||
     prevProps.returnPosition?.latitude !== nextProps.returnPosition?.latitude ||
