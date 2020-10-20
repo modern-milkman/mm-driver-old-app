@@ -124,12 +124,12 @@ const Map = (props) => {
   return (
     <View style={[styles.map, { height: deviceHeight }]}>
       <MapView
-        animateCamera={
-          mapReady &&
+        {...(mapReady &&
+          mapRef &&
           animateCamera &&
-          !userIsInteracting &&
-          mapRef?.animateCamera(animateCamera)
-        }
+          !userIsInteracting && {
+            animateCamera: mapRef.animateCamera(animateCamera)
+          })}
         customMapStyle={mapStyle}
         initialCamera={initialCamera}
         mapPadding={mapPadding}
