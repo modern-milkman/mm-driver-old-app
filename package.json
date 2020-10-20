@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "versionCode": "6",
   "private": true,
   "scripts": {
@@ -32,7 +32,7 @@
     "react-native-elements": "2.2.1",
     "react-native-gesture-handler": "1.7.0",
     "react-native-inset-shadow": "1.0.3",
-    "react-native-maps": "0.27.1",
+    "react-native-maps": "react-native-maps/react-native-maps#84cd0c439c38d1757abdf9dae690b11488f214db",
     "react-native-safe-area-context": "3.1.8",
     "react-native-screens": "2.10.1",
     "react-native-shared-element": "0.7.0",
