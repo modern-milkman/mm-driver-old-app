@@ -295,15 +295,14 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     let returnPositionIndex = null;
     const stops = [];
 
-    if (currentLocation) {
-      stops.push(
-        new Point(
-          currentLocation.latitude,
-          currentLocation.longitude,
-          'CURRENT_LOCATION'
-        )
-      );
-    }
+    stops.push(
+      new Point(
+        currentLocation?.latitude,
+        currentLocation?.longitude,
+        'CURRENT_LOCATION'
+      )
+    );
+
     for (const key of draft[cd].orderedStopsIds) {
       const item = draft[cd].stops[key];
       stops.push(new Point(item?.latitude, item?.longitude, key));

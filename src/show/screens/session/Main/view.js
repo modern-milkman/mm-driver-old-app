@@ -21,14 +21,16 @@ import {
 } from './subviews';
 
 const mainForegroundAction = ({
+  currentLocation,
   deliveryStatus,
   foregroundPaddingTop,
   optimizedRoutes,
   optimizeStops,
-  pullHandlePan,
   pullHandleMoveY,
-  snapTopY,
+  pullHandlePan,
+  returnPosition,
   selectedStop,
+  snapTopY,
   startDelivering,
   top
 }) => {
@@ -59,7 +61,7 @@ const mainForegroundAction = ({
           top
         });
       } else if (!optimizedRoutes) {
-        optimizeStops();
+        optimizeStops({ returnPosition, currentLocation });
       }
       break;
   }
@@ -117,10 +119,12 @@ const Main = (props) => {
   const {
     buttonAccessibility,
     canPanForeground,
+    currentLocation,
     deliveryStatus,
     optimizedRoutes,
-    selectedStop,
     optimizeStops,
+    returnPosition,
+    selectedStop,
     startDelivering
   } = props;
 
@@ -369,14 +373,16 @@ const Main = (props) => {
           onTitleLayoutChange={setForegroundTitleHeight}
           interpolatedValues={interpolatedValues}
           onButtonPress={mainForegroundAction.bind(null, {
+            currentLocation,
             deliveryStatus,
             foregroundPaddingTop,
             optimizedRoutes,
             optimizeStops,
-            pullHandlePan,
             pullHandleMoveY,
-            snapTopY,
+            pullHandlePan,
+            returnPosition,
             selectedStop,
+            snapTopY,
             startDelivering,
             top
           })}
@@ -393,10 +399,12 @@ const Main = (props) => {
 Main.propTypes = {
   buttonAccessibility: PropTypes.number,
   canPanForeground: PropTypes.bool,
+  currentLocation: PropTypes.object,
   deliveryStatus: PropTypes.number,
   optimizedRoutes: PropTypes.bool,
-  selectedStop: PropTypes.any,
   optimizeStops: PropTypes.func,
+  returnPosition: PropTypes.object,
+  selectedStop: PropTypes.any,
   startDelivering: PropTypes.func
 };
 
