@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Marker as RNMMaker } from 'react-native-maps';
+import { Marker as RNMMarker } from 'react-native-maps';
 
 const Marker = (props) => {
   const {
@@ -53,7 +53,7 @@ const Marker = (props) => {
 
   return (
     (selectedStop && (
-      <RNMMaker
+      <RNMMarker
         coordinate={{
           latitude: selectedStop.latitude,
           longitude: selectedStop.longitude
@@ -64,10 +64,16 @@ const Marker = (props) => {
         tracksViewChanges={tracksViewChanges}>
         <Image
           source={markerImages[mapMarkerImageType]}
-          style={{ width: mapMarkerSize, height: mapMarkerSize }}
+          style={{
+            width: mapMarkerSize,
+            height: mapMarkerSize,
+            borderBottomRightRadius: mapMarkerSize / 2,
+            borderTopLeftRadius: mapMarkerSize / 2,
+            borderTopRightRadius: mapMarkerSize / 2
+          }}
           resizeMode={'cover'}
         />
-      </RNMMaker>
+      </RNMMarker>
     )) ||
     null
   );
