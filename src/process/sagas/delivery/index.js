@@ -3,6 +3,7 @@ import { call, delay, put, select } from 'redux-saga/effects';
 import Api from 'Api';
 import { user as userSelector } from 'Reducers/user';
 import {
+  completedStopsIds as completedStopsIdsSelector,
   deliveryStatus as deliveryStatusSelector,
   outOfStockItems as outOfStockItemsSelector,
   orderedStopsIds as orderedStopsIdsSelector,
@@ -101,6 +102,7 @@ export const setDelivered = function* ({ id }) {
 };
 
 export const setDeliveredOrRejectedSuccess = function* () {
+  const completedStopsIds = yield select(completedStopsIdsSelector);
   const deliveryStatus = yield select(deliveryStatusSelector);
   const isOptimizedRoutes = yield select(optimizedRoutesSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
@@ -122,7 +124,8 @@ export const setDeliveredOrRejectedSuccess = function* () {
       id: `${user.driverId}`,
       deliveries: {
         completed: totalDeliveries - deliveriesLeft,
-        total: totalDeliveries
+        total: totalDeliveries,
+        completedStopsIds
       }
     })
   });

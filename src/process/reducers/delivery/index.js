@@ -380,6 +380,9 @@ export default createReducer(initialState, {
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
 });
 
+export const completedStopsIds = (state) =>
+  state.delivery[state.delivery.currentDay]?.completedStopsIds;
+
 export const deliveryStatus = (state) =>
   state.delivery[state.delivery.currentDay]?.deliveryStatus;
 
