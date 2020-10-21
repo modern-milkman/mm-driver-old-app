@@ -9,8 +9,10 @@ import Settings from './view';
 export default connect(
   (state) => ({
     buttonAccessibility: state.device.buttonAccessibility,
+    currentLocation: state.device.position.coords,
     mapMarkerSize: state.device.mapMarkerSize,
     optimizedRoutes: state.delivery.optimizedRoutes,
+    returnPosition: state.device.returnPosition,
     showDoneDeliveries: state.device.showDoneDeliveries,
     vibrate: state.device.vibrate
   }),

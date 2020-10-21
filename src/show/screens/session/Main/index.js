@@ -16,9 +16,11 @@ export default connect(
           state.delivery[today]?.deliveryStatus !== 3 &&
           state.delivery.optimizedRoutes) ||
         (!state.delivery.optimizedRoutes && currentSelectedStop),
+      currentLocation: state.device.position.coords,
       deliveryStatus: state.delivery[today]?.deliveryStatus,
-      selectedStop: currentSelectedStop,
-      optimizedRoutes: state.delivery.optimizedRoutes
+      optimizedRoutes: state.delivery.optimizedRoutes,
+      returnPosition: state.device.returnPosition,
+      selectedStop: currentSelectedStop
     };
   },
   {

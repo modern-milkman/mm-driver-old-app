@@ -26,25 +26,27 @@ const onShowDoneDeliveries = (updateDeviceProps, showDoneDeliveries) => {
 };
 
 const onOptimization = (
-  { updateDeliveryProps, optimizeStops },
+  { updateDeliveryProps, optimizeStops, currentLocation, returnPosition },
   optimizedRoutes
 ) => {
   updateDeliveryProps({ optimizedRoutes: !optimizedRoutes });
   if (!optimizedRoutes) {
-    optimizeStops();
+    optimizeStops({ currentLocation, returnPosition });
   }
 };
 
 const Settings = (props) => {
   const {
     buttonAccessibility,
+    currentLocation,
     logout,
     mapMarkerSize,
     optimizedRoutes,
     optimizeStops,
+    returnPosition,
     showDoneDeliveries,
-    updateDeviceProps,
     updateDeliveryProps,
+    updateDeviceProps,
     vibrate
   } = props;
 
@@ -78,6 +80,8 @@ const Settings = (props) => {
               value={!optimizedRoutes}
               onValueChange={onOptimization.bind(null, {
                 optimizeStops,
+                currentLocation,
+                returnPosition,
                 updateDeliveryProps
               })}
             />
@@ -182,10 +186,12 @@ const Settings = (props) => {
 
 Settings.propTypes = {
   buttonAccessibility: PropTypes.number,
+  currentLocation: PropTypes.object,
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
   optimizedRoutes: PropTypes.bool,
   optimizeStops: PropTypes.func,
+  returnPosition: PropTypes.object,
   showDoneDeliveries: PropTypes.bool,
   updateDeliveryProps: PropTypes.func,
   updateDeviceProps: PropTypes.func,

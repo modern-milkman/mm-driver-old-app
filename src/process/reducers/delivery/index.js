@@ -304,6 +304,7 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
         )
       );
     }
+
     for (const key of draft[cd].orderedStopsIds) {
       const item = draft[cd].stops[key];
       stops.push(new Point(item?.latitude, item?.longitude, key));
@@ -325,7 +326,11 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
       dummyIndex = stops.length - 1;
     }
     const optimizedRoute = salesman(stops, hasDummy);
-    optimizedRoute.splice(0, 1);
+
+    if (currentLocation) {
+      optimizedRoute.splice(0, 1);
+    }
+
     if (hasDummy) {
       optimizedRoute.splice(optimizedRoute.indexOf(dummyIndex), 1);
     }
