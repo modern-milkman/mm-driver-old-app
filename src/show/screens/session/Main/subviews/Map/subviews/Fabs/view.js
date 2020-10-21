@@ -25,7 +25,7 @@ const Fabs = (props) => {
   const {
     availableNavApps,
     buttonAccessibility,
-    coords: { latitude, longitude },
+    coords,
     mapPadding,
     selectedStopId,
     shouldTrackLocation,
@@ -33,7 +33,8 @@ const Fabs = (props) => {
     toggleLocationTracking
   } = props;
 
-  const source = { latitude, longitude };
+  const source = { latitude: coords?.latitude, longitude: coords?.longitude };
+
   const destination =
     stops && selectedStopId && stops[selectedStopId]
       ? { ...stops[selectedStopId] }

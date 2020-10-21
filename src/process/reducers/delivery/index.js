@@ -295,13 +295,15 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     let returnPositionIndex = null;
     const stops = [];
 
-    stops.push(
-      new Point(
-        currentLocation?.latitude,
-        currentLocation?.longitude,
-        'CURRENT_LOCATION'
-      )
-    );
+    if (currentLocation) {
+      stops.push(
+        new Point(
+          currentLocation.latitude,
+          currentLocation.longitude,
+          'CURRENT_LOCATION'
+        )
+      );
+    }
 
     for (const key of draft[cd].orderedStopsIds) {
       const item = draft[cd].stops[key];
@@ -324,7 +326,11 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
       dummyIndex = stops.length - 1;
     }
     const optimizedRoute = salesman(stops, hasDummy);
-    optimizedRoute.splice(0, 1);
+
+    if (currentLocation) {
+      optimizedRoute.splice(0, 1);
+    }
+
     if (hasDummy) {
       optimizedRoute.splice(optimizedRoute.indexOf(dummyIndex), 1);
     }
