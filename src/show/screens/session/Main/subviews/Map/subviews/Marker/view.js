@@ -18,12 +18,19 @@ const Marker = (props) => {
 
   const markerImages = {
     completed: require('Images/markers/completed.png'),
+    'completed-selected': require('Images/markers/completed-selected.png'),
     default: require('Images/markers/default.png'),
     selected: require('Images/markers/selected.png')
   };
 
   const mapMarkerImageType =
-    selectedStopId === id ? 'selected' : completed ? 'completed' : 'default';
+    selectedStopId === id
+      ? completed
+        ? 'completed-selected'
+        : 'selected'
+      : completed
+      ? 'completed'
+      : 'default';
 
   const [previousMarkerSize, setPreviousMarkerSize] = useState(mapMarkerSize);
   const [tracksViewChanges, setTracksViewChanges] = useState(
