@@ -50,7 +50,7 @@ const initialCurrentDay = cDay();
 
 const initialState = {
   currentDay: initialCurrentDay,
-  optimizedRoutes: true,
+  optimizedRoutes: false,
   processing: true,
   [initialCurrentDay]: {
     allItemsDone: false,

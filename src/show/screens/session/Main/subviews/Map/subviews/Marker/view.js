@@ -3,6 +3,10 @@ import { Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Marker as RNMMarker } from 'react-native-maps';
 
+import { colors } from 'Theme';
+
+import style from './style';
+
 const Marker = (props) => {
   const {
     completedStopsIds,
@@ -17,20 +21,25 @@ const Marker = (props) => {
   const completed = completedStopsIds.includes(id);
 
   const markerImages = {
-    completed: require('Images/markers/completed.png'),
-    'completed-selected': require('Images/markers/completed-selected.png'),
-    default: require('Images/markers/default.png'),
-    selected: require('Images/markers/selected.png')
+    check: require('Images/markers/check.png'),
+    drop: require('Images/markers/drop.png')
   };
 
   const mapMarkerImageType =
     selectedStopId === id
       ? completed
-        ? 'completed-selected'
-        : 'selected'
+        ? 'check'
+        : 'drop'
       : completed
-      ? 'completed'
-      : 'default';
+      ? 'check'
+      : 'drop';
+
+  const mapMarkerBackgroundColor =
+    selectedStopId === id
+      ? colors.secondary
+      : completed
+      ? colors.input
+      : colors.primary;
 
   const [previousMarkerSize, setPreviousMarkerSize] = useState(mapMarkerSize);
   const [tracksViewChanges, setTracksViewChanges] = useState(
@@ -64,14 +73,18 @@ const Marker = (props) => {
         tracksViewChanges={tracksViewChanges}>
         <Image
           source={markerImages[mapMarkerImageType]}
-          style={{
-            width: mapMarkerSize,
-            height: mapMarkerSize,
-            borderBottomRightRadius: mapMarkerSize / 2,
-            borderTopLeftRadius: mapMarkerSize / 2,
-            borderTopRightRadius: mapMarkerSize / 2
-          }}
-          resizeMode={'cover'}
+          style={[
+            style.marker,
+            {
+              backgroundColor: mapMarkerBackgroundColor,
+              width: mapMarkerSize,
+              height: mapMarkerSize,
+              borderBottomRightRadius: mapMarkerSize / 2,
+              borderTopLeftRadius: mapMarkerSize / 2,
+              borderTopRightRadius: mapMarkerSize / 2,
+              borderColor: colors.white
+            }
+          ]}
         />
       </RNMMarker>
     )) ||

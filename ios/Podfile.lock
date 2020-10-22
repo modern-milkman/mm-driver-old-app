@@ -284,9 +284,9 @@ PODS:
   - react-native-google-maps (0.27.1):
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.5.0)
-    - React
+    - React-Core
   - react-native-maps (0.27.1):
-    - React
+    - React-Core
   - react-native-safe-area-context (3.1.8):
     - React-Core
   - React-RCTActionSheet (0.63.3):
@@ -587,8 +587,8 @@ SPEC CHECKSUMS:
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-config: 9a061347e0136fdb32d43a34d60999297d672361
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
-  react-native-google-maps: 0a989abda71059db2caa98b9dacca7a8f38a47d0
-  react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
+  react-native-google-maps: 307f9520f323815fa2906b1ee991e67c88c3edb0
+  react-native-maps: c244a13f8fc78d9a73256cebae6faed4145460dd
   react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
   React-RCTAnimation: 1befece0b5183c22ae01b966f5583f42e69a83c2
