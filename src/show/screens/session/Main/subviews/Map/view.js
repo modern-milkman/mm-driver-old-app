@@ -31,9 +31,7 @@ const regionChangeComplete = (
   { isGesture }
 ) => {
   if (mapRef) {
-    setUserIsInteracting(true);
     mapRef.getCamera().then((currentCamera) => {
-      setUserIsInteracting(true);
       updateDeviceProps({
         ...(shouldTrackLocation && {
           mapTrackingZoom: currentCamera.zoom
@@ -45,6 +43,7 @@ const regionChangeComplete = (
       });
     });
     if (isGesture) {
+      setUserIsInteracting(true);
       setTimeout(setUserIsInteracting.bind(null, false), 1000);
     }
   }
@@ -115,6 +114,7 @@ const Map = (props) => {
         {...(mapReady &&
           mapRef &&
           animateCamera &&
+          shouldTrackLocation &&
           !userIsInteracting && {
             animateCamera: mapRef.animateCamera(animateCamera)
           })}
