@@ -31,7 +31,9 @@ const regionChangeComplete = (
   { isGesture }
 ) => {
   if (mapRef) {
+    setUserIsInteracting(true);
     mapRef.getCamera().then((currentCamera) => {
+      setUserIsInteracting(true);
       updateDeviceProps({
         ...(shouldTrackLocation && {
           mapTrackingZoom: currentCamera.zoom
@@ -43,7 +45,7 @@ const regionChangeComplete = (
       });
     });
     if (isGesture) {
-      setTimeout(setUserIsInteracting.bind(null, false), 500);
+      setTimeout(setUserIsInteracting.bind(null, false), 1000);
     }
   }
 };
@@ -86,7 +88,7 @@ const Map = (props) => {
   useEffect(() => {
     // lat long changed should only affect if location is tracked
     mapRef?.getCamera().then((currentCamera) => {
-      if (shouldTrackLocation) {
+      if (shouldTrackLocation && !userIsInteracting) {
         setAnimateCamera({
           ...currentCamera,
           center: {
@@ -94,29 +96,15 @@ const Map = (props) => {
             longitude
           },
           heading,
-          pitch: 90,
-          zoom: mapTrackingZoom
+          pitch: 90
         });
-      } else {
-        setAnimateCamera({
-          ...currentCamera,
-          heading: mapNoTrackingHeading,
-          pitch: 0,
-          zoom: mapNoTrackingZoom
-        });
-        setTimeout(() => {
-          setAnimateCamera(null);
-        }, 500);
       }
     });
   }, [
     heading,
     latitude,
     longitude,
-    mapNoTrackingHeading,
-    mapNoTrackingZoom,
     mapRef,
-    mapTrackingZoom,
     shouldTrackLocation,
     userIsInteracting
   ]);
