@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import { Image } from 'react-native';
+import { View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Marker as RNMMarker } from 'react-native-maps';
 
 import { colors } from 'Theme';
+import Icon from 'Components/Icon';
 
 import style from './style';
 
@@ -20,19 +21,14 @@ const Marker = (props) => {
   const selectedStop = stops[id] || null;
   const completed = completedStopsIds.includes(id);
 
-  const markerImages = {
-    check: require('Images/markers/check.png'),
-    drop: require('Images/markers/drop.png')
-  };
-
   const mapMarkerImageType =
     selectedStopId === id
       ? completed
         ? 'check'
-        : 'drop'
+        : 'arrow-down-bold'
       : completed
       ? 'check'
-      : 'drop';
+      : 'arrow-down-bold';
 
   const mapMarkerBackgroundColor =
     selectedStopId === id
@@ -71,8 +67,7 @@ const Marker = (props) => {
         anchor={{ x: 0, y: 1 }}
         {...(selectedStopId === id && { zIndex: 1 })}
         tracksViewChanges={tracksViewChanges}>
-        <Image
-          source={markerImages[mapMarkerImageType]}
+        <View
           style={[
             style.marker,
             {
@@ -84,8 +79,14 @@ const Marker = (props) => {
               borderTopRightRadius: mapMarkerSize / 2,
               borderColor: colors.white
             }
-          ]}
-        />
+          ]}>
+          <Icon
+            size={mapMarkerSize / 1.5}
+            containerSize={mapMarkerSize / 1.5}
+            name={mapMarkerImageType}
+            color={colors.white}
+          />
+        </View>
       </RNMMarker>
     )) ||
     null
