@@ -116,7 +116,7 @@ export const getVehicleStockForDriverSuccess = (
               title: item.productName
             });
             categoryProductsIndexes[catDescription][item.productName] =
-              categoryProducts.length - 1;
+              categoryProducts.data.length - 1;
             draft[formatedDate].itemCount += item.quantity;
           }
         } else {
