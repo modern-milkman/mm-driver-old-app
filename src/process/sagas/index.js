@@ -47,7 +47,6 @@ import { getDriver } from './user';
 export default function* root() {
   yield all([
     spawn(watchLocationChannel),
-    takeLatest('APP_STATE.FOREGROUND', refreshDriverData),
     takeLatest('APP_STATE.FOREGROUND', setCurrentDay),
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
@@ -74,6 +73,7 @@ export default function* root() {
       DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS,
       setDeliveredOrRejectedSuccess
     ),
+    takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
     takeLatest(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
     takeLatest(DeliveryTypes.SET_REJECTED, setRejected),
     takeLatest(DeliveryTypes.UPDATE_CURRENT_DAY_PROPS, updateCurrentDayProps),

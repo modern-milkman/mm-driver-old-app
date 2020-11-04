@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { colors } from 'Theme';
 import Icon from 'Components/Icon';
@@ -12,10 +12,12 @@ const Fab = (props) => {
     bottom,
     color,
     containerSize,
+    disabled,
     iconName,
     left,
     onLongPress,
     onPress,
+    processing,
     right,
     size,
     top,
@@ -34,15 +36,20 @@ const Fab = (props) => {
 
   return (
     <View style={{ ...styles.fabCurrentLocation, ...composedStyle }}>
-      <Icon
-        type={type}
-        name={iconName}
-        size={size}
-        containerSize={containerSize}
-        color={color}
-        onPress={onPress}
-        onLongPress={onLongPress}
-      />
+      {processing ? (
+        <ActivityIndicator style={styles.activityIndicator} size="small" />
+      ) : (
+        <Icon
+          type={type}
+          name={iconName}
+          size={size}
+          containerSize={containerSize}
+          color={color}
+          onPress={onPress}
+          disabled={disabled}
+          onLongPress={onLongPress}
+        />
+      )}
     </View>
   );
 };
@@ -51,10 +58,12 @@ Fab.defaultProps = {
   bottom: undefined,
   color: colors.primary,
   containerSize: 56,
+  disabled: false,
   iconName: 'close-thick',
   left: undefined,
   onLongPress: () => {},
   onPress: () => {},
+  processing: false,
   right: undefined,
   size: 44,
   top: undefined,
@@ -65,10 +74,12 @@ Fab.propTypes = {
   bottom: PropTypes.number,
   color: PropTypes.string,
   containerSize: PropTypes.number,
+  disabled: PropTypes.bool,
   iconName: PropTypes.string,
   left: PropTypes.number,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
+  processing: PropTypes.bool,
   right: PropTypes.number,
   size: PropTypes.number,
   top: PropTypes.number,
