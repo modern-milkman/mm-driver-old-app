@@ -1,6 +1,7 @@
 // DEVICE SAGAS BELOW
 // could be used for offline / online / set position
 import { put, select } from 'redux-saga/effects';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 import Api from 'Api';
 import { user as userSelector } from 'Reducers/user';
@@ -23,4 +24,5 @@ export function* setLocation({ position }) {
       })
     });
   }
+  Analytics.trackEvent(EVENTS.SET_DEVICE_LOCATION, position);
 }

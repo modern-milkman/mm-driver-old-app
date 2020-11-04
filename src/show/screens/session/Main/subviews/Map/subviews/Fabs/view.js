@@ -26,7 +26,10 @@ const Fabs = (props) => {
     availableNavApps,
     buttonAccessibility,
     coords,
+    deliveryStatus,
     mapPadding,
+    processing,
+    refreshDriverData,
     selectedStopId,
     shouldTrackLocation,
     stops,
@@ -80,6 +83,24 @@ const Fabs = (props) => {
           })}
         />
       )}
+      {deliveryStatus === 2 && (
+        <Fab
+          type={'material-community'}
+          iconName={'refresh'}
+          size={24}
+          containerSize={56}
+          color={colors.primary}
+          left={10}
+          bottom={
+            mapPadding.bottom +
+            configuration.foreground.defaultHeight +
+            buttonAccessibility +
+            defaults.paddingHorizontal
+          }
+          processing={processing}
+          onPress={refreshDriverData}
+        />
+      )}
     </>
   );
 };
@@ -93,7 +114,10 @@ Fabs.propTypes = {
   availableNavApps: PropTypes.array,
   buttonAccessibility: PropTypes.number,
   coords: PropTypes.object,
+  deliveryStatus: PropTypes.number,
   mapPadding: PropTypes.object,
+  processing: PropTypes.bool,
+  refreshDriverData: PropTypes.func,
   returnPosition: PropTypes.object,
   selectedStopId: PropTypes.number,
   shouldTrackLocation: PropTypes.bool,
@@ -104,6 +128,7 @@ Fabs.propTypes = {
 
 const areEqual = (prevProps, nextProps) => {
   return !(
+    prevProps.processing !== nextProps.processing ||
     prevProps.coords?.latitude !== nextProps.coords?.latitude ||
     prevProps.coords?.longitude !== nextProps.coords?.longitude ||
     prevProps.selectedStopId !== nextProps.selectedStopId ||

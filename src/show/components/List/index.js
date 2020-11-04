@@ -115,8 +115,7 @@ const renderItemInterface = (
         <ColumnView
           flex={4}
           justifyContent={title && description ? 'space-between' : 'center'}
-          alignItems={'flex-start'}
-          height={style.listItemWrapper.height - defaults.marginVertical}>
+          alignItems={'flex-start'}>
           <Text.List
             align={'left'}
             color={titleColor}

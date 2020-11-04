@@ -1,23 +1,27 @@
 import { StackActions, NavigationActions } from 'react-navigation';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
+import { throttle } from 'Helpers';
+
 const config = {
   resetStackRoutes: []
 };
 
-const NavigationService = {
-  goBack: () => {
-    if (config.navigator) {
-      config.navigator.dispatch(NavigationActions.back({}));
-      config.storeDispatcher({
-        type: ApplicationTypes.NAVIGATE_BACK
-      });
+const goBack = () => {
+  if (config.navigator) {
+    config.navigator.dispatch(NavigationActions.back({}));
+    config.storeDispatcher({
+      type: ApplicationTypes.NAVIGATE_BACK
+    });
 
-      config.storeDispatcher({
-        type: ApplicationTypes.REMOVE_LAST_STACK_ROUTE
-      });
-    }
-  },
+    config.storeDispatcher({
+      type: ApplicationTypes.REMOVE_LAST_STACK_ROUTE
+    });
+  }
+};
+
+const NavigationService = {
+  goBack: throttle(goBack, 200),
   setNavigator: (nav, storeDispatcher) => {
     if (nav && storeDispatcher) {
       config.navigator = nav;

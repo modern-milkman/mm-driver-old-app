@@ -16,6 +16,7 @@ import {
   Types as DeviceTypes,
   device as deviceSelector
 } from 'Reducers/device';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 import { currentDay as cDay } from 'Helpers';
 
@@ -43,7 +44,7 @@ const updateTrackerData = function* ({ deliveryStatus }) {
 };
 
 // EXPORTED
-export const getForDriver = function* () {
+export const getForDriver = function* ({ isRefreshData = false }) {
   yield put({
     type: Api.API_CALL,
     actions: {
@@ -51,11 +52,15 @@ export const getForDriver = function* () {
       fail: { type: DeliveryTypes.UPDATE_PROPS }
     },
     promise: Api.repositories.delivery.getForDriver(),
-    props: { processing: false }
+    props: { processing: false, isRefreshData }
   });
+  Analytics.trackEvent(EVENTS.GET_FOR_DRIVER);
 };
 
-export const getForDriverSuccess = function* ({ payload }) {
+export const getForDriverSuccess = function* ({
+  payload,
+  props: { isRefreshData }
+}) {
   yield put({
     type: Api.API_CALL,
     actions: {
@@ -66,13 +71,18 @@ export const getForDriverSuccess = function* ({ payload }) {
     },
     promise: Api.repositories.delivery.getVehicleStockForDriver(),
     deliveryDate: payload.deliveryDate,
-    props: { processing: false }
+    props: { processing: false, isRefreshData }
   });
+  Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, payload);
 };
 
-export const getVehicleStockForDriverSuccess = function* () {
+export const getVehicleStockForDriverSuccess = function* ({
+  payload,
+  props: { isRefreshData }
+}) {
   const deliveryStatus = yield select(deliveryStatusSelector);
-  if (deliveryStatus === 2) {
+
+  if (!isRefreshData && deliveryStatus === 2) {
     yield put({
       type: DeliveryTypes.START_DELIVERING
     });
@@ -83,6 +93,7 @@ export const getVehicleStockForDriverSuccess = function* () {
     });
   }
   yield call(updateTrackerData, { deliveryStatus });
+  Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, payload);
 };
 
 export const setDelivered = function* ({ id }) {
@@ -99,6 +110,7 @@ export const setDelivered = function* ({ id }) {
     },
     promise: Api.repositories.delivery.patchDelivered(id)
   });
+  Analytics.trackEvent(EVENTS.TAP_DONE_DELIVER, id);
 };
 
 export const setDeliveredOrRejectedSuccess = function* () {
@@ -129,6 +141,7 @@ export const setDeliveredOrRejectedSuccess = function* () {
       }
     })
   });
+  Analytics.trackEvent(EVENTS.SET_DELIVERED_OR_REJECTED_SUCCESS);
 };
 
 export const setItemOutOfStock = function* ({ id }) {
@@ -137,6 +150,7 @@ export const setItemOutOfStock = function* ({ id }) {
     actions: {},
     promise: Api.repositories.delivery.patchItemOutOfStock(id)
   });
+  Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, id);
 };
 
 export const setRejected = function* ({ id, reasonMessage }) {
@@ -150,10 +164,12 @@ export const setRejected = function* ({ id, reasonMessage }) {
     promise: Api.repositories.delivery.patchRejected(id, reasonMessage),
     id
   });
+  Analytics.trackEvent(EVENTS.TAP_SKIP_DELIVERY, id, reasonMessage);
 };
 
 export const optimizeStops = function* () {
   yield call(updatedSelectedStop);
+  Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
 };
 
 export function* setCurrentDay({}) {
@@ -169,6 +185,7 @@ export const startDelivering = function* () {
     currentLocation: device.position.coords,
     returnPosition: device.returnPosition
   });
+  Analytics.trackEvent(EVENTS.START_DELIVERING);
 };
 
 export const updateCurrentDayProps = function* ({ props: { deliveryStatus } }) {
@@ -221,4 +238,6 @@ export const updatedSelectedStop = function* () {
       props: { key: selectedStop.key }
     });
   }
+
+  Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, selectedStop);
 };

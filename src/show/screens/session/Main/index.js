@@ -15,7 +15,9 @@ export default connect(
         (state.delivery[today]?.hasRoutes &&
           state.delivery[today]?.deliveryStatus !== 3 &&
           state.delivery.optimizedRoutes) ||
-        (!state.delivery.optimizedRoutes && currentSelectedStop),
+        (!state.delivery.optimizedRoutes && currentSelectedStop) ||
+        (state.delivery[today]?.deliveryStatus === 0 &&
+          state.delivery[today]?.hasRoutes),
       currentLocation: state.device.position.coords,
       deliveryStatus: state.delivery[today]?.deliveryStatus,
       optimizedRoutes: state.delivery.optimizedRoutes,

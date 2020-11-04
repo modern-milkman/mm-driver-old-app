@@ -39,6 +39,16 @@ const deviceFrame = () => Dimensions.get('window');
 const formatDate = (date) =>
   date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
+const throttle = (func, wait = 100) => {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
+};
+
 const isAppInstalled = async (appName) => {
   return await Linking.canOpenURL(appName + '://')
     .then((installed) => {
@@ -127,6 +137,7 @@ export {
   deviceFrame,
   defaultRoutes,
   formatDate,
+  throttle,
   isAppInstalled,
   jiggleAnimation,
   mock,

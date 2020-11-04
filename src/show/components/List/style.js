@@ -14,7 +14,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: sizes.list.height,
+    height: 'auto',
+    minHeight: sizes.list.height - defaults.marginVertical / 2,
+    marginVertical: defaults.marginVertical / 4,
     width: 'auto',
     marginHorizontal: defaults.marginHorizontal
   },

@@ -6,6 +6,7 @@ import { call, delay, put, select } from 'redux-saga/effects';
 import Api from 'Api';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
+
 import {
   Types as DeliveryTypes,
   deliveryStatus as deliveryStatusSelector
@@ -57,6 +58,7 @@ export const init = function* () {
   });
 
   yield put({ type: DeliveryTypes.SET_CURRENT_DAY });
+  Analytics.trackEvent(EVENTS.APP_INIT);
 };
 
 export const login = function* () {
@@ -70,6 +72,7 @@ export const login = function* () {
     },
     promise: Api.repositories.user.login(email, password)
   });
+  Analytics.trackEvent(EVENTS.TAP_LOGIN);
 };
 
 export const login_error = function* ({ status, data }) {
@@ -77,21 +80,23 @@ export const login_error = function* ({ status, data }) {
     type: TransientTypes.UPDATE_PROPS,
     props: { password: '', jiggleForm: true }
   });
+  Analytics.trackEvent(EVENTS.LOGIN_ERROR, status);
 };
 
 export const login_success = function* ({ payload }) {
   yield call(Api.setToken, payload.jwtToken, payload.refreshToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
   yield put({ type: UserTypes.GET_DRIVER });
-  yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
   yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
   NavigationService.navigate({ routeName: defaultRoutes.session });
+  Analytics.trackEvent(EVENTS.LOGIN_SUCCESSFUL);
 };
 
 export const logout = function* () {
   yield put({ type: 'state/RESET' });
   Api.setToken();
   NavigationService.navigate({ routeName: defaultRoutes.public });
+  Analytics.trackEvent(EVENTS.LOGOUT);
 };
 
 export const onNavigate = function* (params) {
@@ -107,10 +112,11 @@ export const onNavigateBack = function* () {
 export const refreshDriverData = function* () {
   const deliveryStatus = yield select(deliveryStatusSelector);
 
-  if (deliveryStatus === 0) {
-    yield put({ type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER });
-    yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
-  }
+  yield put({
+    type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER
+  });
+  yield put({ type: DeliveryTypes.GET_FOR_DRIVER, isRefreshData: true });
+  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, deliveryStatus);
 };
 
 export const rehydrated = function* () {
@@ -145,7 +151,6 @@ export const rehydratedAndMounted = function* () {
       RNBootSplash.hide();
     } else {
       yield call(Api.setToken, user.jwtToken, user.refreshToken);
-      yield call(refreshDriverData);
 
       NavigationService.navigate({ routeName: lastRoute });
       yield delay(1000);
