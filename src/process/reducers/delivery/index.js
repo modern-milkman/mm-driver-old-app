@@ -13,10 +13,14 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
-    getForDriver: null,
-    getForDriverSuccess: ['payload'],
+    getForDriver: ['isRefreshData'],
+    getForDriverSuccess: ['payload', 'isRefreshData'],
     getVehicleStockForDriver: null,
-    getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
+    getVehicleStockForDriverSuccess: [
+      'payload',
+      'deliveryDate',
+      'isRefreshData'
+    ],
     optimizeStops: ['currentLocation', 'returnPosition'],
     setCurrentDay: null,
     setDelivered: ['id'],
@@ -28,6 +32,7 @@ export const { Types, Creators } = createActions(
     startDelivering: [],
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
+    refreshDriverData: null,
     updateCurrentDayProps: ['props'],
     updateDirectionsPolyline: ['payload'],
     updateProps: ['props'],
@@ -48,26 +53,28 @@ Delivery status:
 const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 const initialCurrentDay = cDay();
 
+const initialCurrentDayState = {
+  allItemsDone: false,
+  completedStopsIds: [],
+  confirmedItem: [],
+  deliveryStatus: 0,
+  directionsPolyline: [],
+  groupedStock: {},
+  hasRoutes: false,
+  orderedStopsIds: [],
+  previousStopId: null,
+  outOfStockIds: [],
+  selectedStopId: null,
+  stock: [],
+  stockWithData: {},
+  stops: {}
+};
+
 const initialState = {
   currentDay: initialCurrentDay,
   optimizedRoutes: false,
   processing: true,
-  [initialCurrentDay]: {
-    allItemsDone: false,
-    completedStopsIds: [],
-    confirmedItem: [],
-    deliveryStatus: 0,
-    directionsPolyline: [],
-    groupedStock: {},
-    hasRoutes: false,
-    orderedStopsIds: [],
-    previousStopId: null,
-    outOfStockIds: [],
-    selectedStopId: null,
-    stock: [],
-    stockWithData: {},
-    stops: {}
-  }
+  [initialCurrentDay]: initialCurrentDayState
 };
 
 const processingTrue = (state) =>
@@ -148,16 +155,23 @@ export const getVehicleStockForDriverSuccess = (
     draft[formatedDate].hasRoutes = payload.length > 0;
   });
 
-export const getForDriverSuccess = (state, { payload }) =>
+export const getForDriverSuccess = (
+  state,
+  { payload, props: { isRefreshData = false } }
+) =>
   produce(state, (draft) => {
     const cd = formatDate(new Date(payload.deliveryDate));
 
     draft[cd].stockWithData = payload;
-    draft[cd].deliveryStatus = checkAtLeastOneItem(payload?.items, 1, true)
+    const deliveryStatus = checkAtLeastOneItem(payload?.items, 1, true)
       ? checkAtLeastOneItem(payload?.items, 1)
         ? 2
         : 3
       : 0;
+
+    if (!isRefreshData || deliveryStatus === 3) {
+      draft[cd].deliveryStatus = deliveryStatus;
+    }
 
     // PREPARE RAW STOPS
     for (const item of draft[cd].stockWithData.items) {
@@ -345,6 +359,24 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     draft.processing = false;
   });
 
+export const refreshDriverData = (state) => {
+  const cd = state.currentDay;
+  return {
+    ...state,
+    [cd]: {
+      ...state[cd],
+      completedStopsIds: [],
+      confirmedItem: [],
+      groupedStock: {},
+      orderedStopsIds: [],
+      outOfStockIds: [],
+      stock: [],
+      stockWithData: {},
+      stops: {}
+    }
+  };
+};
+
 export const updateCurrentDayProps = (state, { props }) => {
   const cd = state.currentDay;
   return { ...state, [cd]: { ...state[cd], ...props } };
@@ -366,14 +398,15 @@ export const updateSelectedStop = (state, { sID }) =>
   });
 
 export default createReducer(initialState, {
-  [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
-  [Types.GET_VEHICLE_STOCK_FOR_DRIVER]: processingTrue,
+  [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
+  [Types.GET_VEHICLE_STOCK_FOR_DRIVER]: processingTrue,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
-  [Types.SET_DELIVERED]: processingTrue,
+  [Types.REFRESH_DRIVER_DATA]: refreshDriverData,
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
+  [Types.SET_DELIVERED]: processingTrue,
   [Types.SET_REJECTED]: processingTrue,
   [Types.SET_SELECTED_STOP_IMAGE]: setSelectedStopImage,
   [Types.START_DELIVERING]: startDelivering,

@@ -2,6 +2,7 @@ import { put } from 'redux-saga/effects';
 
 import Api from 'Api';
 import { Types as UserTypes } from 'Reducers/user';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 // EXPORTED
 export const getDriver = function* () {
@@ -12,4 +13,5 @@ export const getDriver = function* () {
     },
     promise: Api.repositories.user.getDriver()
   });
+  Analytics.trackEvent(EVENTS.GET_DRIVER_DATA);
 };

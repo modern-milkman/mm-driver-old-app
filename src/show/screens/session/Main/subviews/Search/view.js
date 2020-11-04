@@ -16,11 +16,14 @@ import style from './style';
 const searchReference = React.createRef();
 
 const handleSearchFilter = (items, searchValue) => {
+  if (items && items.length <= 0) {
+    return [];
+  }
   return items.filter(
     (item) =>
-      item.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
-      item.forename.toLowerCase().includes(searchValue.toLowerCase()) ||
-      item.surname.toLowerCase().includes(searchValue.toLowerCase())
+      item?.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item?.forename.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item?.surname.toLowerCase().includes(searchValue.toLowerCase())
   );
 };
 
