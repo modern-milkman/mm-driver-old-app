@@ -179,12 +179,17 @@ export function* setCurrentDay({}) {
 
 export const startDelivering = function* () {
   const device = yield select(deviceSelector);
-  yield delay(750); // delay required because lots of animations + transitions + navigation + processing result in sluggish interface dropping frames. slight delay here makes everything smooth
-  yield put({
-    type: DeliveryTypes.OPTIMIZE_STOPS,
-    currentLocation: device.position.coords,
-    returnPosition: device.returnPosition
-  });
+  const isOptimizedRoutes = yield select(optimizedRoutesSelector);
+
+  if (isOptimizedRoutes) {
+    yield delay(750); // delay required because lots of animations + transitions + navigation + processing result in sluggish interface dropping frames. slight delay here makes everything smooth
+
+    yield put({
+      type: DeliveryTypes.OPTIMIZE_STOPS,
+      currentLocation: device.position.coords,
+      returnPosition: device.returnPosition
+    });
+  }
   Analytics.trackEvent(EVENTS.START_DELIVERING);
 };
 

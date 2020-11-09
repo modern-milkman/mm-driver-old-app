@@ -271,7 +271,14 @@ export const setSelectedStopImage = (
 
 export const startDelivering = (state) =>
   produce(state, (draft) => {
-    draft.processing = true;
+    if (!state.optimizedRoutes) {
+      const cd = state.currentDay;
+
+      draft[cd].deliveryStatus = 2;
+      draft.processing = false;
+    } else {
+      draft.processing = true;
+    }
   });
 
 export const toggleConfirmedItem = (state, { id }) =>

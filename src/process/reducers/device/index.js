@@ -14,10 +14,10 @@ export const { Types, Creators } = createActions(
 );
 
 const initialState = {
-  buttonAccessibility: sizes.button.normal,
+  buttonAccessibility: sizes.button.large,
   mapNoTrackingZoom: 12,
   mapNoTrackingHeading: 0,
-  mapMarkerSize: sizes.marker.large,
+  mapMarkerSize: sizes.marker.normal,
   mapTrackingZoom: 19,
   position: null,
   returnPosition: null,

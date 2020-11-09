@@ -81,14 +81,12 @@ const TextInput = forwardRef((props, ref) => {
           }
         ]}>
         <InsetShadow
-          containerStyle={[
-            style.inputWrapper,
-            {
-              minHeight: sizes[size],
-              borderRadius: sizes.borderRadius,
-              borderColor: borderColor(error, focused)
-            }
-          ]}
+          containerStyle={{
+            ...style.inputWrapper,
+            minHeight: sizes[size],
+            borderRadius: sizes.borderRadius,
+            borderColor: borderColor(error, focused)
+          }}
           {...Platform.select({
             android: { elevation: 2 },
             ios: {
@@ -100,8 +98,8 @@ const TextInput = forwardRef((props, ref) => {
           })}>
           <RowView
             alignItems={multiline ? 'flex-end' : 'center'}
-            marginLeft={!leftIcon && sizes.defaultPadding}
-            marginRight={!focused && sizes.defaultPadding}
+            marginLeft={!leftIcon ? sizes.defaultPadding : null}
+            marginRight={!focused ? sizes.defaultPadding : null}
             width={'auto'}>
             {leftIcon && (
               <CustomIcon icon={leftIcon} onPress={onLeftIconPress} />
