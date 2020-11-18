@@ -80,7 +80,7 @@ export const login_error = function* ({ status, data }) {
     type: TransientTypes.UPDATE_PROPS,
     props: { password: '', jiggleForm: true }
   });
-  Analytics.trackEvent(EVENTS.LOGIN_ERROR, status);
+  Analytics.trackEvent(EVENTS.LOGIN_ERROR, { status });
 };
 
 export const login_success = function* ({ payload }) {
@@ -101,7 +101,7 @@ export const logout = function* () {
 
 export const onNavigate = function* (params) {
   yield call(onNavigateSideEffects, params);
-  Analytics.trackEvent(EVENTS.NAVIGATE, params);
+  Analytics.trackEvent(EVENTS.NAVIGATE, { params });
 };
 
 export const onNavigateBack = function* () {
@@ -116,7 +116,7 @@ export const refreshDriverData = function* () {
     type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER
   });
   yield put({ type: DeliveryTypes.GET_FOR_DRIVER, isRefreshData: true });
-  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, deliveryStatus);
+  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { deliveryStatus });
 };
 
 export const rehydrated = function* () {
@@ -128,11 +128,16 @@ export const rehydrated = function* () {
   }
 
   if (device.uniqueID === 'uninitialized') {
+    const deviceUniqueId = DeviceInfo.getUniqueId();
     yield put({
       type: DeviceTypes.UPDATE_PROPS,
       props: {
-        uniqueID: DeviceInfo.getUniqueId()
+        uniqueID: deviceUniqueId
       }
+    });
+
+    Analytics.trackEvent(EVENTS.DEVICE_ID_UNINITIALIZED_GET_UNIQUE, {
+      deviceUniqueId
     });
   }
 };

@@ -25,6 +25,7 @@ export default {
       if (device_id === null) {
         identifiers = getIdentifiers();
       }
+
       amplitude.track({
         event_properties: {
           ...eventData

@@ -73,7 +73,9 @@ export const getForDriverSuccess = function* ({
     deliveryDate: payload.deliveryDate,
     props: { processing: false, isRefreshData }
   });
-  Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, payload);
+  Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, {
+    payload
+  });
 };
 
 export const getVehicleStockForDriverSuccess = function* ({
@@ -93,7 +95,9 @@ export const getVehicleStockForDriverSuccess = function* ({
     });
   }
   yield call(updateTrackerData, { deliveryStatus });
-  Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, payload);
+  Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, {
+    payload
+  });
 };
 
 export const setDelivered = function* ({ id }) {
@@ -110,7 +114,7 @@ export const setDelivered = function* ({ id }) {
     },
     promise: Api.repositories.delivery.patchDelivered(id)
   });
-  Analytics.trackEvent(EVENTS.TAP_DONE_DELIVER, id);
+  Analytics.trackEvent(EVENTS.TAP_DONE_DELIVER, { id });
 };
 
 export const setDeliveredOrRejectedSuccess = function* () {
@@ -150,7 +154,7 @@ export const setItemOutOfStock = function* ({ id }) {
     actions: {},
     promise: Api.repositories.delivery.patchItemOutOfStock(id)
   });
-  Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, id);
+  Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, { id });
 };
 
 export const setRejected = function* ({ id, reasonMessage }) {
@@ -164,7 +168,10 @@ export const setRejected = function* ({ id, reasonMessage }) {
     promise: Api.repositories.delivery.patchRejected(id, reasonMessage),
     id
   });
-  Analytics.trackEvent(EVENTS.TAP_SKIP_DELIVERY, id, reasonMessage);
+  Analytics.trackEvent(EVENTS.TAP_SKIP_DELIVERY, {
+    id,
+    reasonMessage
+  });
 };
 
 export const optimizeStops = function* () {
@@ -244,5 +251,5 @@ export const updatedSelectedStop = function* () {
     });
   }
 
-  Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, selectedStop);
+  Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, { selectedStop });
 };
