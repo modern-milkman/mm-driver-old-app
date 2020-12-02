@@ -188,6 +188,7 @@ export const getForDriverSuccess = (
         draft[cd].stops[key] = {
           key,
           customerId: item.customerId,
+          satisfactionStatus: item.satisfactionStatus || 0,
           description: `${item.forename} ${item.surname}`,
           deliveryInstructions:
             deliveryInstructions && deliveryInstructions.length > 0

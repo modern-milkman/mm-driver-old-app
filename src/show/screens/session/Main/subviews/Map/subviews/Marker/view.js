@@ -8,6 +8,21 @@ import Icon from 'Components/Icon';
 
 import style from './style';
 
+const customerSatisfactionColor = (satisfactionStatus) => {
+  switch (satisfactionStatus) {
+    case 1:
+      return colors.primaryBright;
+    case 2:
+      return colors.success;
+    case 3:
+      return colors.warning;
+    case 4:
+      return colors.error;
+    default:
+      return colors.primary;
+  }
+};
+
 const Marker = (props) => {
   const {
     completedStopsIds,
@@ -35,7 +50,7 @@ const Marker = (props) => {
       ? colors.secondary
       : completed
       ? colors.input
-      : colors.primary;
+      : customerSatisfactionColor(selectedStop.satisfactionStatus);
 
   const [previousMarkerSize, setPreviousMarkerSize] = useState(mapMarkerSize);
   const [tracksViewChanges, setTracksViewChanges] = useState(
