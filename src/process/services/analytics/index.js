@@ -6,7 +6,11 @@ import store from 'Redux/store';
 
 import events from './events';
 
-const amplitude = new Amplitude(Config.AMPLITUDE_KEY);
+const amplitude = new Amplitude(Config.AMPLITUDE_KEY, {
+  options: {
+    min_id_length: 1
+  }
+});
 let identifiers = {};
 
 const getIdentifiers = () => {
