@@ -251,5 +251,10 @@ export const updatedSelectedStop = function* () {
     });
   }
 
-  Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, { selectedStop });
+  Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, {
+    selectedStop: {
+      ...selectedStop,
+      orders: Object.keys(selectedStop.orders)
+    }
+  });
 };
