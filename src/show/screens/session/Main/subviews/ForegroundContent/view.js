@@ -55,8 +55,7 @@ const renderSubHeading = (foregroundState, { stopCount, selectedStop }) => {
       });
     case 'DELIVERING':
       return I18n.t('screens:main.activeDeliveryFor', {
-        itemCount: selectedStop.itemCount,
-        fullName: `${selectedStop.forename} ${selectedStop.surname}`
+        itemCount: selectedStop.itemCount
       });
   }
 };

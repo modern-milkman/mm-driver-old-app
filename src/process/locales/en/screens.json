@@ -22,7 +22,7 @@
     "done": "Done"
   },
   "main": {
-    "activeDeliveryFor": "{{itemCount}} items for {{fullName}}",
+    "activeDeliveryFor": "{{itemCount}} items",
     "actions": {
       "clearReturnPosition": "Clear current return position",
       "openIn": "Open in {{appName}}",

@@ -270,7 +270,6 @@ const Deliver = (props) => {
             })}
             miscelaneousColor={colors.Primarylight}
             icon={null}
-            title={`${selectedStop?.forename} ${selectedStop?.surname}`}
             description={I18n.t('screens:deliver.customerID', {
               customerId: selectedStop?.customerId
             })}

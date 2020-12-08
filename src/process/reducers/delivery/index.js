@@ -1,6 +1,7 @@
 import Config from 'react-native-config';
 import { createActions, createReducer } from 'reduxsauce';
 
+import I18n from 'Locales/I18n';
 import { Point, solve as salesman } from 'Services/salesman';
 import {
   checkAtLeastOneItem,
@@ -189,20 +190,19 @@ export const getForDriverSuccess = (
           key,
           customerId: item.customerId,
           satisfactionStatus: item.satisfactionStatus || 0,
-          description: `${item.forename} ${item.surname}`,
+          description: I18n.t('screens:deliver.customerID', {
+            customerId: item.customerId
+          }),
           deliveryInstructions:
             deliveryInstructions && deliveryInstructions.length > 0
               ? deliveryInstructions
               : null,
-          forename: item.forename,
           icon: null,
           latitude,
           longitude,
           orderID: item.orderID,
           orders: {},
-
           phoneNumber: item.phoneNumber,
-          surname: item.surname,
           status: item.delivery_stateID === 1 ? 'pending' : 'completed',
           title:
             (item.address.name_number ? `${item.address.name_number}` : '') +
