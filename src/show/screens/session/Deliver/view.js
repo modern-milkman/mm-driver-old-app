@@ -22,6 +22,8 @@ import {
 
 import style from './style';
 
+const reasonMessageRef = React.createRef();
+
 const forFade = ({ current, closing }) => ({
   cardStyle: {
     opacity: current.progress
@@ -125,6 +127,7 @@ const renderSkipModal = ({
             value={reasonMessage}
             placeholder={I18n.t('screens:deliver.modal.inputPlaceholder')}
             onChangeText={handleChangeSkip.bind(null, updateTransientProps)}
+            ref={reasonMessageRef}
           />
         </RowView>
       </ColumnView>

@@ -102,6 +102,8 @@ export const getVehicleStockForDriverSuccess = function* ({
 
 export const setDelivered = function* ({ id }) {
   const outOfStockItems = yield select(outOfStockItemsSelector);
+  const device = yield select(deviceSelector);
+
   for (const i of outOfStockItems) {
     yield put({ type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK, id: i });
   }
@@ -112,7 +114,11 @@ export const setDelivered = function* ({ id }) {
       success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS },
       fail: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_FAILURE }
     },
-    promise: Api.repositories.delivery.patchDelivered(id)
+    promise: Api.repositories.delivery.patchDelivered(
+      id,
+      device.position?.coords.latitude,
+      device.position?.coords.longitude
+    )
   });
   Analytics.trackEvent(EVENTS.TAP_DONE_DELIVER, { id });
 };
@@ -159,13 +165,20 @@ export const setItemOutOfStock = function* ({ id }) {
 
 export const setRejected = function* ({ id, reasonMessage }) {
   // TODO - trigger out of stock requests even in reject delivery mode
+  const device = yield select(deviceSelector);
+
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS },
       fail: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_FAILURE }
     },
-    promise: Api.repositories.delivery.patchRejected(id, reasonMessage),
+    promise: Api.repositories.delivery.patchRejected(
+      id,
+      reasonMessage,
+      device.position?.coords.latitude,
+      device.position?.coords.longitude
+    ),
     id
   });
   Analytics.trackEvent(EVENTS.TAP_SKIP_DELIVERY, {

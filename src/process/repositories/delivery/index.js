@@ -12,16 +12,32 @@ export default {
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
   },
-  patchDelivered(orderId) {
-    return Api.patch(`/Delivery/SetDelivered/${orderId}`);
+  patchDelivered(
+    orderId,
+    deliveryLocationLatitude = null,
+    deliveryLocationLongitude = null
+  ) {
+    return Api.patch('/Delivery/SetDelivered', {
+      orderId,
+      deliveryLocationLatitude,
+      deliveryLocationLongitude
+    });
   },
   patchItemOutOfStock(itemId) {
     return Api.patch(`/Delivery/SetOutfStock/${itemId}`);
   },
-  patchRejected(orderId, description) {
-    return Api.patch(`/Delivery/SetRejected/${orderId}`, {
+  patchRejected(
+    orderId,
+    description,
+    deliveryLocationLatitude = null,
+    deliveryLocationLongitude = null
+  ) {
+    return Api.patch('/Delivery/SetRejected', {
+      orderId,
       reasonType: 3, //Reason Types are: WrongAddress = 1, PinWrong = 2, Other = 3
-      description
+      description,
+      deliveryLocationLatitude,
+      deliveryLocationLongitude
     });
   },
   updateDirectionsPolyline({
