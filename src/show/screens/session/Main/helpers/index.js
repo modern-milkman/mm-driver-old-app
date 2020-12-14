@@ -3,6 +3,7 @@ import { Linking } from 'react-native';
 
 import Alert from 'Services/alert';
 import actionSheet from 'Services/actionSheet';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 import configuration from './configuration';
 
@@ -91,6 +92,9 @@ const openNavigation = ({
     }
   }
 
+  Analytics.trackEvent(EVENTS.NAVIGATE_EXTERNAL, {
+    type
+  });
   Linking.openURL(url).catch(() => {
     Alert({
       title: I18n.t('general:alert.appInstalled.title'),
