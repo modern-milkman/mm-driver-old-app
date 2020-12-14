@@ -21,7 +21,8 @@ import {
   onNavigate,
   onNavigateBack,
   refreshDriverData,
-  rehydrated
+  rehydrated,
+  sendCrashLog
 } from './application';
 
 import {
@@ -59,6 +60,7 @@ export default function* root() {
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
+    takeLatest(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
 
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),

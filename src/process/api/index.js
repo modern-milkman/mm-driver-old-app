@@ -10,19 +10,23 @@ import { Creators as UserActions } from 'Reducers/user';
 let TOKEN = null;
 let REFRESH_TOKEN = null;
 
-const api = axios.create({
-  baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
+const defaultConfig = {
+  internal: true,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'x-api-version': Config.X_API_VERSION
-  },
+  }
+};
+
+const api = axios.create({
+  baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
   timeout: parseInt(Config.API_TIMEOUT)
 });
 
 const interceptors = {
   config: (config) => {
-    if (TOKEN) {
+    if (TOKEN && config.internal) {
       config.headers.Authorization = 'Bearer ' + TOKEN;
     }
     return config;
@@ -105,36 +109,36 @@ const Api = {
     });
   },
 
-  get(path) {
-    const request = api.get(path);
+  get(path, config = defaultConfig) {
+    const request = api.get(path, config);
     request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   },
 
-  post(path, body) {
-    const request = api.post(path, body);
+  post(path, body, config = defaultConfig) {
+    const request = api.post(path, body, config);
     request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   },
 
-  put(path, body) {
-    const request = api.put(path, body);
+  put(path, body, config = defaultConfig) {
+    const request = api.put(path, body, config);
     request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   },
 
-  patch(path, body) {
-    const request = api.patch(path, body);
+  patch(path, body, config = defaultConfig) {
+    const request = api.patch(path, body, config);
     request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;
   },
 
-  delete(path) {
-    const request = api.delete(path);
+  delete(path, config = defaultConfig) {
+    const request = api.delete(path, config);
     request.then(this.testMinVersion);
     request.catch(Api.catchError);
     return request;

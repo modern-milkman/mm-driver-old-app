@@ -16,6 +16,7 @@ export const { Types, Creators } = createActions(
     navigateBack: null,
     rehydrated: null,
     removeLastStackRoute: null,
+    sendCrashLog: ['payload'],
     updateProps: ['props']
   },
   { prefix: 'application/' }

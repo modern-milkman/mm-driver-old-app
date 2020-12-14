@@ -142,6 +142,13 @@ export const rehydrated = function* () {
   }
 };
 
+export const sendCrashLog = function* ({ payload }) {
+  yield put({
+    type: Api.API_CALL,
+    promise: Api.repositories.crash.sendCrashLog(payload)
+  });
+};
+
 export const mounted = function* () {
   yield call(rehydratedAndMounted);
 };
