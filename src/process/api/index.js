@@ -6,6 +6,7 @@ import repositories from 'Repositories';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
+import { Creators as ApplicationActions } from 'Reducers/application';
 
 let TOKEN = null;
 let REFRESH_TOKEN = null;
@@ -34,22 +35,31 @@ const interceptors = {
   responseSuccess: (response) => response,
   responseError: async (error) => {
     const originalRequest = error.config;
-    const { dispatch } = store().store;
+    const { dispatch, getState } = store().store;
+    const { user } = getState();
     if (error?.response?.status === 401) {
-      if (!originalRequest.url.includes('/Security/Refresh')) {
-        const refreshResponse = await repositories.user.refreshToken(
-          Api.getToken(),
-          Api.getRefreshToken()
-        );
+      if (originalRequest.url.includes('/Security/Refresh')) {
+        dispatch(ApplicationActions.logout());
+        return Promise.reject(error);
+      } else {
+        if (new Date(user.refreshExpiry) < new Date()) {
+          dispatch(ApplicationActions.logout());
+          return Promise.reject(error);
+        } else {
+          const refreshResponse = await repositories.user.refreshToken(
+            Api.getToken(),
+            Api.getRefreshToken()
+          );
 
-        Api.setToken(
-          refreshResponse.data.jwtToken,
-          refreshResponse.data.refreshToken
-        );
+          Api.setToken(
+            refreshResponse.data.jwtToken,
+            refreshResponse.data.refreshToken
+          );
 
-        dispatch(UserActions.updateProps({ ...refreshResponse.data }));
+          dispatch(UserActions.updateProps({ ...refreshResponse.data }));
 
-        return api(originalRequest);
+          return api(originalRequest);
+        }
       }
     }
 
