@@ -158,7 +158,7 @@ export const rehydratedAndMounted = function* () {
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
   if (user_session) {
-    if (new Date(user.jwtExpiry) < new Date()) {
+    if (new Date(user.refreshExpiry) < new Date()) {
       yield call(logout);
       RNBootSplash.hide();
     } else {
