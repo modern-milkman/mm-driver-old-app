@@ -287,6 +287,8 @@ PODS:
     - React-Core
   - react-native-maps (0.27.1):
     - React-Core
+  - react-native-restart (0.0.19):
+    - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
   - React-RCTActionSheet (0.63.4):
@@ -355,11 +357,11 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.10):
     - React
-  - RNDeviceInfo (7.2.1):
+  - RNDeviceInfo (7.3.1):
     - React-Core
   - RNGestureHandler (1.9.0):
     - React-Core
-  - RNScreens (2.15.0):
+  - RNScreens (2.16.1):
     - React-Core
   - RNSharedElement (0.7.0):
     - React
@@ -419,6 +421,7 @@ DEPENDENCIES:
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
+  - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -506,6 +509,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-restart:
+    :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-RCTActionSheet:
@@ -589,6 +594,7 @@ SPEC CHECKSUMS:
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
   react-native-google-maps: 307f9520f323815fa2906b1ee991e67c88c3edb0
   react-native-maps: c244a13f8fc78d9a73256cebae6faed4145460dd
+  react-native-restart: 28dfecbccaf8ffb1070c5e3500d739aedbb0c381
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
@@ -603,9 +609,9 @@ SPEC CHECKSUMS:
   RNBootSplash: a9544ba7f1a68b561e61e9efc68e2b3eec05dcef
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
-  RNDeviceInfo: ae953cf4af2775e45597304fc9513a7931ef81ff
+  RNDeviceInfo: 6ecb1d1c87d20e4c62354be0348de23362824dcd
   RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
-  RNScreens: 2ad555d4d9fa10b91bb765ca07fe9b29d59573f0
+  RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
   RNSharedElement: 00b1a1420d213a34459bb9a5aacabb38107d7948
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
