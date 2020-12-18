@@ -1,4 +1,5 @@
 import Config from 'react-native-config';
+import { useEffect, useRef } from 'react';
 import {
   Animated,
   Dimensions,
@@ -130,6 +131,14 @@ const ukTimeNow = () => {
   );
 };
 
+const usePrevious = (value) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
 export {
   capitalize,
   checkAtLeastOneItem,
@@ -144,5 +153,6 @@ export {
   toggle,
   randomKey,
   statusBarHeight,
-  ukTimeNow
+  ukTimeNow,
+  usePrevious
 };
