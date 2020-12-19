@@ -159,38 +159,39 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
   <TouchableOpacity
     style={style.fullView}
     onPress={setModalVisible.bind(null, false)}>
-    <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
-      {selectedStop.customerAddressImage && (
-        <Image
-          requiresAuthentication
-          source={{
-            uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
-          }}
-          style={style.image}
-          width={width - defaults.marginHorizontal * 2}
-          maxHeight={height * 0.7}
-        />
-      )}
-      {!selectedStop.customerAddressImage && (
-        <RowView height={width - defaults.marginHorizontal * 2}>
-          <CustomIcon
+    {selectedStop && (
+      <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
+        {selectedStop.customerAddressImage ? (
+          <Image
+            requiresAuthentication
+            source={{
+              uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
+            }}
+            style={style.image}
             width={width - defaults.marginHorizontal * 2}
-            icon={'frontDeliveryPlaceholder'}
-            disabled
+            maxHeight={height * 0.7}
           />
-        </RowView>
-      )}
-      {selectedStop.deliveryInstructions && (
-        <RowView
-          height={'auto'}
-          alignItems={'flex-start'}
-          marginVertical={defaults.marginVertical}
-          width={'auto'}
-          marginHorizontal={defaults.marginHorizontal}>
-          <Text.List>{selectedStop.deliveryInstructions}</Text.List>
-        </RowView>
-      )}
-    </ColumnView>
+        ) : (
+          <RowView height={width - defaults.marginHorizontal * 2}>
+            <CustomIcon
+              width={width - defaults.marginHorizontal * 2}
+              icon={'frontDeliveryPlaceholder'}
+              disabled
+            />
+          </RowView>
+        )}
+        {selectedStop.deliveryInstructions && (
+          <RowView
+            height={'auto'}
+            alignItems={'flex-start'}
+            marginVertical={defaults.marginVertical}
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}>
+            <Text.List>{selectedStop.deliveryInstructions}</Text.List>
+          </RowView>
+        )}
+      </ColumnView>
+    )}
   </TouchableOpacity>
 );
 
