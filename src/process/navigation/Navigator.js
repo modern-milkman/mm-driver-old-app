@@ -4,6 +4,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import {
   CheckIn,
+  CustomerIssueDetails,
+  CustomerIssueList,
   Deliver,
   Home,
   LoadVan,
@@ -28,6 +30,12 @@ const MainNavigator = createStackNavigator(
     },
     Settings: {
       screen: Settings
+    },
+    CustomerIssueList: {
+      screen: CustomerIssueList
+    },
+    CustomerIssueDetails: {
+      screen: CustomerIssueDetails
     }
   },
   {

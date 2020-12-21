@@ -33,12 +33,12 @@ PODS:
     - Flipper-Folly (~> 2.2)
     - Flipper-RSocket (~> 1.1)
   - Flipper-DoubleConversion (1.1.7)
-  - Flipper-Folly (2.3.0):
+  - Flipper-Folly (2.2.0):
     - boost-for-react-native
     - CocoaLibEvent (~> 1.0)
     - Flipper-DoubleConversion
     - Flipper-Glog
-    - OpenSSL-Universal (= 1.0.2.20)
+    - OpenSSL-Universal (= 1.0.2.19)
   - Flipper-Glog (0.3.6)
   - Flipper-PeerTalk (0.0.4)
   - Flipper-RSocket (1.1.0):
@@ -106,9 +106,9 @@ PODS:
   - GoogleMaps/Base (3.5.0)
   - GoogleMaps/Maps (3.5.0):
     - GoogleMaps/Base
-  - OpenSSL-Universal (1.0.2.20):
-    - OpenSSL-Universal/Static (= 1.0.2.20)
-  - OpenSSL-Universal/Static (1.0.2.20)
+  - OpenSSL-Universal (1.0.2.19):
+    - OpenSSL-Universal/Static (= 1.0.2.19)
+  - OpenSSL-Universal/Static (1.0.2.19)
   - RCTRequired (0.63.4)
   - RCTTypeSafety (0.63.4):
     - FBLazyVector (= 0.63.4)
@@ -361,6 +361,15 @@ PODS:
     - React-Core
   - RNGestureHandler (1.9.0):
     - React-Core
+  - RNImageCropPicker (0.35.1):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.35.1)
+    - TOCropViewController
+  - RNImageCropPicker/QBImagePickerController (0.35.1):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController
   - RNScreens (2.16.1):
     - React-Core
   - RNSharedElement (0.7.0):
@@ -369,6 +378,7 @@ PODS:
     - React
   - RNVectorIcons (7.1.0):
     - React
+  - TOCropViewController (2.5.5)
   - toolbar-android (0.1.0-rc.2):
     - React
   - Yoga (1.14.0)
@@ -438,6 +448,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSharedElement (from `../node_modules/react-native-shared-element`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -462,6 +473,7 @@ SPEC REPOS:
     - Google-Maps-iOS-Utils
     - GoogleMaps
     - OpenSSL-Universal
+    - TOCropViewController
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -543,6 +555,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNSharedElement:
@@ -570,7 +584,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: f2c97f2529dd79c083355182cc158c9f98f4bd6e
   Flipper: be611d4b742d8c87fbae2ca5f44603a02539e365
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
-  Flipper-Folly: e4493b013c02d9347d5e0cb4d128680239f6c78a
+  Flipper-Folly: c12092ea368353b58e992843a990a3225d4533c3
   Flipper-Glog: 1dfd6abf1e922806c52ceb8701a3599a79a200a6
   Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
   Flipper-RSocket: 64e7431a55835eb953b0bf984ef3b90ae9fdddd7
@@ -579,7 +593,7 @@ SPEC CHECKSUMS:
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: 32ca02de09de357a10ac773f2c70f1986751392d
-  OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
+  OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
   React: b0a957a2c44da4113b0c4c9853d8387f8e64e615
@@ -611,10 +625,12 @@ SPEC CHECKSUMS:
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNDeviceInfo: 6ecb1d1c87d20e4c62354be0348de23362824dcd
   RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
+  RNImageCropPicker: 16951bc02411f50c4d197488ed6406a23dc3b5f1
   RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
   RNSharedElement: 00b1a1420d213a34459bb9a5aacabb38107d7948
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
+  TOCropViewController: da59f531f8ac8a94ef6d6c0fc34009350f9e8bfe
   toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

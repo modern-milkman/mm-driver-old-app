@@ -26,6 +26,10 @@ import {
 } from './application';
 
 import {
+  acknowledgeClaim,
+  driverReply,
+  driverReplySuccess,
+  getCustomerClaims,
   getForDriver,
   getForDriverSuccess,
   getVehicleStockForDriverSuccess,
@@ -62,6 +66,10 @@ export default function* root() {
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
     takeLatest(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
 
+    takeLatest(DeliveryTypes.ACKNOWLEDGE_CLAIM, acknowledgeClaim),
+    takeLatest(DeliveryTypes.DRIVER_REPLY, driverReply),
+    takeLatest(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
+    takeLatest(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
     takeLatest(

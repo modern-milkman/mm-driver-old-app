@@ -44,6 +44,35 @@ const updateTrackerData = function* ({ deliveryStatus }) {
 };
 
 // EXPORTED
+export const acknowledgeClaim = function* ({ id }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS }
+    },
+    promise: Api.repositories.delivery.acknowledgeClaim({ id })
+  });
+};
+
+export const driverReply = function* ({ claimId, comment, image, imageType }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS }
+    },
+    promise: Api.repositories.delivery.driverReply({
+      claimId,
+      comment,
+      image,
+      imageType
+    })
+  });
+};
+
+export const driverReplySuccess = function* ({ payload }) {
+  yield put({ type: DeliveryTypes.ACKNOWLEDGE_CLAIM, id: payload.claimId });
+};
+
 export const getForDriver = function* ({ isRefreshData = false }) {
   yield put({
     type: Api.API_CALL,
@@ -250,6 +279,16 @@ export const updatedSelectedStop = function* () {
     });
   }
 
+  if (
+    selectedStop.satisfactionStatus === 3 ||
+    selectedStop.satisfactionStatus === 4
+  ) {
+    yield put({
+      type: DeliveryTypes.GET_CUSTOMER_CLAIMS,
+      customerId: selectedStop.customerId
+    });
+  }
+
   if (!selectedStop.customerAddressImage) {
     yield put({
       type: Api.API_CALL,
@@ -269,5 +308,15 @@ export const updatedSelectedStop = function* () {
       ...selectedStop,
       orders: Object.keys(selectedStop.orders)
     }
+  });
+};
+
+export const getCustomerClaims = function* ({ customerId }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS }
+    },
+    promise: Api.repositories.delivery.getCustomerClaims({ customerId })
   });
 };

@@ -145,6 +145,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode project.env.get("APP_VERSION_CODE")?.toInteger()
         versionName project.env.get("APP_VERSION_NAME")
+        vectorDrawables.useSupportLibrary = true
     }
     splits {
         abi {
