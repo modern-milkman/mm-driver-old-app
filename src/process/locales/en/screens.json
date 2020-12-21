@@ -16,6 +16,29 @@
     "modal": {
       "inputPlaceholder": "Type your reason here",
       "title": "Please provide a reason for skipping delivery"
+    },
+    "customerIssue": {
+      "modal": {
+        "customerIssue": "Customer Issue",
+        "date": "Date:",
+        "listTitle": "Reply {{id}}",
+        "markAsRead": "Mark as read",
+        "previousIssues": "Previous issues",
+        "productsAffected": "Products affected:",
+        "reason": "Reason:",
+        "reply": "Reply",
+        "send": "Send",
+        "title": "Reply to customer issue"
+      },
+      "list": {
+        "clientIdIssues": "Client ID #{{cId}} Issues",
+        "dateNrReplies": "{{date}} {{nr}} Replies",
+        "new": "New",
+        "title": "Customer issue #{{issueNr}}"
+      },
+      "details": {
+        "driverReplies": "Driver Replies"
+      }
     }
   },
   "home": {

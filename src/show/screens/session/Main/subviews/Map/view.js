@@ -64,9 +64,13 @@ const Map = (props) => {
   } = props;
 
   const [mapIsInteracting, setMapIsInteracting] = useState(false);
-  const [mapPitch, setMapPitch] = useState(0);
   const [mapRef, setRef] = useState(undefined);
   const [shouldTrackLocation, toggleLocationTracking] = useState(false);
+
+  const previousShouldTrackLocation = usePrevious(shouldTrackLocation);
+  const previousHeading = usePrevious(heading);
+  const previousLatitude = usePrevious(latitude);
+  const previousLongitude = usePrevious(longitude);
 
   const initialCamera = {
     altitude: 1000,
@@ -99,23 +103,12 @@ const Map = (props) => {
     [mapRef]
   );
 
-  const previous = {
-    heading: usePrevious(heading),
-    latitude: usePrevious(latitude),
-    longitude: usePrevious(longitude),
-    mapPitch: usePrevious(mapPitch),
-    mapRef: usePrevious(mapRef),
-    shouldTrackLocation: usePrevious(shouldTrackLocation)
-  };
-
   useEffect(() => {
-    if (previous.shouldTrackLocation !== shouldTrackLocation) {
-      const newMapPitch = shouldTrackLocation ? 90 : 0;
+    if (previousShouldTrackLocation !== shouldTrackLocation) {
       setMapIsInteracting(true);
-      setMapPitch(newMapPitch);
       mapRef?.getCamera().then((currentCamera) => {
         animateCamera(currentCamera, {
-          pitch: newMapPitch,
+          pitch: 90,
           ...(shouldTrackLocation && {
             center: {
               latitude,
@@ -136,9 +129,9 @@ const Map = (props) => {
     if (
       !mapIsInteracting &&
       shouldTrackLocation &&
-      (previous.latitude !== latitude ||
-        previous.longitude !== longitude ||
-        previous.heading !== heading)
+      (previousLatitude !== latitude ||
+        previousLongitude !== longitude ||
+        previousHeading !== heading)
     ) {
       mapRef?.getCamera().then((currentCamera) => {
         animateCamera(currentCamera, {
@@ -157,7 +150,10 @@ const Map = (props) => {
     longitude,
     mapIsInteracting,
     mapRef,
-    previous,
+    previousHeading,
+    previousLatitude,
+    previousLongitude,
+    previousShouldTrackLocation,
     shouldTrackLocation
   ]);
 

@@ -20,6 +20,8 @@ import {
   Separator
 } from 'Components';
 
+import CustomerIssuesModal from './subviews/Modal';
+
 import style from './style';
 
 const reasonMessageRef = React.createRef();
@@ -198,6 +200,21 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
   </TouchableOpacity>
 );
 
+const navToList = () => (
+  <ColumnView
+    width={44}
+    alignItems={'flex-end'}
+    justifyContent={'center'}
+    height={defaults.topNavigation.height}>
+    <CustomIcon
+      icon={'customerIssue'}
+      onPress={NavigationService.navigate.bind(null, {
+        routeName: 'CustomerIssueList'
+      })}
+    />
+  </ColumnView>
+);
+
 const showModal = (type, setModalType, setModalVisible) => {
   setModalType(type);
   setModalVisible(true);
@@ -238,6 +255,8 @@ const Deliver = (props) => {
 
   return (
     <SafeAreaView top bottom>
+      <CustomerIssuesModal />
+
       <NavigationEvents
         onDidFocus={animateContent.bind(null, {
           contentTranslateYValue: 0,
@@ -258,6 +277,7 @@ const Deliver = (props) => {
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
           title={I18n.t('general:details')}
+          RightComponent={navToList}
         />
         <Animated.View
           style={[

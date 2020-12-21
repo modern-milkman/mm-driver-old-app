@@ -11,11 +11,7 @@ const styles = StyleSheet.create({
     borderRadius: defaults.borderRadius
   },
   listItemWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 'auto',
-    minHeight: sizes.list.height - defaults.marginVertical / 2,
+    flexDirection: 'column',
     marginVertical: defaults.marginVertical / 4,
     width: 'auto',
     marginHorizontal: defaults.marginHorizontal

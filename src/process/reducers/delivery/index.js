@@ -14,6 +14,11 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
+    acknowledgeClaim: ['id'],
+    acknowledgeClaimSuccess: ['payload'],
+    driverReply: ['claimId', 'comment', 'image', 'imageType'],
+    driverReplySuccess: ['payload'],
+    getCustomerClaims: ['customerId'],
     getForDriver: ['isRefreshData'],
     getForDriverSuccess: ['payload', 'isRefreshData'],
     getVehicleStockForDriver: null,
@@ -24,18 +29,21 @@ export const { Types, Creators } = createActions(
     ],
     optimizeStops: ['currentLocation', 'returnPosition'],
     setCurrentDay: null,
+    setCustomerClaims: ['payload'],
     setDelivered: ['id'],
     setDeliveredOrRejectedFailure: null,
     setDeliveredOrRejectedSuccess: null,
+    toggleReplyModal: ['cId', 'show'],
     setItemOutOfStock: ['id'],
     setRejected: ['id', 'reasonMessage'],
     setSelectedStopImage: ['payload', 'props'],
+    refreshDriverData: null,
     startDelivering: [],
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
-    refreshDriverData: null,
     updateCurrentDayProps: ['props'],
     updateDirectionsPolyline: ['payload'],
+    updateDriverResponse: ['text', 'image', 'imageType'],
     updateProps: ['props'],
     updateReturnPosition: ['clear'],
     updateSelectedStop: ['sID']
@@ -53,9 +61,17 @@ Delivery status:
 
 const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 const initialCurrentDay = cDay();
+const initialClaim = {
+  driverResponse: { text: null, image: null, imageType: null },
+  list: [],
+  showClaimModal: false,
+  driverUnacknowledgedNr: 0,
+  showReplyModal: false
+};
 
 const initialCurrentDayState = {
   allItemsDone: false,
+  claims: { ...initialClaim },
   completedStopsIds: [],
   confirmedItem: [],
   deliveryStatus: 0,
@@ -78,6 +94,46 @@ const initialState = {
   [initialCurrentDay]: initialCurrentDayState
 };
 
+const acknowledgeClaimSuccess = (state, { payload }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].claims.list = draft[cd].claims.list.map((item) => {
+      if (item.claimId === payload.claimId) {
+        return payload;
+      }
+      return item;
+    });
+
+    const driverUnacknowledgedList = draft[cd].claims.list.filter(
+      (item) => item.driverAcknowledged === false
+    );
+
+    if (driverUnacknowledgedList.length > 0) {
+      draft[cd].claims.selectedId = driverUnacknowledgedList[0].claimId;
+      draft[cd].claims.showedUnacknowledgedNr += 1;
+    } else {
+      draft[cd].claims.showClaimModal = false;
+    }
+  });
+
+const driverReplySuccess = (state, { payload }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].claims.list = draft[cd].claims.list.map((item) => {
+      if (item.claimId === payload.claimId) {
+        item.driverResponses.push(payload);
+      }
+      return item;
+    });
+
+    draft[cd].claims.showReplyModal = false;
+    draft[cd].claims.driverResponse = {
+      text: null,
+      image: null,
+      imageType: null
+    };
+  });
+
 const processingTrue = (state) =>
   produce(state, (draft) => {
     draft.processing = true;
@@ -91,6 +147,24 @@ const resetSelectedStopInfo = (draft) => {
 };
 
 export const reset = () => initialState;
+
+export const setCustomerClaims = (state, { payload }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].claims.list = payload;
+    const driverUnacknowledgedList = payload.filter(
+      (item) => item.driverAcknowledged === false
+    );
+
+    const driverUnacknowledgedLength = driverUnacknowledgedList.length;
+
+    if (driverUnacknowledgedLength > 0) {
+      draft[cd].claims.selectedId = driverUnacknowledgedList[0].claimId;
+      draft[cd].claims.driverUnacknowledgedNr = driverUnacknowledgedLength;
+      draft[cd].claims.showClaimModal = true;
+      draft[cd].claims.showedUnacknowledgedNr = 1;
+    }
+  });
 
 export const getVehicleStockForDriverSuccess = (
   state,
@@ -186,6 +260,7 @@ export const getForDriverSuccess = (
         } else {
           draft[cd].completedStopsIds.push(key);
         }
+
         draft[cd].stops[key] = {
           key,
           customerId: item.customerId,
@@ -310,6 +385,16 @@ export const toggleOutOfStock = (state, { id }) =>
       Object.keys(state[cd].stops[state[cd].selectedStopId]?.orders).length;
   });
 
+export const toggleReplyModal = (state, { cId, show }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].claims.showReplyModal = show;
+
+    if (cId) {
+      draft[cd].claims.selectedId = cId;
+    }
+  });
+
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
   produce(state, (draft) => {
     const cd = state.currentDay;
@@ -396,6 +481,18 @@ export const updateDirectionsPolyline = (state, { payload }) =>
     draft[cd].directionsPolyline = payload;
   });
 
+export const updateDriverResponse = (state, { text, image, imageType }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    if (typeof text === 'string') {
+      draft[cd].claims.driverResponse.text = text;
+    }
+    if (typeof image === 'string') {
+      draft[cd].claims.driverResponse.image = image;
+      draft[cd].claims.driverResponse.imageType = imageType;
+    }
+  });
+
 export const updateSelectedStop = (state, { sID }) =>
   produce(state, (draft) => {
     const cd = state.currentDay;
@@ -403,15 +500,19 @@ export const updateSelectedStop = (state, { sID }) =>
     resetSelectedStopInfo(draft[cd]);
     draft[cd].previousStopId = draft[cd].selectedStopId;
     draft[cd].selectedStopId = sID;
+    draft[cd].claims = { ...initialClaim };
   });
 
 export default createReducer(initialState, {
+  [Types.ACKNOWLEDGE_CLAIM_SUCCESS]: acknowledgeClaimSuccess,
+  [Types.DRIVER_REPLY_SUCCESS]: driverReplySuccess,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER]: processingTrue,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.REFRESH_DRIVER_DATA]: refreshDriverData,
+  [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
   [Types.SET_DELIVERED]: processingTrue,
@@ -420,8 +521,10 @@ export default createReducer(initialState, {
   [Types.START_DELIVERING]: startDelivering,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,
+  [Types.TOGGLE_REPLY_MODAL]: toggleReplyModal,
   [Types.UPDATE_CURRENT_DAY_PROPS]: updateCurrentDayProps,
   [Types.UPDATE_DIRECTIONS_POLYLINE]: updateDirectionsPolyline,
+  [Types.UPDATE_DRIVER_RESPONSE]: updateDriverResponse,
   [Types.UPDATE_PROPS]: updateProps,
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
 });

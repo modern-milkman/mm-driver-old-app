@@ -1,14 +1,26 @@
 import Api from 'Api';
 
 export default {
+  acknowledgeClaim({ id }) {
+    return Api.post(`/Claim/Acknowledge/${id}`);
+  },
+  driverReply({ claimId, comment, image, imageType }) {
+    return Api.post('/Claim/DriverResponse', {
+      claimId,
+      comment,
+      image,
+      imageType
+    });
+  },
   getCustomerAddressImage({ customerId, addressId }) {
     return Api.get(`/Customer/CustomerImage/${customerId}/${addressId}`);
   },
-
+  getCustomerClaims({ customerId }) {
+    return Api.get(`/Claim/GetDriverClaims/${customerId}`);
+  },
   getForDriver() {
     return Api.get('/Delivery/GetForDriver');
   },
-
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
   },
