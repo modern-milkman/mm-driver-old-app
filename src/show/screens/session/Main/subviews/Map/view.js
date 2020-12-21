@@ -115,7 +115,14 @@ const Map = (props) => {
       setMapPitch(newMapPitch);
       mapRef?.getCamera().then((currentCamera) => {
         animateCamera(currentCamera, {
-          pitch: newMapPitch
+          pitch: newMapPitch,
+          ...(shouldTrackLocation && {
+            center: {
+              latitude,
+              longitude
+            },
+            heading
+          })
         });
       });
       setTimeout(
