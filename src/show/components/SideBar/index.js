@@ -7,6 +7,7 @@ import SideBar from './view';
 export default connect(
   (state) => ({
     availableNavApps: state.device?.availableNavApps,
+    deliveryStatus: state.delivery[state.delivery.currentDay]?.deliveryStatus,
     driverId: state.user.driverId,
     name: state.user.name,
     sideBarOpen: state.application.sideBarOpen,

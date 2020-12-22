@@ -78,7 +78,8 @@
   },
   "panel": {
     "driverID": "Driver ID #{{driverId}}",
-    "gasStation": "Find a nearby gas station"
+    "gasStation": "Find a nearby gas station",
+    "loadedStock": "Loaded Stock"
   },
   "upgradeApp": {
     "description": "Unfortunately this version of Modern Milkman Driver is no longer supported. To continue using Modern Milkman Driver, please update at your earliest convenience.",

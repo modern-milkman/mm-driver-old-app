@@ -9,7 +9,7 @@ import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView } from 'Containers';
 
 const LoadVan = (props) => {
-  const { groupedStock, itemCount, updateCurrentDayProps } = props;
+  const { groupedStock, itemCount, readOnly, updateCurrentDayProps } = props;
 
   const doneLoadedVan = () => {
     updateCurrentDayProps({ deliveryStatus: 1 });
@@ -42,7 +42,7 @@ const LoadVan = (props) => {
           leftIcon={'chevron-left'}
           leftIconAction={NavigationService.goBack}
           title={`${itemCount} ${I18n.t('screens:loadVan.title')}`}
-          RightComponent={doneButton}
+          RightComponent={readOnly ? null : doneButton}
         />
         <List data={groupedStock} hasSections />
       </ColumnView>
@@ -53,12 +53,14 @@ const LoadVan = (props) => {
 LoadVan.propTypes = {
   itemCount: PropTypes.number,
   groupedStock: PropTypes.array,
+  readOnly: PropTypes.bool,
   updateCurrentDayProps: PropTypes.func
 };
 
 LoadVan.defaultProps = {
   itemCount: 0,
   groupedStock: [],
+  readOnly: false,
   updateCurrentDayProps: mock
 };
 

@@ -29,6 +29,7 @@ const navigateAndClose = (updateProps, callback) => {
 const SideBar = (props) => {
   const {
     availableNavApps,
+    deliveryStatus,
     driverId,
     name,
     updateProps,
@@ -119,6 +120,22 @@ const SideBar = (props) => {
                 justifyContent={'flex-start'}
                 alignItems={'flex-start'}
                 marginVertical={defaults.marginVertical}>
+                {deliveryStatus === '2' && (
+                  <ListItem
+                    title={I18n.t('screens:checkIn.loadVan')}
+                    rightIcon={'chevron-right'}
+                    onPress={navigateAndClose.bind(
+                      null,
+                      updateProps,
+                      NavigationService.navigate.bind(null, {
+                        routeName: 'LoadVan',
+                        params: { readOnly: true }
+                      })
+                    )}
+                    customIcon={'van'}
+                  />
+                )}
+
                 <ListItem
                   customIcon={'gas'}
                   title={I18n.t('screens:panel.gasStation')}
@@ -153,6 +170,7 @@ const SideBar = (props) => {
 
 SideBar.propTypes = {
   availableNavApps: PropTypes.array,
+  deliveryStatus: PropTypes.number,
   driverId: PropTypes.number,
   name: PropTypes.string,
   sideBarOpen: PropTypes.bool,
