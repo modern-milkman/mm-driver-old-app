@@ -84,7 +84,7 @@ const CustomerIssueModal = (props) => {
               />
               <Text.Heading color={colors.secondary}>
                 {showReplyModal
-                  ? I18n.t('screens:deliver.customerIssue.modal.titleReply')
+                  ? I18n.t('screens:deliver.customerIssue.modal.title')
                   : I18n.t('screens:deliver.customerIssue.modal.customerIssue')}
               </Text.Heading>
             </RowView>

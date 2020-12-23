@@ -23,7 +23,6 @@
         "date": "Date:",
         "listTitle": "Reply {{id}}",
         "markAsRead": "Mark as read",
-        "previousIssues": "Previous issues",
         "productsAffected": "Products affected:",
         "reason": "Reason:",
         "reply": "Reply",
@@ -34,6 +33,7 @@
         "clientIdIssues": "Client ID #{{cId}} Issues",
         "dateNrReplies": "{{date}} {{nr}} Replies",
         "new": "New",
+        "previous": "Previous",
         "title": "Customer issue #{{issueNr}}"
       },
       "details": {
