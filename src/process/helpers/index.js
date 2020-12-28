@@ -24,7 +24,7 @@ const checkAtLeastOneItem = (items, statusId, exclude = false) => {
 
 const currentDay = () => {
   const date = new Date();
-  if (parseInt(Config.RESET_HOUR_DAY) <= ukTimeNow()) {
+  if (parseInt(Config.RESET_HOUR_DAY) <= ukTimeNow(true)) {
     date.setDate(date.getDate() + 1);
   }
   return formatDate(date);
@@ -97,6 +97,8 @@ const jiggleAnimation = (animatedValue, callback) => {
 
 const mock = () => null;
 
+const timeToHMArray = (time) => time.split(':').map((hm) => parseInt(hm));
+
 const toggle = (collection, item) => {
   const duplicate = [...collection];
   var idx = duplicate.indexOf(item);
@@ -119,16 +121,16 @@ const statusBarHeight = () => {
   return StatusBarManager.HEIGHT;
 };
 
-const ukTimeNow = () => {
+const ukTimeNow = (secondsFromMidnight = false) => {
   const date = new Date();
-  return parseInt(
-    date
-      .toLocaleTimeString(undefined, {
-        timeZone: 'Europe/London',
-        hour12: false
-      })
-      .substring(0, 2)
-  );
+  const stringDate = date
+    .toLocaleTimeString(undefined, {
+      timeZone: 'Europe/London',
+      hour12: false
+    })
+    .substring(0, 5);
+  const [h, m] = timeToHMArray(stringDate);
+  return secondsFromMidnight ? h * 60 * 60 + m * 60 : stringDate;
 };
 
 const usePrevious = (value) => {
@@ -150,6 +152,7 @@ export {
   isAppInstalled,
   jiggleAnimation,
   mock,
+  timeToHMArray,
   toggle,
   randomKey,
   statusBarHeight,

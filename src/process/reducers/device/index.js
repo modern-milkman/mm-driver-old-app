@@ -1,3 +1,4 @@
+import Config from 'react-native-config';
 import { createActions, createReducer } from 'reduxsauce';
 
 import { sizes } from 'Theme';
@@ -20,6 +21,7 @@ const initialState = {
   mapMarkerSize: sizes.marker.normal,
   mapTrackingZoom: 19,
   position: null,
+  resetHourDay: parseInt(Config.RESET_HOUR_DAY),
   returnPosition: null,
   showDoneDeliveries: false,
   uniqueID: 'uninitialized',

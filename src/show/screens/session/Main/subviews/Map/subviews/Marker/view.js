@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Marker as RNMMarker } from 'react-native-maps';
 
+import { mock } from 'Helpers';
 import { colors, defaults } from 'Theme';
 
 import style from './style';
@@ -25,6 +26,7 @@ const getCustomerSatisfactionColor = (satisfactionStatus) => {
 const Marker = (props) => {
   const {
     completedStopsIds,
+    disabled,
     id,
     mapMarkerSize,
     previousStopId,
@@ -71,7 +73,7 @@ const Marker = (props) => {
           latitude: selectedStop.latitude,
           longitude: selectedStop.longitude
         }}
-        onPress={updateSelectedStop.bind(null, id)}
+        onPress={disabled ? mock : updateSelectedStop.bind(null, id)}
         anchor={{ x: 0.5, y: 1 }}
         {...(selectedStopId === id && { zIndex: 1 })}
         tracksViewChanges={tracksViewChanges}>
@@ -136,10 +138,13 @@ const Marker = (props) => {
   );
 };
 
-Marker.defaultProps = {};
+Marker.defaultProps = {
+  disabled: false
+};
 
 Marker.propTypes = {
   completedStopsIds: PropTypes.array,
+  disabled: PropTypes.bool,
   id: PropTypes.number,
   mapMarkerSize: PropTypes.number,
   previousStopId: PropTypes.number,

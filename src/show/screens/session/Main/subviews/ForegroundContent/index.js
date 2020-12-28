@@ -12,6 +12,7 @@ export default connect((state) => {
     deliveryStatus: state.delivery[today]?.deliveryStatus,
     optimizedRoutes: state.delivery.optimizedRoutes,
     processing: state.delivery.processing,
+    resetHourDay: state.device.resetHourDay,
     routeDescription:
       state.delivery[today]?.stockWithData?.routeDescription || null,
     selectedStop: state.delivery[today]?.stops[selectedStopId] || null,

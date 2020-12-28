@@ -2,10 +2,12 @@ import axios from 'axios';
 import Config from 'react-native-config';
 
 import store from 'Redux/store';
+import { timeToHMArray } from 'Helpers';
 import repositories from 'Repositories';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
+import { Creators as DeviceActions } from 'Reducers/device';
 import { Creators as ApplicationActions } from 'Reducers/application';
 
 let TOKEN = null;
@@ -94,13 +96,23 @@ const Api = {
     }
   },
 
-  testMinVersion({ headers }) {
-    if (headers && headers['x-app-version']) {
-      if (headers['x-app-version'] > Config.APP_VERSION_NAME) {
+  testCustomHeaders({ headers }) {
+    if (headers) {
+      if (
+        headers['x-app-version'] &&
+        headers['x-app-version'] > Config.APP_VERSION_NAME
+      ) {
         NavigationService.navigate({
           routeName: 'UpgradeApp',
           params: { minimumVersion: headers['x-app-version'] }
         });
+      }
+      if (headers['x-route-time']) {
+        const { dispatch } = store().store;
+        const [h, m] = timeToHMArray(headers['x-route-time']);
+        dispatch(
+          DeviceActions.updateProps({ resetHourDay: h * 60 * 60 + m * 60 })
+        );
       }
     }
   },
@@ -121,35 +133,35 @@ const Api = {
 
   get(path, config = defaultConfig) {
     const request = api.get(path, config);
-    request.then(this.testMinVersion);
+    request.then(this.testCustomHeaders);
     request.catch(Api.catchError);
     return request;
   },
 
   post(path, body, config = defaultConfig) {
     const request = api.post(path, body, config);
-    request.then(this.testMinVersion);
+    request.then(this.testCustomHeaders);
     request.catch(Api.catchError);
     return request;
   },
 
   put(path, body, config = defaultConfig) {
     const request = api.put(path, body, config);
-    request.then(this.testMinVersion);
+    request.then(this.testCustomHeaders);
     request.catch(Api.catchError);
     return request;
   },
 
   patch(path, body, config = defaultConfig) {
     const request = api.patch(path, body, config);
-    request.then(this.testMinVersion);
+    request.then(this.testCustomHeaders);
     request.catch(Api.catchError);
     return request;
   },
 
   delete(path, config = defaultConfig) {
     const request = api.delete(path, config);
-    request.then(this.testMinVersion);
+    request.then(this.testCustomHeaders);
     request.catch(Api.catchError);
     return request;
   }

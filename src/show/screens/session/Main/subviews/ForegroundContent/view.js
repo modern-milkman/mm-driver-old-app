@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
 import { ActivityIndicator, Animated } from 'react-native';
 
 import I18n from 'Locales/I18n';
@@ -69,8 +68,9 @@ const ForegroundContent = (props) => {
     deliveryStatus,
     interpolatedValues,
     onButtonPress,
-    processing,
     optimizedRoutes,
+    processing,
+    resetHourDay,
     stopCount,
     selectedStop,
     onTitleLayoutChange
@@ -81,7 +81,7 @@ const ForegroundContent = (props) => {
   if (deliveryStatus === 0) {
     if (stopCount === 0) {
       // < handled by default version
-      if (ukTimeNow() > parseInt(Config.RESET_HOUR_DAY)) {
+      if (ukTimeNow(true) > resetHourDay) {
         foregroundState = 'NO_DELIVERIES';
       }
     } else {
@@ -96,7 +96,7 @@ const ForegroundContent = (props) => {
       foregroundState = 'MANUAL';
     }
   } else if (deliveryStatus === 3) {
-    if (ukTimeNow() < parseInt(Config.RESET_HOUR_DAY)) {
+    if (ukTimeNow(true) < resetHourDay) {
       foregroundState = 'COME_BACK_LATER';
     } else {
       foregroundState = 'NO_DELIVERIES';
@@ -173,6 +173,7 @@ ForegroundContent.propTypes = {
   onTitleLayoutChange: PropTypes.func,
   optimizedRoutes: PropTypes.bool,
   processing: PropTypes.bool,
+  resetHourDay: PropTypes.number,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
   stopCount: PropTypes.number

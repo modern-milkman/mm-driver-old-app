@@ -13,20 +13,32 @@ const Markers = (props) => {
     showDoneDeliveries
   } = props;
 
+  const hasMarkers = deliveryStatus < 3 && orderedStopsIds?.length > 0;
+  const disabled = deliveryStatus < 2;
+
   return (
-    (deliveryStatus === 2 && (
+    (hasMarkers && (
       <>
         {orderedStopsIds?.map((sID) => (
-          <Marker key={`${sID}-${mapMarkerSize}`} id={sID} />
+          <Marker
+            key={`${sID}-${mapMarkerSize}-${disabled}`}
+            id={sID}
+            disabled={disabled}
+          />
         ))}
         {showDoneDeliveries &&
           completedStopsIds?.map((sID) => (
-            <Marker key={`${sID}-${mapMarkerSize}`} id={sID} />
+            <Marker
+              key={`${sID}-${mapMarkerSize}-${disabled}`}
+              id={sID}
+              disabled={disabled}
+            />
           ))}
         {!showDoneDeliveries && completedStopsIds.includes(selectedStopId) && (
           <Marker
-            key={`${selectedStopId}-${mapMarkerSize}`}
+            key={`${selectedStopId}-${mapMarkerSize}-${disabled}`}
             id={selectedStopId}
+            disabled={disabled}
           />
         )}
       </>
