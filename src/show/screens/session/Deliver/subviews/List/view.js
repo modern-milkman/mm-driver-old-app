@@ -15,7 +15,7 @@ const CustomerIssueList = (props) => {
     data: []
   };
   const previousList = {
-    title: I18n.t('screens:deliver.customerIssue.list.previousIssues'),
+    title: I18n.t('screens:deliver.customerIssue.list.previous'),
     data: []
   };
 
