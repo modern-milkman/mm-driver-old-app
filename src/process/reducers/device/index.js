@@ -16,6 +16,7 @@ export const { Types, Creators } = createActions(
 
 const initialState = {
   buttonAccessibility: sizes.button.large,
+  foregroundSize: 'large',
   mapNoTrackingZoom: 12,
   mapNoTrackingHeading: 0,
   mapMarkerSize: sizes.marker.normal,

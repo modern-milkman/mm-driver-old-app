@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Animated } from 'react-native';
 
 import { colors } from 'Theme';
 import Icon from 'Components/Icon';
@@ -14,6 +14,7 @@ const Fab = (props) => {
     containerSize,
     disabled,
     iconName,
+    fabTop,
     left,
     onLongPress,
     onPress,
@@ -31,11 +32,12 @@ const Fab = (props) => {
     left,
     right,
     top,
-    width: containerSize
+    width: containerSize,
+    transform: [{ translateY: fabTop }]
   };
 
   return (
-    <View style={{ ...styles.fabCurrentLocation, ...composedStyle }}>
+    <Animated.View style={{ ...styles.fabCurrentLocation, ...composedStyle }}>
       {processing ? (
         <ActivityIndicator style={styles.activityIndicator} size="small" />
       ) : (
@@ -50,7 +52,7 @@ const Fab = (props) => {
           onLongPress={onLongPress}
         />
       )}
-    </View>
+    </Animated.View>
   );
 };
 
@@ -76,6 +78,7 @@ Fab.propTypes = {
   containerSize: PropTypes.number,
   disabled: PropTypes.bool,
   iconName: PropTypes.string,
+  fabTop: PropTypes.instanceOf(Animated.Value),
   left: PropTypes.number,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,

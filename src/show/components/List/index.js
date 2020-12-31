@@ -7,11 +7,12 @@ import Icon from 'Components/Icon';
 import Text from 'Components/Text';
 import { CustomIcon } from 'Images';
 import Image from 'Components/Image';
-import { colors, defaults, sizes } from 'Theme';
 import Separator from 'Components/Separator';
+import { colors, defaults, sizes } from 'Theme';
 import { ColumnView, RowView } from 'Containers';
 
 import style from './style.js';
+import ListHeader from './ListHeader';
 
 const defaultRenderListEmptyComponent = () => null;
 const defaultRenderItemSeparator = () => <Separator marginLeft={20} />;
@@ -228,22 +229,8 @@ const List = (props) => {
 
 const ListItem = (item) => renderItemInterface({}, { item });
 
-const SectionHeader = ({ section }) => {
-  return (
-    (section && (
-      <RowView
-        backgroundColor={colors.neutral}
-        justifyContent={'flex-start'}
-        alignItems={'flex-end'}
-        marginHorizontal={defaults.marginHorizontal}
-        width={'auto'}
-        height={Text.Label.height + defaults.marginVertical}>
-        <Text.Label color={colors.inputDark}>{section.title}</Text.Label>
-      </RowView>
-    )) ||
-    null
-  );
-};
+const SectionHeader = ({ section }) =>
+  (section && <ListHeader title={section.title} />) || null;
 
 List.propTypes = {
   data: PropTypes.array.isRequired,
@@ -329,4 +316,4 @@ ListItem.defaultProps = {
 };
 
 export default List;
-export { ListItem, SectionHeader };
+export { ListItem, ListHeader, SectionHeader };

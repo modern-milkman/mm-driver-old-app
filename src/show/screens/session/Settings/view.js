@@ -6,7 +6,19 @@ import Vibration from 'Services/vibration';
 import { colors, defaults, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
-import { Button, NavBar, Text, Separator, Slider, Switch } from 'Components';
+import {
+  Button,
+  ListHeader,
+  NavBar,
+  Text,
+  Separator,
+  Slider,
+  Switch
+} from 'Components';
+
+const onForegroundSizeChange = (updateDeviceProps, value) => {
+  updateDeviceProps({ foregroundSize: value ? 'large' : 'small' });
+};
 
 const onSliderChange = (updateDeviceProps, prop, value) => {
   const updateProps = {};
@@ -39,6 +51,7 @@ const Settings = (props) => {
   const {
     buttonAccessibility,
     currentLocation,
+    foregroundSize,
     logout,
     mapMarkerSize,
     optimizedRoutes,
@@ -68,10 +81,12 @@ const Settings = (props) => {
           justifyContent={'flex-start'}
           alignItems={'stretch'}
           width={'auto'}>
+          <ListHeader title={I18n.t('screens:settings.sections.routing')} />
+
           <RowView
             marginHorizontal={defaults.marginHorizontal}
             justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical}
+            marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <Text.List color={colors.secondary}>
               {I18n.t('screens:settings.switches.manualRouting')}
@@ -88,10 +103,13 @@ const Settings = (props) => {
           </RowView>
 
           <Separator />
+
+          <ListHeader title={I18n.t('screens:settings.sections.map')} />
+
           <RowView
             marginHorizontal={defaults.marginHorizontal}
             justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical}
+            marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <Text.List color={colors.secondary}>
               {I18n.t('screens:settings.switches.showDoneDeliveries')}
@@ -102,12 +120,31 @@ const Settings = (props) => {
             />
           </RowView>
 
-          <Separator />
+          <Separator marginLeft={defaults.marginHorizontal} />
 
           <RowView
             marginHorizontal={defaults.marginHorizontal}
             justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.foreground')}
+            </Text.List>
+            <Switch
+              value={foregroundSize === 'large'}
+              onValueChange={onForegroundSizeChange.bind(
+                null,
+                updateDeviceProps
+              )}
+            />
+          </RowView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <Text.List color={colors.secondary}>
               {I18n.t('screens:settings.switches.vibrations')}
@@ -118,11 +155,11 @@ const Settings = (props) => {
             />
           </RowView>
 
-          <Separator />
+          <Separator marginLeft={defaults.marginHorizontal} />
 
           <ColumnView
             alignItems={'flex-start'}
-            marginVertical={defaults.marginVertical}
+            marginVertical={defaults.marginVertical / 2}
             marginHorizontal={defaults.marginHorizontal}
             width={'auto'}>
             <Text.List color={colors.secondary}>
@@ -145,11 +182,11 @@ const Settings = (props) => {
             />
           </ColumnView>
 
-          <Separator />
+          <Separator marginLeft={defaults.marginHorizontal} />
 
           <ColumnView
             alignItems={'flex-start'}
-            marginVertical={defaults.marginVertical}
+            marginVertical={defaults.marginVertical / 2}
             marginHorizontal={defaults.marginHorizontal}
             width={'auto'}>
             <Text.List color={colors.secondary}>
@@ -171,6 +208,8 @@ const Settings = (props) => {
               value={mapMarkerSize}
             />
           </ColumnView>
+
+          <Separator />
         </ColumnView>
         <RowView
           alignItems={'stretch'}
@@ -187,6 +226,7 @@ const Settings = (props) => {
 Settings.propTypes = {
   buttonAccessibility: PropTypes.number,
   currentLocation: PropTypes.object,
+  foregroundSize: PropTypes.string,
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
   optimizedRoutes: PropTypes.bool,

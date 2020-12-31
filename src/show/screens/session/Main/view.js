@@ -4,10 +4,14 @@ import { NavigationEvents } from 'react-navigation';
 import { Animated, PanResponder, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, sizes } from 'Theme';
 import { ColumnView } from 'Containers';
+import { colors, defaults, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
-import { deviceFrame, statusBarHeight } from 'Helpers';
+import {
+  customerSatisfactionColor,
+  deviceFrame,
+  statusBarHeight
+} from 'Helpers';
 import { height as textInputHeight } from 'Components/TextInput';
 
 import { configuration } from './helpers';
@@ -30,20 +34,24 @@ const mainForegroundAction = ({
   pullHandlePan,
   returnPosition,
   selectedStop,
+  snapMiddleY,
   snapTopY,
   startDelivering,
-  top
+  top,
+  updateDeviceProps
 }) => {
   switch (deliveryStatus) {
     case 0:
       springForeground({
         animatedValues: [pullHandlePan.y, pullHandleMoveY],
         toValue: snapTopY,
+        snapMiddleY,
         snapTopY,
         pullHandleMoveY,
         foregroundPaddingTop,
         routeName: 'CheckIn',
-        top
+        top,
+        updateDeviceProps
       });
       break;
     case 1:
@@ -54,11 +62,13 @@ const mainForegroundAction = ({
         springForeground({
           animatedValues: [pullHandlePan.y, pullHandleMoveY],
           toValue: snapTopY,
+          snapMiddleY,
           snapTopY,
           pullHandleMoveY,
           foregroundPaddingTop,
           routeName: 'Deliver',
-          top
+          top,
+          updateDeviceProps
         });
       } else if (!optimizedRoutes) {
         optimizeStops({ returnPosition, currentLocation });
@@ -70,11 +80,13 @@ const mainForegroundAction = ({
 const springForeground = ({
   animatedValues,
   toValue,
+  snapMiddleY,
   snapTopY,
   pullHandleMoveY,
   foregroundPaddingTop,
   routeName,
-  top
+  top,
+  updateDeviceProps
 }) => {
   Animated.parallel([
     Animated.spring(animatedValues[0], {
@@ -103,6 +115,10 @@ const springForeground = ({
     ]).start();
     setTimeout(triggerNavigation.bind(null, routeName), 150);
   } else {
+    updateDeviceProps({
+      foregroundSize: toValue === snapMiddleY ? 'large' : 'small'
+    });
+
     Animated.spring(foregroundPaddingTop, {
       toValue: 0,
       bounciness: 0,
@@ -120,12 +136,14 @@ const Main = (props) => {
     buttonAccessibility,
     canPanForeground,
     currentLocation,
+    foregroundSize,
     deliveryStatus,
     optimizedRoutes,
     optimizeStops,
     returnPosition,
     selectedStop,
-    startDelivering
+    startDelivering,
+    updateDeviceProps
   } = props;
 
   const [foregroundTitleHeight, setForegroundTitleHeight] = useState(0);
@@ -134,12 +152,16 @@ const Main = (props) => {
   const bottomMapPadding = configuration.navigation.height + bottom;
 
   const snapBottomY =
+    height - bottom - configuration.navigation.height - buttonAccessibility;
+  const snapMiddleY =
     height -
     bottom -
     configuration.navigation.height -
     configuration.foreground.defaultHeight -
     buttonAccessibility;
   const snapTopY = top;
+  const middleY = height / 2;
+  const middleBottomY = snapMiddleY + (snapBottomY - snapMiddleY) / 2;
 
   const interpolations = {
     buttonTitleColor: {
@@ -150,7 +172,41 @@ const Main = (props) => {
       outputRange: [colors.secondary, colors.white],
       extrapolate: 'clamp'
     },
-    foregroundDetailsOpacity: {
+    fabTop: {
+      inputRange: [0, snapMiddleY, snapBottomY],
+      outputRange: [0, 0, configuration.foreground.defaultHeight],
+      extrapolate: 'clamp'
+    },
+    foregroundBackgroundColor: {
+      inputRange: [0, snapMiddleY, snapBottomY],
+      outputRange: [
+        colors.neutral,
+        colors.neutral,
+        customerSatisfactionColor(selectedStop?.satisfactionStatus || 0)
+      ],
+      extrapolate: 'clamp'
+    },
+    foregroundDetailsIconsOpacity: {
+      inputRange: [snapMiddleY, snapBottomY],
+      outputRange: [configuration.opacity.min, configuration.opacity.max],
+      extrapolate: 'clamp'
+    },
+    foregroundDetailsTopOpacity: {
+      inputRange: [
+        top + configuration.navigation.height,
+        top + configuration.foreground.collapseBackThreshold,
+        snapMiddleY,
+        snapBottomY
+      ],
+      outputRange: [
+        configuration.opacity.min,
+        configuration.opacity.max,
+        configuration.opacity.max,
+        configuration.opacity.min
+      ],
+      extrapolate: 'clamp'
+    },
+    foregroundDetailsTitleOpacity: {
       inputRange: [
         top + configuration.navigation.height,
         top + configuration.foreground.collapseBackThreshold
@@ -172,7 +228,7 @@ const Main = (props) => {
             : 0) -
           foregroundTitleHeight,
         0
-      ], // button transition to title top
+      ],
       extrapolate: 'clamp'
     },
     foregroundHeight: {
@@ -198,6 +254,16 @@ const Main = (props) => {
       ],
       extrapolate: 'clamp'
     },
+    foregroundTitleColor: {
+      inputRange: [0, snapMiddleY, snapBottomY],
+      outputRange: [colors.secondary, colors.secondary, colors.white],
+      extrapolate: 'clamp'
+    },
+    foregroundTitleTop: {
+      inputRange: [0, snapMiddleY, snapBottomY],
+      outputRange: [0, 0, -defaults.marginVertical / 2], // button transition to title top
+      extrapolate: 'clamp'
+    },
     navigationY: {
       inputRange: [
         top + configuration.foreground.collapseBackThreshold,
@@ -220,9 +286,11 @@ const Main = (props) => {
           bottom -
           configuration.navigation.height -
           configuration.foreground.defaultHeight -
-          buttonAccessibility
+          buttonAccessibility,
+        snapMiddleY,
+        snapBottomY
       ],
-      outputRange: [44, width],
+      outputRange: [0, width, width, 0],
       extrapolate: 'clamp'
     },
     searchY: {
@@ -288,27 +356,31 @@ const Main = (props) => {
     },
     onPanResponderRelease: (e, { vy, moveY, ...rest }) => {
       pullHandlePan.flattenOffset();
-      const middleY = height / 2;
       let toValue = null;
 
-      if (Math.abs(vy) < 0.05) {
+      if (Math.abs(vy) < 0.1) {
         if (moveY < middleY) {
           toValue = snapTopY;
-        } else {
+        } else if (moveY > middleBottomY) {
           toValue = snapBottomY;
+        } else {
+          toValue = snapMiddleY;
         }
       } else {
-        toValue = vy < 0 ? snapTopY : snapBottomY;
+        toValue =
+          vy < 0 ? snapTopY : moveY > middleBottomY ? snapBottomY : snapMiddleY;
       }
 
       springForeground({
         animatedValues: [pullHandlePan.y, pullHandleMoveY],
         toValue,
+        snapMiddleY,
         snapTopY,
         pullHandleMoveY,
         foregroundPaddingTop,
         routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn',
-        top
+        top,
+        updateDeviceProps
       });
       currentLocationY = 0;
     }
@@ -318,14 +390,30 @@ const Main = (props) => {
     buttonTitleColor: pullHandleMoveY.interpolate(
       interpolations.buttonTitleColor
     ),
-    foregroundDetailsOpacity: pullHandleMoveY.interpolate(
-      interpolations.foregroundDetailsOpacity
+    fabTop: pullHandleMoveY.interpolate(interpolations.fabTop),
+    foregroundBackgroundColor: pullHandleMoveY.interpolate(
+      interpolations.foregroundBackgroundColor
+    ),
+    foregroundDetailsIconsOpacity: pullHandleMoveY.interpolate(
+      interpolations.foregroundDetailsIconsOpacity
+    ),
+    foregroundDetailsTitleOpacity: pullHandleMoveY.interpolate(
+      interpolations.foregroundDetailsTitleOpacity
+    ),
+    foregroundDetailsTopOpacity: pullHandleMoveY.interpolate(
+      interpolations.foregroundDetailsTopOpacity
     ),
     foregroundActionTop: pullHandleMoveY.interpolate(
       interpolations.foregroundActionTop
     ),
     foregroundHeight: pullHandleMoveY.interpolate(
       interpolations.foregroundHeight
+    ),
+    foregroundTitleColor: pullHandleMoveY.interpolate(
+      interpolations.foregroundTitleColor
+    ),
+    foregroundTitleTop: pullHandleMoveY.interpolate(
+      interpolations.foregroundTitleTop
     ),
     navigationY: pullHandleMoveY.interpolate(interpolations.navigationY),
     pullHandleWidth: pullHandleMoveY.interpolate(
@@ -343,11 +431,13 @@ const Main = (props) => {
           null,
           springForeground.bind(null, {
             animatedValues: [pullHandlePan.y, pullHandleMoveY],
-            toValue: snapBottomY,
+            toValue: foregroundSize === 'large' ? snapMiddleY : snapBottomY,
+            snapMiddleY,
             snapTopY,
             pullHandleMoveY,
             foregroundPaddingTop,
-            top
+            top,
+            updateDeviceProps
           }),
           150
         )}
@@ -357,6 +447,7 @@ const Main = (props) => {
           bottom: bottomMapPadding
         }}
         height={height - bottomMapPadding}
+        fabTop={interpolatedValues.fabTop}
       />
 
       <Foreground
@@ -364,14 +455,27 @@ const Main = (props) => {
         height={interpolatedValues.foregroundHeight}
         paddingTop={foregroundPaddingTop}
         paddingBottom={configuration.navigation.height + bottom}
-        topBorderRadius={interpolatedValues.topBorderRadius}>
+        topBorderRadius={interpolatedValues.topBorderRadius}
+        backgroundColor={interpolatedValues.foregroundBackgroundColor}>
         <PullHandle
           pullHandlePanResponder={pullHandlePanResponder}
           width={interpolatedValues.pullHandleWidth}
         />
         <ForegroundContent
+          buttonTitleColor={interpolatedValues.buttonTitleColor}
+          foregroundActionTop={interpolatedValues.foregroundActionTop}
+          foregroundDetailsIconsOpacity={
+            interpolatedValues.foregroundDetailsIconsOpacity
+          }
+          foregroundDetailsTitleOpacity={
+            interpolatedValues.foregroundDetailsTitleOpacity
+          }
+          foregroundDetailsTopOpacity={
+            interpolatedValues.foregroundDetailsTopOpacity
+          }
+          foregroundTitleColor={interpolatedValues.foregroundTitleColor}
+          foregroundTitleTop={interpolatedValues.foregroundTitleTop}
           onTitleLayoutChange={setForegroundTitleHeight}
-          interpolatedValues={interpolatedValues}
           onButtonPress={mainForegroundAction.bind(null, {
             currentLocation,
             deliveryStatus,
@@ -382,9 +486,21 @@ const Main = (props) => {
             pullHandlePan,
             returnPosition,
             selectedStop,
+            snapMiddleY,
             snapTopY,
             startDelivering,
-            top
+            top,
+            updateDeviceProps
+          })}
+          onChevronUpPress={springForeground.bind(null, {
+            animatedValues: [pullHandlePan.y, pullHandleMoveY],
+            toValue: snapMiddleY,
+            snapMiddleY,
+            snapTopY,
+            pullHandleMoveY,
+            foregroundPaddingTop,
+            top,
+            updateDeviceProps
           })}
         />
       </Foreground>
@@ -401,11 +517,13 @@ Main.propTypes = {
   canPanForeground: PropTypes.bool,
   currentLocation: PropTypes.object,
   deliveryStatus: PropTypes.number,
+  foregroundSize: PropTypes.string,
   optimizedRoutes: PropTypes.bool,
   optimizeStops: PropTypes.func,
   returnPosition: PropTypes.object,
   selectedStop: PropTypes.any,
-  startDelivering: PropTypes.func
+  startDelivering: PropTypes.func,
+  updateDeviceProps: PropTypes.func
 };
 
 Main.defaultProps = {

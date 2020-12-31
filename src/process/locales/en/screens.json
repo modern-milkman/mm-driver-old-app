@@ -86,12 +86,17 @@
     "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}"
   },
   "settings": {
+    "sections": {
+      "map": "Map",
+      "routing": "Routing"
+    },
     "sliders": {
       "buttons": "Button size",
       "drag": "Drag to resize",
-      "mapMarkers": "Map pins size"
+      "mapMarkers": "Pin size"
     },
     "switches": {
+      "foreground": "Large foreground",
       "manualRouting": "Use manual routing",
       "showDoneDeliveries": "Show done deliveries",
       "vibrations": "Vibrations"

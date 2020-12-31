@@ -3,25 +3,13 @@ import { View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Marker as RNMMarker } from 'react-native-maps';
 
-import { mock } from 'Helpers';
+import {
+  mock,
+  customerSatisfactionColor as getCustomerSatisfactionColor
+} from 'Helpers';
 import { colors, defaults } from 'Theme';
 
 import style from './style';
-
-const getCustomerSatisfactionColor = (satisfactionStatus) => {
-  switch (satisfactionStatus) {
-    case 1:
-      return colors.primaryBright;
-    case 2:
-      return colors.success;
-    case 3:
-      return colors.warning;
-    case 4:
-      return colors.error;
-    default:
-      return colors.primary;
-  }
-};
 
 const Marker = (props) => {
   const {

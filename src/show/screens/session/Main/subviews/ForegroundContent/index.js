@@ -10,6 +10,7 @@ export default connect((state) => {
 
   return {
     deliveryStatus: state.delivery[today]?.deliveryStatus,
+    foregroundSize: state.device.foregroundSize,
     optimizedRoutes: state.delivery.optimizedRoutes,
     processing: state.delivery.processing,
     resetHourDay: state.device.resetHourDay,

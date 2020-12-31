@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
 import Config from 'react-native-config';
+import { Animated, View } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import MapView, {
   Marker as RNMMarker,
@@ -54,8 +54,9 @@ const regionChangeComplete = (
 
 const Map = (props) => {
   const {
-    height,
     coords: { heading, latitude, longitude },
+    fabTop,
+    height,
     mapNoTrackingHeading,
     mapNoTrackingZoom,
     mapPadding,
@@ -190,6 +191,7 @@ const Map = (props) => {
         <DirectionsPolyline />
       </MapView>
       <Fabs
+        fabTop={fabTop}
         mapPadding={mapPadding}
         shouldTrackLocation={shouldTrackLocation}
         toggleLocationTracking={toggleLocationTracking}
@@ -211,6 +213,7 @@ Map.defaultProps = {
 
 Map.propTypes = {
   coords: PropTypes.object,
+  fabTop: PropTypes.instanceOf(Animated.Value),
   height: PropTypes.number,
   mapNoTrackingZoom: PropTypes.number,
   mapNoTrackingHeading: PropTypes.number,

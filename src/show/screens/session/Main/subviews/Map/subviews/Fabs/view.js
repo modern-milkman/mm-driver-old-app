@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Animated } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { Fab } from 'Components';
@@ -27,6 +28,7 @@ const Fabs = (props) => {
     buttonAccessibility,
     coords,
     deliveryStatus,
+    fabTop,
     mapPadding,
     processing,
     refreshDriverData,
@@ -48,6 +50,7 @@ const Fabs = (props) => {
       <Fab
         type={'material-community'}
         iconName={'crosshairs-gps'}
+        fabTop={fabTop}
         size={24}
         containerSize={56}
         color={shouldTrackLocation ? colors.primary : colors.secondary}
@@ -65,6 +68,7 @@ const Fabs = (props) => {
         <Fab
           type="material-community"
           iconName="directions"
+          fabTop={fabTop}
           size={24}
           containerSize={56}
           color={colors.primary}
@@ -87,6 +91,7 @@ const Fabs = (props) => {
         <Fab
           type={'material-community'}
           iconName={'refresh'}
+          fabTop={fabTop}
           size={24}
           containerSize={56}
           color={colors.primary}
@@ -115,6 +120,7 @@ Fabs.propTypes = {
   buttonAccessibility: PropTypes.number,
   coords: PropTypes.object,
   deliveryStatus: PropTypes.number,
+  fabTop: PropTypes.instanceOf(Animated.Value),
   mapPadding: PropTypes.object,
   processing: PropTypes.bool,
   refreshDriverData: PropTypes.func,

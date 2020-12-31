@@ -10,6 +10,7 @@ export default connect(
   (state) => ({
     buttonAccessibility: state.device.buttonAccessibility,
     currentLocation: state.device.position?.coords,
+    foregroundSize: state.device.foregroundSize,
     mapMarkerSize: state.device.mapMarkerSize,
     optimizedRoutes: state.delivery.optimizedRoutes,
     returnPosition: state.device.returnPosition,

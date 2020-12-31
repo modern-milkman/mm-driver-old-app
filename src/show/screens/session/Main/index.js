@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 
+import { Creators as deviceActions } from 'Reducers/device';
 import { Creators as deliveryActions, selectedStop } from 'Reducers/delivery';
 
 import Main from './view';
@@ -20,6 +21,7 @@ export default connect(
           state.delivery[today]?.hasRoutes),
       currentLocation: state.device.position?.coords,
       deliveryStatus: state.delivery[today]?.deliveryStatus,
+      foregroundSize: state.device.foregroundSize,
       optimizedRoutes: state.delivery.optimizedRoutes,
       returnPosition: state.device.returnPosition,
       selectedStop: currentSelectedStop
@@ -27,6 +29,7 @@ export default connect(
   },
   {
     optimizeStops: deliveryActions.optimizeStops,
-    startDelivering: deliveryActions.startDelivering
+    startDelivering: deliveryActions.startDelivering,
+    updateDeviceProps: deviceActions.updateProps
   }
 )(Main);

@@ -8,6 +8,8 @@ import {
   NativeModules
 } from 'react-native';
 
+import { colors } from 'Theme';
+
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const checkAtLeastOneItem = (items, statusId, exclude = false) => {
@@ -28,6 +30,21 @@ const currentDay = () => {
     date.setDate(date.getDate() + 1);
   }
   return formatDate(date);
+};
+
+const customerSatisfactionColor = (satisfactionStatus) => {
+  switch (satisfactionStatus) {
+    case 1:
+      return colors.primaryBright;
+    case 2:
+      return colors.success;
+    case 3:
+      return colors.warning;
+    case 4:
+      return colors.error;
+    default:
+      return colors.primary;
+  }
 };
 
 const defaultRoutes = {
@@ -145,6 +162,7 @@ export {
   capitalize,
   checkAtLeastOneItem,
   currentDay,
+  customerSatisfactionColor,
   deviceFrame,
   defaultRoutes,
   formatDate,

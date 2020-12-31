@@ -10,6 +10,7 @@ import { colors, defaults } from 'Theme';
 const NavBar = ({
   leftIcon,
   leftIconAction,
+  leftIconColor,
   marginHorizontal,
   RightComponent,
   title
@@ -22,7 +23,7 @@ const NavBar = ({
       paddingHorizontal={marginHorizontal}>
       <Icon
         name={leftIcon}
-        color={colors.secondary}
+        color={leftIconColor}
         size={defaults.topNavigation.iconSize}
         containerSize={defaults.topNavigation.height}
         onPress={leftIconAction}
@@ -41,6 +42,7 @@ const NavBar = ({
 NavBar.propTypes = {
   leftIcon: PropTypes.string,
   leftIconAction: PropTypes.func,
+  leftIconColor: PropTypes.any,
   marginHorizontal: PropTypes.number,
   RightComponent: PropTypes.func,
   title: PropTypes.string
@@ -48,6 +50,7 @@ NavBar.propTypes = {
 
 NavBar.defaultProps = {
   leftIconAction: mock,
+  leftIconColor: colors.secondary,
   marginHorizontal: defaults.marginHorizontal
 };
 

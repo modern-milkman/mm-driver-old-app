@@ -4,7 +4,7 @@ import CustomBackHandler from './CustomBackHandler';
 import Fab from './Fab';
 import Icon from './Icon';
 import Image from './Image';
-import List, { ListItem } from './List';
+import List, { ListHeader, ListItem } from './List';
 import NavBar from './NavBar';
 import ProgressBar from './ProgressBar';
 import Separator from './Separator';
@@ -23,6 +23,7 @@ export {
   Image,
   ProgressBar,
   List,
+  ListHeader,
   ListItem,
   NavBar,
   Separator,
