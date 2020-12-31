@@ -8,7 +8,6 @@ export const { Types, Creators } = createActions(
   {
     requestUserLocationPermisions: null,
     setLocation: ['position'],
-    setCurrentDay: null,
     updateProps: ['props']
   },
   { prefix: 'device/' }

@@ -18,6 +18,7 @@
       "whyLocationUsage": "Your location is required to make deliveries."
     }
   },
+  "reset": "Reset & Restart Driver",
   "restart": "Restart Driver",
   "skip": "Skip",
   "upNext": "Up next"

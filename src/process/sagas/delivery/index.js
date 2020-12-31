@@ -73,6 +73,15 @@ export const driverReplySuccess = function* ({ payload }) {
   yield put({ type: DeliveryTypes.ACKNOWLEDGE_CLAIM, id: payload.claimId });
 };
 
+export function* foregroundDeliveryActions({}) {
+  const deliveryStatus = yield select(deliveryStatusSelector);
+  const currentDay = cDay();
+  yield put({ type: DeliveryTypes.UPDATE_PROPS, props: { currentDay } });
+  if (deliveryStatus === 0) {
+    yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
+  }
+}
+
 export const getForDriver = function* ({ isRefreshData = false }) {
   yield put({
     type: Api.API_CALL,
@@ -93,10 +102,8 @@ export const getForDriverSuccess = function* ({
   yield put({
     type: Api.API_CALL,
     actions: {
-      success: {
-        type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
-        fail: { type: DeliveryTypes.UPDATE_PROPS }
-      }
+      success: { type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS },
+      fail: { type: DeliveryTypes.UPDATE_PROPS }
     },
     promise: Api.repositories.delivery.getVehicleStockForDriver(),
     deliveryDate: payload.deliveryDate,
@@ -104,6 +111,18 @@ export const getForDriverSuccess = function* ({
   });
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, {
     payload
+  });
+};
+
+export const getProductsOrder = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_PRODUCTS_ORDER },
+      fail: { type: DeliveryTypes.UPDATE_PROPS }
+    },
+    promise: Api.repositories.delivery.getProductsOrder(),
+    props: { processing: false }
   });
 };
 
@@ -192,6 +211,10 @@ export const setItemOutOfStock = function* ({ id }) {
   Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, { id });
 };
 
+export const setProductsOrder = function* () {
+  yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
+};
+
 export const setRejected = function* ({ id, reasonMessage }) {
   // TODO - trigger out of stock requests even in reject delivery mode
   const device = yield select(deviceSelector);
@@ -220,11 +243,6 @@ export const optimizeStops = function* () {
   yield call(updatedSelectedStop);
   Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
 };
-
-export function* setCurrentDay({}) {
-  const currentDay = cDay();
-  yield put({ type: DeviceTypes.UPDATE_PROPS, props: { currentDay } });
-}
 
 export const startDelivering = function* () {
   const device = yield select(deviceSelector);

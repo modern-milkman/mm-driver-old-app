@@ -10,7 +10,7 @@ import { colors, defaults } from 'Theme';
 import { CarLogoFlatTire } from 'Images';
 import Navigator from 'Navigation/Navigator';
 import NavigationService from 'Navigation/service';
-import { ColumnView, FullView, RowView } from 'Containers';
+import { ColumnView, FullView } from 'Containers';
 import {
   Creators as applicationActions,
   Types as ApplicationTypes
@@ -32,7 +32,8 @@ class Root extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: false
+      hasError: false,
+      reloading: false
     };
   }
 
@@ -80,43 +81,65 @@ class Root extends React.Component {
     </FullView>
   );
 
-  renderCrash = () => (
-    <FullView bgColor={colors.primary}>
-      <ColumnView flex={1} justifyContent={'center'}>
-        <CarLogoFlatTire
-          width={200}
-          disabled
-          fill={colors.white}
-          primaryFill={colors.primary}
-        />
-        <ColumnView height={Text.Heading.height}>
-          <Text.Heading color={colors.white}>
-            {I18n.t('screens:appCrash.title')}
-          </Text.Heading>
-        </ColumnView>
-        <ColumnView marginTop={24} width={'auto'} marginHorizontal={24}>
-          <Text.List color={colors.white} align={'center'}>
-            {I18n.t('screens:appCrash.description')}
-          </Text.List>
-        </ColumnView>
-        <ColumnView marginTop={24} width={'auto'} marginHorizontal={24}>
-          <Button.Tertiary
-            title={I18n.t('general:restart')}
-            onPress={restartApp}
+  renderCrash = () => {
+    const { reloading } = this.state;
+    return (
+      <FullView bgColor={colors.primary}>
+        <ColumnView flex={1} justifyContent={'center'}>
+          <CarLogoFlatTire
+            width={200}
+            disabled
+            fill={colors.white}
+            primaryFill={colors.primary}
           />
+          <ColumnView height={Text.Heading.height}>
+            <Text.Heading color={colors.white}>
+              {I18n.t('screens:appCrash.title')}
+            </Text.Heading>
+          </ColumnView>
+          <ColumnView marginTop={24} width={'auto'} marginHorizontal={24}>
+            <Text.List color={colors.white} align={'center'}>
+              {I18n.t('screens:appCrash.description')}
+            </Text.List>
+          </ColumnView>
+          <ColumnView marginTop={24} width={'auto'} marginHorizontal={24}>
+            <Button.Tertiary
+              title={I18n.t('general:restart')}
+              onPress={restartApp}
+            />
+          </ColumnView>
         </ColumnView>
-      </ColumnView>
-      <RowView
-        justifyContent={'center'}
-        alignItems={'flex-end'}
-        height={Text.Caption.height + defaults.marginVertical / 4}
-        marginVertical={defaults.marginVertical}>
-        <Text.Caption textAlign={'center'} color={colors.white}>
-          {`V: ${Config.APP_VERSION_NAME}`}
-        </Text.Caption>
-      </RowView>
-    </FullView>
-  );
+        <ColumnView
+          justifyContent={'center'}
+          alignItems={'center'}
+          height={
+            Text.Caption.height +
+            Text.Button.height +
+            defaults.marginVertical / 4
+          }
+          marginVertical={defaults.marginVertical}>
+          <Button.Primary
+            title={I18n.t('general:reset')}
+            onPress={this.resetAndReload}
+            processing={reloading}
+            disabled={reloading}
+          />
+          <Text.Caption textAlign={'center'} color={colors.white}>
+            {`V: ${Config.APP_VERSION_NAME}`}
+          </Text.Caption>
+        </ColumnView>
+      </FullView>
+    );
+  };
+
+  resetAndReload = () => {
+    const { dispatch } = this.props;
+    this.setState({ reloading: true });
+    dispatch({
+      type: ApplicationTypes.LOGOUT
+    });
+    setTimeout(RNRestart.Restart, 1000);
+  };
 }
 
 Root.propTypes = {

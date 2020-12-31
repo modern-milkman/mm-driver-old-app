@@ -18,8 +18,10 @@ export const { Types, Creators } = createActions(
     acknowledgeClaimSuccess: ['payload'],
     driverReply: ['claimId', 'comment', 'image', 'imageType'],
     driverReplySuccess: ['payload'],
+    foregroundDeliveryActions: null,
     getCustomerClaims: ['customerId'],
     getForDriver: ['isRefreshData'],
+    getProductsOrder: null,
     getForDriverSuccess: ['payload', 'isRefreshData'],
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: [
@@ -28,13 +30,13 @@ export const { Types, Creators } = createActions(
       'isRefreshData'
     ],
     optimizeStops: ['currentLocation', 'returnPosition'],
-    setCurrentDay: null,
     setCustomerClaims: ['payload'],
     setDelivered: ['id'],
     setDeliveredOrRejectedFailure: null,
     setDeliveredOrRejectedSuccess: null,
     toggleReplyModal: ['cId', 'show'],
     setItemOutOfStock: ['id'],
+    setProductsOrder: ['payload'],
     setRejected: ['id', 'reasonMessage'],
     setSelectedStopImage: ['payload', 'props'],
     refreshDriverData: null,
@@ -68,7 +70,6 @@ const initialClaim = {
   driverUnacknowledgedNr: 0,
   showReplyModal: false
 };
-
 const initialCurrentDayState = {
   allItemsDone: false,
   claims: { ...initialClaim },
@@ -76,7 +77,7 @@ const initialCurrentDayState = {
   confirmedItem: [],
   deliveryStatus: 0,
   directionsPolyline: [],
-  groupedStock: {},
+  orderedStock: [],
   hasRoutes: false,
   orderedStopsIds: [],
   previousStopId: null,
@@ -146,88 +147,64 @@ const resetSelectedStopInfo = (draft) => {
   draft.outOfStockIds = [];
 };
 
-export const reset = () => initialState;
-
-export const setCustomerClaims = (state, { payload }) =>
-  produce(state, (draft) => {
-    const cd = state.currentDay;
-    draft[cd].claims.list = payload;
-    const driverUnacknowledgedList = payload.filter(
-      (item) => item.driverAcknowledged === false
-    );
-
-    const driverUnacknowledgedLength = driverUnacknowledgedList.length;
-
-    if (driverUnacknowledgedLength > 0) {
-      draft[cd].claims.selectedId = driverUnacknowledgedList[0].claimId;
-      draft[cd].claims.driverUnacknowledgedNr = driverUnacknowledgedLength;
-      draft[cd].claims.showClaimModal = true;
-      draft[cd].claims.showedUnacknowledgedNr = 1;
-    }
-  });
-
 export const getVehicleStockForDriverSuccess = (
   state,
   { deliveryDate, payload }
 ) =>
   produce(state, (draft) => {
     const formatedDate = formatDate(new Date(deliveryDate));
-    const categoryIndexes = {};
-    const categoryProductsIndexes = {};
+
+    const misplacedProducts = {};
+
     draft[formatedDate].itemCount = 0;
-    const groupedItems = payload.reduce((categoryGroupedProducts, route) => {
-      route.vehicleStockItems.forEach((item) => {
-        const catDescription = item.categoryDescription;
-
-        if (categoryIndexes[catDescription] !== undefined) {
-          const categoryProducts =
-            categoryGroupedProducts[categoryIndexes[catDescription]];
-          const prodIndex =
-            categoryProductsIndexes[catDescription][item.productName];
-
-          if (prodIndex !== undefined) {
-            categoryProducts.data[prodIndex].miscelaneousLarge += item.quantity;
-            draft[formatedDate].itemCount += item.quantity;
-          } else {
-            categoryProducts.data.push({
-              description: item.measureDescription,
-              disabled: true, // items in load van should not be tappable
-              image: `${productImageUri}${item.productId}`,
-              key: item.productId,
-              miscelaneousLarge: item.quantity,
-              title: item.productName
-            });
-            categoryProductsIndexes[catDescription][item.productName] =
-              categoryProducts.data.length - 1;
-            draft[formatedDate].itemCount += item.quantity;
-          }
-        } else {
-          categoryGroupedProducts.push({
-            title: catDescription,
-            data: [
-              {
-                description: item.measureDescription,
-                disabled: true, // items in load van should not be tappable
-                image: `${productImageUri}${item.productId}`,
-                key: item.productId,
-                miscelaneousLarge: item.quantity,
-                title: item.productName
-              }
-            ]
-          });
-          categoryIndexes[catDescription] = categoryGroupedProducts.length - 1;
-          categoryProductsIndexes[catDescription] = {};
-          categoryProductsIndexes[catDescription][item.productName] = 0;
-          draft[formatedDate].itemCount += item.quantity;
-        }
-      });
-
-      return categoryGroupedProducts;
-    }, []);
-
     draft[formatedDate].stock = payload;
-    draft[formatedDate].groupedStock = groupedItems;
     draft[formatedDate].hasRoutes = payload.length > 0;
+    draft[formatedDate].orderedStock = payload.reduce(
+      (orderGroupedProducts, route) => {
+        route.vehicleStockItems.forEach((item) => {
+          const formattedProduct = {
+            description: item.measureDescription,
+            disabled: true, // items in load van should not be tappable
+            image: `${productImageUri}${item.productId}`,
+            key: item.productId,
+            miscelaneousLarge: item.quantity,
+            title: item.productName
+          };
+
+          if (draft.productsOrder.includes(item.productId)) {
+            const productSortedIndex = draft.productsOrder.indexOf(
+              item.productId
+            );
+
+            if (orderGroupedProducts[productSortedIndex]) {
+              orderGroupedProducts[productSortedIndex].miscelaneousLarge +=
+                item.quantity;
+            } else {
+              orderGroupedProducts[productSortedIndex] = formattedProduct;
+            }
+          } else {
+            if (misplacedProducts[item.productId]) {
+              misplacedProducts[item.productId].miscelaneousLarge +=
+                item.quantity;
+            } else {
+              misplacedProducts[item.productId] = formattedProduct;
+            }
+          }
+          draft[formatedDate].itemCount += item.quantity;
+        });
+
+        return orderGroupedProducts.filter((product) => product);
+      },
+      []
+    );
+
+    if (Object.keys(misplacedProducts).length > 0) {
+      for (const misplacedProductKey in misplacedProducts) {
+        draft[formatedDate].orderedStock.push(
+          misplacedProducts[misplacedProductKey]
+        );
+      }
+    }
   });
 
 export const getForDriverSuccess = (
@@ -305,96 +282,6 @@ export const getForDriverSuccess = (
     }
   });
 
-export const setDeliveredOrRejectedFailure = (state) =>
-  produce(state, (draft) => {
-    const cd = state.currentDay;
-    resetSelectedStopInfo(draft[cd]);
-    draft.processing = false;
-  });
-
-export const setDeliveredOrRejectedSuccess = (state) =>
-  produce(state, (draft) => {
-    const cd = state.currentDay;
-    draft[cd].completedStopsIds.push(
-      ...draft[cd].orderedStopsIds.splice(
-        draft[cd].orderedStopsIds.indexOf(draft[cd].selectedStopId),
-        1
-      )
-    );
-    resetSelectedStopInfo(draft[cd]);
-    draft[cd].stops[draft[cd].selectedStopId].status = 'completed';
-
-    if (draft[cd].orderedStopsIds.length > 0) {
-      draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
-      if (!draft.optimizedRoutes) {
-        draft[cd].selectedStopId = null;
-      }
-    } else {
-      draft[cd].selectedStopId = null;
-      draft[cd].deliveryStatus = 3;
-    }
-    draft.processing = false;
-  });
-
-export const setSelectedStopImage = (
-  state,
-  { payload: { base64Image }, props: { key } }
-) =>
-  produce(state, (draft) => {
-    const cd = state.currentDay;
-    draft[cd].stops[key].customerAddressImage = base64Image;
-  });
-
-export const startDelivering = (state) =>
-  produce(state, (draft) => {
-    if (!state.optimizedRoutes) {
-      const cd = state.currentDay;
-
-      draft[cd].deliveryStatus = 2;
-      draft.processing = false;
-    } else {
-      draft.processing = true;
-    }
-  });
-
-export const toggleConfirmedItem = (state, { id }) =>
-  produce(state, (draft) => {
-    const cd = state.currentDay;
-    draft[cd].confirmedItem = toggle(state[cd].confirmedItem, id);
-
-    const idx = state[cd].outOfStockIds.indexOf(id);
-    if (idx > -1) {
-      draft[cd].outOfStockIds.splice(idx, 1);
-    }
-    // TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
-    draft[cd].allItemsDone =
-      draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
-      Object.keys(state[cd].stops[state[cd].selectedStopId]?.orders).length;
-  });
-
-export const toggleOutOfStock = (state, { id }) =>
-  produce(state, (draft) => {
-    const cd = state.currentDay;
-    draft[cd].outOfStockIds = toggle(state[cd].outOfStockIds, id);
-    const idx = state[cd].confirmedItem.indexOf(id);
-    if (idx > -1) {
-      draft[cd].confirmedItem.splice(idx, 1);
-    }
-    draft[cd].allItemsDone =
-      draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
-      Object.keys(state[cd].stops[state[cd].selectedStopId]?.orders).length;
-  });
-
-export const toggleReplyModal = (state, { cId, show }) =>
-  produce(state, (draft) => {
-    const cd = state.currentDay;
-    draft[cd].claims.showReplyModal = show;
-
-    if (cId) {
-      draft[cd].claims.selectedId = cId;
-    }
-  });
-
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
   produce(state, (draft) => {
     const cd = state.currentDay;
@@ -460,7 +347,7 @@ export const refreshDriverData = (state) => {
       ...state[cd],
       completedStopsIds: [],
       confirmedItem: [],
-      groupedStock: {},
+      orderedStock: [],
       orderedStopsIds: [],
       outOfStockIds: [],
       stock: [],
@@ -469,6 +356,121 @@ export const refreshDriverData = (state) => {
     }
   };
 };
+
+export const reset = () => initialState;
+
+export const setCustomerClaims = (state, { payload }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].claims.list = payload;
+    const driverUnacknowledgedList = payload.filter(
+      (item) => item.driverAcknowledged === false
+    );
+
+    const driverUnacknowledgedLength = driverUnacknowledgedList.length;
+
+    if (driverUnacknowledgedLength > 0) {
+      draft[cd].claims.selectedId = driverUnacknowledgedList[0].claimId;
+      draft[cd].claims.driverUnacknowledgedNr = driverUnacknowledgedLength;
+      draft[cd].claims.showClaimModal = true;
+      draft[cd].claims.showedUnacknowledgedNr = 1;
+    }
+  });
+
+export const setDeliveredOrRejectedFailure = (state) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    resetSelectedStopInfo(draft[cd]);
+    draft.processing = false;
+  });
+
+export const setDeliveredOrRejectedSuccess = (state) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].completedStopsIds.push(
+      ...draft[cd].orderedStopsIds.splice(
+        draft[cd].orderedStopsIds.indexOf(draft[cd].selectedStopId),
+        1
+      )
+    );
+    resetSelectedStopInfo(draft[cd]);
+    draft[cd].stops[draft[cd].selectedStopId].status = 'completed';
+
+    if (draft[cd].orderedStopsIds.length > 0) {
+      draft[cd].selectedStopId = draft[cd].orderedStopsIds[0];
+      if (!draft.optimizedRoutes) {
+        draft[cd].selectedStopId = null;
+      }
+    } else {
+      draft[cd].selectedStopId = null;
+      draft[cd].deliveryStatus = 3;
+    }
+    draft.processing = false;
+  });
+
+export const setProductsOrder = (state, { payload }) =>
+  produce(state, (draft) => {
+    draft.productsOrder = payload;
+  });
+
+export const setSelectedStopImage = (
+  state,
+  { payload: { base64Image }, props: { key } }
+) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].stops[key].customerAddressImage = base64Image;
+  });
+
+export const startDelivering = (state) =>
+  produce(state, (draft) => {
+    if (!state.optimizedRoutes) {
+      const cd = state.currentDay;
+
+      draft[cd].deliveryStatus = 2;
+      draft.processing = false;
+    } else {
+      draft.processing = true;
+    }
+  });
+
+export const toggleConfirmedItem = (state, { id }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].confirmedItem = toggle(state[cd].confirmedItem, id);
+
+    const idx = state[cd].outOfStockIds.indexOf(id);
+    if (idx > -1) {
+      draft[cd].outOfStockIds.splice(idx, 1);
+    }
+    // TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
+    draft[cd].allItemsDone =
+      draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
+      Object.keys(state[cd].stops[state[cd].selectedStopId]?.orders).length;
+  });
+
+export const toggleOutOfStock = (state, { id }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].outOfStockIds = toggle(state[cd].outOfStockIds, id);
+    const idx = state[cd].confirmedItem.indexOf(id);
+    if (idx > -1) {
+      draft[cd].confirmedItem.splice(idx, 1);
+    }
+    draft[cd].allItemsDone =
+      draft[cd].confirmedItem.length + draft[cd].outOfStockIds.length ===
+      Object.keys(state[cd].stops[state[cd].selectedStopId]?.orders).length;
+  });
+
+export const toggleReplyModal = (state, { cId, show }) =>
+  produce(state, (draft) => {
+    const cd = state.currentDay;
+    draft[cd].claims.showReplyModal = show;
+
+    if (cId) {
+      draft[cd].claims.selectedId = cId;
+    }
+  });
 
 export const updateCurrentDayProps = (state, { props }) => {
   const cd = state.currentDay;
@@ -509,13 +511,13 @@ export default createReducer(initialState, {
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
-  [Types.GET_VEHICLE_STOCK_FOR_DRIVER]: processingTrue,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.REFRESH_DRIVER_DATA]: refreshDriverData,
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
   [Types.SET_DELIVERED]: processingTrue,
+  [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
   [Types.SET_REJECTED]: processingTrue,
   [Types.SET_SELECTED_STOP_IMAGE]: setSelectedStopImage,
   [Types.START_DELIVERING]: startDelivering,

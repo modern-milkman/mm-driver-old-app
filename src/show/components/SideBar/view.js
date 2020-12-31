@@ -120,7 +120,7 @@ const SideBar = (props) => {
                 justifyContent={'flex-start'}
                 alignItems={'flex-start'}
                 marginVertical={defaults.marginVertical}>
-                {deliveryStatus === '2' && (
+                {deliveryStatus === 2 && (
                   <ListItem
                     title={I18n.t('screens:checkIn.loadVan')}
                     rightIcon={'chevron-right'}

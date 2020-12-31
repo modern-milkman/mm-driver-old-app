@@ -29,15 +29,17 @@ import {
   acknowledgeClaim,
   driverReply,
   driverReplySuccess,
+  foregroundDeliveryActions,
   getCustomerClaims,
   getForDriver,
   getForDriverSuccess,
+  getProductsOrder,
   getVehicleStockForDriverSuccess,
   optimizeStops,
-  setCurrentDay,
   setDelivered,
   setDeliveredOrRejectedSuccess,
   setItemOutOfStock,
+  setProductsOrder,
   setRejected,
   startDelivering,
   updateCurrentDayProps,
@@ -52,7 +54,7 @@ import { getDriver } from './user';
 export default function* root() {
   yield all([
     spawn(watchLocationChannel),
-    takeLatest('APP_STATE.FOREGROUND', setCurrentDay),
+    takeLatest('APP_STATE.FOREGROUND', foregroundDeliveryActions),
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
     takeLatest(ApplicationTypes.INIT, init),
@@ -76,16 +78,18 @@ export default function* root() {
       DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
       getVehicleStockForDriverSuccess
     ),
+    takeLatest(DeliveryTypes.GET_PRODUCTS_ORDER, getProductsOrder),
     takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
-    takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
+    takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
     takeLatest(DeliveryTypes.SET_DELIVERED, setDelivered),
     takeLatest(
       DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS,
       setDeliveredOrRejectedSuccess
     ),
-    takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
     takeLatest(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
+    takeLatest(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
     takeLatest(DeliveryTypes.SET_REJECTED, setRejected),
+    takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
     takeLatest(DeliveryTypes.UPDATE_CURRENT_DAY_PROPS, updateCurrentDayProps),
     takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updatedSelectedStop),

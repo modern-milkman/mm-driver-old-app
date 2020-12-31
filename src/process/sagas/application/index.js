@@ -57,7 +57,7 @@ export const init = function* () {
     }
   });
 
-  yield put({ type: DeliveryTypes.SET_CURRENT_DAY });
+  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
   Analytics.trackEvent(EVENTS.APP_INIT);
 };
 
@@ -87,7 +87,7 @@ export const login_success = function* ({ payload }) {
   yield call(Api.setToken, payload.jwtToken, payload.refreshToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
   yield put({ type: UserTypes.GET_DRIVER });
-  yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
+  yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
   NavigationService.navigate({ routeName: defaultRoutes.session });
   Analytics.trackEvent(EVENTS.LOGIN_SUCCESSFUL);
 };
@@ -112,9 +112,6 @@ export const onNavigateBack = function* () {
 export const refreshDriverData = function* () {
   const deliveryStatus = yield select(deliveryStatusSelector);
 
-  yield put({
-    type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER
-  });
   yield put({ type: DeliveryTypes.GET_FOR_DRIVER, isRefreshData: true });
   Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { deliveryStatus });
 };
