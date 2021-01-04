@@ -1,9 +1,10 @@
 import { put, select } from 'redux-saga/effects';
-import { InteractionManager } from 'react-native';
+import { InteractionManager, Platform } from 'react-native';
 
 import Api from 'Api';
 import store from 'Redux/store';
 import { user as userSelector } from 'Reducers/user';
+import { Types as DeviceTypes } from 'Reducers/device';
 import { Creators as TransientCreators } from 'Reducers/transient';
 import {
   Types as ApplicationTypes,
@@ -26,6 +27,18 @@ export function* onNavigateSideEffects(navigateParams) {
       switch (lastRoute) {
       }
       yield put({ type: ApplicationTypes.DISMISS_KEYBOARD });
+      break;
+
+    case 'UpgradeApp':
+      if (Platform.OS === 'android') {
+        yield put({
+          type: Api.API_CALL,
+          actions: {
+            success: { type: DeviceTypes.SET_LATEST_APP }
+          },
+          promise: Api.repositories.appcenter.getLatest()
+        });
+      }
       break;
 
     case 'LoadVan':

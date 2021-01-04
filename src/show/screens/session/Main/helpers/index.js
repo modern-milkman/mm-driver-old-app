@@ -50,8 +50,8 @@ const navigateInSheet = ({
     actionSheet(actions);
   } else {
     Alert({
-      title: I18n.t('general:alert.appInstalled.title'),
-      message: I18n.t('general:alert.appInstalled.noAppMessage'),
+      title: I18n.t('alert:appInstalled.title'),
+      message: I18n.t('alert:appInstalled.noAppMessage'),
       buttons: [
         {
           text: I18n.t('general:ok'),
@@ -97,8 +97,8 @@ const openNavigation = ({
   });
   Linking.openURL(url).catch(() => {
     Alert({
-      title: I18n.t('general:alert.appInstalled.title'),
-      message: I18n.t('general:alert.appInstalled.message', { type }),
+      title: I18n.t('alert:appInstalled.title'),
+      message: I18n.t('alert:appInstalled.message', { type }),
       buttons: [
         {
           text: I18n.t('general:ok'),

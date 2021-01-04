@@ -83,7 +83,9 @@
   },
   "upgradeApp": {
     "description": "Unfortunately this version of Modern Milkman Driver is no longer supported. To continue using Modern Milkman Driver, please update at your earliest convenience.",
-    "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}"
+    "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}",
+    "download": "Download Driver {{version}}",
+    "other": "or try another version"
   },
   "settings": {
     "sections": {

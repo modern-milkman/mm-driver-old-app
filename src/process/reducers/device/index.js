@@ -7,6 +7,7 @@ import { produce, updateProps } from '../shared';
 export const { Types, Creators } = createActions(
   {
     requestUserLocationPermisions: null,
+    setLatestApp: ['payload'],
     setLocation: ['position'],
     updateProps: ['props']
   },
@@ -14,6 +15,7 @@ export const { Types, Creators } = createActions(
 );
 
 const initialState = {
+  appcenter: null,
   buttonAccessibility: sizes.button.large,
   foregroundSize: 'large',
   mapNoTrackingZoom: 12,
@@ -27,6 +29,11 @@ const initialState = {
   uniqueID: 'uninitialized',
   vibrate: true
 };
+
+export const setLatestApp = (state, action) =>
+  produce(state, (draft) => {
+    draft.appcenter = action.payload;
+  });
 
 export const setLocation = (state, action) =>
   produce(state, (draft) => {
@@ -42,6 +49,7 @@ export const setLocation = (state, action) =>
 
 export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps,
+  [Types.SET_LATEST_APP]: setLatestApp,
   [Types.SET_LOCATION]: setLocation
 });
 
