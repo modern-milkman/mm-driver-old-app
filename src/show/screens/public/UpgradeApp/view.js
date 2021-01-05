@@ -1,48 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
-import { Linking, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CarLogo } from 'Images';
-import Alert from 'Services/alert';
 import { Button, Text } from 'Components';
+import { openDriverUpdate, triggerDriverUpdate } from 'Helpers';
 import { colors, defaults, sizes } from 'Theme';
 import { ColumnView, FullView, RowView } from 'Containers';
 
 import style from './style';
 
 const logoSize = 100;
-
-const openDriverUpdate = () => {
-  Linking.openURL(Config.GET_DRIVER_URL).catch(() => {
-    Alert({
-      title: I18n.t('alert:cannotOpenUrl.title'),
-      message: I18n.t('alert:cannotOpenUrl.message'),
-      buttons: [
-        {
-          text: I18n.t('general:ok'),
-          style: 'cancel'
-        }
-      ]
-    });
-  });
-};
-
-const triggerDriverUpdate = (url) => {
-  Linking.openURL(url).catch(() => {
-    Alert({
-      title: I18n.t('alert:cannotUpgrade.title'),
-      message: I18n.t('alert:cannotUpgrade.message'),
-      buttons: [
-        {
-          text: I18n.t('general:ok'),
-          style: 'cancel'
-        }
-      ]
-    });
-  });
-};
 
 const UpgradeApp = (props) => {
   const {
@@ -81,7 +50,7 @@ const UpgradeApp = (props) => {
             </ColumnView>
           )}
 
-          {appcenter?.download_url && appcenter?.short_version && (
+          {appcenter && appcenter?.download_url && appcenter?.short_version && (
             <ColumnView
               justifyContent={'space-between'}
               alignItems={'center'}

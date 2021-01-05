@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 
 import store from 'Redux/store';
@@ -100,7 +101,7 @@ const Api = {
     if (headers) {
       if (
         headers['x-app-version'] &&
-        headers['x-app-version'] > Config.APP_VERSION_NAME
+        semverGt(headers['x-app-version'], Config.APP_VERSION_NAME)
       ) {
         NavigationService.navigate({
           routeName: 'UpgradeApp',

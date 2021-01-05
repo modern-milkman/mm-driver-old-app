@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
+import { gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 import React, { useEffect, useState } from 'react';
 import { Animated, View, TouchableOpacity } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import Text from 'Components/Text';
-import { deviceFrame } from 'Helpers';
 import { defaults, colors } from 'Theme';
 import { ListItem } from 'Components/List';
 import Separator from 'Components/Separator';
 import NavigationService from 'Navigation/service';
+import { deviceFrame, triggerDriverUpdate } from 'Helpers';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
-
 import { navigateInSheet } from 'Screens/session/Main/helpers';
 
 import styles from './styles';
@@ -28,6 +28,7 @@ const navigateAndClose = (updateProps, callback) => {
 
 const SideBar = (props) => {
   const {
+    appcenter,
     availableNavApps,
     deliveryStatus,
     driverId,
@@ -120,6 +121,26 @@ const SideBar = (props) => {
                 justifyContent={'flex-start'}
                 alignItems={'flex-start'}
                 marginVertical={defaults.marginVertical}>
+                {appcenter &&
+                  appcenter?.short_version &&
+                  appcenter?.download_url &&
+                  semverGt(
+                    appcenter?.short_version,
+                    Config.APP_VERSION_NAME
+                  ) && (
+                    <ListItem
+                      title={I18n.t('screens:upgradeApp.download', {
+                        version: appcenter.short_version
+                      })}
+                      icon={'cellphone-android'}
+                      rightIcon={'cloud-download-outline'}
+                      onPress={triggerDriverUpdate.bind(
+                        null,
+                        appcenter?.download_url
+                      )}
+                    />
+                  )}
+
                 {deliveryStatus === 2 && (
                   <ListItem
                     title={I18n.t('screens:checkIn.loadVan')}
@@ -169,6 +190,7 @@ const SideBar = (props) => {
 };
 
 SideBar.propTypes = {
+  appcenter: PropTypes.object,
   availableNavApps: PropTypes.array,
   deliveryStatus: PropTypes.number,
   driverId: PropTypes.number,

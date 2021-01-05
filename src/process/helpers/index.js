@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 
 import { colors } from 'Theme';
+import I18n from 'Locales/I18n';
+import Alert from 'Services/alert';
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -114,7 +116,37 @@ const jiggleAnimation = (animatedValue, callback) => {
 
 const mock = () => null;
 
+const openDriverUpdate = () => {
+  Linking.openURL(Config.GET_DRIVER_URL).catch(() => {
+    Alert({
+      title: I18n.t('alert:cannotOpenUrl.title'),
+      message: I18n.t('alert:cannotOpenUrl.message'),
+      buttons: [
+        {
+          text: I18n.t('general:ok'),
+          style: 'cancel'
+        }
+      ]
+    });
+  });
+};
+
 const timeToHMArray = (time) => time.split(':').map((hm) => parseInt(hm));
+
+const triggerDriverUpdate = (url) => {
+  Linking.openURL(url).catch(() => {
+    Alert({
+      title: I18n.t('alert:cannotUpgrade.title'),
+      message: I18n.t('alert:cannotUpgrade.message'),
+      buttons: [
+        {
+          text: I18n.t('general:ok'),
+          style: 'cancel'
+        }
+      ]
+    });
+  });
+};
 
 const toggle = (collection, item) => {
   const duplicate = [...collection];
@@ -170,8 +202,10 @@ export {
   isAppInstalled,
   jiggleAnimation,
   mock,
+  openDriverUpdate,
   timeToHMArray,
   toggle,
+  triggerDriverUpdate,
   randomKey,
   statusBarHeight,
   ukTimeNow,
