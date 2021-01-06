@@ -20,10 +20,10 @@ const { width } = deviceFrame();
 const sidebarWidth = 0.8 * width;
 
 const navigateAndClose = (updateProps, callback) => {
+  updateProps({ sideBarOpen: false });
   if (callback) {
     callback();
   }
-  updateProps({ sideBarOpen: false });
 };
 
 const SideBar = (props) => {
