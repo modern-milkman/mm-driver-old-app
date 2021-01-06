@@ -5,9 +5,9 @@ import { Pressable } from 'react-native';
 import I18n from 'Locales/I18n';
 import { CarLogo } from 'Images';
 import { Button, Text } from 'Components';
-import { openDriverUpdate, triggerDriverUpdate } from 'Helpers';
 import { colors, defaults, sizes } from 'Theme';
 import { ColumnView, FullView, RowView } from 'Containers';
+import { openDriverUpdate, triggerDriverUpdate } from 'Helpers';
 
 import style from './style';
 

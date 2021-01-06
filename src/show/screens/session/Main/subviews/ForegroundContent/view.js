@@ -4,7 +4,8 @@ import { ActivityIndicator, Animated, Pressable } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { ukTimeNow } from 'Helpers';
-import { defaults, colors } from 'Theme';
+import { CustomIcon } from 'Images';
+import { colors, defaults, sizes } from 'Theme';
 import { ColumnView, RowView } from 'Containers';
 import { Button, Icon, NavBar, Text, Separator } from 'Components';
 
@@ -40,6 +41,16 @@ const renderHeading = (foregroundState, { routeDescription, selectedStop }) => {
       return selectedStop.title;
   }
 };
+
+const renderLeftIcon = (onChevronUpPress) => (
+  <CustomIcon
+    width={sizes.list.image / 1.5}
+    containerWidth={sizes.list.image}
+    icon={'expand'}
+    iconColor={colors.white}
+    onPress={onChevronUpPress}
+  />
+);
 
 const renderRightIcon = () => (
   <Icon
@@ -82,6 +93,7 @@ const ForegroundContent = (props) => {
     foregroundActionTop,
     foregroundDetailsIconsOpacity,
     foregroundDetailsTitleOpacity,
+    foregroundDetailsTitleWidth,
     foregroundDetailsTopOpacity,
     foregroundTitleColor,
     foregroundTitleTop,
@@ -161,9 +173,16 @@ const ForegroundContent = (props) => {
                 opacity: foregroundDetailsTitleOpacity,
                 transform: [{ translateY: foregroundTitleTop }]
               }}>
-              <Text.Heading color={foregroundTitleColor} align={'center'}>
-                {renderHeading(foregroundState, props)}
-              </Text.Heading>
+              <RowView
+                animated
+                animatedStyle={{ width: foregroundDetailsTitleWidth }}>
+                <Text.Heading
+                  color={foregroundTitleColor}
+                  align={'center'}
+                  numberOfLines={1}>
+                  {renderHeading(foregroundState, props)}
+                </Text.Heading>
+              </RowView>
               <Pressable
                 onPress={onButtonPress}
                 style={style.pressableContainer}
@@ -175,9 +194,7 @@ const ForegroundContent = (props) => {
                     opacity: foregroundDetailsIconsOpacity
                   }}>
                   <NavBar
-                    leftIcon={'chevron-up'}
-                    leftIconColor={colors.white}
-                    leftIconAction={onChevronUpPress}
+                    LeftComponent={renderLeftIcon.bind(null, onChevronUpPress)}
                     title={''}
                     RightComponent={
                       [3, 4].includes(selectedStop?.satisfactionStatus) &&
@@ -230,6 +247,7 @@ ForegroundContent.propTypes = {
   foregroundActionTop: PropTypes.instanceOf(Animated.Value),
   foregroundDetailsIconsOpacity: PropTypes.instanceOf(Animated.Value),
   foregroundDetailsTitleOpacity: PropTypes.instanceOf(Animated.Value),
+  foregroundDetailsTitleWidth: PropTypes.instanceOf(Animated.Value),
   foregroundDetailsTopOpacity: PropTypes.instanceOf(Animated.Value),
   foregroundTitleColor: PropTypes.instanceOf(Animated.Value),
   foregroundTitleTop: PropTypes.instanceOf(Animated.Value),

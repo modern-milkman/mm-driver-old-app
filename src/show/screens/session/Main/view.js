@@ -24,6 +24,8 @@ import {
   Search
 } from './subviews';
 
+const { height, width } = deviceFrame();
+
 const mainForegroundAction = ({
   currentLocation,
   deliveryStatus,
@@ -148,7 +150,6 @@ const Main = (props) => {
 
   const [foregroundTitleHeight, setForegroundTitleHeight] = useState(0);
   const { top, bottom } = useSafeAreaInsets();
-  const { height, width } = deviceFrame();
   const bottomMapPadding = configuration.navigation.height + bottom;
 
   const snapBottomY =
@@ -212,6 +213,15 @@ const Main = (props) => {
         top + configuration.foreground.collapseBackThreshold
       ],
       outputRange: [configuration.opacity.min, configuration.opacity.max],
+      extrapolate: 'clamp'
+    },
+    foregroundDetailsTitleWidth: {
+      inputRange: [0, snapMiddleY, middleBottomY],
+      outputRange: [
+        width - defaults.marginHorizontal * 2,
+        width - defaults.marginHorizontal * 2,
+        width - sizes.button.small * 2 - defaults.marginHorizontal * 2
+      ],
       extrapolate: 'clamp'
     },
     foregroundActionTop: {
@@ -400,6 +410,9 @@ const Main = (props) => {
     foregroundDetailsTitleOpacity: pullHandleMoveY.interpolate(
       interpolations.foregroundDetailsTitleOpacity
     ),
+    foregroundDetailsTitleWidth: pullHandleMoveY.interpolate(
+      interpolations.foregroundDetailsTitleWidth
+    ),
     foregroundDetailsTopOpacity: pullHandleMoveY.interpolate(
       interpolations.foregroundDetailsTopOpacity
     ),
@@ -469,6 +482,9 @@ const Main = (props) => {
           }
           foregroundDetailsTitleOpacity={
             interpolatedValues.foregroundDetailsTitleOpacity
+          }
+          foregroundDetailsTitleWidth={
+            interpolatedValues.foregroundDetailsTitleWidth
           }
           foregroundDetailsTopOpacity={
             interpolatedValues.foregroundDetailsTopOpacity

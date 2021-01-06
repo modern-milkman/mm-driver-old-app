@@ -8,6 +8,7 @@ import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
 
 const NavBar = ({
+  LeftComponent,
   leftIcon,
   leftIconAction,
   leftIconColor,
@@ -21,13 +22,16 @@ const NavBar = ({
       height={defaults.topNavigation.height}
       alignItems={'center'}
       paddingHorizontal={marginHorizontal}>
-      <Icon
-        name={leftIcon}
-        color={leftIconColor}
-        size={defaults.topNavigation.iconSize}
-        containerSize={defaults.topNavigation.height}
-        onPress={leftIconAction}
-      />
+      {(LeftComponent && <LeftComponent />) || (
+        <Icon
+          name={leftIcon}
+          color={leftIconColor}
+          size={defaults.topNavigation.iconSize}
+          containerSize={defaults.topNavigation.height}
+          onPress={leftIconAction}
+        />
+      )}
+
       <Text.Input color={colors.secondary}>{title}</Text.Input>
       {(RightComponent && <RightComponent />) || (
         <RowView
@@ -40,6 +44,7 @@ const NavBar = ({
 };
 
 NavBar.propTypes = {
+  LeftComponent: PropTypes.func,
   leftIcon: PropTypes.string,
   leftIconAction: PropTypes.func,
   leftIconColor: PropTypes.any,
