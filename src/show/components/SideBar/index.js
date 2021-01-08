@@ -8,7 +8,7 @@ export default connect(
   (state) => ({
     appcenter: state.device.appcenter,
     availableNavApps: state.device?.availableNavApps,
-    deliveryStatus: state.delivery[state.delivery.currentDay]?.deliveryStatus,
+    deliveryStatus: state.delivery?.deliveryStatus,
     driverId: state.user.driverId,
     name: state.user.name,
     sideBarOpen: state.application.sideBarOpen,

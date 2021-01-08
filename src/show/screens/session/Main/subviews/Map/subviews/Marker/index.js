@@ -6,15 +6,12 @@ import Marker from './view';
 
 export default connect(
   (state) => {
-    const today = state.delivery.currentDay;
-    const selectedStopId = state.delivery[today]?.selectedStopId;
-
     return {
-      completedStopsIds: state.delivery[today]?.completedStopsIds,
+      completedStopsIds: state.delivery?.completedStopsIds,
       mapMarkerSize: state.device.mapMarkerSize,
-      previousStopId: state.delivery[today]?.previousStopId,
-      stops: state.delivery[today]?.stops,
-      selectedStopId
+      previousStopId: state.delivery?.previousStopId,
+      selectedStopId: state.delivery?.selectedStopId,
+      stops: state.delivery?.stops
     };
   },
   {

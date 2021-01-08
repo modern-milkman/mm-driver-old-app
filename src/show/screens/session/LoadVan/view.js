@@ -9,10 +9,10 @@ import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView } from 'Containers';
 
 const LoadVan = (props) => {
-  const { itemCount, orderedStock, readOnly, updateCurrentDayProps } = props;
+  const { itemCount, orderedStock, readOnly, updateProps } = props;
 
   const doneLoadedVan = () => {
-    updateCurrentDayProps({ deliveryStatus: 1 });
+    updateProps({ deliveryStatus: 1 });
     NavigationService.goBack();
   };
 
@@ -54,14 +54,14 @@ LoadVan.propTypes = {
   itemCount: PropTypes.number,
   orderedStock: PropTypes.array,
   readOnly: PropTypes.bool,
-  updateCurrentDayProps: PropTypes.func
+  updateProps: PropTypes.func
 };
 
 LoadVan.defaultProps = {
   itemCount: 0,
   orderedStock: [],
   readOnly: false,
-  updateCurrentDayProps: mock
+  updateProps: mock
 };
 
 export default LoadVan;

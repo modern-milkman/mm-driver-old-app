@@ -1,21 +1,19 @@
 import { connect } from 'react-redux';
 
-import { Creators as deliveryActions, selectedStop } from 'Reducers/delivery';
 import { Creators as transientActions } from 'Reducers/transient';
+import { Creators as deliveryActions, selectedStop } from 'Reducers/delivery';
 
 import Deliver from './view';
 
 export default connect(
   (state) => {
-    const today = state.delivery.currentDay;
-
     return {
-      allItemsDone: state.delivery[today]?.allItemsDone,
+      allItemsDone: state.delivery?.allItemsDone,
       selectedStop: selectedStop(state),
-      confirmedItem: state.delivery[today]?.confirmedItem,
-      outOfStock: state.delivery[today]?.outOfStockIds,
-      selectedStopId: state.delivery[today]?.selectedStopId,
-      routeDescription: state.delivery[today]?.stockWithData?.routeDescription,
+      confirmedItem: state.delivery?.confirmedItem,
+      outOfStock: state.delivery?.outOfStockIds,
+      selectedStopId: state.delivery?.selectedStopId,
+      routeDescription: state.delivery?.stockWithData?.routeDescription,
       ...state.transient
     };
   },

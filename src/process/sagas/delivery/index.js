@@ -2,6 +2,7 @@ import { call, delay, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
 import { user as userSelector } from 'Reducers/user';
+import Analytics, { EVENTS } from 'Services/analytics';
 import {
   completedStopsIds as completedStopsIdsSelector,
   deliveryStatus as deliveryStatusSelector,
@@ -16,9 +17,6 @@ import {
   Types as DeviceTypes,
   device as deviceSelector
 } from 'Reducers/device';
-import Analytics, { EVENTS } from 'Services/analytics';
-
-import { currentDay as cDay } from 'Helpers';
 
 const updateTrackerData = function* ({ deliveryStatus }) {
   const user = yield select(userSelector);
@@ -75,8 +73,6 @@ export const driverReplySuccess = function* ({ payload }) {
 
 export function* foregroundDeliveryActions({}) {
   const deliveryStatus = yield select(deliveryStatusSelector);
-  const currentDay = cDay();
-  yield put({ type: DeliveryTypes.UPDATE_PROPS, props: { currentDay } });
   if (deliveryStatus === 0) {
     yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
   }
@@ -260,7 +256,7 @@ export const startDelivering = function* () {
   Analytics.trackEvent(EVENTS.START_DELIVERING);
 };
 
-export const updateCurrentDayProps = function* ({ props: { deliveryStatus } }) {
+export const updateProps = function* ({ props: { deliveryStatus } }) {
   const user = yield select(userSelector);
   if (user && deliveryStatus) {
     yield call(updateTrackerData, { deliveryStatus });

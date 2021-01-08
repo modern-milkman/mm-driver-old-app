@@ -6,10 +6,8 @@ import CustomerIssueDetails from './view';
 
 export default connect(
   (state) => {
-    const today = state.delivery.currentDay;
-
     return {
-      claims: state.delivery[today]?.claims,
+      claims: state.delivery?.claims,
       selectedIssue: state.application.lastRouteParams
     };
   },

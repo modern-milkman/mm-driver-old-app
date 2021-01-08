@@ -26,14 +26,6 @@ const checkAtLeastOneItem = (items, statusId, exclude = false) => {
   return false;
 };
 
-const currentDay = () => {
-  const date = new Date();
-  if (parseInt(Config.RESET_HOUR_DAY) <= ukTimeNow(true)) {
-    date.setDate(date.getDate() + 1);
-  }
-  return formatDate(date);
-};
-
 const customerSatisfactionColor = (satisfactionStatus) => {
   switch (satisfactionStatus) {
     case 1:
@@ -193,7 +185,6 @@ const usePrevious = (value) => {
 export {
   capitalize,
   checkAtLeastOneItem,
-  currentDay,
   customerSatisfactionColor,
   deviceFrame,
   defaultRoutes,

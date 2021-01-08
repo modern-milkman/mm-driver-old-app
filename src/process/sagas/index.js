@@ -42,7 +42,7 @@ import {
   setProductsOrder,
   setRejected,
   startDelivering,
-  updateCurrentDayProps,
+  updateProps as updateDeliveryProps,
   updatedSelectedStop,
   updateReturnPosition
 } from './delivery';
@@ -90,7 +90,7 @@ export default function* root() {
     takeLatest(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
     takeLatest(DeliveryTypes.SET_REJECTED, setRejected),
     takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
-    takeLatest(DeliveryTypes.UPDATE_CURRENT_DAY_PROPS, updateCurrentDayProps),
+    takeLatest(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
     takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updatedSelectedStop),
 

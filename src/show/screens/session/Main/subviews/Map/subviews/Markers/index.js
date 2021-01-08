@@ -3,13 +3,12 @@ import { connect } from 'react-redux';
 import Markers from './view';
 
 export default connect((state) => {
-  const today = state.delivery.currentDay;
   return {
-    completedStopsIds: state.delivery[today]?.completedStopsIds,
-    deliveryStatus: state.delivery[today]?.deliveryStatus,
+    completedStopsIds: state.delivery?.completedStopsIds,
+    deliveryStatus: state.delivery?.deliveryStatus,
     mapMarkerSize: state.device.mapMarkerSize,
-    orderedStopsIds: state.delivery[today]?.orderedStopsIds,
-    selectedStopId: state.delivery[today]?.selectedStopId,
+    orderedStopsIds: state.delivery?.orderedStopsIds,
+    selectedStopId: state.delivery?.selectedStopId,
     showDoneDeliveries: state.device.showDoneDeliveries
   };
 }, {})(Markers);
