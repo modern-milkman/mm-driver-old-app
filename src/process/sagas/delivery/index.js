@@ -1,15 +1,18 @@
 import { call, delay, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
+import { Base64 } from 'js-base64';
+import NavigationService from 'Navigation/service';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import {
+  claims as claimsSelector,
   completedStopsIds as completedStopsIdsSelector,
   deliveryStatus as deliveryStatusSelector,
-  outOfStockItems as outOfStockItemsSelector,
-  orderedStopsIds as orderedStopsIdsSelector,
-  selectedStop as selectedStopSelector,
   isOptimizedRoutes as optimizedRoutesSelector,
+  orderedStopsIds as orderedStopsIdsSelector,
+  outOfStockItems as outOfStockItemsSelector,
+  selectedStop as selectedStopSelector,
   stops as stopsSelector,
   Types as DeliveryTypes
 } from 'Reducers/delivery';
@@ -52,23 +55,82 @@ export const acknowledgeClaim = function* ({ id }) {
   });
 };
 
-export const driverReply = function* ({ claimId, comment, image, imageType }) {
+export const acknowledgeClaimSuccess = function* () {
+  const claims = yield select(claimsSelector);
+  const { showClaimModal, showReplyModal } = claims;
+  if (!showClaimModal && !showReplyModal) {
+    NavigationService.goBack();
+  }
+};
+
+export const driverReply = function* ({
+  claimId,
+  comment,
+  image,
+  imageType,
+  acknowledgedClaim = true
+}) {
+  let imageHex = null;
+  if (image) {
+    const splitImage = image.split(',');
+    const base = splitImage[splitImage.length - 1];
+    imageHex = [...Base64.atob(base)]
+      .map((c) => c.charCodeAt(0).toString(16).padStart(2, 0))
+      .join('')
+      .toUpperCase();
+  }
+
   yield put({
     type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS }
-    },
+    actions: { success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS } },
     promise: Api.repositories.delivery.driverReply({
       claimId,
       comment,
-      image,
+      image: imageHex,
       imageType
-    })
+    }),
+    acknowledgedClaim
   });
 };
 
-export const driverReplySuccess = function* ({ payload }) {
-  yield put({ type: DeliveryTypes.ACKNOWLEDGE_CLAIM, id: payload.claimId });
+export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
+  const claims = yield select(claimsSelector);
+  const {
+    selectedClaim: { customerIssueIdx }
+  } = claims;
+
+  if (acknowledgedClaim) {
+    yield put({ type: DeliveryTypes.ACKNOWLEDGE_CLAIM, id: payload.claimId });
+  } else {
+    yield put({
+      type: DeliveryTypes.SET_SELECTED_CLAIM,
+      claim: {
+        ...claims.list.filter((claim) => claim.claimId === payload.claimId)[0],
+        customerIssueIdx
+      }
+    });
+
+    NavigationService.goBack();
+  }
+
+  if (payload.hasImage) {
+    yield call(
+      getDriverReplySingleImage.bind(null, {
+        id: payload.claimDriverResponseId
+      })
+    );
+  }
+};
+
+export const getDriverReplySingleImage = function* ({ id }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS }
+    },
+    promise: Api.repositories.delivery.getDriverResponseImage({ id }),
+    id
+  });
 };
 
 export function* foregroundDeliveryActions({}) {
@@ -235,6 +297,10 @@ export const setRejected = function* ({ id, reasonMessage }) {
   });
 };
 
+export const redirectSetSelectedClaim = function* () {
+  NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
+};
+
 export const optimizeStops = function* () {
   yield call(updatedSelectedStop);
   Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
@@ -333,4 +399,27 @@ export const getCustomerClaims = function* ({ customerId }) {
     },
     promise: Api.repositories.delivery.getCustomerClaims({ customerId })
   });
+};
+
+export const setCustomerClaims = function* ({ payload }) {
+  for (const [claimIndex, claim] of payload.entries()) {
+    for (const [
+      driverResponseIndex,
+      driverResponse
+    ] of claim.driverResponses.entries()) {
+      if (driverResponse.hasImage) {
+        yield put({
+          type: Api.API_CALL,
+          actions: {
+            success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
+          },
+          promise: Api.repositories.delivery.getDriverResponseImage({
+            id: driverResponse.claimDriverResponseId
+          }),
+          claimIndex,
+          driverResponseIndex
+        });
+      }
+    }
+  }
 };

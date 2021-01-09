@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Config from 'react-native-config';
 
 import I18n from 'Locales/I18n';
 import { formatDate, mock } from 'Helpers';
@@ -8,21 +9,31 @@ import NavigationService from 'Navigation/service';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, NavBar, Separator, List, ListItem } from 'Components';
 
+const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
+
+const replyModal = (toggleReplyModal) => {
+  toggleReplyModal(true);
+
+  NavigationService.navigate({
+    routeName: 'CustomerIssueModal'
+  });
+};
+
 const CustomerIssueDetails = (props) => {
-  const { selectedIssue, toggleReplyModal } = props;
+  const { selectedClaim, toggleReplyModal } = props;
 
   const {
+    claimItem,
     driverResponses,
+    claimDateTime,
     customerIssueIdx,
-    date,
-    reason,
-    claimItem
-  } = selectedIssue;
+    reason
+  } = selectedClaim;
 
   const data = claimItem?.map((item) => {
     return {
       disabled: true,
-      image: item.productId.toString(),
+      image: productImageUri + item.productId,
       title: item.productName
     };
   });
@@ -32,14 +43,16 @@ const CustomerIssueDetails = (props) => {
       disabled: true,
       customIcon: 'customerIssue',
       customIconProps: {
-        width: sizes.list.image / 2,
-        containerWidth: sizes.list.image
+        width: sizes.list.image
       },
-      title: I18n.t('screens:deliver.customerIssue.list.title', {
-        idx: idx + 1
+      title: I18n.t('screens:deliver.customerIssue.modal.listTitle', {
+        id: idx + 1
       }),
       description: formatDate(new Date(item.responseDateTime)),
-      moreInfo: item.comment
+      moreInfo: item.comment,
+      moreInfoImage: item.image
+        ? `data:${item.image.imageType};base64,${item.image.base64Image}`
+        : null
     };
   });
 
@@ -53,48 +66,56 @@ const CustomerIssueDetails = (props) => {
         })}
       />
 
-      <ColumnView flex={1}>
+      <ColumnView flex={1} justifyContent={'flex-start'}>
         <Separator color={colors.input} width={'100%'} />
 
-        <ListItem title={reason} description={date} icon={null} />
+        <ListItem
+          title={reason}
+          description={formatDate(new Date(claimDateTime))}
+          icon={null}
+        />
 
         <Separator color={colors.input} width={'100%'} />
 
         {data && data.length > 0 && (
-          <List
-            data={[
-              {
-                title: I18n.t(
-                  'screens:deliver.customerIssue.modal.productsAffected'
-                ),
-                data
-              }
-            ]}
-            hasSections
-          />
+          <ColumnView>
+            <List
+              data={[
+                {
+                  title: I18n.t(
+                    'screens:deliver.customerIssue.modal.productsAffected'
+                  ),
+                  data
+                }
+              ]}
+              hasSections
+            />
+          </ColumnView>
         )}
 
-        <Separator color={colors.input} width={'100%'} />
-
         {driverReplyData && driverReplyData.length > 0 && (
-          <List
-            data={[
-              {
-                title: I18n.t(
-                  'screens:deliver.customerIssue.details.driverReplies'
-                ),
-                data: driverReplyData
-              }
-            ]}
-            hasSections
-          />
+          <ColumnView flex={1}>
+            <List
+              data={[
+                {
+                  title: I18n.t(
+                    'screens:deliver.customerIssue.details.driverReplies'
+                  ),
+                  data: driverReplyData
+                }
+              ]}
+              hasSections
+            />
+          </ColumnView>
         )}
       </ColumnView>
 
-      <RowView paddingHorizontal={defaults.marginHorizontal}>
+      <RowView
+        paddingHorizontal={defaults.marginHorizontal}
+        marginVertical={defaults.marginVertical}>
         <Button.Secondary
           title={I18n.t('screens:deliver.customerIssue.modal.reply')}
-          onPress={toggleReplyModal.bind(null, null, true)}
+          onPress={replyModal.bind(null, toggleReplyModal)}
         />
       </RowView>
     </SafeAreaView>
@@ -102,14 +123,12 @@ const CustomerIssueDetails = (props) => {
 };
 
 CustomerIssueDetails.propTypes = {
-  claims: PropTypes.object,
-  selectedIssue: PropTypes.object,
+  selectedClaim: PropTypes.object,
   toggleReplyModal: PropTypes.func
 };
 
 CustomerIssueDetails.defaultProps = {
-  claims: {},
-  selectedIssue: {},
+  selectedClaim: {},
   toggleReplyModal: mock
 };
 

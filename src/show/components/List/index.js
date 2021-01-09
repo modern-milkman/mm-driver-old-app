@@ -83,6 +83,7 @@ const renderItemInterface = (
     miscelaneousLarge,
     miscelaneousSmall,
     moreInfo,
+    moreInfoImage,
     onLongPress,
     onPress,
     rightIcon,
@@ -175,11 +176,36 @@ const renderItemInterface = (
           </RowView>
         )}
       </RowView>
-      {moreInfo && (
-        <RowView align={'flex-start'}>
-          <Text.List align={'left'} color={colors.inputDark}>
-            {moreInfo}
-          </Text.List>
+      {(moreInfo || moreInfoImage) && (
+        <RowView
+          justifyContent={'flex-start'}
+          alignItems={'flex-start'}
+          marginTop={defaults.marginVertical / 2}>
+          {moreInfoImage && (
+            <ColumnView
+              marginRight={defaults.marginHorizontal / 2}
+              justifyContent={'flex-start'}
+              width={sizes.list.image}
+              height={sizes.list.image}>
+              <Image
+                source={{
+                  uri: moreInfoImage
+                }}
+                style={{ borderRadius: defaults.borderRadius }}
+                width={sizes.list.image}
+                height={sizes.list.image}
+              />
+            </ColumnView>
+          )}
+
+          <ColumnView
+            alignItems={'flex-start'}
+            justifyContent={'flex-start'}
+            width={'auto'}>
+            <Text.List align={'left'} color={colors.inputDark}>
+              {moreInfo}
+            </Text.List>
+          </ColumnView>
         </RowView>
       )}
     </TouchableOpacity>
@@ -305,6 +331,7 @@ ListItem.defaultProps = {
   miscelaneousLarge: null,
   miscelaneousSmall: null,
   moreInfo: null,
+  moreInfoImage: null,
   onLongPress: mock,
   onPress: mock,
   rightIcon: null,

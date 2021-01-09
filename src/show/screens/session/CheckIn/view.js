@@ -125,7 +125,7 @@ const CheckIn = (props) => {
               <Button.Primary
                 title={I18n.t('general:go')}
                 disabled={deliveryStatus !== 1}
-                onPress={navigateBack.bind(null, startDelivering.bind(null))}
+                onPress={navigateBack.bind(null, startDelivering)}
               />
               {deliveryStatus !== 1 && (
                 <RowView marginVertical={defaults.marginVertical / 2}>

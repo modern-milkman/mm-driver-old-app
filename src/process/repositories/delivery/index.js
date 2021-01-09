@@ -19,6 +19,9 @@ export default {
   getCustomerClaims({ customerId }) {
     return Api.get(`/Claim/GetDriverClaims/${customerId}`);
   },
+  getDriverResponseImage({ id }) {
+    return Api.get(`/Claim/DriverResponseImage/${id}`);
+  },
   getForDriver() {
     return Api.get('/Delivery/GetForDriver');
   },

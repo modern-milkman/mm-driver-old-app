@@ -7,8 +7,7 @@ import CustomerIssueDetails from './view';
 export default connect(
   (state) => {
     return {
-      claims: state.delivery?.claims,
-      selectedIssue: state.application.lastRouteParams
+      selectedClaim: state.delivery?.claims?.selectedClaim
     };
   },
   {

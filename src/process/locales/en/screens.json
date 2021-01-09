@@ -19,12 +19,16 @@
     },
     "customerIssue": {
       "modal": {
+        "actionSheet": {
+          "openGalery": "Choose from Gallery",
+          "takePhoto": "Take a Photo"
+        },
         "customerIssue": "Customer Issue",
-        "date": "Date:",
-        "listTitle": "Reply {{id}}",
+        "date": "Date: ",
+        "listTitle": "Reply #{{id}}",
         "markAsRead": "Mark as read",
-        "productsAffected": "Products affected:",
-        "reason": "Reason:",
+        "productsAffected": "Products affected: ",
+        "reason": "Reason: ",
         "reply": "Reply",
         "send": "Send",
         "title": "Reply to customer issue"

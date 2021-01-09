@@ -27,6 +27,7 @@ import {
 
 import {
   acknowledgeClaim,
+  acknowledgeClaimSuccess,
   driverReply,
   driverReplySuccess,
   foregroundDeliveryActions,
@@ -36,6 +37,8 @@ import {
   getProductsOrder,
   getVehicleStockForDriverSuccess,
   optimizeStops,
+  redirectSetSelectedClaim,
+  setCustomerClaims,
   setDelivered,
   setDeliveredOrRejectedSuccess,
   setItemOutOfStock,
@@ -69,18 +72,27 @@ export default function* root() {
     takeLatest(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
 
     takeLatest(DeliveryTypes.ACKNOWLEDGE_CLAIM, acknowledgeClaim),
+    takeLatest(
+      DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS,
+      acknowledgeClaimSuccess
+    ),
     takeLatest(DeliveryTypes.DRIVER_REPLY, driverReply),
     takeLatest(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
     takeLatest(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
+    takeLatest(DeliveryTypes.GET_PRODUCTS_ORDER, getProductsOrder),
     takeLatest(
       DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
       getVehicleStockForDriverSuccess
     ),
-    takeLatest(DeliveryTypes.GET_PRODUCTS_ORDER, getProductsOrder),
     takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
+    takeLatest(
+      DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM,
+      redirectSetSelectedClaim
+    ),
     takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
+    takeLatest(DeliveryTypes.SET_CUSTOMER_CLAIMS, setCustomerClaims),
     takeLatest(DeliveryTypes.SET_DELIVERED, setDelivered),
     takeLatest(
       DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS,

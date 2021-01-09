@@ -11,13 +11,15 @@ import {
   lastRoute as lastRouteSelector
 } from 'Reducers/application';
 
+const blacklist = ['CustomerIssueModal'];
+
 export function* onNavigateSideEffects(navigateParams) {
   // type, routeName, params, action
   const { routeName, params = { refresh: true, index: null } } = navigateParams;
   const lastRoute = yield select(lastRouteSelector);
   const user = yield select(userSelector);
 
-  if (routeName) {
+  if (routeName && !blacklist.includes(routeName)) {
     yield put({ type: ApplicationTypes.ADD_TO_STACK_ROUTE, routeName, params });
   }
 

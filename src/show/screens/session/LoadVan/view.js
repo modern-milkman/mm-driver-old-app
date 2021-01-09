@@ -24,7 +24,7 @@ const LoadVan = (props) => {
       height={defaults.topNavigation.height}>
       <Text.Label
         color={colors.primary}
-        onPress={doneLoadedVan.bind(null)}
+        onPress={doneLoadedVan}
         align={'right'}
         lineHeight={defaults.topNavigation.height}>
         {I18n.t('screens:loadVan.done')}

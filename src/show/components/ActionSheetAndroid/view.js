@@ -52,7 +52,7 @@ class ActionSheetAndroid extends React.Component {
 
           <ColumnView backgroundColor={colors.neutral}>
             <List
-              onPress={this.actionAndDismiss.bind(null)}
+              onPress={this.actionAndDismiss}
               data={data}
               renderListEmptyComponent={null}
             />

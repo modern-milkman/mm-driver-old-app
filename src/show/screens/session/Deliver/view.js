@@ -20,8 +20,6 @@ import {
   Separator
 } from 'Components';
 
-import CustomerIssuesModal from './subviews/Modal';
-
 import style from './style';
 
 const reasonMessageRef = React.createRef();
@@ -208,6 +206,9 @@ const navToList = () => (
     height={defaults.topNavigation.height}>
     <CustomIcon
       icon={'customerIssue'}
+      iconColor={colors.error}
+      width={defaults.topNavigation.iconSize}
+      bgColor={'transparent'}
       onPress={NavigationService.navigate.bind(null, {
         routeName: 'CustomerIssueList'
       })}
@@ -226,6 +227,7 @@ const Deliver = (props) => {
   const {
     allItemsDone,
     confirmedItem,
+    claims: { showClaimModal, list },
     outOfStock,
     routeDescription,
     selectedStop,
@@ -255,14 +257,18 @@ const Deliver = (props) => {
 
   return (
     <SafeAreaView top bottom>
-      <CustomerIssuesModal />
-
       <NavigationEvents
         onDidFocus={animateContent.bind(null, {
           contentTranslateYValue: 0,
-          contentOpacityValue: 1
+          contentOpacityValue: 1,
+          callback: showClaimModal
+            ? NavigationService.navigate.bind(null, {
+                routeName: 'CustomerIssueModal'
+              })
+            : null
         })}
       />
+
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
         {modalType === 'skip' && renderSkipModal({ ...props, setModalVisible })}
         {modalType === 'image' &&
@@ -277,7 +283,7 @@ const Deliver = (props) => {
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
           title={I18n.t('general:details')}
-          RightComponent={navToList}
+          RightComponent={list.length > 0 ? navToList : null}
         />
         <Animated.View
           style={[
@@ -429,11 +435,12 @@ const Deliver = (props) => {
 
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
+  claims: PropTypes.object,
   confirmedItem: PropTypes.array,
-  routeDescription: PropTypes.string,
-  selectedStop: PropTypes.object,
   outOfStock: PropTypes.array,
   reasonMessage: PropTypes.string,
+  routeDescription: PropTypes.string,
+  selectedStop: PropTypes.object,
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,
   toggleConfirmedItem: PropTypes.func,
@@ -443,11 +450,12 @@ Deliver.propTypes = {
 
 Deliver.defaultProps = {
   allItemsDone: false,
+  claims: {},
   confirmedItem: [],
-  routeDescription: null,
-  selectedStop: {},
   outOfStock: [],
   reasonMessage: '',
+  routeDescription: null,
+  selectedStop: {},
   setDelivered: mock,
   setRejected: mock,
   toggleConfirmedItem: mock,

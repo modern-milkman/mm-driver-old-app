@@ -1,27 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Config from 'react-native-config';
 import { TouchableOpacity } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
-import { colors, defaults, sizes } from 'Theme';
+import actionSheet from 'Services/actionSheet';
+import { ColumnView, RowView } from 'Containers';
+import NavigationService from 'Navigation/service';
 import { deviceFrame, formatDate, mock } from 'Helpers';
-import { Modal, ColumnView, RowView } from 'Containers';
+import { alphaColor, colors, defaults, sizes } from 'Theme';
 import { Button, Text, TextInput, Image, List, Separator } from 'Components';
 
 import style from './style';
 
 const { width } = deviceFrame();
+const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
 const CustomerIssueModal = (props) => {
   const {
     claims: {
       driverResponse,
       driverUnacknowledgedNr,
-      list,
-      selectedId,
       showClaimModal,
+      selectedClaim,
       showedUnacknowledgedNr,
       showReplyModal
     },
@@ -33,36 +37,51 @@ const CustomerIssueModal = (props) => {
 
   const { text, image, imageType } = driverResponse;
 
-  const selected = list.filter((item) => item.claimId === selectedId)[0] || {};
-  const { claimDateTime = '', reason = '', claimItem = [] } = selected;
+  const { claimDateTime = '', reason = '', claimItem = [] } = selectedClaim;
 
   const data = claimItem.map((item) => {
     return {
       disabled: true,
-      image: item.productId,
+      image: `${productImageUri}${item.productId}`,
       title: item.productName
     };
   });
 
-  const openPicker = () => {
-    ImagePicker.openPicker({
+  const openActionSheet = () => {
+    actionSheet({
+      [I18n.t(
+        'screens:deliver.customerIssue.modal.actionSheet.takePhoto'
+      )]: openPicker.bind(null, 'openCamera'),
+      [I18n.t(
+        'screens:deliver.customerIssue.modal.actionSheet.openGalery'
+      )]: openPicker.bind(null, 'openPicker')
+    });
+  };
+
+  const openPicker = (method) => {
+    ImagePicker[method]({
       width: 1000,
       height: 1000,
       cropping: true,
 
       includeBase64: true
     }).then((img) => {
-      updateDriverResponse(
-        null,
-        `data:${img.mime};base64,${img.data}`,
-        img.mime
-      );
+      updateDriverResponse({
+        text,
+        image: `data:${img.mime};base64,${img.data}`,
+        imageType: img.mime
+      });
     });
   };
 
   return (
-    <Modal visible={showClaimModal || showReplyModal} transparent={true}>
+    <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
+      <NavigationEvents
+        onDidBlur={toggleReplyModal.bind(null, !showReplyModal)}
+      />
+
       <ColumnView
+        backgroundColor={'transparent'}
         marginHorizontal={defaults.marginHorizontal}
         width={width - defaults.marginHorizontal * 2}
         flex={1}>
@@ -73,13 +92,18 @@ const CustomerIssueModal = (props) => {
           overflow={'hidden'}>
           <RowView
             justifyContent={'space-between'}
+            alignItems={'center'}
             paddingVertical={defaults.marginVertical / 2}
             paddingHorizontal={defaults.marginHorizontal / 2}>
-            <RowView justifyContent={'flex-start'} flex={1}>
+            <RowView
+              justifyContent={'flex-start'}
+              flex={1}
+              alignItems={'center'}>
               <CustomIcon
                 containerWidth={28}
                 icon={showReplyModal ? 'customerIssue' : 'warning'}
                 iconColor={colors.error}
+                bgColor={'transparent'}
                 disabled
               />
               <Text.Heading color={colors.secondary}>
@@ -113,7 +137,13 @@ const CustomerIssueModal = (props) => {
           <Separator color={colors.input} width={'100%'} />
 
           {showReplyModal
-            ? renderReplyBody({ updateDriverResponse, image, text, openPicker })
+            ? renderReplyBody({
+                updateDriverResponse,
+                image,
+                imageType,
+                text,
+                openActionSheet
+              })
             : renderCustomerIssueBody({ reason, data })}
 
           <Separator color={colors.input} width={'100%'} />
@@ -126,7 +156,11 @@ const CustomerIssueModal = (props) => {
               )}
               width={'50%'}
               noBorderRadius
-              onPress={toggleReplyModal.bind(null, null, !showReplyModal)}
+              onPress={
+                showClaimModal
+                  ? toggleReplyModal.bind(null, !showReplyModal)
+                  : NavigationService.goBack
+              }
             />
             <Button.Primary
               title={I18n.t(
@@ -139,18 +173,35 @@ const CustomerIssueModal = (props) => {
               noBorderRadius
               onPress={
                 showReplyModal
-                  ? driverReply.bind(null, selectedId, text, image, imageType)
-                  : acknowledgeClaim.bind(null, selectedId)
+                  ? driverReply.bind(
+                      null,
+                      selectedClaim.claimId,
+                      text,
+                      image,
+                      imageType,
+                      showClaimModal
+                    )
+                  : acknowledgeClaim.bind(null, selectedClaim.claimId)
               }
             />
           </RowView>
         </ColumnView>
       </ColumnView>
-    </Modal>
+    </ColumnView>
   );
 };
 
-const renderReplyBody = ({ updateDriverResponse, image, text, openPicker }) => {
+const updateText = (updateDriverResponse, image, imageType, text) => {
+  updateDriverResponse({ image, imageType, text });
+};
+
+const renderReplyBody = ({
+  updateDriverResponse,
+  image,
+  imageType,
+  text,
+  openActionSheet
+}) => {
   return (
     <ColumnView
       paddingTop={defaults.marginVertical}
@@ -158,18 +209,25 @@ const renderReplyBody = ({ updateDriverResponse, image, text, openPicker }) => {
       paddingHorizontal={defaults.marginHorizontal / 2}
       justifyContent={'flex-start'}>
       <TextInput
-        onChangeText={updateDriverResponse}
+        onChangeText={updateText.bind(
+          this,
+          updateDriverResponse,
+          image,
+          imageType
+        )}
         multiline
         value={text}
         multilineHeight={100}
-        placeholder={I18n.t(
-          'screens:deliver.customerIssue.modal.inputPlaceholder'
-        )}
+        placeholder={I18n.t('input:placeholder.customerIssueModal')}
       />
       <RowView justifyContent={'flex-start'}>
         {image && image !== '' ? (
           <TouchableOpacity
-            onPress={updateDriverResponse.bind(null, null, '')}
+            onPress={updateDriverResponse.bind(null, {
+              text,
+              image: null,
+              imageType: null
+            })}
             style={style.photoWrapper}>
             <Image
               source={{
@@ -183,7 +241,11 @@ const renderReplyBody = ({ updateDriverResponse, image, text, openPicker }) => {
               icon={'close'}
               containerWidth={sizes.list.image / 2}
               style={style.closeIcon}
-              onPress={updateDriverResponse.bind(null, null, '')}
+              onPress={updateDriverResponse.bind(null, {
+                text,
+                image: null,
+                imageType: null
+              })}
             />
           </TouchableOpacity>
         ) : (
@@ -193,7 +255,7 @@ const renderReplyBody = ({ updateDriverResponse, image, text, openPicker }) => {
             icon={'addPhoto'}
             iconColor={colors.Primary}
             style={style.addPhotoIcon}
-            onPress={openPicker}
+            onPress={openActionSheet}
           />
         )}
       </RowView>

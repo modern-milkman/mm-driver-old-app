@@ -70,6 +70,10 @@ const interceptors = {
   }
 };
 
+const blacklistApiEndpointFailureTracking = [
+  `${Config.FLEET_TRACKER_URL}/drivers`
+];
+
 api.interceptors.request.use(interceptors.config);
 
 api.interceptors.response.use(
@@ -127,9 +131,16 @@ const Api = {
   },
 
   catchError(error) {
-    Analytics.trackEvent(EVENTS.API_ERROR, {
-      error
-    });
+    if (
+      !blacklistApiEndpointFailureTracking.includes(
+        `${error.config.baseURL}${error.config.url}`
+      ) &&
+      !blacklistApiEndpointFailureTracking.includes(error.config.url)
+    ) {
+      Analytics.trackEvent(EVENTS.API_ERROR, {
+        error
+      });
+    }
   },
 
   get(path, config = defaultConfig) {

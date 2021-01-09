@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import I18n from 'Locales/I18n';
-import { formatDate } from 'Helpers';
+import { formatDate, mock } from 'Helpers';
 import { SafeAreaView } from 'Containers';
 import { NavBar, List } from 'Components';
 import NavigationService from 'Navigation/service';
 
 const CustomerIssueList = (props) => {
-  const { claims, selectedStop } = props;
+  const { claims, selectedStop, setSelectedClaim } = props;
 
   const newList = {
     title: I18n.t('screens:deliver.customerIssue.list.new'),
@@ -17,13 +17,6 @@ const CustomerIssueList = (props) => {
   const previousList = {
     title: I18n.t('screens:deliver.customerIssue.list.previous'),
     data: []
-  };
-
-  const onPressItem = (params) => {
-    NavigationService.navigate({
-      routeName: 'CustomerIssueDetails',
-      params
-    });
   };
 
   claims.list.forEach((item, idx) => {
@@ -47,10 +40,9 @@ const CustomerIssueList = (props) => {
       title: I18n.t('screens:deliver.customerIssue.list.title', {
         issueNr: idx + 1
       }),
-      onPress: onPressItem.bind(null, {
+      onPress: setSelectedClaim.bind(null, {
         ...item,
-        customerIssueIdx: idx + 1,
-        date
+        customerIssueIdx: idx + 1
       })
     };
 
@@ -100,12 +92,14 @@ const CustomerIssueList = (props) => {
 
 CustomerIssueList.propTypes = {
   claims: PropTypes.object,
-  selectedStop: PropTypes.object
+  selectedStop: PropTypes.object,
+  setSelectedClaim: PropTypes.func
 };
 
 CustomerIssueList.defaultProps = {
   claims: {},
-  selectedStop: {}
+  selectedStop: {},
+  setSelectedClaim: mock
 };
 
 export default CustomerIssueList;
