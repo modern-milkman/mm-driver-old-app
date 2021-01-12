@@ -201,8 +201,9 @@ const renderItemInterface = (
           <ColumnView
             alignItems={'flex-start'}
             justifyContent={'flex-start'}
-            width={'auto'}>
-            <Text.List align={'left'} color={colors.inputDark}>
+            width={'auto'}
+            flex={1}>
+            <Text.List align={'left'} color={colors.secondary}>
               {moreInfo}
             </Text.List>
           </ColumnView>

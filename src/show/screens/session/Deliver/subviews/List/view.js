@@ -47,7 +47,7 @@ const CustomerIssueList = (props) => {
     };
 
     if (new Date(date).valueOf() > new Date().valueOf() - 24 * 60 * 60 * 1000) {
-      date = new Date(date).toLocaleString('en-UK', {
+      date = new Date(item.claimDateTime).toLocaleString('en-UK', {
         hour: 'numeric',
         minute: 'numeric',
         hour12: true

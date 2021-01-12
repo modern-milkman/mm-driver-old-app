@@ -39,6 +39,14 @@ const CustomerIssueDetails = (props) => {
   });
 
   const driverReplyData = driverResponses?.map((item, idx) => {
+    const driverReplyDate = new Date(item.responseDateTime);
+
+    const driverReplyTime = driverReplyDate.toLocaleString('en-UK', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    });
+
     return {
       disabled: true,
       customIcon: 'customerIssue',
@@ -48,13 +56,33 @@ const CustomerIssueDetails = (props) => {
       title: I18n.t('screens:deliver.customerIssue.modal.listTitle', {
         id: idx + 1
       }),
-      description: formatDate(new Date(item.responseDateTime)),
+      description: I18n.t('screens:deliver.customerIssue.details.dateTime', {
+        date: formatDate(driverReplyDate),
+        time: driverReplyTime,
+        interpolation: { escapeValue: false }
+      }),
       moreInfo: item.comment,
       moreInfoImage: item.image
         ? `data:${item.image.imageType};base64,${item.image.base64Image}`
         : null
     };
   });
+
+  const listData = [];
+
+  if (data && data.length) {
+    listData.push({
+      title: I18n.t('screens:deliver.customerIssue.modal.productsAffected'),
+      data: data
+    });
+  }
+
+  if (driverReplyData && driverReplyData.length) {
+    listData.push({
+      title: I18n.t('screens:deliver.customerIssue.details.driverReplies'),
+      data: driverReplyData
+    });
+  }
 
   return (
     <SafeAreaView top bottom>
@@ -77,35 +105,9 @@ const CustomerIssueDetails = (props) => {
 
         <Separator color={colors.input} width={'100%'} />
 
-        {data && data.length > 0 && (
-          <ColumnView>
-            <List
-              data={[
-                {
-                  title: I18n.t(
-                    'screens:deliver.customerIssue.modal.productsAffected'
-                  ),
-                  data
-                }
-              ]}
-              hasSections
-            />
-          </ColumnView>
-        )}
-
-        {driverReplyData && driverReplyData.length > 0 && (
+        {listData.length > 0 && (
           <ColumnView flex={1}>
-            <List
-              data={[
-                {
-                  title: I18n.t(
-                    'screens:deliver.customerIssue.details.driverReplies'
-                  ),
-                  data: driverReplyData
-                }
-              ]}
-              hasSections
-            />
+            <List data={listData} hasSections />
           </ColumnView>
         )}
       </ColumnView>

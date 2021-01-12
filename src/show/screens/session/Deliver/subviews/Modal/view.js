@@ -100,7 +100,8 @@ const CustomerIssueModal = (props) => {
               flex={1}
               alignItems={'center'}>
               <CustomIcon
-                containerWidth={28}
+                containerWidth={Text.Heading.height}
+                width={Text.Heading.height}
                 icon={showReplyModal ? 'customerIssue' : 'warning'}
                 iconColor={colors.error}
                 bgColor={'transparent'}
