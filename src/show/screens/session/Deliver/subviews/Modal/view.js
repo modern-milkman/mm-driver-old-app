@@ -24,8 +24,9 @@ const CustomerIssueModal = (props) => {
     claims: {
       driverResponse,
       driverUnacknowledgedNr,
-      showClaimModal,
+      processing,
       selectedClaim,
+      showClaimModal,
       showedUnacknowledgedNr,
       showReplyModal
     },
@@ -162,6 +163,7 @@ const CustomerIssueModal = (props) => {
                   ? toggleReplyModal.bind(null, !showReplyModal)
                   : NavigationService.goBack
               }
+              disabled={processing}
             />
             <Button.Primary
               title={I18n.t(
@@ -172,6 +174,7 @@ const CustomerIssueModal = (props) => {
               disabled={showReplyModal && !image && !text}
               width={'50%'}
               noBorderRadius
+              processing={processing}
               onPress={
                 showReplyModal
                   ? driverReply.bind(

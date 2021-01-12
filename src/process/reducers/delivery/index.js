@@ -72,6 +72,7 @@ const initialClaim = {
   driverResponse: { text: null, image: null, imageType: null },
   driverUnacknowledgedNr: 0,
   list: [],
+  processing: false,
   selectedClaim: null,
   showClaimModal: false,
   showReplyModal: false
@@ -117,6 +118,13 @@ const acknowledgeClaimSuccess = (state, { payload }) =>
       draft.claims.showClaimModal = false;
       NavigationService.goBack();
     }
+
+    draft.claims.processing = false;
+  });
+
+const claimProcessing = (state) =>
+  produce(state, (draft) => {
+    draft.claims.processing = true;
   });
 
 const driverReplySuccess = (state, { payload, acknowledgeClaim }) =>
@@ -136,6 +144,8 @@ const driverReplySuccess = (state, { payload, acknowledgeClaim }) =>
       image: null,
       imageType: null
     };
+
+    draft.claims.processing = false;
   });
 
 const processingTrue = (state) =>
@@ -505,7 +515,9 @@ export const updateSelectedStop = (state, { sID }) =>
   });
 
 export default createReducer(initialState, {
+  [Types.ACKNOWLEDGE_CLAIM]: claimProcessing,
   [Types.ACKNOWLEDGE_CLAIM_SUCCESS]: acknowledgeClaimSuccess,
+  [Types.DRIVER_REPLY]: claimProcessing,
   [Types.DRIVER_REPLY_SUCCESS]: driverReplySuccess,
   [Types.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS]: getDriverReplySingleImageSuccess,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
