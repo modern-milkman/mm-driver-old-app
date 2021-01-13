@@ -83,7 +83,6 @@ const renderItemInterface = (
     miscelaneousLarge,
     miscelaneousSmall,
     moreInfo,
-    moreInfoImage,
     onLongPress,
     onPress,
     rightIcon,
@@ -176,28 +175,12 @@ const renderItemInterface = (
           </RowView>
         )}
       </RowView>
-      {(moreInfo || moreInfoImage) && (
+
+      {moreInfo?.length > 0 && (
         <RowView
           justifyContent={'flex-start'}
           alignItems={'flex-start'}
-          marginTop={defaults.marginVertical / 2}>
-          {moreInfoImage && (
-            <ColumnView
-              marginRight={defaults.marginHorizontal / 2}
-              justifyContent={'flex-start'}
-              width={sizes.list.image}
-              height={sizes.list.image}>
-              <Image
-                source={{
-                  uri: moreInfoImage
-                }}
-                style={{ borderRadius: defaults.borderRadius }}
-                width={sizes.list.image}
-                height={sizes.list.image}
-              />
-            </ColumnView>
-          )}
-
+          marginVertical={defaults.marginVertical / 2}>
           <ColumnView
             alignItems={'flex-start'}
             justifyContent={'flex-start'}
@@ -306,7 +289,7 @@ ListItem.propTypes = {
   listItemStyle: PropTypes.object,
   miscelaneousLarge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   miscelaneousSmall: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  moreInfo: PropTypes.string,
+  moreInfo: PropTypes.any,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
   rightIcon: PropTypes.string,
@@ -332,7 +315,6 @@ ListItem.defaultProps = {
   miscelaneousLarge: null,
   miscelaneousSmall: null,
   moreInfo: null,
-  moreInfoImage: null,
   onLongPress: mock,
   onPress: mock,
   rightIcon: null,

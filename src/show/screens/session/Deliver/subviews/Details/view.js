@@ -62,7 +62,7 @@ const CustomerIssueDetails = (props) => {
         interpolation: { escapeValue: false }
       }),
       moreInfo: item.comment,
-      moreInfoImage: item.image
+      image: item.image
         ? `data:${item.image.imageType};base64,${item.image.base64Image}`
         : null
     };
