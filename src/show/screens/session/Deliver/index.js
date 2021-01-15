@@ -11,6 +11,7 @@ export default connect(
       allItemsDone: state.delivery?.allItemsDone,
       selectedStop: selectedStop(state),
       claims: state.delivery?.claims[state.delivery?.selectedStopId],
+      showClaimModal: state.delivery?.claims.showClaimModal,
       confirmedItem: state.delivery?.confirmedItem,
       outOfStock: state.delivery?.outOfStockIds,
       routeDescription: state.delivery?.stockWithData?.routeDescription,
