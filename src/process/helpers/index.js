@@ -12,6 +12,10 @@ import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 
+const blacklistApiEndpointFailureTracking = [
+  `${Config.FLEET_TRACKER_URL}/drivers`
+];
+
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const checkAtLeastOneItem = (items, statusId, exclude = false) => {
@@ -183,6 +187,7 @@ const usePrevious = (value) => {
 };
 
 export {
+  blacklistApiEndpointFailureTracking,
   capitalize,
   checkAtLeastOneItem,
   customerSatisfactionColor,

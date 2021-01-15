@@ -20,6 +20,7 @@ import {
   ActionSheetAndroid,
   Button,
   CustomBackHandler,
+  Growl,
   SideBar,
   Text
 } from 'Components';
@@ -67,6 +68,7 @@ class Root extends React.Component {
         backgroundColor={'transparent'}
         barStyle={'dark-content'}
       />
+      <Growl />
       {Platform.OS === 'android' && <ActionSheetAndroid />}
       {Platform.OS === 'android' && <CustomBackHandler />}
       {/* content that should go on top of the app, full view, no safe area bounds */}

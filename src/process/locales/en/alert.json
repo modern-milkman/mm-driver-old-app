@@ -11,5 +11,18 @@
   "cannotOpenUrl": {
     "title": "Link failed",
     "message": "There was a problem opening the link."
+  },
+  "errors": {
+    "api": {
+      "backend": {
+        "title": "Processing error [{{status}}]",
+        "message": "There was an error processing your request(s). Please try again. If the problem persists, contact your supervisor."
+      },
+      "driverData": {
+        "title": "Error getting route data",
+        "message": "Try refreshing route data again. If the problem persists, contact your supervisor.",
+        "refreshMessage": "Tap this message to reload route data. If the problem persists, contact your supervisor."
+      }
+    }
   }
 }

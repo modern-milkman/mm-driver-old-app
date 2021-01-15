@@ -3,13 +3,13 @@ import { gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 
 import store from 'Redux/store';
-import { timeToHMArray } from 'Helpers';
 import repositories from 'Repositories';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
 import { Creators as DeviceActions } from 'Reducers/device';
 import { Creators as ApplicationActions } from 'Reducers/application';
+import { blacklistApiEndpointFailureTracking, timeToHMArray } from 'Helpers';
 
 let TOKEN = null;
 let REFRESH_TOKEN = null;
@@ -69,10 +69,6 @@ const interceptors = {
     return Promise.reject(error);
   }
 };
-
-const blacklistApiEndpointFailureTracking = [
-  `${Config.FLEET_TRACKER_URL}/drivers`
-];
 
 api.interceptors.request.use(interceptors.config);
 

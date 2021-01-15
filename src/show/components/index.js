@@ -3,6 +3,7 @@ import Button from './Button';
 import CustomBackHandler from './CustomBackHandler';
 import Fab from './Fab';
 import Icon from './Icon';
+import Growl from './Growl';
 import Image from './Image';
 import List, { ListHeader, ListItem } from './List';
 import NavBar from './NavBar';
@@ -21,6 +22,7 @@ export {
   Fab,
   Icon,
   Image,
+  Growl,
   ProgressBar,
   List,
   ListHeader,

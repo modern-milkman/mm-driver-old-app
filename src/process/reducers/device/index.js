@@ -18,6 +18,7 @@ const initialState = {
   appcenter: null,
   buttonAccessibility: sizes.button.large,
   foregroundSize: 'large',
+  growl: true, // TODO add in Settings screen when growls will also have type info
   mapNoTrackingZoom: 12,
   mapNoTrackingHeading: 0,
   mapMarkerSize: sizes.marker.normal,

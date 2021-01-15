@@ -22,6 +22,7 @@ export const { Types, Creators } = createActions(
     driverReplySuccess: ['payload', 'acknowledgedClaim'],
     foregroundDeliveryActions: null,
     getCustomerClaims: ['customerId', 'selectedStopId'],
+    getDriverDataFailure: null,
     getDriverReplySingleImageSuccess: ['payload', 'id'],
     getForDriver: ['isRefreshData'],
     getForDriverSuccess: ['payload', 'isRefreshData'],
@@ -373,20 +374,6 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     draft.processing = false;
   });
 
-export const refreshDriverData = (state) => {
-  return {
-    ...state,
-    completedStopsIds: [],
-    confirmedItem: [],
-    orderedStock: [],
-    orderedStopsIds: [],
-    outOfStockIds: [],
-    stock: [],
-    stockWithData: {},
-    stops: {}
-  };
-};
-
 export const reset = () => initialState;
 
 export const setCustomerClaims = (state, { payload, selectedStopId }) =>
@@ -541,7 +528,6 @@ export default createReducer(initialState, {
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.REDIRECT_SET_SELECTED_CLAIM]: setSelectedClaim,
-  [Types.REFRESH_DRIVER_DATA]: refreshDriverData,
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,

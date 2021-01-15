@@ -1,33 +1,36 @@
-import { InteractionManager, Keyboard, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import RNBootSplash from 'react-native-bootsplash';
 import { call, delay, put, select } from 'redux-saga/effects';
+import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
+import I18n from 'Locales/I18n';
 import NavigationService from 'Navigation/service';
+import { Types as GrowlTypes } from 'Reducers/growl';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { Types as DeliveryTypes } from 'Reducers/delivery';
+import { user as userSelector, Types as UserTypes } from 'Reducers/user';
 
 import {
-  Types as DeliveryTypes,
-  deliveryStatus as deliveryStatusSelector
-} from 'Reducers/delivery';
+  blacklistApiEndpointFailureTracking,
+  defaultRoutes,
+  isAppInstalled
+} from 'Helpers';
 import {
   Types as TransientTypes,
   transient as transientSelector
 } from 'Reducers/transient';
-import { user as userSelector, Types as UserTypes } from 'Reducers/user';
 import {
   Types as DeviceTypes,
   device as deviceSelector
 } from 'Reducers/device';
-
 import {
   lastRoute as lastRouteSelector,
   Types as ApplicationTypes,
   userSessionPresent as userSessionPresentSelector,
   mounted as mountedSelector
 } from 'Reducers/application';
-import { defaultRoutes, isAppInstalled } from 'Helpers';
+
 import { onNavigateSideEffects } from './onNavigateSideEffects';
 
 const navigationAppList = Platform.select({
@@ -36,6 +39,30 @@ const navigationAppList = Platform.select({
 });
 
 // EXPORTED
+export const apiError = function* ({ error, status }) {
+  if (
+    !blacklistApiEndpointFailureTracking.includes(
+      `${error.config.baseURL}${error.config.url}`
+    ) &&
+    !blacklistApiEndpointFailureTracking.includes(error.config.url)
+  ) {
+    switch (status) {
+      case 400:
+      case 500:
+      case 'TIMEOUT':
+        yield put({
+          type: GrowlTypes.ALERT,
+          props: {
+            type: 'error',
+            title: I18n.t('alert:errors.api.backend.title', { status }),
+            message: I18n.t('alert:errors.api.backend.message')
+          }
+        });
+        break;
+    }
+  }
+};
+
 export const dismissKeyboard = function () {
   Keyboard.dismiss();
 };
@@ -107,13 +134,6 @@ export const onNavigate = function* (params) {
 export const onNavigateBack = function* () {
   yield call(onNavigateSideEffects, { routeName: null });
   Analytics.trackEvent(EVENTS.NAVIGATE, { back: true });
-};
-
-export const refreshDriverData = function* () {
-  const deliveryStatus = yield select(deliveryStatusSelector);
-
-  yield put({ type: DeliveryTypes.GET_FOR_DRIVER, isRefreshData: true });
-  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { deliveryStatus });
 };
 
 export const rehydrated = function* () {

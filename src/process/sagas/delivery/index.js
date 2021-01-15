@@ -1,8 +1,10 @@
 import { call, delay, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
+import I18n from 'Locales/I18n';
 import { Base64 } from 'js-base64';
 import NavigationService from 'Navigation/service';
+import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import {
@@ -126,6 +128,39 @@ export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
   }
 };
 
+export const foregroundDeliveryActions = function* ({}) {
+  const deliveryStatus = yield select(deliveryStatusSelector);
+  if (deliveryStatus === 0) {
+    yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
+  }
+};
+
+export const getDriverDataFailure = function* ({}) {
+  const deliveryStatus = yield select(deliveryStatusSelector);
+  yield put({
+    type: DeliveryTypes.UPDATE_PROPS,
+    props: { processing: false }
+  });
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'error',
+      title: I18n.t('alert:errors.api.driverData.title'),
+      message: I18n.t(
+        `alert:errors.api.driverData.${
+          deliveryStatus < 2 ? 'refreshMessage' : 'message'
+        }`
+      ),
+      ...(deliveryStatus < 2 && {
+        interval: -1,
+        payload: {
+          action: DeliveryTypes.REFRESH_DRIVER_DATA
+        }
+      })
+    }
+  });
+};
+
 export const getDriverReplySingleImage = function* ({ id }) {
   yield put({
     type: Api.API_CALL,
@@ -137,22 +172,15 @@ export const getDriverReplySingleImage = function* ({ id }) {
   });
 };
 
-export function* foregroundDeliveryActions({}) {
-  const deliveryStatus = yield select(deliveryStatusSelector);
-  if (deliveryStatus === 0) {
-    yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
-  }
-}
-
 export const getForDriver = function* ({ isRefreshData = false }) {
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: DeliveryTypes.GET_FOR_DRIVER_SUCCESS },
-      fail: { type: DeliveryTypes.UPDATE_PROPS }
+      fail: { type: DeliveryTypes.GET_DRIVER_DATA_FAILURE }
     },
     promise: Api.repositories.delivery.getForDriver(),
-    props: { processing: false, isRefreshData }
+    props: { isRefreshData }
   });
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER);
 };
@@ -165,11 +193,11 @@ export const getForDriverSuccess = function* ({
     type: Api.API_CALL,
     actions: {
       success: { type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS },
-      fail: { type: DeliveryTypes.UPDATE_PROPS }
+      fail: { type: DeliveryTypes.GET_DRIVER_DATA_FAILURE }
     },
     promise: Api.repositories.delivery.getVehicleStockForDriver(),
     deliveryDate: payload.deliveryDate,
-    props: { processing: false, isRefreshData }
+    props: { isRefreshData }
   });
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, {
     payload
@@ -208,6 +236,13 @@ export const getVehicleStockForDriverSuccess = function* ({
   Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, {
     payload
   });
+};
+
+export const refreshDriverData = function* () {
+  const deliveryStatus = yield select(deliveryStatusSelector);
+
+  yield put({ type: DeliveryTypes.GET_FOR_DRIVER, isRefreshData: true });
+  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { deliveryStatus });
 };
 
 export const setDelivered = function* ({ id }) {

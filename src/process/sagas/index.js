@@ -1,9 +1,10 @@
-import { all, takeLatest, spawn } from 'redux-saga/effects';
+import { all, takeEvery, takeLatest, spawn } from 'redux-saga/effects';
 
 // TYPES
 import { Types as UserTypes } from 'Reducers/user';
 import { Types as DeviceTypes } from 'Reducers/device';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
+import { Types as GrowlTypes } from 'Reducers/growl';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
 import { watchLocationChannel } from 'redux-saga-location';
@@ -11,6 +12,7 @@ import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/act
 
 // SAGAS
 import {
+  apiError,
   dismissKeyboard,
   init,
   login_error,
@@ -20,7 +22,6 @@ import {
   mounted,
   onNavigate,
   onNavigateBack,
-  refreshDriverData,
   rehydrated,
   sendCrashLog
 } from './application';
@@ -32,12 +33,14 @@ import {
   driverReplySuccess,
   foregroundDeliveryActions,
   getCustomerClaims,
+  getDriverDataFailure,
   getForDriver,
   getForDriverSuccess,
   getProductsOrder,
   getVehicleStockForDriverSuccess,
   optimizeStops,
   redirectSetSelectedClaim,
+  refreshDriverData,
   setCustomerClaims,
   setDelivered,
   setDeliveredOrRejectedSuccess,
@@ -52,11 +55,17 @@ import {
 
 import { requestLocationPermissionAndWatch, setLocation } from './device';
 
+import { alert } from './growl';
+
 import { getDriver } from './user';
 
 export default function* root() {
   yield all([
     spawn(watchLocationChannel),
+
+    takeEvery('API_ERROR', apiError),
+    takeEvery('NETWORK_ERROR', apiError),
+
     takeLatest('APP_STATE.FOREGROUND', foregroundDeliveryActions),
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
@@ -79,6 +88,7 @@ export default function* root() {
     takeLatest(DeliveryTypes.DRIVER_REPLY, driverReply),
     takeLatest(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
     takeLatest(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
+    takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
     takeLatest(DeliveryTypes.GET_PRODUCTS_ORDER, getProductsOrder),
@@ -105,6 +115,8 @@ export default function* root() {
     takeLatest(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
     takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
+
+    takeEvery(GrowlTypes.ALERT, alert),
 
     takeLatest(UserTypes.GET_DRIVER, getDriver),
 
