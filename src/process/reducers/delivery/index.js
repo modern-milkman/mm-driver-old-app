@@ -515,6 +515,7 @@ export const updateSelectedStop = (state, { sID }) =>
     draft.optimizedRoutes = false;
     draft.previousStopId = draft.selectedStopId;
     draft.selectedStopId = sID;
+    draft.claims.showClaimModal = false;
   });
 
 export default createReducer(initialState, {
