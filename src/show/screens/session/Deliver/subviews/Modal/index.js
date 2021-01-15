@@ -11,6 +11,7 @@ export default connect(
     return {
       claims: state.delivery?.claims[selectedStopId],
       processing: state.delivery?.claims.processing,
+      selectedStopId,
       showClaimModal: state.delivery?.claims.showClaimModal,
       showReplyModal: state.delivery?.claims.showReplyModal
     };

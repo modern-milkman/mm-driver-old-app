@@ -21,19 +21,20 @@ const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/I
 
 const CustomerIssueModal = (props) => {
   const {
+    acknowledgeClaim,
     claims: {
       driverResponse,
       driverUnacknowledgedNr,
       selectedClaim,
       showedUnacknowledgedNr
     },
+    driverReply,
     processing,
+    selectedStopId,
     showReplyModal,
     showClaimModal,
     toggleReplyModal,
-    acknowledgeClaim,
-    updateDriverResponse,
-    driverReply
+    updateDriverResponse
   } = props;
 
   const { text, image, imageType } = driverResponse;
@@ -185,7 +186,11 @@ const CustomerIssueModal = (props) => {
                       imageType,
                       showClaimModal
                     )
-                  : acknowledgeClaim.bind(null, selectedClaim.claimId)
+                  : acknowledgeClaim.bind(
+                      null,
+                      selectedClaim.claimId,
+                      selectedStopId
+                    )
               }
             />
           </RowView>
@@ -302,6 +307,7 @@ CustomerIssueModal.propTypes = {
   claims: PropTypes.object,
   driverReply: PropTypes.func,
   processing: PropTypes.bool,
+  selectedStopId: PropTypes.number,
   showClaimModal: PropTypes.bool,
   showReplyModal: PropTypes.bool,
   toggleReplyModal: PropTypes.func,

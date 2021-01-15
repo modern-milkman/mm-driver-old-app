@@ -78,16 +78,13 @@ export default function* root() {
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
-    takeLatest(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
+    takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
 
-    takeLatest(DeliveryTypes.ACKNOWLEDGE_CLAIM, acknowledgeClaim),
-    takeLatest(
-      DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS,
-      acknowledgeClaimSuccess
-    ),
-    takeLatest(DeliveryTypes.DRIVER_REPLY, driverReply),
-    takeLatest(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
-    takeLatest(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
+    takeEvery(DeliveryTypes.ACKNOWLEDGE_CLAIM, acknowledgeClaim),
+    takeEvery(DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS, acknowledgeClaimSuccess),
+    takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
+    takeEvery(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
+    takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
     takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
@@ -100,25 +97,25 @@ export default function* root() {
     takeLatest(
       DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM,
       redirectSetSelectedClaim
-    ),
+    ), // TODO check if in use anywhere
     takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
-    takeLatest(DeliveryTypes.SET_CUSTOMER_CLAIMS, setCustomerClaims),
-    takeLatest(DeliveryTypes.SET_DELIVERED, setDelivered),
-    takeLatest(
+    takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, setCustomerClaims),
+    takeEvery(DeliveryTypes.SET_DELIVERED, setDelivered),
+    takeEvery(
       DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS,
       setDeliveredOrRejectedSuccess
     ),
-    takeLatest(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
-    takeLatest(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
-    takeLatest(DeliveryTypes.SET_REJECTED, setRejected),
-    takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
-    takeLatest(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
-    takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
-    takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
+    takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
+    takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
+    takeEvery(DeliveryTypes.SET_REJECTED, setRejected),
+    takeEvery(DeliveryTypes.START_DELIVERING, startDelivering),
+    takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
+    takeEvery(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
+    takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
 
     takeEvery(GrowlTypes.ALERT, alert),
 
-    takeLatest(UserTypes.GET_DRIVER, getDriver),
+    takeEvery(UserTypes.GET_DRIVER, getDriver),
 
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,

@@ -10,8 +10,9 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
-    acknowledgeClaim: ['id'],
-    acknowledgeClaimSuccess: ['payload'],
+    acknowledgeClaim: ['id', 'selectedStopId'],
+    acknowledgeClaimFailure: null,
+    acknowledgeClaimSuccess: ['payload', 'selectedStopId'],
     driverReply: [
       'claimId',
       'comment',
@@ -19,11 +20,12 @@ export const { Types, Creators } = createActions(
       'imageType',
       'acknowledgedClaim'
     ],
+    driverReplyFailure: null,
     driverReplySuccess: ['payload', 'acknowledgedClaim'],
     foregroundDeliveryActions: null,
     getCustomerClaims: ['customerId', 'selectedStopId'],
     getDriverDataFailure: null,
-    getDriverReplySingleImageSuccess: ['payload', 'id'],
+    getDriverReplySingleImageSuccess: ['payload', 'id', 'selectedStopId'],
     getForDriver: ['isRefreshData'],
     getForDriverSuccess: ['payload', 'isRefreshData'],
     getProductsOrder: null,
@@ -33,7 +35,6 @@ export const { Types, Creators } = createActions(
       'deliveryDate',
       'isRefreshData'
     ],
-
     optimizeStops: ['currentLocation', 'returnPosition'],
     redirectSetSelectedClaim: ['claim'],
     refreshDriverData: null,
@@ -101,9 +102,8 @@ const initialState = {
   stops: {}
 };
 
-const acknowledgeClaimSuccess = (state, { payload }) =>
+const acknowledgeClaimSuccess = (state, { payload, selectedStopId }) =>
   produce(state, (draft) => {
-    const selectedStopId = draft.selectedStopId;
     draft.claims[selectedStopId].list = draft.claims[selectedStopId].list.map(
       (item) => {
         if (item.claimId === payload.claimId) {
@@ -131,6 +131,11 @@ const acknowledgeClaimSuccess = (state, { payload }) =>
 const claimProcessing = (state) =>
   produce(state, (draft) => {
     draft.claims.processing = true;
+  });
+
+const claimFinishedProcessing = (state) =>
+  produce(state, (draft) => {
+    draft.claims.processing = false;
   });
 
 const driverReplySuccess = (state, { payload, acknowledgeClaim }) =>
@@ -295,18 +300,22 @@ export const getForDriverSuccess = (
     }
   });
 
-export const getDriverReplySingleImageSuccess = (state, { payload, id }) =>
+export const getDriverReplySingleImageSuccess = (
+  state,
+  { payload, id, selectedStopId }
+) =>
   produce(state, (draft) => {
-    const selectedStopId = draft.selectedStopId;
-    draft.claims[selectedStopId].list.map((claim) => {
-      for (const driverResponses of claim.driverResponses) {
-        if (driverResponses.claimDriverResponseId === id) {
-          driverResponses.image = payload;
+    draft.claims[selectedStopId].list = draft.claims[selectedStopId].list.map(
+      (claim) => {
+        for (const driverResponses of claim.driverResponses) {
+          if (driverResponses.claimDriverResponseId === id) {
+            driverResponses.image = payload;
+          }
         }
-      }
 
-      return claim;
-    });
+        return claim;
+      }
+    );
 
     draft.claims[selectedStopId].selectedClaim.driverResponses = draft.claims[
       selectedStopId
@@ -378,24 +387,27 @@ export const reset = () => initialState;
 
 export const setCustomerClaims = (state, { payload, selectedStopId }) =>
   produce(state, (draft) => {
-    if (!draft.claims[selectedStopId]) {
-      draft.claims[selectedStopId] = initialClaim;
-    }
+    if (draft.selectedStopId === selectedStopId) {
+      if (!draft.claims[selectedStopId]) {
+        draft.claims[selectedStopId] = { ...initialClaim };
+      }
 
-    draft.claims[selectedStopId].list = payload;
-    const driverUnacknowledgedList = payload.filter(
-      (item) => item.driverAcknowledged === false
-    );
+      draft.claims[selectedStopId].list = payload;
+      const driverUnacknowledgedList = draft.claims[selectedStopId].list.filter(
+        (item) => item.driverAcknowledged === false
+      );
 
-    const driverUnacknowledgedLength = driverUnacknowledgedList.length;
+      const driverUnacknowledgedLength = driverUnacknowledgedList.length;
 
-    if (driverUnacknowledgedLength > 0) {
-      draft.claims[selectedStopId].selectedClaim = driverUnacknowledgedList[0];
-      draft.claims[
-        selectedStopId
-      ].driverUnacknowledgedNr = driverUnacknowledgedLength;
-      draft.claims.showClaimModal = true;
-      draft.claims[selectedStopId].showedUnacknowledgedNr = 1;
+      if (driverUnacknowledgedLength > 0) {
+        draft.claims[selectedStopId].selectedClaim =
+          driverUnacknowledgedList[0];
+        draft.claims[
+          selectedStopId
+        ].driverUnacknowledgedNr = driverUnacknowledgedLength;
+        draft.claims.showClaimModal = true;
+        draft.claims[selectedStopId].showedUnacknowledgedNr = 1;
+      }
     }
   });
 
@@ -516,12 +528,15 @@ export const updateSelectedStop = (state, { sID }) =>
     draft.previousStopId = draft.selectedStopId;
     draft.selectedStopId = sID;
     draft.claims.showClaimModal = false;
+    draft.claims.showReplyModal = false;
   });
 
 export default createReducer(initialState, {
   [Types.ACKNOWLEDGE_CLAIM]: claimProcessing,
+  [Types.ACKNOWLEDGE_CLAIM_FAILURE]: claimFinishedProcessing,
   [Types.ACKNOWLEDGE_CLAIM_SUCCESS]: acknowledgeClaimSuccess,
   [Types.DRIVER_REPLY]: claimProcessing,
+  [Types.DRIVER_REPLY_FAILURE]: claimFinishedProcessing,
   [Types.DRIVER_REPLY_SUCCESS]: driverReplySuccess,
   [Types.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS]: getDriverReplySingleImageSuccess,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,

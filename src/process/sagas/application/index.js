@@ -42,9 +42,9 @@ const navigationAppList = Platform.select({
 export const apiError = function* ({ error, status }) {
   if (
     !blacklistApiEndpointFailureTracking.includes(
-      `${error.config.baseURL}${error.config.url}`
+      `${error?.config?.baseURL}${error?.config?.url}`
     ) &&
-    !blacklistApiEndpointFailureTracking.includes(error.config.url)
+    !blacklistApiEndpointFailureTracking.includes(error?.config?.url)
   ) {
     switch (status) {
       case 400:

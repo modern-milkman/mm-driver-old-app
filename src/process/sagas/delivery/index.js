@@ -49,13 +49,15 @@ const updateTrackerData = function* ({ deliveryStatus }) {
 };
 
 // EXPORTED
-export const acknowledgeClaim = function* ({ id }) {
+export const acknowledgeClaim = function* ({ id, selectedStopId }) {
   yield put({
     type: Api.API_CALL,
     actions: {
-      success: { type: DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS }
+      success: { type: DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS },
+      fail: { type: DeliveryTypes.ACKNOWLEDGE_CLAIM_FAILURE }
     },
-    promise: Api.repositories.delivery.acknowledgeClaim({ id })
+    promise: Api.repositories.delivery.acknowledgeClaim({ id }),
+    selectedStopId
   });
 };
 
@@ -86,7 +88,10 @@ export const driverReply = function* ({
 
   yield put({
     type: Api.API_CALL,
-    actions: { success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS } },
+    actions: {
+      success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS },
+      fail: { type: DeliveryTypes.DRIVER_REPLY_FAILURE }
+    },
     promise: Api.repositories.delivery.driverReply({
       claimId,
       comment,
@@ -107,7 +112,8 @@ export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
   if (payload.hasImage) {
     yield call(
       getDriverReplySingleImage.bind(null, {
-        id: payload.claimDriverResponseId
+        id: payload.claimDriverResponseId,
+        selectedStopId
       })
     );
   }
@@ -123,7 +129,11 @@ export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
   });
 
   if (acknowledgedClaim) {
-    yield put({ type: DeliveryTypes.ACKNOWLEDGE_CLAIM, id: payload.claimId });
+    yield put({
+      type: DeliveryTypes.ACKNOWLEDGE_CLAIM,
+      id: payload.claimId,
+      selectedStopId
+    });
   } else {
     NavigationService.goBack();
   }
@@ -162,14 +172,15 @@ export const getDriverDataFailure = function* ({}) {
   });
 };
 
-export const getDriverReplySingleImage = function* ({ id }) {
+export const getDriverReplySingleImage = function* ({ id, selectedStopId }) {
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: DeliveryTypes.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS }
     },
     promise: Api.repositories.delivery.getDriverResponseImage({ id }),
-    id
+    id,
+    selectedStopId
   });
 };
 
@@ -276,12 +287,13 @@ export const setDeliveredOrRejectedSuccess = function* () {
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
+  const sID = orderedStopsIds[0];
 
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
   if (deliveriesLeft > 0 && isOptimizedRoutes) {
-    yield call(updateSelectedStop);
+    yield call(updateSelectedStop, sID);
   }
 
   yield call(updateTrackerData, { deliveryStatus });
@@ -345,7 +357,8 @@ export const redirectSetSelectedClaim = function* () {
 };
 
 export const optimizeStops = function* () {
-  yield call(updateSelectedStop);
+  const sID = yield select(selectedStopIdSelector);
+  yield call(updateSelectedStop, sID);
   Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
 };
 
