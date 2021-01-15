@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import I18n from 'Locales/I18n';
 import { formatDate, mock } from 'Helpers';
 import { SafeAreaView } from 'Containers';
-import { NavBar, List } from 'Components';
+import { List, NavBar, Text } from 'Components';
 import NavigationService from 'Navigation/service';
 
 const CustomerIssueList = (props) => {
@@ -27,13 +27,14 @@ const CustomerIssueList = (props) => {
       key: item.claimId,
       description: item.reason,
       date: date,
-      miscelaneousSmall: I18n.t(
-        'screens:deliver.customerIssue.list.dateNrReplies',
-        {
-          date: date,
-          nr: item.driverResponses.length,
-          interpolation: { escapeValue: false }
-        }
+      miscelaneousTop: I18n.t('screens:deliver.customerIssue.list.dateOrTime', {
+        value: date,
+        interpolation: { escapeValue: false }
+      }),
+      MiscelaneousTopTextComponent: Text.Caption,
+      miscelaneousBottom: I18n.t(
+        'screens:deliver.customerIssue.list.nrReplies',
+        { nr: item.driverResponses.length }
       ),
       rightIcon: 'chevron-right',
       icon: null,
@@ -46,21 +47,26 @@ const CustomerIssueList = (props) => {
       })
     };
 
-    if (new Date(date).valueOf() > new Date().valueOf() - 24 * 60 * 60 * 1000) {
+    if (
+      new Date(item.claimDateTime).valueOf() >
+      new Date().setHours(0, 0, 0, 0).valueOf()
+    ) {
       date = new Date(item.claimDateTime).toLocaleString('en-UK', {
         hour: 'numeric',
         minute: 'numeric',
         hour12: true
       });
 
-      tempItem.miscelaneousSmall = I18n.t(
-        'screens:deliver.customerIssue.list.dateNrReplies',
-        {
-          date: date,
-          nr: item.driverResponses.length
-        }
+      tempItem.miscelaneousTop = I18n.t(
+        'screens:deliver.customerIssue.list.dateOrTime',
+        { value: date }
       );
+    }
 
+    if (
+      new Date(item.claimDateTime).valueOf() >
+      new Date().valueOf() - 24 * 60 * 60 * 1000
+    ) {
       newList.data.push(tempItem);
     } else {
       previousList.data.push(tempItem);

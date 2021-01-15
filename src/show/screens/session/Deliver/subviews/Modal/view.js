@@ -24,12 +24,12 @@ const CustomerIssueModal = (props) => {
     claims: {
       driverResponse,
       driverUnacknowledgedNr,
-      processing,
       selectedClaim,
-      showClaimModal,
-      showedUnacknowledgedNr,
-      showReplyModal
+      showedUnacknowledgedNr
     },
+    processing,
+    showReplyModal,
+    showClaimModal,
     toggleReplyModal,
     acknowledgeClaim,
     updateDriverResponse,
@@ -298,9 +298,12 @@ const renderCustomerIssueBody = ({ reason, data }) => {
 };
 
 CustomerIssueModal.propTypes = {
+  acknowledgeClaim: PropTypes.func,
   claims: PropTypes.object,
   driverReply: PropTypes.func,
-  acknowledgeClaim: PropTypes.func,
+  processing: PropTypes.bool,
+  showClaimModal: PropTypes.bool,
+  showReplyModal: PropTypes.bool,
   toggleReplyModal: PropTypes.func,
   updateDriverResponse: PropTypes.func
 };
@@ -309,6 +312,9 @@ CustomerIssueModal.defaultProps = {
   acknowledgeClaim: mock,
   claims: {},
   driverReply: mock,
+  processing: false,
+  showClaimModal: false,
+  showReplyModal: false,
   toggleReplyModal: mock,
   updateDriverResponse: mock
 };

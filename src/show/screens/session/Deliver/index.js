@@ -10,10 +10,9 @@ export default connect(
     return {
       allItemsDone: state.delivery?.allItemsDone,
       selectedStop: selectedStop(state),
-      claims: state.delivery?.claims,
+      claims: state.delivery?.claims[state.delivery?.selectedStopId],
       confirmedItem: state.delivery?.confirmedItem,
       outOfStock: state.delivery?.outOfStockIds,
-      selectedStopId: state.delivery?.selectedStopId,
       routeDescription: state.delivery?.stockWithData?.routeDescription,
       ...state.transient
     };

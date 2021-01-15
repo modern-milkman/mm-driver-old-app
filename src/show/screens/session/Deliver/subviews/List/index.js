@@ -6,8 +6,10 @@ import CustomerIssueList from './view';
 
 export default connect(
   (state) => {
+    const selectedStopId = state.delivery?.selectedStopId;
+
     return {
-      claims: state.delivery?.claims,
+      claims: state.delivery?.claims[selectedStopId],
       selectedStop: selectedStop(state)
     };
   },

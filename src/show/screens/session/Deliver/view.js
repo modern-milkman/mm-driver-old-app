@@ -227,7 +227,8 @@ const Deliver = (props) => {
   const {
     allItemsDone,
     confirmedItem,
-    claims: { showClaimModal, list },
+    claims: { list },
+    showClaimModal,
     outOfStock,
     routeDescription,
     selectedStop,
@@ -283,7 +284,7 @@ const Deliver = (props) => {
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
           title={I18n.t('general:details')}
-          RightComponent={list.length > 0 ? navToList : null}
+          RightComponent={list?.length > 0 ? navToList : null}
         />
         <Animated.View
           style={[
@@ -295,7 +296,7 @@ const Deliver = (props) => {
           ]}>
           <Separator />
           <ListItem
-            miscelaneousSmall={I18n.t('screens:deliver.routeDescription', {
+            miscelaneousBottom={I18n.t('screens:deliver.routeDescription', {
               routeDescription
             })}
             miscelaneousColor={colors.Primarylight}
@@ -440,6 +441,7 @@ Deliver.propTypes = {
   outOfStock: PropTypes.array,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
+  showClaimModal: PropTypes.bool,
   selectedStop: PropTypes.object,
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,
@@ -457,6 +459,7 @@ Deliver.defaultProps = {
   routeDescription: null,
   selectedStop: {},
   setDelivered: mock,
+  showClaimModal: false,
   setRejected: mock,
   toggleConfirmedItem: mock,
   toggleOutOfStock: mock,

@@ -35,7 +35,8 @@
       },
       "list": {
         "clientIdIssues": "Client ID #{{cId}} Issues",
-        "dateNrReplies": "{{date}} {{nr}} Replies",
+        "dateOrTime": "{{value}}",
+        "nrReplies": "{{nr}} Replies",
         "new": "New",
         "previous": "Previous",
         "title": "Customer issue #{{issueNr}}"

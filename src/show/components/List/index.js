@@ -79,9 +79,11 @@ const renderItemInterface = (
     iconColor = colors.secondary,
     image,
     key,
+    miscelaneousBottom,
+    MiscelaneousBottomTextComponent = Text.Caption,
     miscelaneousColor,
-    miscelaneousLarge,
-    miscelaneousSmall,
+    miscelaneousTop,
+    MiscelaneousTopTextComponent = Text.Button,
     moreInfo,
     onLongPress,
     onPress,
@@ -138,30 +140,28 @@ const renderItemInterface = (
           </ColumnView>
         )}
 
-        {(miscelaneousLarge || miscelaneousSmall) && (
-          <RowView
+        {(miscelaneousTop || miscelaneousBottom) && (
+          <ColumnView
             flex={2}
             justifyContent={'flex-end'}
             alignItems={
-              miscelaneousLarge && miscelaneousSmall
-                ? 'space-between'
-                : 'center'
+              miscelaneousTop && miscelaneousBottom ? 'space-between' : 'center'
             }>
-            <Text.Button
+            <MiscelaneousTopTextComponent
               align={'right'}
               color={miscelaneousColor || colors.secondaryLight}
               noMargin
               noPadding>
-              {miscelaneousLarge}
-            </Text.Button>
-            <Text.Caption
+              {miscelaneousTop}
+            </MiscelaneousTopTextComponent>
+            <MiscelaneousBottomTextComponent
               align={'right'}
               color={miscelaneousColor || colors.inputDark}
               noMargin
               noPadding>
-              {miscelaneousSmall}
-            </Text.Caption>
-          </RowView>
+              {miscelaneousBottom}
+            </MiscelaneousBottomTextComponent>
+          </ColumnView>
         )}
         {(customRightIcon || rightImage || rightIcon) && (
           <RowView width={style.image.width} justifyContent={'flex-end'}>
@@ -287,8 +287,8 @@ ListItem.propTypes = {
   image: PropTypes.string,
   item: PropTypes.object,
   listItemStyle: PropTypes.object,
-  miscelaneousLarge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  miscelaneousSmall: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  miscelaneousBottom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  miscelaneousTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   moreInfo: PropTypes.any,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
@@ -312,8 +312,10 @@ ListItem.defaultProps = {
   iconColor: colors.secondary,
   image: null,
   listItemStyle: {},
-  miscelaneousLarge: null,
-  miscelaneousSmall: null,
+  miscelaneousBottom: null,
+  MiscelaneousBottomTextComponent: Text.Caption,
+  miscelaneousTop: null,
+  MiscelaneousTopTextComponent: Text.Button,
   moreInfo: null,
   onLongPress: mock,
   onPress: mock,

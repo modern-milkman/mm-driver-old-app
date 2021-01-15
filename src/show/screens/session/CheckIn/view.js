@@ -97,7 +97,7 @@ const CheckIn = (props) => {
             ]}>
             <Separator />
             <ListItem
-              miscelaneousSmall={I18n.t('screens:checkIn.itemsLeft', {
+              miscelaneousBottom={I18n.t('screens:checkIn.itemsLeft', {
                 items: deliveryStatus !== 1 ? itemCount : 0
               })}
               miscelaneousColor={colors.secondary}

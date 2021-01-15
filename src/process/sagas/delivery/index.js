@@ -7,6 +7,7 @@ import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import {
   claims as claimsSelector,
+  selectedStopId as selectedStopIdSelector,
   completedStopsIds as completedStopsIdsSelector,
   deliveryStatus as deliveryStatusSelector,
   isOptimizedRoutes as optimizedRoutesSelector,
@@ -95,23 +96,10 @@ export const driverReply = function* ({
 
 export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
   const claims = yield select(claimsSelector);
+  const selectedStopId = yield select(selectedStopIdSelector);
   const {
     selectedClaim: { customerIssueIdx }
-  } = claims;
-
-  if (acknowledgedClaim) {
-    yield put({ type: DeliveryTypes.ACKNOWLEDGE_CLAIM, id: payload.claimId });
-  } else {
-    yield put({
-      type: DeliveryTypes.SET_SELECTED_CLAIM,
-      claim: {
-        ...claims.list.filter((claim) => claim.claimId === payload.claimId)[0],
-        customerIssueIdx
-      }
-    });
-
-    NavigationService.goBack();
-  }
+  } = claims[selectedStopId];
 
   if (payload.hasImage) {
     yield call(
@@ -119,6 +107,22 @@ export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
         id: payload.claimDriverResponseId
       })
     );
+  }
+
+  yield put({
+    type: DeliveryTypes.SET_SELECTED_CLAIM,
+    claim: {
+      ...claims[selectedStopId].list.filter(
+        (claim) => claim.claimId === payload.claimId
+      )[0],
+      customerIssueIdx
+    }
+  });
+
+  if (acknowledgedClaim) {
+    yield put({ type: DeliveryTypes.ACKNOWLEDGE_CLAIM, id: payload.claimId });
+  } else {
+    NavigationService.goBack();
   }
 };
 
@@ -241,7 +245,7 @@ export const setDeliveredOrRejectedSuccess = function* () {
   const deliveriesLeft = orderedStopsIds.length;
 
   if (deliveriesLeft > 0 && isOptimizedRoutes) {
-    yield call(updatedSelectedStop);
+    yield call(updateSelectedStop);
   }
 
   yield call(updateTrackerData, { deliveryStatus });
@@ -302,7 +306,7 @@ export const redirectSetSelectedClaim = function* () {
 };
 
 export const optimizeStops = function* () {
-  yield call(updatedSelectedStop);
+  yield call(updateSelectedStop);
   Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
 };
 
@@ -341,7 +345,7 @@ export const updateReturnPosition = function* ({ clear }) {
   });
 };
 
-export const updatedSelectedStop = function* () {
+export const updateSelectedStop = function* ({ sID }) {
   const selectedStop = yield select(selectedStopSelector);
   const device = yield select(deviceSelector);
   if (device && device.position && device.position.coords && selectedStop) {
@@ -365,7 +369,8 @@ export const updatedSelectedStop = function* () {
   ) {
     yield put({
       type: DeliveryTypes.GET_CUSTOMER_CLAIMS,
-      customerId: selectedStop.customerId
+      customerId: selectedStop.customerId,
+      selectedStopId: sID
     });
   }
 
@@ -391,17 +396,18 @@ export const updatedSelectedStop = function* () {
   });
 };
 
-export const getCustomerClaims = function* ({ customerId }) {
+export const getCustomerClaims = function* ({ customerId, selectedStopId }) {
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS }
     },
-    promise: Api.repositories.delivery.getCustomerClaims({ customerId })
+    promise: Api.repositories.delivery.getCustomerClaims({ customerId }),
+    selectedStopId
   });
 };
 
-export const setCustomerClaims = function* ({ payload }) {
+export const setCustomerClaims = function* ({ payload, selectedStopId }) {
   for (const [claimIndex, claim] of payload.entries()) {
     for (const [
       driverResponseIndex,
@@ -417,7 +423,8 @@ export const setCustomerClaims = function* ({ payload }) {
             id: driverResponse.claimDriverResponseId
           }),
           claimIndex,
-          driverResponseIndex
+          driverResponseIndex,
+          selectedStopId
         });
       }
     }

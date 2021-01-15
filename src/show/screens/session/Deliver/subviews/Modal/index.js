@@ -6,8 +6,13 @@ import CustomerIssueModal from './view';
 
 export default connect(
   (state) => {
+    const selectedStopId = state.delivery?.selectedStopId;
+
     return {
-      claims: state.delivery?.claims
+      claims: state.delivery?.claims[selectedStopId],
+      processing: state.delivery?.claims.processing,
+      showClaimModal: state.delivery?.claims.showClaimModal,
+      showReplyModal: state.delivery?.claims.showReplyModal
     };
   },
   {

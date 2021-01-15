@@ -46,7 +46,7 @@ import {
   setRejected,
   startDelivering,
   updateProps as updateDeliveryProps,
-  updatedSelectedStop,
+  updateSelectedStop,
   updateReturnPosition
 } from './delivery';
 
@@ -104,7 +104,7 @@ export default function* root() {
     takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
     takeLatest(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
     takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
-    takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updatedSelectedStop),
+    takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
 
     takeLatest(UserTypes.GET_DRIVER, getDriver),
 
