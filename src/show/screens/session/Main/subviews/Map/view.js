@@ -1,21 +1,25 @@
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
 import Config from 'react-native-config';
-import React, { useEffect, useState } from 'react';
+import { Animated, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
 import MapView, {
   Marker as RNMMarker,
   PROVIDER_GOOGLE
 } from 'react-native-maps';
 
 import { sizes } from 'Theme';
-import { deviceFrame } from 'Helpers';
 import { CurrentLocation } from 'Images';
+import { deviceFrame, usePrevious } from 'Helpers';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 import styles from './style';
 import mapStyle from './mapStyle';
 import { DirectionsPolyline, Fabs, Markers } from './subviews';
 
 const deviceHeight = deviceFrame().height;
+const cameraAnimationOptions = {
+  duration: 500
+};
 
 const regionChangeComplete = (
   {
@@ -23,7 +27,7 @@ const regionChangeComplete = (
     mapNoTrackingZoom,
     mapRef,
     mapTrackingZoom,
-    setUserIsInteracting,
+    setMapIsInteracting,
     shouldTrackLocation,
     updateDeviceProps
   },
@@ -43,16 +47,16 @@ const regionChangeComplete = (
       });
     });
     if (isGesture) {
-      setUserIsInteracting(true);
-      setTimeout(setUserIsInteracting.bind(null, false), 1000);
+      setMapIsInteracting(false);
     }
   }
 };
 
 const Map = (props) => {
   const {
-    height,
     coords: { heading, latitude, longitude },
+    fabTop,
+    height,
     mapNoTrackingHeading,
     mapNoTrackingZoom,
     mapPadding,
@@ -60,11 +64,14 @@ const Map = (props) => {
     updateDeviceProps
   } = props;
 
-  const [animateCamera, setAnimateCamera] = useState(null);
-  const [mapReady, setMapReady] = useState(false);
+  const [mapIsInteracting, setMapIsInteracting] = useState(false);
   const [mapRef, setRef] = useState(undefined);
   const [shouldTrackLocation, toggleLocationTracking] = useState(false);
-  const [userIsInteracting, setUserIsInteracting] = useState(false);
+
+  const previousShouldTrackLocation = usePrevious(shouldTrackLocation);
+  const previousHeading = usePrevious(heading);
+  const previousLatitude = usePrevious(latitude);
+  const previousLongitude = usePrevious(longitude);
 
   const initialCamera = {
     altitude: 1000,
@@ -84,51 +91,79 @@ const Map = (props) => {
         })
   };
 
-  useEffect(() => {
-    // lat long changed should only affect if location is tracked
-    mapRef?.getCamera().then((currentCamera) => {
-      if (shouldTrackLocation && !userIsInteracting) {
-        setAnimateCamera({
+  const animateCamera = useCallback(
+    (currentCamera, newCameraProps) => {
+      mapRef.animateCamera(
+        {
           ...currentCamera,
+          ...newCameraProps
+        },
+        cameraAnimationOptions
+      );
+    },
+    [mapRef]
+  );
+
+  useEffect(() => {
+    if (previousShouldTrackLocation !== shouldTrackLocation) {
+      setMapIsInteracting(true);
+      mapRef?.getCamera().then((currentCamera) => {
+        animateCamera(currentCamera, {
+          pitch: shouldTrackLocation ? 90 : 0
+        });
+      });
+      setTimeout(
+        setMapIsInteracting.bind(null, false),
+        cameraAnimationOptions.duration
+      );
+      Analytics.trackEvent(EVENTS.MAP_MODE, {
+        mode: shouldTrackLocation ? 'track' : 'birds-eye'
+      });
+    }
+    if (
+      !mapIsInteracting &&
+      shouldTrackLocation &&
+      (previousLatitude !== latitude ||
+        previousLongitude !== longitude ||
+        previousHeading !== heading)
+    ) {
+      mapRef?.getCamera().then((currentCamera) => {
+        animateCamera(currentCamera, {
           center: {
             latitude,
             longitude
           },
-          heading,
-          pitch: 90
+          heading
         });
-      }
-    });
+      });
+    }
   }, [
+    animateCamera,
     heading,
     latitude,
     longitude,
+    mapIsInteracting,
     mapRef,
-    shouldTrackLocation,
-    userIsInteracting
+    previousHeading,
+    previousLatitude,
+    previousLongitude,
+    previousShouldTrackLocation,
+    shouldTrackLocation
   ]);
 
   return (
     <View style={[styles.map, { height: deviceHeight }]}>
       <MapView
-        {...(mapReady &&
-          mapRef &&
-          animateCamera &&
-          shouldTrackLocation &&
-          !userIsInteracting && {
-            animateCamera: mapRef.animateCamera(animateCamera)
-          })}
         customMapStyle={mapStyle}
         initialCamera={initialCamera}
         mapPadding={mapPadding}
-        onMapReady={setMapReady.bind(null, true)}
-        onStartShouldSetResponder={setUserIsInteracting.bind(null, true)}
+        onStartShouldSetResponder={setMapIsInteracting.bind(null, true)}
         onRegionChangeComplete={regionChangeComplete.bind(null, {
           mapNoTrackingHeading,
           mapNoTrackingZoom,
           mapRef,
           mapTrackingZoom,
-          setUserIsInteracting,
+          setMapIsInteracting,
           shouldTrackLocation,
           updateDeviceProps
         })}
@@ -147,15 +182,16 @@ const Map = (props) => {
               longitude: longitude
             }}
             anchor={{ x: 0.5, y: 0.5 }}
-            tracksViewChanges={false}
-            zIndex={2}>
+            tracksViewChanges={false}>
             <CurrentLocation width={25} />
           </RNMMarker>
         )}
+
         <Markers />
         <DirectionsPolyline />
       </MapView>
       <Fabs
+        fabTop={fabTop}
         mapPadding={mapPadding}
         shouldTrackLocation={shouldTrackLocation}
         toggleLocationTracking={toggleLocationTracking}
@@ -177,6 +213,7 @@ Map.defaultProps = {
 
 Map.propTypes = {
   coords: PropTypes.object,
+  fabTop: PropTypes.instanceOf(Animated.Value),
   height: PropTypes.number,
   mapNoTrackingZoom: PropTypes.number,
   mapNoTrackingHeading: PropTypes.number,

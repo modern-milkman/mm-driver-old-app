@@ -10,8 +10,7 @@ import { View, Animated } from 'react-native';
 
 const ColumnRowView = (props) => {
   const composedStyles = {
-    backgroundColor: props.backgroundColor,
-    ...props.animatedStyle
+    backgroundColor: props.backgroundColor
   };
   const composeScrollableStyles = {
     alignItems: props.alignItems,
@@ -47,7 +46,11 @@ const ColumnRowView = (props) => {
   return (
     <CRWiewComponent
       keyboardShouldPersistTaps={'handled'}
-      style={[composedStyles, !props.scrollable && composeScrollableStyles]}
+      style={[
+        composedStyles,
+        !props.scrollable && composeScrollableStyles,
+        props.animated && { ...props.animatedStyle }
+      ]}
       contentContainerStyle={composeScrollableStyles}
       onLayout={props.onLayout}>
       {props.children}

@@ -97,7 +97,7 @@ const CheckIn = (props) => {
             ]}>
             <Separator />
             <ListItem
-              miscelaneousSmall={I18n.t('screens:checkIn.itemsLeft', {
+              miscelaneousBottom={I18n.t('screens:checkIn.itemsLeft', {
                 items: deliveryStatus !== 1 ? itemCount : 0
               })}
               miscelaneousColor={colors.secondary}
@@ -125,7 +125,7 @@ const CheckIn = (props) => {
               <Button.Primary
                 title={I18n.t('general:go')}
                 disabled={deliveryStatus !== 1}
-                onPress={navigateBack.bind(null, startDelivering.bind(null))}
+                onPress={navigateBack.bind(null, startDelivering)}
               />
               {deliveryStatus !== 1 && (
                 <RowView marginVertical={defaults.marginVertical / 2}>

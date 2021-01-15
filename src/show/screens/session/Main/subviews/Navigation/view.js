@@ -48,7 +48,7 @@ const Navigation = (props) => {
           onPress={() => updateProps({ sideBarOpen: true })}
         />
         {deliveryStatus === 2 && (
-          <RowView flex={1} marginHorizontal={defaults.marginHorizontal / 2}>
+          <RowView flex={1} marginLeft={defaults.marginHorizontal / 2}>
             <Text.List color={colors.secondary}>
               {I18n.t('screens:main.navigation.deliveries')}
             </Text.List>

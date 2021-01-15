@@ -6,6 +6,7 @@ import {
   application,
   delivery,
   device,
+  growl,
   transient,
   user
 } from 'Reducers';
@@ -24,6 +25,7 @@ const appReducers = persistCombineReducers(storeConfig, {
   application,
   delivery,
   device,
+  growl,
   transient,
   user
 });

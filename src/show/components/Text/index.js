@@ -56,6 +56,7 @@ const Text = (props) => {
 const exports = {};
 Object.values(Types).forEach((type) => {
   exports[type] = (props) => wrapTextComponent(props, type);
+  exports[type].style = style[type].textStyle;
   exports[type].height = style[type].textStyle.lineHeight;
 });
 

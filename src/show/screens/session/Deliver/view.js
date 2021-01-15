@@ -22,6 +22,8 @@ import {
 
 import style from './style';
 
+const reasonMessageRef = React.createRef();
+
 const forFade = ({ current, closing }) => ({
   cardStyle: {
     opacity: current.progress
@@ -125,6 +127,7 @@ const renderSkipModal = ({
             value={reasonMessage}
             placeholder={I18n.t('screens:deliver.modal.inputPlaceholder')}
             onChangeText={handleChangeSkip.bind(null, updateTransientProps)}
+            ref={reasonMessageRef}
           />
         </RowView>
       </ColumnView>
@@ -195,6 +198,24 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
   </TouchableOpacity>
 );
 
+const navToList = () => (
+  <ColumnView
+    width={44}
+    alignItems={'flex-end'}
+    justifyContent={'center'}
+    height={defaults.topNavigation.height}>
+    <CustomIcon
+      icon={'customerIssue'}
+      iconColor={colors.error}
+      width={defaults.topNavigation.iconSize}
+      bgColor={'transparent'}
+      onPress={NavigationService.navigate.bind(null, {
+        routeName: 'CustomerIssueList'
+      })}
+    />
+  </ColumnView>
+);
+
 const showModal = (type, setModalType, setModalVisible) => {
   setModalType(type);
   setModalVisible(true);
@@ -206,6 +227,8 @@ const Deliver = (props) => {
   const {
     allItemsDone,
     confirmedItem,
+    claims: { list },
+    showClaimModal,
     outOfStock,
     routeDescription,
     selectedStop,
@@ -238,9 +261,15 @@ const Deliver = (props) => {
       <NavigationEvents
         onDidFocus={animateContent.bind(null, {
           contentTranslateYValue: 0,
-          contentOpacityValue: 1
+          contentOpacityValue: 1,
+          callback: showClaimModal
+            ? NavigationService.navigate.bind(null, {
+                routeName: 'CustomerIssueModal'
+              })
+            : null
         })}
       />
+
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
         {modalType === 'skip' && renderSkipModal({ ...props, setModalVisible })}
         {modalType === 'image' &&
@@ -255,6 +284,7 @@ const Deliver = (props) => {
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
           title={I18n.t('general:details')}
+          RightComponent={list?.length > 0 ? navToList : null}
         />
         <Animated.View
           style={[
@@ -266,12 +296,11 @@ const Deliver = (props) => {
           ]}>
           <Separator />
           <ListItem
-            miscelaneousSmall={I18n.t('screens:deliver.routeDescription', {
+            miscelaneousBottom={I18n.t('screens:deliver.routeDescription', {
               routeDescription
             })}
             miscelaneousColor={colors.Primarylight}
             icon={null}
-            title={`${selectedStop?.forename} ${selectedStop?.surname}`}
             description={I18n.t('screens:deliver.customerID', {
               customerId: selectedStop?.customerId
             })}
@@ -407,11 +436,13 @@ const Deliver = (props) => {
 
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
+  claims: PropTypes.object,
   confirmedItem: PropTypes.array,
-  routeDescription: PropTypes.string,
-  selectedStop: PropTypes.object,
   outOfStock: PropTypes.array,
   reasonMessage: PropTypes.string,
+  routeDescription: PropTypes.string,
+  showClaimModal: PropTypes.bool,
+  selectedStop: PropTypes.object,
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,
   toggleConfirmedItem: PropTypes.func,
@@ -421,12 +452,14 @@ Deliver.propTypes = {
 
 Deliver.defaultProps = {
   allItemsDone: false,
+  claims: {},
   confirmedItem: [],
-  routeDescription: null,
-  selectedStop: {},
   outOfStock: [],
   reasonMessage: '',
+  routeDescription: null,
+  selectedStop: {},
   setDelivered: mock,
+  showClaimModal: false,
   setRejected: mock,
   toggleConfirmedItem: mock,
   toggleOutOfStock: mock,

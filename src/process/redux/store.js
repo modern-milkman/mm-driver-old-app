@@ -1,3 +1,4 @@
+import Config from 'react-native-config';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import { persistStore, persistReducer } from 'redux-persist';
@@ -13,6 +14,7 @@ import apiMiddleware from './apiMiddleware';
 import appStateMiddleware from './appStateMiddleware';
 
 let rehydrationComplete;
+const middlewares = [];
 
 const rehydrationPromise = new Promise((resolve) => {
   rehydrationComplete = resolve;
@@ -20,20 +22,23 @@ const rehydrationPromise = new Promise((resolve) => {
 
 const rehydration = () => rehydrationPromise;
 
-const middleware = createReactNavigationReduxMiddleware((state) => state.nav);
-
-const loggerMiddleware = createLogger({
-  collapsed: true,
-  predicate: () =>
-    global.location && global.location.pathname.includes('/debugger-ui')
-});
-
 const sagaMiddleware = createSagaMiddleware();
 
-const enhancer = compose(
-  appStateMiddleware(),
-  applyMiddleware(middleware, apiMiddleware, sagaMiddleware, loggerMiddleware)
-);
+middlewares.push(createReactNavigationReduxMiddleware((state) => state.nav));
+middlewares.push(apiMiddleware);
+middlewares.push(sagaMiddleware);
+
+if (Config.ENVIRONMENT === 'development') {
+  middlewares.push(
+    createLogger({
+      collapsed: true,
+      predicate: () =>
+        global.location && global.location.pathname.includes('/debugger-ui')
+    })
+  );
+}
+
+const enhancer = compose(appStateMiddleware(), applyMiddleware(...middlewares));
 
 const persistedReducer = persistReducer(storeConfig, rootReducer);
 const store = createStore(persistedReducer, enhancer);

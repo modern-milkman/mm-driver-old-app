@@ -1,0 +1,28 @@
+{
+  "appInstalled": {
+    "title": "Application missing",
+    "message": "Please make sure you have {{type}} app installed",
+    "noAppMessage": "Plase make sure you have at least one of Google Maps, Apple Maps or Waze installed"
+  },
+  "cannotUpgrade": {
+    "title": "Download failed",
+    "message": "There was a problem downloading the app. Please try again or manually select a version using the link below."
+  },
+  "cannotOpenUrl": {
+    "title": "Link failed",
+    "message": "There was a problem opening the link."
+  },
+  "errors": {
+    "api": {
+      "backend": {
+        "title": "Processing error [{{status}}]",
+        "message": "There was an error processing your request(s). Please try again. If the problem persists, contact your supervisor."
+      },
+      "driverData": {
+        "title": "Error getting route data",
+        "message": "Try refreshing route data again. If the problem persists, contact your supervisor.",
+        "refreshMessage": "Tap this message to reload route data. If the problem persists, contact your supervisor."
+      }
+    }
+  }
+}

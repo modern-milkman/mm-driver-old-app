@@ -6,6 +6,7 @@ import style from './style';
 
 const Foreground = (props) => {
   const {
+    backgroundColor,
     children,
     height,
     paddingBottom,
@@ -22,7 +23,8 @@ const Foreground = (props) => {
           paddingBottom,
           paddingTop,
           borderRadius: topBorderRadius,
-          transform: [{ translateY: pullHandleMoveY }]
+          transform: [{ translateY: pullHandleMoveY }],
+          backgroundColor
         }
       ]}>
       <Animated.View
@@ -38,6 +40,7 @@ const Foreground = (props) => {
 };
 
 Foreground.propTypes = {
+  backgroundColor: PropTypes.instanceOf(Animated.Value),
   children: PropTypes.node,
   height: PropTypes.object,
   paddingBottom: PropTypes.number,

@@ -26,14 +26,16 @@ export default function apiMiddleware() {
           next({
             ...rest,
             type: fail.type,
-            ...response
+            ...response,
+            error
           });
         } else {
           next({
             ...rest,
             type:
               response.status === 'TIMEOUT' ? Api.NETWORK_ERROR : Api.API_ERROR,
-            ...response
+            ...response,
+            error
           });
         }
       });

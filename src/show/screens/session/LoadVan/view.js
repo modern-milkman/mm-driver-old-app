@@ -9,10 +9,10 @@ import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView } from 'Containers';
 
 const LoadVan = (props) => {
-  const { groupedStock, itemCount, updateCurrentDayProps } = props;
+  const { itemCount, orderedStock, readOnly, updateProps } = props;
 
   const doneLoadedVan = () => {
-    updateCurrentDayProps({ deliveryStatus: 1 });
+    updateProps({ deliveryStatus: 1 });
     NavigationService.goBack();
   };
 
@@ -24,7 +24,7 @@ const LoadVan = (props) => {
       height={defaults.topNavigation.height}>
       <Text.Label
         color={colors.primary}
-        onPress={doneLoadedVan.bind(null)}
+        onPress={doneLoadedVan}
         align={'right'}
         lineHeight={defaults.topNavigation.height}>
         {I18n.t('screens:loadVan.done')}
@@ -42,9 +42,9 @@ const LoadVan = (props) => {
           leftIcon={'chevron-left'}
           leftIconAction={NavigationService.goBack}
           title={`${itemCount} ${I18n.t('screens:loadVan.title')}`}
-          RightComponent={doneButton}
+          RightComponent={readOnly ? null : doneButton}
         />
-        <List data={groupedStock} hasSections />
+        <List data={orderedStock} />
       </ColumnView>
     </SafeAreaView>
   );
@@ -52,14 +52,16 @@ const LoadVan = (props) => {
 
 LoadVan.propTypes = {
   itemCount: PropTypes.number,
-  groupedStock: PropTypes.array,
-  updateCurrentDayProps: PropTypes.func
+  orderedStock: PropTypes.array,
+  readOnly: PropTypes.bool,
+  updateProps: PropTypes.func
 };
 
 LoadVan.defaultProps = {
   itemCount: 0,
-  groupedStock: [],
-  updateCurrentDayProps: mock
+  orderedStock: [],
+  readOnly: false,
+  updateProps: mock
 };
 
 export default LoadVan;

@@ -1,4 +1,5 @@
 import Config from 'react-native-config';
+import { useEffect, useRef } from 'react';
 import {
   Animated,
   Dimensions,
@@ -6,6 +7,14 @@ import {
   Linking,
   NativeModules
 } from 'react-native';
+
+import { colors } from 'Theme';
+import I18n from 'Locales/I18n';
+import Alert from 'Services/alert';
+
+const blacklistApiEndpointFailureTracking = [
+  `${Config.FLEET_TRACKER_URL}/drivers`
+];
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -21,12 +30,19 @@ const checkAtLeastOneItem = (items, statusId, exclude = false) => {
   return false;
 };
 
-const currentDay = () => {
-  const date = new Date();
-  if (parseInt(Config.RESET_HOUR_DAY) <= ukTimeNow()) {
-    date.setDate(date.getDate() + 1);
+const customerSatisfactionColor = (satisfactionStatus) => {
+  switch (satisfactionStatus) {
+    case 1:
+      return colors.primaryBright;
+    case 2:
+      return colors.success;
+    case 3:
+      return colors.warning;
+    case 4:
+      return colors.error;
+    default:
+      return colors.primary;
   }
-  return formatDate(date);
 };
 
 const defaultRoutes = {
@@ -96,6 +112,38 @@ const jiggleAnimation = (animatedValue, callback) => {
 
 const mock = () => null;
 
+const openDriverUpdate = () => {
+  Linking.openURL(Config.GET_DRIVER_URL).catch(() => {
+    Alert({
+      title: I18n.t('alert:cannotOpenUrl.title'),
+      message: I18n.t('alert:cannotOpenUrl.message'),
+      buttons: [
+        {
+          text: I18n.t('general:ok'),
+          style: 'cancel'
+        }
+      ]
+    });
+  });
+};
+
+const timeToHMArray = (time) => time.split(':').map((hm) => parseInt(hm));
+
+const triggerDriverUpdate = (url) => {
+  Linking.openURL(url).catch(() => {
+    Alert({
+      title: I18n.t('alert:cannotUpgrade.title'),
+      message: I18n.t('alert:cannotUpgrade.message'),
+      buttons: [
+        {
+          text: I18n.t('general:ok'),
+          style: 'cancel'
+        }
+      ]
+    });
+  });
+};
+
 const toggle = (collection, item) => {
   const duplicate = [...collection];
   var idx = duplicate.indexOf(item);
@@ -118,22 +166,31 @@ const statusBarHeight = () => {
   return StatusBarManager.HEIGHT;
 };
 
-const ukTimeNow = () => {
+const ukTimeNow = (secondsFromMidnight = false) => {
   const date = new Date();
-  return parseInt(
-    date
-      .toLocaleTimeString(undefined, {
-        timeZone: 'Europe/London',
-        hour12: false
-      })
-      .substring(0, 2)
-  );
+  const stringDate = date
+    .toLocaleTimeString(undefined, {
+      timeZone: 'Europe/London',
+      hour12: false
+    })
+    .substring(0, 5);
+  const [h, m] = timeToHMArray(stringDate);
+  return secondsFromMidnight ? h * 60 * 60 + m * 60 : stringDate;
+};
+
+const usePrevious = (value) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
 };
 
 export {
+  blacklistApiEndpointFailureTracking,
   capitalize,
   checkAtLeastOneItem,
-  currentDay,
+  customerSatisfactionColor,
   deviceFrame,
   defaultRoutes,
   formatDate,
@@ -141,8 +198,12 @@ export {
   isAppInstalled,
   jiggleAnimation,
   mock,
+  openDriverUpdate,
+  timeToHMArray,
   toggle,
+  triggerDriverUpdate,
   randomKey,
   statusBarHeight,
-  ukTimeNow
+  ukTimeNow,
+  usePrevious
 };

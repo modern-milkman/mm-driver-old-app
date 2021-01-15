@@ -3,29 +3,18 @@ import { View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Marker as RNMMarker } from 'react-native-maps';
 
-import { colors } from 'Theme';
-import Icon from 'Components/Icon';
+import {
+  mock,
+  customerSatisfactionColor as getCustomerSatisfactionColor
+} from 'Helpers';
+import { colors, defaults } from 'Theme';
 
 import style from './style';
-
-const customerSatisfactionColor = (satisfactionStatus) => {
-  switch (satisfactionStatus) {
-    case 1:
-      return colors.primaryBright;
-    case 2:
-      return colors.success;
-    case 3:
-      return colors.warning;
-    case 4:
-      return colors.error;
-    default:
-      return colors.primary;
-  }
-};
 
 const Marker = (props) => {
   const {
     completedStopsIds,
+    disabled,
     id,
     mapMarkerSize,
     previousStopId,
@@ -36,21 +25,15 @@ const Marker = (props) => {
   const selectedStop = stops[id] || null;
   const completed = completedStopsIds.includes(id);
 
-  const mapMarkerImageType =
-    selectedStopId === id
-      ? completed
-        ? 'check'
-        : 'arrow-down-bold'
-      : completed
-      ? 'check'
-      : 'arrow-down-bold';
-
+  const customerSatisfactionColor = getCustomerSatisfactionColor(
+    selectedStop.satisfactionStatus
+  );
   const mapMarkerBackgroundColor =
     selectedStopId === id
       ? colors.secondary
       : completed
       ? colors.input
-      : customerSatisfactionColor(selectedStop.satisfactionStatus);
+      : customerSatisfactionColor;
 
   const [previousMarkerSize, setPreviousMarkerSize] = useState(mapMarkerSize);
   const [tracksViewChanges, setTracksViewChanges] = useState(
@@ -78,8 +61,8 @@ const Marker = (props) => {
           latitude: selectedStop.latitude,
           longitude: selectedStop.longitude
         }}
-        onPress={updateSelectedStop.bind(null, id)}
-        anchor={{ x: 0, y: 1 }}
+        onPress={disabled ? mock : updateSelectedStop.bind(null, id)}
+        anchor={{ x: 0.5, y: 1 }}
         {...(selectedStopId === id && { zIndex: 1 })}
         tracksViewChanges={tracksViewChanges}>
         <View
@@ -92,26 +75,64 @@ const Marker = (props) => {
               borderBottomRightRadius: mapMarkerSize / 2,
               borderTopLeftRadius: mapMarkerSize / 2,
               borderTopRightRadius: mapMarkerSize / 2,
-              borderColor: colors.white
+              borderBottomLeftRadius: defaults.borderRadius / 2,
+              borderColor: colors.white,
+              transform: [{ rotateZ: '-45deg' }],
+              marginBottom: mapMarkerSize / 3
             }
           ]}>
-          <Icon
-            size={mapMarkerSize / 1.5}
-            containerSize={mapMarkerSize / 1.5}
-            name={mapMarkerImageType}
-            color={colors.white}
+          <View
+            style={[
+              style.markerCircle,
+              {
+                width: mapMarkerSize / 1.7,
+                height: mapMarkerSize / 1.7,
+                borderRadius: mapMarkerSize / 3.4
+              }
+            ]}
           />
+          {selectedStopId === id && (
+            <View
+              style={[
+                style.markerCircle,
+                style.markerCircleCenter,
+                {
+                  width: mapMarkerSize / 4,
+                  height: mapMarkerSize / 4,
+                  borderRadius: mapMarkerSize / 8,
+                  backgroundColor: customerSatisfactionColor
+                }
+              ]}
+            />
+          )}
         </View>
+        {selectedStopId === id && (
+          <View
+            style={[
+              style.markerShadow,
+              {
+                left: mapMarkerSize / 4,
+                top: mapMarkerSize * 0.9,
+                width: mapMarkerSize / 2,
+                height: mapMarkerSize / 2,
+                borderRadius: mapMarkerSize / 4
+              }
+            ]}
+          />
+        )}
       </RNMMarker>
     )) ||
     null
   );
 };
 
-Marker.defaultProps = {};
+Marker.defaultProps = {
+  disabled: false
+};
 
 Marker.propTypes = {
   completedStopsIds: PropTypes.array,
+  disabled: PropTypes.bool,
   id: PropTypes.number,
   mapMarkerSize: PropTypes.number,
   previousStopId: PropTypes.number,

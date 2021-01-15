@@ -6,7 +6,9 @@ import SideBar from './view';
 
 export default connect(
   (state) => ({
+    appcenter: state.device.appcenter,
     availableNavApps: state.device?.availableNavApps,
+    deliveryStatus: state.delivery?.deliveryStatus,
     driverId: state.user.driverId,
     name: state.user.name,
     sideBarOpen: state.application.sideBarOpen,

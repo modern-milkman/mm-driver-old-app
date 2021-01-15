@@ -16,6 +16,35 @@
     "modal": {
       "inputPlaceholder": "Type your reason here",
       "title": "Please provide a reason for skipping delivery"
+    },
+    "customerIssue": {
+      "modal": {
+        "actionSheet": {
+          "openGalery": "Choose from Gallery",
+          "takePhoto": "Take a Photo"
+        },
+        "customerIssue": "Customer Issue",
+        "date": "Date: ",
+        "listTitle": "Reply #{{id}}",
+        "markAsRead": "Mark as read",
+        "productsAffected": "Products affected: ",
+        "reason": "Reason: ",
+        "reply": "Reply",
+        "send": "Send",
+        "title": "Reply to customer issue"
+      },
+      "list": {
+        "clientIdIssues": "Client ID #{{cId}} Issues",
+        "dateOrTime": "{{value}}",
+        "nrReplies": "{{nr}} Replies",
+        "new": "New",
+        "previous": "Previous",
+        "title": "Customer issue #{{issueNr}}"
+      },
+      "details": {
+        "dateTime": "{{date}} at {{time}}",
+        "driverReplies": "Driver Replies"
+      }
     }
   },
   "home": {
@@ -26,7 +55,7 @@
     "done": "Done"
   },
   "main": {
-    "activeDeliveryFor": "{{itemCount}} items for {{fullName}}",
+    "activeDeliveryFor": "{{itemCount}} items",
     "actions": {
       "clearReturnPosition": "Clear current return position",
       "openIn": "Open in {{appName}}",
@@ -55,19 +84,27 @@
   },
   "panel": {
     "driverID": "Driver ID #{{driverId}}",
-    "gasStation": "Find a nearby gas station"
+    "gasStation": "Find a nearby gas station",
+    "loadedStock": "Loaded Stock"
   },
   "upgradeApp": {
     "description": "Unfortunately this version of Modern Milkman Driver is no longer supported. To continue using Modern Milkman Driver, please update at your earliest convenience.",
-    "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}"
+    "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}",
+    "download": "Download Driver {{version}}",
+    "other": "or try another version"
   },
   "settings": {
+    "sections": {
+      "map": "Map",
+      "routing": "Routing"
+    },
     "sliders": {
       "buttons": "Button size",
       "drag": "Drag to resize",
-      "mapMarkers": "Map pins size"
+      "mapMarkers": "Pin size"
     },
     "switches": {
+      "foreground": "Large foreground",
       "manualRouting": "Use manual routing",
       "showDoneDeliveries": "Show done deliveries",
       "vibrations": "Vibrations"

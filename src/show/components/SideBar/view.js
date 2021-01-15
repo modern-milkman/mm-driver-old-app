@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
+import { gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 import React, { useEffect, useState } from 'react';
 import { Animated, View, TouchableOpacity } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import Text from 'Components/Text';
-import { deviceFrame } from 'Helpers';
 import { defaults, colors } from 'Theme';
 import { ListItem } from 'Components/List';
 import Separator from 'Components/Separator';
 import NavigationService from 'Navigation/service';
+import { deviceFrame, triggerDriverUpdate } from 'Helpers';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
-
 import { navigateInSheet } from 'Screens/session/Main/helpers';
 
 import styles from './styles';
@@ -20,15 +20,17 @@ const { width } = deviceFrame();
 const sidebarWidth = 0.8 * width;
 
 const navigateAndClose = (updateProps, callback) => {
+  updateProps({ sideBarOpen: false });
   if (callback) {
     callback();
   }
-  updateProps({ sideBarOpen: false });
 };
 
 const SideBar = (props) => {
   const {
+    appcenter,
     availableNavApps,
+    deliveryStatus,
     driverId,
     name,
     updateProps,
@@ -119,6 +121,42 @@ const SideBar = (props) => {
                 justifyContent={'flex-start'}
                 alignItems={'flex-start'}
                 marginVertical={defaults.marginVertical}>
+                {appcenter &&
+                  appcenter?.short_version &&
+                  appcenter?.download_url &&
+                  semverGt(
+                    appcenter?.short_version,
+                    Config.APP_VERSION_NAME
+                  ) && (
+                    <ListItem
+                      title={I18n.t('screens:upgradeApp.download', {
+                        version: appcenter.short_version
+                      })}
+                      icon={'cellphone-android'}
+                      rightIcon={'cloud-download-outline'}
+                      onPress={triggerDriverUpdate.bind(
+                        null,
+                        appcenter?.download_url
+                      )}
+                    />
+                  )}
+
+                {deliveryStatus === 2 && (
+                  <ListItem
+                    title={I18n.t('screens:checkIn.loadVan')}
+                    rightIcon={'chevron-right'}
+                    onPress={navigateAndClose.bind(
+                      null,
+                      updateProps,
+                      NavigationService.navigate.bind(null, {
+                        routeName: 'LoadVan',
+                        params: { readOnly: true }
+                      })
+                    )}
+                    customIcon={'van'}
+                  />
+                )}
+
                 <ListItem
                   customIcon={'gas'}
                   title={I18n.t('screens:panel.gasStation')}
@@ -152,7 +190,9 @@ const SideBar = (props) => {
 };
 
 SideBar.propTypes = {
+  appcenter: PropTypes.object,
   availableNavApps: PropTypes.array,
+  deliveryStatus: PropTypes.number,
   driverId: PropTypes.number,
   name: PropTypes.string,
   sideBarOpen: PropTypes.bool,

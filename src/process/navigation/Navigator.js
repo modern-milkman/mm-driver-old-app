@@ -3,13 +3,17 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import {
+  //Screens
   CheckIn,
+  CustomerIssueDetails,
+  CustomerIssueList,
   Deliver,
   Home,
   LoadVan,
   Main,
   Settings,
-  UpgradeApp
+  UpgradeApp,
+  CustomerIssueModal
 } from 'Screens';
 
 const MainNavigator = createStackNavigator(
@@ -28,6 +32,12 @@ const MainNavigator = createStackNavigator(
     },
     Settings: {
       screen: Settings
+    },
+    CustomerIssueList: {
+      screen: CustomerIssueList
+    },
+    CustomerIssueDetails: {
+      screen: CustomerIssueDetails
     }
   },
   {
@@ -39,20 +49,41 @@ const MainNavigator = createStackNavigator(
   }
 );
 
-// TOP NAVIGATOR [ Home, Main]
-const TopNavigator = createStackNavigator(
+const Modals = createStackNavigator(
   {
-    Home,
-    MainNavigator,
-    UpgradeApp
+    CustomerIssueModal: {
+      screen: CustomerIssueModal
+    }
   },
   {
     defaultNavigationOptions: {
       headerShown: false,
-      cardShadowEnabled: false,
-      gestureEnabled: false
+      cardStyle: {
+        backgroundColor: 'transparent'
+      }
     },
-    initialRouteName: 'Home'
+    initialRouteName: 'CustomerIssueModal'
+  }
+);
+
+// TOP NAVIGATOR [ Home, Main, UpgradeApp]
+const TopNavigator = createStackNavigator(
+  {
+    Home,
+    MainNavigator,
+    UpgradeApp,
+    Modals
+  },
+  {
+    defaultNavigationOptions: {
+      headerShown: false,
+      gestureEnabled: false,
+      cardStyle: {
+        backgroundColor: 'transparent'
+      }
+    },
+    initialRouteName: 'Home',
+    mode: 'modal'
   }
 );
 

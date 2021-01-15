@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { colors, shadows } from 'Theme';
+import { shadows } from 'Theme';
 
 const styles = StyleSheet.create({
   container: {
@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
     width: '100%',
     minHeight: 150,
-    backgroundColor: colors.neutral,
     ...shadows.hintLower
   }
 });

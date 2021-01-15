@@ -8,7 +8,7 @@ export default connect(
   (state) => ({
     availableNavApps: state.device?.availableNavApps,
     itemCount: itemCount(state),
-    deliveryStatus: state.delivery[state.delivery.currentDay]?.deliveryStatus
+    deliveryStatus: state.delivery?.deliveryStatus
   }),
   { startDelivering: deliveryActions.startDelivering }
 )(Main);

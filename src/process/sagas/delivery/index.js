@@ -1,14 +1,22 @@
 import { call, delay, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
+import I18n from 'Locales/I18n';
+import { Base64 } from 'js-base64';
+import NavigationService from 'Navigation/service';
+import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
+import Analytics, { EVENTS } from 'Services/analytics';
+import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 import {
+  claims as claimsSelector,
+  selectedStopId as selectedStopIdSelector,
   completedStopsIds as completedStopsIdsSelector,
   deliveryStatus as deliveryStatusSelector,
-  outOfStockItems as outOfStockItemsSelector,
-  orderedStopsIds as orderedStopsIdsSelector,
-  selectedStop as selectedStopSelector,
   isOptimizedRoutes as optimizedRoutesSelector,
+  orderedStopsIds as orderedStopsIdsSelector,
+  outOfStockItems as outOfStockItemsSelector,
+  selectedStop as selectedStopSelector,
   stops as stopsSelector,
   Types as DeliveryTypes
 } from 'Reducers/delivery';
@@ -16,9 +24,6 @@ import {
   Types as DeviceTypes,
   device as deviceSelector
 } from 'Reducers/device';
-import Analytics, { EVENTS } from 'Services/analytics';
-
-import { currentDay as cDay } from 'Helpers';
 
 const updateTrackerData = function* ({ deliveryStatus }) {
   const user = yield select(userSelector);
@@ -44,15 +49,150 @@ const updateTrackerData = function* ({ deliveryStatus }) {
 };
 
 // EXPORTED
+export const acknowledgeClaim = function* ({ id, selectedStopId }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS },
+      fail: { type: DeliveryTypes.ACKNOWLEDGE_CLAIM_FAILURE }
+    },
+    promise: Api.repositories.delivery.acknowledgeClaim({ id }),
+    selectedStopId
+  });
+};
+
+export const acknowledgeClaimSuccess = function* () {
+  const claims = yield select(claimsSelector);
+  const { showClaimModal, showReplyModal } = claims;
+  if (!showClaimModal && !showReplyModal) {
+    NavigationService.goBack();
+  }
+};
+
+export const driverReply = function* ({
+  claimId,
+  comment,
+  image,
+  imageType,
+  acknowledgedClaim = true
+}) {
+  let imageHex = null;
+  if (image) {
+    const splitImage = image.split(',');
+    const base = splitImage[splitImage.length - 1];
+    imageHex = [...Base64.atob(base)]
+      .map((c) => c.charCodeAt(0).toString(16).padStart(2, 0))
+      .join('')
+      .toUpperCase();
+  }
+
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS },
+      fail: { type: DeliveryTypes.DRIVER_REPLY_FAILURE }
+    },
+    promise: Api.repositories.delivery.driverReply({
+      claimId,
+      comment,
+      image: imageHex,
+      imageType
+    }),
+    acknowledgedClaim
+  });
+};
+
+export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
+  const claims = yield select(claimsSelector);
+  const selectedStopId = yield select(selectedStopIdSelector);
+  const {
+    selectedClaim: { customerIssueIdx }
+  } = claims[selectedStopId];
+
+  if (payload.hasImage) {
+    yield call(
+      getDriverReplySingleImage.bind(null, {
+        id: payload.claimDriverResponseId,
+        selectedStopId
+      })
+    );
+  }
+
+  yield put({
+    type: DeliveryTypes.SET_SELECTED_CLAIM,
+    claim: {
+      ...claims[selectedStopId].list.filter(
+        (claim) => claim.claimId === payload.claimId
+      )[0],
+      customerIssueIdx
+    }
+  });
+
+  if (acknowledgedClaim) {
+    yield put({
+      type: DeliveryTypes.ACKNOWLEDGE_CLAIM,
+      id: payload.claimId,
+      selectedStopId
+    });
+  } else {
+    NavigationService.goBack();
+  }
+};
+
+export const foregroundDeliveryActions = function* ({}) {
+  const deliveryStatus = yield select(deliveryStatusSelector);
+  if (deliveryStatus === 0) {
+    yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
+  }
+};
+
+export const getDriverDataFailure = function* ({}) {
+  const deliveryStatus = yield select(deliveryStatusSelector);
+  yield put({
+    type: DeliveryTypes.UPDATE_PROPS,
+    props: { processing: false }
+  });
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'error',
+      title: I18n.t('alert:errors.api.driverData.title'),
+      message: I18n.t(
+        `alert:errors.api.driverData.${
+          deliveryStatus < 2 ? 'refreshMessage' : 'message'
+        }`
+      ),
+      ...(deliveryStatus < 2 && {
+        interval: -1,
+        payload: {
+          action: DeliveryTypes.REFRESH_DRIVER_DATA
+        }
+      })
+    }
+  });
+};
+
+export const getDriverReplySingleImage = function* ({ id, selectedStopId }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS }
+    },
+    promise: Api.repositories.delivery.getDriverResponseImage({ id }),
+    id,
+    selectedStopId
+  });
+};
+
 export const getForDriver = function* ({ isRefreshData = false }) {
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: DeliveryTypes.GET_FOR_DRIVER_SUCCESS },
-      fail: { type: DeliveryTypes.UPDATE_PROPS }
+      fail: { type: DeliveryTypes.GET_DRIVER_DATA_FAILURE }
     },
     promise: Api.repositories.delivery.getForDriver(),
-    props: { processing: false, isRefreshData }
+    props: { isRefreshData }
   });
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER);
 };
@@ -64,17 +204,27 @@ export const getForDriverSuccess = function* ({
   yield put({
     type: Api.API_CALL,
     actions: {
-      success: {
-        type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
-        fail: { type: DeliveryTypes.UPDATE_PROPS }
-      }
+      success: { type: DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS },
+      fail: { type: DeliveryTypes.GET_DRIVER_DATA_FAILURE }
     },
     promise: Api.repositories.delivery.getVehicleStockForDriver(),
     deliveryDate: payload.deliveryDate,
-    props: { processing: false, isRefreshData }
+    props: { isRefreshData }
   });
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, {
     payload
+  });
+};
+
+export const getProductsOrder = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_PRODUCTS_ORDER },
+      fail: { type: DeliveryTypes.UPDATE_PROPS }
+    },
+    promise: Api.repositories.delivery.getProductsOrder(),
+    props: { processing: false }
   });
 };
 
@@ -100,8 +250,17 @@ export const getVehicleStockForDriverSuccess = function* ({
   });
 };
 
+export const refreshDriverData = function* () {
+  const deliveryStatus = yield select(deliveryStatusSelector);
+
+  yield put({ type: DeliveryTypes.GET_FOR_DRIVER, isRefreshData: true });
+  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { deliveryStatus });
+};
+
 export const setDelivered = function* ({ id }) {
   const outOfStockItems = yield select(outOfStockItemsSelector);
+  const device = yield select(deviceSelector);
+
   for (const i of outOfStockItems) {
     yield put({ type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK, id: i });
   }
@@ -112,7 +271,11 @@ export const setDelivered = function* ({ id }) {
       success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS },
       fail: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_FAILURE }
     },
-    promise: Api.repositories.delivery.patchDelivered(id)
+    promise: Api.repositories.delivery.patchDelivered(
+      id,
+      device.position?.coords.latitude,
+      device.position?.coords.longitude
+    )
   });
   Analytics.trackEvent(EVENTS.TAP_DONE_DELIVER, { id });
 };
@@ -124,12 +287,13 @@ export const setDeliveredOrRejectedSuccess = function* () {
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
+  const sID = orderedStopsIds[0];
 
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
   if (deliveriesLeft > 0 && isOptimizedRoutes) {
-    yield call(updatedSelectedStop);
+    yield call(updateSelectedStop, sID);
   }
 
   yield call(updateTrackerData, { deliveryStatus });
@@ -157,15 +321,29 @@ export const setItemOutOfStock = function* ({ id }) {
   Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, { id });
 };
 
+export const setProductsOrder = function* () {
+  const user_session = yield select(userSessionPresentSelector);
+  if (user_session) {
+    yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
+  }
+};
+
 export const setRejected = function* ({ id, reasonMessage }) {
   // TODO - trigger out of stock requests even in reject delivery mode
+  const device = yield select(deviceSelector);
+
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS },
       fail: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_FAILURE }
     },
-    promise: Api.repositories.delivery.patchRejected(id, reasonMessage),
+    promise: Api.repositories.delivery.patchRejected(
+      id,
+      reasonMessage,
+      device.position?.coords.latitude,
+      device.position?.coords.longitude
+    ),
     id
   });
   Analytics.trackEvent(EVENTS.TAP_SKIP_DELIVERY, {
@@ -174,15 +352,15 @@ export const setRejected = function* ({ id, reasonMessage }) {
   });
 };
 
-export const optimizeStops = function* () {
-  yield call(updatedSelectedStop);
-  Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
+export const redirectSetSelectedClaim = function* () {
+  NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
 };
 
-export function* setCurrentDay({}) {
-  const currentDay = cDay();
-  yield put({ type: DeviceTypes.UPDATE_PROPS, props: { currentDay } });
-}
+export const optimizeStops = function* () {
+  const sID = yield select(selectedStopIdSelector);
+  yield call(updateSelectedStop, sID);
+  Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
+};
 
 export const startDelivering = function* () {
   const device = yield select(deviceSelector);
@@ -200,7 +378,7 @@ export const startDelivering = function* () {
   Analytics.trackEvent(EVENTS.START_DELIVERING);
 };
 
-export const updateCurrentDayProps = function* ({ props: { deliveryStatus } }) {
+export const updateProps = function* ({ props: { deliveryStatus } }) {
   const user = yield select(userSelector);
   if (user && deliveryStatus) {
     yield call(updateTrackerData, { deliveryStatus });
@@ -219,7 +397,7 @@ export const updateReturnPosition = function* ({ clear }) {
   });
 };
 
-export const updatedSelectedStop = function* () {
+export const updateSelectedStop = function* ({ sID }) {
   const selectedStop = yield select(selectedStopSelector);
   const device = yield select(deviceSelector);
   if (device && device.position && device.position.coords && selectedStop) {
@@ -234,6 +412,17 @@ export const updatedSelectedStop = function* () {
         destinationLatitude: selectedStop.latitude,
         destinationLongitude: selectedStop.longitude
       })
+    });
+  }
+
+  if (
+    selectedStop.satisfactionStatus === 3 ||
+    selectedStop.satisfactionStatus === 4
+  ) {
+    yield put({
+      type: DeliveryTypes.GET_CUSTOMER_CLAIMS,
+      customerId: selectedStop.customerId,
+      selectedStopId: sID
     });
   }
 
@@ -257,4 +446,39 @@ export const updatedSelectedStop = function* () {
       orders: Object.keys(selectedStop.orders)
     }
   });
+};
+
+export const getCustomerClaims = function* ({ customerId, selectedStopId }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS }
+    },
+    promise: Api.repositories.delivery.getCustomerClaims({ customerId }),
+    selectedStopId
+  });
+};
+
+export const setCustomerClaims = function* ({ payload, selectedStopId }) {
+  for (const [claimIndex, claim] of payload.entries()) {
+    for (const [
+      driverResponseIndex,
+      driverResponse
+    ] of claim.driverResponses.entries()) {
+      if (driverResponse.hasImage) {
+        yield put({
+          type: Api.API_CALL,
+          actions: {
+            success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
+          },
+          promise: Api.repositories.delivery.getDriverResponseImage({
+            id: driverResponse.claimDriverResponseId
+          }),
+          claimIndex,
+          driverResponseIndex,
+          selectedStopId
+        });
+      }
+    }
+  }
 };

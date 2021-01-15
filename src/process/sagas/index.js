@@ -1,9 +1,10 @@
-import { all, takeLatest, spawn } from 'redux-saga/effects';
+import { all, takeEvery, takeLatest, spawn } from 'redux-saga/effects';
 
 // TYPES
 import { Types as UserTypes } from 'Reducers/user';
 import { Types as DeviceTypes } from 'Reducers/device';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
+import { Types as GrowlTypes } from 'Reducers/growl';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
 import { watchLocationChannel } from 'redux-saga-location';
@@ -11,6 +12,7 @@ import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/act
 
 // SAGAS
 import {
+  apiError,
   dismissKeyboard,
   init,
   login_error,
@@ -20,35 +22,51 @@ import {
   mounted,
   onNavigate,
   onNavigateBack,
-  refreshDriverData,
   rehydrated,
   sendCrashLog
 } from './application';
 
 import {
+  acknowledgeClaim,
+  acknowledgeClaimSuccess,
+  driverReply,
+  driverReplySuccess,
+  foregroundDeliveryActions,
+  getCustomerClaims,
+  getDriverDataFailure,
   getForDriver,
   getForDriverSuccess,
+  getProductsOrder,
   getVehicleStockForDriverSuccess,
   optimizeStops,
-  setCurrentDay,
+  redirectSetSelectedClaim,
+  refreshDriverData,
+  setCustomerClaims,
   setDelivered,
   setDeliveredOrRejectedSuccess,
   setItemOutOfStock,
+  setProductsOrder,
   setRejected,
   startDelivering,
-  updateCurrentDayProps,
-  updatedSelectedStop,
+  updateProps as updateDeliveryProps,
+  updateSelectedStop,
   updateReturnPosition
 } from './delivery';
 
 import { requestLocationPermissionAndWatch, setLocation } from './device';
+
+import { alert } from './growl';
 
 import { getDriver } from './user';
 
 export default function* root() {
   yield all([
     spawn(watchLocationChannel),
-    takeLatest('APP_STATE.FOREGROUND', setCurrentDay),
+
+    takeEvery('API_ERROR', apiError),
+    takeEvery('NETWORK_ERROR', apiError),
+
+    takeLatest('APP_STATE.FOREGROUND', foregroundDeliveryActions),
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
     takeLatest(ApplicationTypes.INIT, init),
@@ -60,29 +78,44 @@ export default function* root() {
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
-    takeLatest(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
+    takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
 
+    takeEvery(DeliveryTypes.ACKNOWLEDGE_CLAIM, acknowledgeClaim),
+    takeEvery(DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS, acknowledgeClaimSuccess),
+    takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
+    takeEvery(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
+    takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
+    takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
+    takeLatest(DeliveryTypes.GET_PRODUCTS_ORDER, getProductsOrder),
     takeLatest(
       DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
       getVehicleStockForDriverSuccess
     ),
     takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
-    takeLatest(DeliveryTypes.START_DELIVERING, startDelivering),
-    takeLatest(DeliveryTypes.SET_DELIVERED, setDelivered),
     takeLatest(
+      DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM,
+      redirectSetSelectedClaim
+    ), // TODO check if in use anywhere
+    takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
+    takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, setCustomerClaims),
+    takeEvery(DeliveryTypes.SET_DELIVERED, setDelivered),
+    takeEvery(
       DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS,
       setDeliveredOrRejectedSuccess
     ),
-    takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
-    takeLatest(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
-    takeLatest(DeliveryTypes.SET_REJECTED, setRejected),
-    takeLatest(DeliveryTypes.UPDATE_CURRENT_DAY_PROPS, updateCurrentDayProps),
-    takeLatest(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
-    takeLatest(DeliveryTypes.UPDATE_SELECTED_STOP, updatedSelectedStop),
+    takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
+    takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
+    takeEvery(DeliveryTypes.SET_REJECTED, setRejected),
+    takeEvery(DeliveryTypes.START_DELIVERING, startDelivering),
+    takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
+    takeEvery(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
+    takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
 
-    takeLatest(UserTypes.GET_DRIVER, getDriver),
+    takeEvery(GrowlTypes.ALERT, alert),
+
+    takeEvery(UserTypes.GET_DRIVER, getDriver),
 
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,

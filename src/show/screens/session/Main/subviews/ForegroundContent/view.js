@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
-import { ActivityIndicator, Animated } from 'react-native';
+import { ActivityIndicator, Animated, Pressable } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { ukTimeNow } from 'Helpers';
-import { defaults, colors } from 'Theme';
+import { CustomIcon } from 'Images';
+import { colors, defaults, sizes } from 'Theme';
 import { ColumnView, RowView } from 'Containers';
-import { Button, Text, Separator } from 'Components';
+import { Button, Icon, NavBar, Text, Separator } from 'Components';
+
+import style from './style';
 
 const renderButtonTitle = (foregroundState) => {
   switch (foregroundState) {
@@ -40,6 +42,26 @@ const renderHeading = (foregroundState, { routeDescription, selectedStop }) => {
   }
 };
 
+const renderLeftIcon = (onChevronUpPress) => (
+  <CustomIcon
+    width={sizes.list.image / 1.5}
+    containerWidth={sizes.list.image}
+    icon={'expand'}
+    iconColor={colors.white}
+    onPress={onChevronUpPress}
+  />
+);
+
+const renderRightIcon = () => (
+  <Icon
+    name={'alert-outline'}
+    color={colors.white}
+    size={defaults.topNavigation.iconSize}
+    containerSize={defaults.topNavigation.height}
+    disabled
+  />
+);
+
 const renderSubHeading = (foregroundState, { stopCount, selectedStop }) => {
   switch (foregroundState) {
     case 'MANUAL':
@@ -55,8 +77,7 @@ const renderSubHeading = (foregroundState, { stopCount, selectedStop }) => {
       });
     case 'DELIVERING':
       return I18n.t('screens:main.activeDeliveryFor', {
-        itemCount: selectedStop.itemCount,
-        fullName: `${selectedStop.forename} ${selectedStop.surname}`
+        itemCount: selectedStop.itemCount
       });
   }
 };
@@ -67,11 +88,21 @@ const onLayout = (onTitleLayoutChange, e) => {
 
 const ForegroundContent = (props) => {
   const {
+    buttonTitleColor,
     deliveryStatus,
-    interpolatedValues,
+    foregroundActionTop,
+    foregroundDetailsIconsOpacity,
+    foregroundDetailsTitleOpacity,
+    foregroundDetailsTitleWidth,
+    foregroundDetailsTopOpacity,
+    foregroundTitleColor,
+    foregroundTitleTop,
+    foregroundSize,
     onButtonPress,
-    processing,
+    onChevronUpPress,
     optimizedRoutes,
+    processing,
+    resetHourDay,
     stopCount,
     selectedStop,
     onTitleLayoutChange
@@ -82,7 +113,7 @@ const ForegroundContent = (props) => {
   if (deliveryStatus === 0) {
     if (stopCount === 0) {
       // < handled by default version
-      if (ukTimeNow() > parseInt(Config.RESET_HOUR_DAY)) {
+      if (ukTimeNow(true) > resetHourDay) {
         foregroundState = 'NO_DELIVERIES';
       }
     } else {
@@ -97,7 +128,7 @@ const ForegroundContent = (props) => {
       foregroundState = 'MANUAL';
     }
   } else if (deliveryStatus === 3) {
-    if (ukTimeNow() < parseInt(Config.RESET_HOUR_DAY)) {
+    if (ukTimeNow(true) < resetHourDay) {
       foregroundState = 'COME_BACK_LATER';
     } else {
       foregroundState = 'NO_DELIVERIES';
@@ -107,60 +138,103 @@ const ForegroundContent = (props) => {
   return (
     <>
       {processing ? (
-        <ColumnView flex={1}>
-          <ActivityIndicator color={colors.primary} />
+        <ColumnView
+          flex={1}
+          justifyContent={foregroundSize === 'large' ? 'center' : 'flex-start'}>
+          <RowView height={62}>
+            <ActivityIndicator
+              color={foregroundSize === 'large' ? colors.primary : colors.white}
+            />
+          </RowView>
         </ColumnView>
       ) : (
         <ColumnView marginTop={defaults.paddingHorizontal}>
-          <Animated.View
-            style={{ opacity: interpolatedValues.foregroundDetailsOpacity }}>
-            <ColumnView alignItems={'stretch'}>
-              <RowView width={'auto'}>
-                <Separator
-                  height={5}
-                  width={38}
-                  color={colors.inputDark}
-                  borderRadius={10}
-                />
-              </RowView>
+          <ColumnView alignItems={'stretch'}>
+            <RowView
+              width={'auto'}
+              animated
+              animatedStyle={{
+                opacity: foregroundDetailsTopOpacity
+              }}>
+              <Separator
+                height={5}
+                width={38}
+                color={colors.inputDark}
+                borderRadius={defaults.borderRadius}
+              />
+            </RowView>
 
+            <RowView
+              marginTop={defaults.marginVertical / 3}
+              width={'auto'}
+              onLayout={onLayout.bind(this, onTitleLayoutChange)}
+              animated
+              animatedStyle={{
+                opacity: foregroundDetailsTitleOpacity,
+                transform: [{ translateY: foregroundTitleTop }]
+              }}>
               <RowView
-                marginTop={defaults.marginVertical / 3}
-                width={'auto'}
-                onLayout={onLayout.bind(this, onTitleLayoutChange)}>
-                <Text.Heading color={colors.secondary} align={'center'}>
+                animated
+                animatedStyle={{ width: foregroundDetailsTitleWidth }}>
+                <Text.Heading
+                  color={foregroundTitleColor}
+                  align={'center'}
+                  numberOfLines={1}>
                   {renderHeading(foregroundState, props)}
                 </Text.Heading>
               </RowView>
-
-              <RowView
-                marginVertical={defaults.marginVertical / 3}
-                width={'auto'}>
-                <Text.Caption color={colors.secondaryLight} align={'center'}>
-                  {renderSubHeading(foregroundState, props)}
-                </Text.Caption>
-              </RowView>
-            </ColumnView>
-          </Animated.View>
-
-          <Animated.View
-            style={{
-              transform: [
-                { translateY: interpolatedValues.foregroundActionTop }
-              ]
-            }}>
-            <RowView paddingHorizontal={defaults.marginHorizontal}>
-              <Button.Primary
-                backgroundOpacity={interpolatedValues.foregroundDetailsOpacity}
-                titleColor={interpolatedValues.buttonTitleColor}
-                title={renderButtonTitle(foregroundState, props)}
+              <Pressable
+                onPress={onButtonPress}
+                style={style.pressableContainer}
                 disabled={['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
                   foregroundState
-                )}
-                onPress={onButtonPress}
-              />
+                )}>
+                <Animated.View
+                  style={{
+                    opacity: foregroundDetailsIconsOpacity
+                  }}>
+                  <NavBar
+                    LeftComponent={renderLeftIcon.bind(null, onChevronUpPress)}
+                    title={''}
+                    RightComponent={
+                      [3, 4].includes(selectedStop?.satisfactionStatus) &&
+                      renderRightIcon
+                    }
+                    marginHorizontal={defaults.marginHorizontal / 2}
+                  />
+                </Animated.View>
+              </Pressable>
             </RowView>
-          </Animated.View>
+
+            <RowView
+              marginVertical={defaults.marginVertical / 3}
+              width={'auto'}
+              animated
+              animatedStyle={{
+                opacity: foregroundDetailsTopOpacity
+              }}>
+              <Text.Caption color={colors.secondaryLight} align={'center'}>
+                {renderSubHeading(foregroundState, props)}
+              </Text.Caption>
+            </RowView>
+          </ColumnView>
+
+          <RowView
+            paddingHorizontal={defaults.marginHorizontal}
+            animated
+            animatedStyle={{
+              transform: [{ translateY: foregroundActionTop }]
+            }}>
+            <Button.Primary
+              backgroundOpacity={foregroundDetailsTopOpacity}
+              titleColor={buttonTitleColor}
+              title={renderButtonTitle(foregroundState, props)}
+              disabled={['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
+                foregroundState
+              )}
+              onPress={onButtonPress}
+            />
+          </RowView>
         </ColumnView>
       )}
     </>
@@ -168,12 +242,22 @@ const ForegroundContent = (props) => {
 };
 
 ForegroundContent.propTypes = {
+  buttonTitleColor: PropTypes.instanceOf(Animated.Value),
   deliveryStatus: PropTypes.number,
-  interpolatedValues: PropTypes.object,
+  foregroundActionTop: PropTypes.instanceOf(Animated.Value),
+  foregroundDetailsIconsOpacity: PropTypes.instanceOf(Animated.Value),
+  foregroundDetailsTitleOpacity: PropTypes.instanceOf(Animated.Value),
+  foregroundDetailsTitleWidth: PropTypes.instanceOf(Animated.Value),
+  foregroundDetailsTopOpacity: PropTypes.instanceOf(Animated.Value),
+  foregroundTitleColor: PropTypes.instanceOf(Animated.Value),
+  foregroundTitleTop: PropTypes.instanceOf(Animated.Value),
+  foregroundSize: PropTypes.string,
   onButtonPress: PropTypes.func,
+  onChevronUpPress: PropTypes.func,
   onTitleLayoutChange: PropTypes.func,
   optimizedRoutes: PropTypes.bool,
   processing: PropTypes.bool,
+  resetHourDay: PropTypes.number,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
   stopCount: PropTypes.number

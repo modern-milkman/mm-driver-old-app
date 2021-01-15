@@ -22,8 +22,7 @@ const handleSearchFilter = (items, searchValue) => {
   return items.filter(
     (item) =>
       item?.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
-      item?.forename.toLowerCase().includes(searchValue.toLowerCase()) ||
-      item?.surname.toLowerCase().includes(searchValue.toLowerCase())
+      item?.customerId?.toString()?.includes(searchValue.toLowerCase())
   );
 };
 

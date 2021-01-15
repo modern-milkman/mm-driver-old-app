@@ -7,11 +7,9 @@ import Navigation from './view';
 
 export default connect(
   (state) => {
-    const today = state.delivery.currentDay;
-
     return {
-      completedStopsIds: state.delivery[today]?.completedStopsIds,
-      deliveryStatus: state.delivery[today]?.deliveryStatus,
+      completedStopsIds: state.delivery?.completedStopsIds,
+      deliveryStatus: state.delivery?.deliveryStatus,
       stopCount: stopCount(state)
     };
   },
