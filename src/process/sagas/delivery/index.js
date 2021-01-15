@@ -7,6 +7,7 @@ import NavigationService from 'Navigation/service';
 import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 import {
   claims as claimsSelector,
   selectedStopId as selectedStopIdSelector,
@@ -309,7 +310,10 @@ export const setItemOutOfStock = function* ({ id }) {
 };
 
 export const setProductsOrder = function* () {
-  yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
+  const user_session = yield select(userSessionPresentSelector);
+  if (user_session) {
+    yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
+  }
 };
 
 export const setRejected = function* ({ id, reasonMessage }) {
