@@ -120,6 +120,7 @@ const acknowledgeClaimSuccess = (state, { payload, selectedStopId }) =>
     if (driverUnacknowledgedList.length > 0) {
       draft.claims[selectedStopId].selectedClaim = driverUnacknowledgedList[0];
       draft.claims[selectedStopId].showedUnacknowledgedNr += 1;
+      draft.claims.showReplyModal = false;
     } else {
       draft.claims.showClaimModal = false;
       NavigationService.goBack();
