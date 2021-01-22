@@ -1,5 +1,4 @@
 import Api from 'Api';
-import Config from 'react-native-config';
 
 export default {
   acknowledgeClaim({ id }) {
@@ -26,11 +25,7 @@ export default {
     return Api.get('/Delivery/GetForDriver');
   },
   getProductsOrder() {
-    return Api.get(Config.DEFAULT_PRODUCTS_ORDER_URL, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    return Api.get('Product/GetProductOrder');
   },
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
