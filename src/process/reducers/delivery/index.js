@@ -120,6 +120,7 @@ const acknowledgeClaimSuccess = (state, { payload, selectedStopId }) =>
     if (driverUnacknowledgedList.length > 0) {
       draft.claims[selectedStopId].selectedClaim = driverUnacknowledgedList[0];
       draft.claims[selectedStopId].showedUnacknowledgedNr += 1;
+      draft.claims.showReplyModal = false;
     } else {
       draft.claims.showClaimModal = false;
       NavigationService.goBack();
@@ -185,7 +186,8 @@ export const getVehicleStockForDriverSuccess = (
     draft.itemCount = 0;
     draft.stock = payload;
     draft.hasRoutes = payload.length > 0;
-    draft.orderedStock = payload.reduce((orderGroupedProducts, route) => {
+    draft.orderedStock = [];
+    for (const route of payload) {
       route.vehicleStockItems.forEach((item) => {
         const formattedProduct = {
           description: item.measureDescription,
@@ -201,11 +203,11 @@ export const getVehicleStockForDriverSuccess = (
             item.productId
           );
 
-          if (orderGroupedProducts[productSortedIndex]) {
-            orderGroupedProducts[productSortedIndex].miscelaneousTop +=
+          if (draft.orderedStock[productSortedIndex]) {
+            draft.orderedStock[productSortedIndex].miscelaneousTop +=
               item.quantity;
           } else {
-            orderGroupedProducts[productSortedIndex] = formattedProduct;
+            draft.orderedStock[productSortedIndex] = formattedProduct;
           }
         } else {
           if (misplacedProducts[item.productId]) {
@@ -216,9 +218,8 @@ export const getVehicleStockForDriverSuccess = (
         }
         draft.itemCount += item.quantity;
       });
-
-      return orderGroupedProducts.filter((product) => product);
-    }, []);
+    }
+    draft.orderedStock = draft.orderedStock.filter((product) => product);
 
     if (Object.keys(misplacedProducts).length > 0) {
       for (const misplacedProductKey in misplacedProducts) {

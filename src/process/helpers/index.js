@@ -33,9 +33,9 @@ const checkAtLeastOneItem = (items, statusId, exclude = false) => {
 const customerSatisfactionColor = (satisfactionStatus) => {
   switch (satisfactionStatus) {
     case 1:
-      return colors.primaryBright;
-    case 2:
       return colors.success;
+    case 2:
+      return colors.primaryBright;
     case 3:
       return colors.warning;
     case 4:
