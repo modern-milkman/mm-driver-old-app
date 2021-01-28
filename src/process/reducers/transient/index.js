@@ -14,7 +14,10 @@ export const { Types, Creators } = createActions(
 
 const initialState = {};
 
-export const reset = () => initialState;
+export const reset = (state) =>
+  produce(state, (draft) => {
+    draft = { ...initialState };
+  });
 
 export const updateProps = (state, { props }) => {
   return produce(state, (draft) => {
