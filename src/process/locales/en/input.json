@@ -1,7 +1,10 @@
 {
   "placeholder": {
     "customerIssueModal": "Reason",
+    "damageReport": "Enter any known issues here",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "registration": "Input registration (BD51 SMR)",
+    "mileage": "Input current mileage (ODO)"
   }
 }

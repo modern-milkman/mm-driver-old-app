@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "423253453247",
+    "project_id": "themodernmilkmandriver",
+    "storage_bucket": "themodernmilkmandriver.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423253453247:android:b16cdc3c66de97948c590a",
+        "android_client_info": {
+          "package_name": "com.luminos.modernmilkmandriver.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "423253453247-16dktigticaveg3ju2fpn50m6h0eu9f0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeOzlw4O8YAiN3HOHhVJmprWdbyn7Ctuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "423253453247-16dktigticaveg3ju2fpn50m6h0eu9f0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "423253453247-g9dhqn52ai2sl75usmioulj93olc2rag.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.luminos.meew.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

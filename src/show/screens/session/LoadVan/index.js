@@ -10,5 +10,5 @@ export default connect(
     orderedStock: state.delivery?.orderedStock,
     readOnly: state.application.lastRouteParams?.readOnly
   }),
-  { updateProps: deliveryActions.updateProps }
+  { updateChecklistProps: deliveryActions.updateChecklistProps }
 )(LoadVan);

@@ -9,7 +9,7 @@ export default connect(
   (state) => {
     return {
       completedStopsIds: state.delivery?.completedStopsIds,
-      deliveryStatus: state.delivery?.deliveryStatus,
+      status: state.delivery?.status,
       stopCount: stopCount(state)
     };
   },

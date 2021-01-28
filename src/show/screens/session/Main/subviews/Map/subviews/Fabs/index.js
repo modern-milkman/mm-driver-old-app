@@ -10,7 +10,7 @@ export default connect(
       availableNavApps: state.device?.availableNavApps,
       buttonAccessibility: state.device.buttonAccessibility,
       coords: state.device?.position?.coords,
-      deliveryStatus: state.delivery?.deliveryStatus,
+      status: state.delivery?.status,
       processing: state.delivery.processing,
       returnPosition: state.device.returnPosition,
       selectedStopId: state.delivery?.selectedStopId,

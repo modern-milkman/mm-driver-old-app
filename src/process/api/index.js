@@ -9,7 +9,7 @@ import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
 import { Creators as DeviceActions } from 'Reducers/device';
 import { Creators as ApplicationActions } from 'Reducers/application';
-import { blacklistApiEndpointFailureTracking, timeToHMArray } from 'Helpers';
+import { blacklists, timeToHMArray } from 'Helpers';
 
 let TOKEN = null;
 let REFRESH_TOKEN = null;
@@ -128,10 +128,10 @@ const Api = {
 
   catchError(error) {
     if (
-      !blacklistApiEndpointFailureTracking.includes(
+      !blacklists.apiEndpointFailureTracking.includes(
         `${error.config.baseURL}${error.config.url}`
       ) &&
-      !blacklistApiEndpointFailureTracking.includes(error.config.url)
+      !blacklists.apiEndpointFailureTracking.includes(error.config.url)
     ) {
       Analytics.trackEvent(EVENTS.API_ERROR, {
         error

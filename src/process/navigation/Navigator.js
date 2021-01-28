@@ -5,16 +5,40 @@ import { createStackNavigator } from 'react-navigation-stack';
 import {
   //Screens
   CheckIn,
+  Checklist,
   CustomerIssueDetails,
   CustomerIssueList,
+  CustomerIssueModal,
+  DamageReport,
   Deliver,
   Home,
   LoadVan,
   Main,
+  RegistrationMileage,
   Settings,
-  UpgradeApp,
-  CustomerIssueModal
+  UpgradeApp
 } from 'Screens';
+
+const VechicleCheckWizardNavigator = createStackNavigator(
+  {
+    Checklist: {
+      screen: Checklist
+    },
+    DamageReport: {
+      screen: DamageReport
+    },
+    RegistrationMileage: {
+      screen: RegistrationMileage
+    }
+  },
+  {
+    initialRouteName: 'RegistrationMileage',
+    defaultNavigationOptions: {
+      headerShown: false,
+      gestureEnabled: false
+    }
+  }
+);
 
 const MainNavigator = createStackNavigator(
   {
@@ -38,7 +62,8 @@ const MainNavigator = createStackNavigator(
     },
     CustomerIssueDetails: {
       screen: CustomerIssueDetails
-    }
+    },
+    VechicleCheckWizardNavigator
   },
   {
     initialRouteName: 'Main',
@@ -71,8 +96,8 @@ const TopNavigator = createStackNavigator(
   {
     Home,
     MainNavigator,
-    UpgradeApp,
-    Modals
+    Modals,
+    UpgradeApp
   },
   {
     defaultNavigationOptions: {

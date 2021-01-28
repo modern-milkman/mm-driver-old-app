@@ -65,7 +65,12 @@ const renderImageIcon = (
 };
 
 const renderItemInterface = (
-  { onPress: listOnPress, onLongPress: listOnLongPress, listItemStyle },
+  {
+    disabled: listDisabled,
+    onPress: listOnPress,
+    onLongPress: listOnLongPress,
+    listItemStyle
+  },
   { item }
 ) => {
   const {
@@ -74,7 +79,8 @@ const renderItemInterface = (
     customRightIcon,
     customRightIconProps,
     description,
-    disabled = false,
+    disabled = listDisabled || false,
+    enforceLayout = false,
     icon,
     iconColor = colors.secondary,
     image,
@@ -111,17 +117,18 @@ const renderItemInterface = (
         minHeight={sizes.list.height - defaults.marginVertical / 2}
         justifyContent={'space-between'}
         alignItems={'center'}>
-        {(customIcon || image || icon) && (
+        {(customIcon || image || icon || enforceLayout) && (
           <RowView
             width={style.image.width + defaults.marginHorizontal / 2}
             justifyContent={'flex-start'}>
-            {renderImageIcon(
-              customIcon,
-              customIconProps,
-              icon,
-              iconColor,
-              image
-            )}
+            {(customIcon || image || icon) &&
+              renderImageIcon(
+                customIcon,
+                customIconProps,
+                icon,
+                iconColor,
+                image
+              )}
           </RowView>
         )}
 
@@ -163,15 +170,16 @@ const renderItemInterface = (
             </MiscelaneousBottomTextComponent>
           </ColumnView>
         )}
-        {(customRightIcon || rightImage || rightIcon) && (
+        {(customRightIcon || rightImage || rightIcon || enforceLayout) && (
           <RowView width={style.image.width} justifyContent={'flex-end'}>
-            {renderImageIcon(
-              customRightIcon,
-              customRightIconProps,
-              rightIcon,
-              rightIconColor,
-              rightImage
-            )}
+            {(customRightIcon || rightImage || rightIcon) &&
+              renderImageIcon(
+                customRightIcon,
+                customRightIconProps,
+                rightIcon,
+                rightIconColor,
+                rightImage
+              )}
           </RowView>
         )}
       </RowView>
@@ -199,6 +207,7 @@ const renderItemInterface = (
 const List = (props) => {
   const {
     data,
+    disabled,
     extraData,
     hasSections,
     listItemStyle,
@@ -221,6 +230,7 @@ const List = (props) => {
       extraData={extraData}
       keyExtractor={(item, index) => index}
       renderItem={renderItem.bind(null, {
+        disabled,
         onPress,
         onLongPress,
         listItemStyle
@@ -244,6 +254,7 @@ const SectionHeader = ({ section }) =>
 
 List.propTypes = {
   data: PropTypes.array.isRequired,
+  disabled: PropTypes.bool,
   extraData: PropTypes.any,
   hasSections: PropTypes.bool,
   listItemStyle: PropTypes.object,
@@ -282,6 +293,7 @@ ListItem.propTypes = {
   customRightIconProps: PropTypes.object,
   description: PropTypes.string,
   disabled: PropTypes.bool,
+  enforceLayout: PropTypes.bool,
   icon: PropTypes.string,
   iconColor: PropTypes.string,
   image: PropTypes.string,
@@ -307,6 +319,7 @@ ListItem.defaultProps = {
   customRightIcon: null,
   customRightIconProps: null,
   description: null,
+  enforceLayout: false,
   disabled: false,
   icon: null,
   iconColor: colors.secondary,

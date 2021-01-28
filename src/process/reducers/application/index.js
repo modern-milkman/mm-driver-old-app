@@ -16,6 +16,7 @@ export const { Types, Creators } = createActions(
     navigateBack: null,
     rehydrated: null,
     removeLastStackRoute: null,
+    resetStackRoute: ['routeName'],
     sendCrashLog: ['payload'],
     updateProps: ['props']
   },
@@ -51,6 +52,17 @@ export const addToStackRoute = (state = initialState, action) =>
     }
   });
 
+export const loginError = (state = initialState) =>
+  produce(state, (draft) => {
+    draft.userSessionPresent = false;
+    draft.processing = false;
+  });
+
+export const loginSuccess = (state = initialState) =>
+  produce(state, (draft) => {
+    draft.userSessionPresent = true;
+  });
+
 export const processingOn = (state = initialState) =>
   updateProps(state, { props: { processing: true } });
 
@@ -59,15 +71,11 @@ export const removeLastStackRoute = (state = initialState) =>
     draft.stackRoute.splice(-1, 1);
   });
 
-export const loginSuccess = (state = initialState) =>
+export const resetStackRoute = (state = initialState, { routeName }) =>
   produce(state, (draft) => {
-    draft.userSessionPresent = true;
-  });
-
-export const loginError = (state = initialState) =>
-  produce(state, (draft) => {
-    draft.userSessionPresent = false;
-    draft.processing = false;
+    if (draft.stackRoute.indexOf(routeName) + 1 < draft.stackRoute.length) {
+      draft.stackRoute.splice(draft.stackRoute.indexOf(routeName) + 1);
+    }
   });
 
 export default createReducer(initialState, {
@@ -76,6 +84,7 @@ export default createReducer(initialState, {
   [Types.LOGIN_ERROR]: loginError,
   [Types.LOGIN_SUCCESS]: loginSuccess,
   [Types.REMOVE_LAST_STACK_ROUTE]: removeLastStackRoute,
+  [Types.RESET_STACK_ROUTE]: resetStackRoute,
   [Types.UPDATE_PROPS]: updateProps
 });
 

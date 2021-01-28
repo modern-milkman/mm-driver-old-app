@@ -6,7 +6,7 @@ import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
-import { statusBarHeight } from 'Helpers';
+import { statusBarHeight, deliveryStates as DS } from 'Helpers';
 import { ProgressBar, Text } from 'Components';
 
 import style from './style';
@@ -16,9 +16,9 @@ const navigationBottom = Platform.OS === 'android' ? -statusBarHeight() : 0;
 const Navigation = (props) => {
   const {
     completedStopsIds,
-    deliveryStatus,
     paddingBottom,
     panY,
+    status,
     stopCount,
     updateProps
   } = props;
@@ -47,7 +47,7 @@ const Navigation = (props) => {
           icon={'hamburger'}
           onPress={() => updateProps({ sideBarOpen: true })}
         />
-        {deliveryStatus === 2 && (
+        {status === DS.DEL && (
           <RowView flex={1} marginLeft={defaults.marginHorizontal / 2}>
             <Text.List color={colors.secondary}>
               {I18n.t('screens:main.navigation.deliveries')}
@@ -69,16 +69,16 @@ const Navigation = (props) => {
 
 Navigation.defaultProps = {
   completedStopsIds: [],
-  deliveryStatus: 0,
   panY: new Animated.Value(0),
+  status: DS.NCI,
   stopCount: 0
 };
 
 Navigation.propTypes = {
   completedStopsIds: PropTypes.array,
-  deliveryStatus: PropTypes.number,
   paddingBottom: PropTypes.number,
   panY: PropTypes.object,
+  status: PropTypes.string,
   stopCount: PropTypes.number,
   updateProps: PropTypes.func
 };

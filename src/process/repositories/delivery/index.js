@@ -58,6 +58,11 @@ export default {
       deliveryLocationLongitude
     });
   },
+  postVechicleChecks({ payload }) {
+    return Api.post('/Driver/VehicleCheck', {
+      ...payload
+    });
+  },
   updateDirectionsPolyline({
     originLatitude,
     originLongitude,

@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "3.17.0",
+  "version": "3.18.0",
   "versionCode": "20",
   "private": true,
   "scripts": {
@@ -28,6 +28,7 @@
     "react": "17.0.1",
     "react-native": "0.63.4",
     "react-native-bootsplash": "3.1.2",
+    "react-native-camera": "3.42.0",
     "react-native-config": "1.4.1",
     "react-native-device-info": "7.3.1",
     "react-native-dropdownalert": "4.3.0",

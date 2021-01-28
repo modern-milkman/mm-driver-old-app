@@ -198,24 +198,6 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
   </TouchableOpacity>
 );
 
-const navToList = () => (
-  <ColumnView
-    width={44}
-    alignItems={'flex-end'}
-    justifyContent={'center'}
-    height={defaults.topNavigation.height}>
-    <CustomIcon
-      icon={'customerIssue'}
-      iconColor={colors.error}
-      width={defaults.topNavigation.iconSize}
-      bgColor={'transparent'}
-      onPress={NavigationService.navigate.bind(null, {
-        routeName: 'CustomerIssueList'
-      })}
-    />
-  </ColumnView>
-);
-
 const showModal = (type, setModalType, setModalVisible) => {
   setModalType(type);
   setModalVisible(true);
@@ -284,7 +266,11 @@ const Deliver = (props) => {
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
           title={I18n.t('general:details')}
-          RightComponent={list?.length > 0 ? navToList : null}
+          rightCustomIcon={list?.length > 0 ? 'customerIssue' : null}
+          rightColor={colors.error}
+          rightAction={NavigationService.navigate.bind(null, {
+            routeName: 'CustomerIssueList'
+          })}
         />
         <Animated.View
           style={[

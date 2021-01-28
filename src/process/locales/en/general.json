@@ -2,17 +2,21 @@
   "cancel": "Cancel",
   "details": "Details",
   "done": "Done",
-  "go": "Go!",
   "login": "Login",
   "logout": "Logout",
+  "next": "Next",
+  "no": "No",
   "ok": "Ok",
   "permisions": {
     "location": {
       "whyLocationUsage": "Your location is required to make deliveries."
     }
   },
+  "openGalery": "Choose from Gallery",
   "reset": "Reset & Restart Driver",
   "restart": "Restart Driver",
   "skip": "Skip",
-  "upNext": "Up next"
+  "takePhoto": "Take a Photo",
+  "upNext": "Up next",
+  "yes": "Yes"
 }

@@ -1,11 +1,9 @@
 import { StackActions, NavigationActions } from 'react-navigation';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
-import { throttle } from 'Helpers';
+import { blacklists, throttle } from 'Helpers';
 
-const config = {
-  resetStackRoutes: []
-};
+const config = {};
 
 const goBack = () => {
   if (config.navigator) {
@@ -31,7 +29,7 @@ const NavigationService = {
   navigate: (navigationParams) => {
     const { routeName, params, action = [], key = '' } = navigationParams;
     if (config.navigator && routeName) {
-      if (config.resetStackRoutes.includes(routeName)) {
+      if (blacklists.resetStackRoutes.includes(routeName)) {
         if (action && action.push) {
           action.push(StackActions.reset({ index: 0 }));
         }

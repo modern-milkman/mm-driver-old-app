@@ -3,24 +3,29 @@ import { InteractionManager, Platform } from 'react-native';
 
 import Api from 'Api';
 import store from 'Redux/store';
-import { user as userSelector } from 'Reducers/user';
 import { Types as DeviceTypes } from 'Reducers/device';
+import { blacklists, deliveryStates as DS } from 'Helpers';
 import { Creators as TransientCreators } from 'Reducers/transient';
+import {
+  checklist as checklistSelector,
+  Types as DeliveryTypes
+} from 'Reducers/delivery';
 import {
   Types as ApplicationTypes,
   lastRoute as lastRouteSelector
 } from 'Reducers/application';
 
-const blacklist = ['CustomerIssueModal'];
-
 export function* onNavigateSideEffects(navigateParams) {
   // type, routeName, params, action
   const { routeName, params = { refresh: true, index: null } } = navigateParams;
   const lastRoute = yield select(lastRouteSelector);
-  const user = yield select(userSelector);
+  const checklist = yield select(checklistSelector);
 
-  if (routeName && !blacklist.includes(routeName)) {
+  if (routeName && !blacklists.addToStackRoute.includes(routeName)) {
     yield put({ type: ApplicationTypes.ADD_TO_STACK_ROUTE, routeName, params });
+  }
+  if (routeName && blacklists.resetStackRoutes.includes(routeName)) {
+    yield put({ type: ApplicationTypes.RESET_STACK_ROUTE, routeName });
   }
 
   switch (routeName) {
@@ -44,14 +49,25 @@ export function* onNavigateSideEffects(navigateParams) {
       break;
 
     case 'LoadVan':
-      yield put({
-        type: Api.API_CALL,
-        promise: Api.repositories.fleet.drivers({
-          id: `${user.driverId}`,
-          deliveryStatus: 'LOADING_VAN'
-        })
-      });
+      if (!checklist.loadedVan) {
+        yield put({
+          type: DeliveryTypes.UPDATE_PROPS,
+          props: { status: DS.LV }
+        });
+      }
       break;
+
+    case 'RegistrationMileage':
+      if (!checklist.payloadAltered) {
+        yield put({
+          type: DeliveryTypes.UPDATE_PROPS,
+          props: { status: checklist.shiftStartVanChecks ? DS.SEC : DS.SSC }
+        });
+        yield put({
+          type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD,
+          resetType: checklist.shiftStartVanChecks ? 'shiftEnd' : 'shiftStart'
+        });
+      }
   }
 
   InteractionManager.runAfterInteractions(() => {

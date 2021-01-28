@@ -4,10 +4,41 @@
     "description": "Unfortunately Driver app has encountered an error that couldn't be handled. The error was reported to the developers and will be addressed in an app update. If the issue persists, contact your supervisor."
   },
   "checkIn": {
-    "checkIn": "Check in",
+    "checkIn": "Check In",
+    "checkVan": "Check Van",
+    "deliverProducts": "Deliver Products",
+    "endShift": "End Shift",
+    "go": "Go!",
+    "helperMessages": {
+      "checkLoadVan": "Check & load van to start your round",
+      "checkVan": "Check van to start your round",
+      "checkVanEnd": "Check van to finish shift",
+      "doneForToday": "Yay! You're done for today.",
+      "go": "Tap \"Go!\" to start your round",
+      "loadVan": "Load van to start your round"
+    },
     "itemsLeft": "{{items}} items left",
-    "loadTheVanDescription": "Load the van to start your round",
     "loadVan": "Load Van"
+  },
+  "checklist": {
+    "driverPrompts": {
+      "fit": {
+        "title": "I confirm I am in a fit an proper state to fulfil my shift"
+      },
+      "license": {
+        "title": "I confirm my license is currently in date and complies with company requirements"
+      }
+    },
+    "title": "Checklist"
+  },
+  "damageReport": {
+    "sections": {
+      "front": "Front of van",
+      "left": "Passenger's side of van",
+      "rear": "Rear of van",
+      "right": "Driver's side the van"
+    },
+    "title": "Damage Report"
   },
   "deliver": {
     "customerID": "Customer ID #{{customerId}}",
@@ -19,10 +50,6 @@
     },
     "customerIssue": {
       "modal": {
-        "actionSheet": {
-          "openGalery": "Choose from Gallery",
-          "takePhoto": "Take a Photo"
-        },
         "customerIssue": "Customer Issue",
         "date": "Date: ",
         "listTitle": "Reply #{{id}}",
@@ -76,9 +103,9 @@
       "results": "Results"
     },
     "titles": {
-      "selectNextStop": "Please select next stop",
       "comeBackLater": "No delivery info yet",
-      "noDelivery": "No deliveries tonight"
+      "noDelivery": "No deliveries tonight",
+      "selectNextStop": "Please select next stop"
     },
     "useOptimizedRouting": "Use optimized routing"
   },
@@ -109,5 +136,11 @@
       "showDoneDeliveries": "Show done deliveries",
       "vibrations": "Vibrations"
     }
+  },
+  "registrationMileage": {
+    "title": "Registration & Mileage",
+    "registration": "Registration",
+    "or": "OR",
+    "mileage": "Mileage"
   }
 }

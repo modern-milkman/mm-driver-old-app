@@ -5,6 +5,7 @@ import { Animated } from 'react-native';
 import I18n from 'Locales/I18n';
 import { Fab } from 'Components';
 import { colors, defaults } from 'Theme';
+import { deliveryStates as DS } from 'Helpers';
 import actionSheet from 'Services/actionSheet';
 import { configuration, navigateInSheet } from 'Screens/session/Main/helpers';
 
@@ -27,13 +28,13 @@ const Fabs = (props) => {
     availableNavApps,
     buttonAccessibility,
     coords,
-    deliveryStatus,
     fabTop,
     mapPadding,
     processing,
     refreshDriverData,
     selectedStopId,
     shouldTrackLocation,
+    status,
     stops,
     toggleLocationTracking
   } = props;
@@ -87,7 +88,7 @@ const Fabs = (props) => {
           })}
         />
       )}
-      {deliveryStatus === 2 && (
+      {status === DS.DEL && (
         <Fab
           type={'material-community'}
           iconName={'refresh'}
@@ -119,7 +120,6 @@ Fabs.propTypes = {
   availableNavApps: PropTypes.array,
   buttonAccessibility: PropTypes.number,
   coords: PropTypes.object,
-  deliveryStatus: PropTypes.number,
   fabTop: PropTypes.instanceOf(Animated.Value),
   mapPadding: PropTypes.object,
   processing: PropTypes.bool,
@@ -127,6 +127,7 @@ Fabs.propTypes = {
   returnPosition: PropTypes.object,
   selectedStopId: PropTypes.number,
   shouldTrackLocation: PropTypes.bool,
+  status: PropTypes.string,
   stops: PropTypes.object,
   toggleLocationTracking: PropTypes.func,
   updateReturnPosition: PropTypes.func

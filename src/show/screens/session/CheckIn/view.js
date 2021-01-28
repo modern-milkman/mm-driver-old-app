@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
-import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
 import NavigationService from 'Navigation/service';
+import { mock, deliveryStates as DS } from 'Helpers';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 
@@ -64,11 +64,189 @@ const animateContent = ({
   Animated.parallel(runAnimations).start(callback);
 };
 
-const contentTranslateY = [new Animated.Value(100), new Animated.Value(100)];
-const contentOpacity = [new Animated.Value(0), new Animated.Value(0)];
+const contentTranslateY = [
+  new Animated.Value(100),
+  new Animated.Value(100),
+  new Animated.Value(100),
+  new Animated.Value(100),
+  new Animated.Value(100)
+];
+const contentOpacity = [
+  new Animated.Value(0),
+  new Animated.Value(0),
+  new Animated.Value(0),
+  new Animated.Value(0),
+  new Animated.Value(0)
+];
+
+const renderButtonTitle = ({ checklist, status }) => {
+  switch (status) {
+    default:
+      return I18n.t('screens:checkIn.go');
+    case DS.DELC:
+    case DS.SEC:
+    case DS.SC:
+      return I18n.t('screens:checkIn.endShift');
+  }
+};
+
+const renderHelperMessage = ({ checklist, status }) => {
+  const helperIcon = 'information-outline';
+  let helperMessage = I18n.t('screens:checkIn.helperMessages.checkLoadVan');
+  switch (status) {
+    case DS.NCI:
+    case DS.LV:
+    case DS.SSC:
+      if (checklist.loadedVan && !checklist.shiftStartVanChecks) {
+        helperMessage = I18n.t('screens:checkIn.helperMessages.checkVan');
+      }
+      if (!checklist.loadedVan && checklist.shiftStartVanChecks) {
+        helperMessage = I18n.t('screens:checkIn.helperMessages.loadVan');
+      }
+      if (checklist.loadedVan && checklist.shiftStartVanChecks) {
+        helperMessage = I18n.t('screens:checkIn.helperMessages.go');
+      }
+      break;
+
+    case DS.DELC:
+      helperMessage = I18n.t('screens:checkIn.helperMessages.checkVanEnd');
+      break;
+    case DS.SC:
+      helperMessage = I18n.t('screens:checkIn.helperMessages.doneForToday');
+  }
+  return (
+    <RowView marginVertical={defaults.marginVertical / 2}>
+      <Icon
+        size={15}
+        containerSize={15}
+        name={helperIcon}
+        color={colors.secondary}
+        style={{ marginRight: defaults.marginHorizontal / 3 }}
+      />
+      <Text.Caption align={'center'} color={colors.secondary} noMargin>
+        {helperMessage}
+      </Text.Caption>
+    </RowView>
+  );
+};
+
+const renderTitle = ({ checklist, status }) => {
+  switch (status) {
+    case DS.LV:
+    case DS.SSC:
+      if (checklist.loadedVan && checklist.shiftStartVanChecks) {
+        return I18n.t('screens:checkIn.go');
+      }
+      return I18n.t('screens:checkIn.checkIn');
+    case DS.DELC:
+    case DS.SEC:
+      return I18n.t('screens:checkIn.checkVan');
+    case DS.SC:
+      return I18n.t('screens:checkIn.endShift');
+    default:
+      return I18n.t('screens:checkIn.checkIn');
+  }
+};
 
 const CheckIn = (props) => {
-  const { deliveryStatus, itemCount, startDelivering } = props;
+  const { checklist, status, itemCount, startDelivering, stopCount } = props;
+
+  const deliverProductsDisabled =
+    checklist.shiftStartVanChecks === false ||
+    checklist.loadedVan === false ||
+    [DS.DELC, DS.SEC, DS.SC].includes(status);
+  const shiftEndVanChecksDisabled =
+    checklist.shiftStartVanChecks === false ||
+    checklist.loadedVan === false ||
+    checklist.deliveryComplete === false;
+
+  const checkinRows = [
+    {
+      customIcon: 'vanCheck',
+      disabled: checklist.shiftStartVanChecks,
+      miscelaneousBottom: null,
+      onPress: NavigationService.navigate.bind(null, {
+        routeName: 'RegistrationMileage'
+      }),
+      rightIcon: checklist.shiftStartVanChecks ? 'check' : 'chevron-right',
+      title: I18n.t('screens:checkIn.checkVan')
+    },
+    {
+      customIcon: 'cart',
+      disabled: checklist.deliveryComplete,
+      miscelaneousBottom: I18n.t('screens:checkIn.itemsLeft', {
+        items: checklist.loadedVan ? 0 : itemCount
+      }),
+      onPress: NavigationService.navigate.bind(null, {
+        routeName: 'LoadVan',
+        params: { readOnly: checklist.loadedVan }
+      }),
+      rightIcon: checklist.loadedVan ? 'check' : 'chevron-right',
+      title: I18n.t('screens:checkIn.loadVan')
+    },
+    {
+      customIcon: 'deliver',
+      disabled: deliverProductsDisabled,
+      miscelaneousBottom: I18n.t('screens:main.descriptions.deliveryActive', {
+        stopCount
+      }),
+      onPress: navigateBack.bind(null, startDelivering),
+      rightIcon: checklist.deliveryComplete
+        ? 'check'
+        : deliverProductsDisabled
+        ? null
+        : 'chevron-right',
+      title: I18n.t('screens:checkIn.deliverProducts')
+    },
+    {
+      customIcon: 'vanCheck',
+      disabled: shiftEndVanChecksDisabled,
+      onPress: NavigationService.navigate.bind(null, {
+        routeName: 'RegistrationMileage'
+      }),
+      rightIcon: shiftEndVanChecksDisabled
+        ? null
+        : checklist.shiftEndVanChecks
+        ? 'check'
+        : 'chevron-right',
+      title: I18n.t('screens:checkIn.checkVan')
+    }
+  ];
+
+  const renderCheckinRow = (index) => {
+    const {
+      customIcon,
+      disabled,
+      miscelaneousBottom,
+      onPress,
+      rightIcon,
+      title
+    } = checkinRows[index];
+    return (
+      <Animated.View
+        style={[
+          style.fullWidth,
+          {
+            transform: [{ translateY: contentTranslateY[index] }],
+            opacity: contentOpacity[index]
+          }
+        ]}>
+        <Separator />
+        <ListItem
+          disabled={disabled}
+          enforceLayout
+          miscelaneousBottom={miscelaneousBottom}
+          miscelaneousColor={colors.secondary}
+          onPress={onPress}
+          customIcon={customIcon}
+          rightIcon={rightIcon}
+          title={title}
+        />
+        {index === checkinRows.length - 1 && <Separator />}
+      </Animated.View>
+    );
+  };
+
   return (
     <SafeAreaView top bottom>
       <NavigationEvents
@@ -84,66 +262,36 @@ const CheckIn = (props) => {
         <NavBar
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
-          title={I18n.t('screens:checkIn.checkIn')}
+          title={renderTitle({ checklist, status })}
         />
         <ColumnView flex={1} justifyContent={'space-between'}>
-          <Animated.View
-            style={[
-              style.fullWidth,
-              {
-                transform: [{ translateY: contentTranslateY[0] }],
-                opacity: contentOpacity[0]
-              }
-            ]}>
-            <Separator />
-            <ListItem
-              miscelaneousBottom={I18n.t('screens:checkIn.itemsLeft', {
-                items: deliveryStatus !== 1 ? itemCount : 0
-              })}
-              miscelaneousColor={colors.secondary}
-              onPress={NavigationService.navigate.bind(null, {
-                routeName: 'LoadVan'
-              })}
-              customIcon={'cart'}
-              rightIcon={'chevron-right'}
-              title={I18n.t('screens:checkIn.loadVan')}
-            />
-            <Separator />
-          </Animated.View>
+          <ColumnView flex={1} justifyContent={'flex-start'}>
+            {checkinRows.map((row, index) => renderCheckinRow(index))}
+          </ColumnView>
           <Animated.View
             style={{
               ...style.fullWidth,
-              transform: [{ translateY: contentTranslateY[1] }],
-              opacity: contentOpacity[1]
+              transform: [{ translateY: contentTranslateY[4] }],
+              opacity: contentOpacity[4]
             }}>
             <ColumnView
               width={'auto'}
               marginHorizontal={defaults.marginHorizontal}
-              marginVertical={
-                deliveryStatus === 1 ? defaults.marginVertical : 0
-              }>
+              marginVertical={defaults.marginVertical}>
               <Button.Primary
-                title={I18n.t('general:go')}
-                disabled={deliveryStatus !== 1}
-                onPress={navigateBack.bind(null, startDelivering)}
+                title={renderButtonTitle({ checklist, status })}
+                disabled={
+                  ([DS.NCI, DS.LV, DS.SSC].includes(status) &&
+                    (checklist.loadedVan === false ||
+                      checklist.shiftStartVanChecks === false)) ||
+                  ![DS.NCI, DS.LV, DS.SSC, DS.SC].includes(status)
+                }
+                onPress={navigateBack.bind(
+                  null,
+                  status !== DS.SC ? startDelivering : null
+                )}
               />
-              {deliveryStatus !== 1 && (
-                <RowView marginVertical={defaults.marginVertical / 2}>
-                  <Icon
-                    size={15}
-                    containerSize={15}
-                    name={'information-outline'}
-                    color={colors.secondary}
-                    style={{ marginRight: defaults.marginHorizontal / 3 }}
-                  />
-                  <Text.Caption
-                    align={'center'}
-                    color={colors.secondary}
-                    noMargin>
-                    {I18n.t('screens:checkIn.loadTheVanDescription')}
-                  </Text.Caption>
-                </RowView>
-              )}
+              {renderHelperMessage({ checklist, status })}
             </ColumnView>
           </Animated.View>
         </ColumnView>
@@ -153,14 +301,17 @@ const CheckIn = (props) => {
 };
 
 CheckIn.propTypes = {
-  deliveryStatus: PropTypes.number,
+  checklist: PropTypes.object,
   itemCount: PropTypes.number,
-  startDelivering: PropTypes.func
+  startDelivering: PropTypes.func,
+  status: PropTypes.string,
+  stopCount: PropTypes.number
 };
 
 CheckIn.defaultProps = {
   itemCount: 0,
-  deliveryStatus: 0
+  status: DS.NCI,
+  stopCount: 0
 };
 
 CheckIn.navigationOptions = {

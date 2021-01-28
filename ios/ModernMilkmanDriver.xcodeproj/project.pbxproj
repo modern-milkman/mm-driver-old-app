@@ -17,6 +17,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* ModernMilkmanDriverTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ModernMilkmanDriverTests.m */; };
 		524F7CF8B7BFAEFC2ED9B71F /* libPods-ModernMilkmanDriver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC3D9235B00019F06FC01B0F /* libPods-ModernMilkmanDriver.a */; };
 		8B24089BEB352694D0F3AADE /* libPods-ModernMilkmanDriver-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07A8490BAA9D6D38B7E2723C /* libPods-ModernMilkmanDriver-tvOSTests.a */; };
+		9D43E0E725C0459000ABA1BF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */; };
 		9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D9B5EE824B365C80047134F /* BootSplash.storyboard */; };
 		CB922AC1917C4CB0C7E70DE9 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5541778A25CB0A13AD3E0B6 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
 		F1B0394FFCC6A2B27D61020A /* libPods-ModernMilkmanDriver-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C925932F8487F1E00C4C9489 /* libPods-ModernMilkmanDriver-tvOS.a */; };
@@ -60,6 +61,7 @@
 		673D114B62ACF98DB793B48B /* Pods-ModernMilkmanDriver.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.debug.xcconfig"; sourceTree = "<group>"; };
 		72D7232D09AC931151B6BE6F /* Pods-ModernMilkmanDriver-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-tvOSTests/Pods-ModernMilkmanDriver-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		88EB4553353B300886E2DFDE /* Pods-ModernMilkmanDriver-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-tvOSTests/Pods-ModernMilkmanDriver-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9D9B5EE824B365C80047134F /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = ModernMilkmanDriver/BootSplash.storyboard; sourceTree = "<group>"; };
 		A0506D24404D846CDEABA14C /* Pods-ModernMilkmanDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.release.xcconfig"; sourceTree = "<group>"; };
 		A455DA76D8E6B1B9B4570599 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				9D9B5EE824B365C80047134F /* BootSplash.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */,
+				9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */,
 			);
 			name = ModernMilkmanDriver;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */,
+				9D43E0E725C0459000ABA1BF /* GoogleService-Info.plist in Resources */,
 				FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */,
 				9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */,
 			);
@@ -392,6 +396,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseMLVisionTextModel/GoogleMVTextDetectorResources.bundle",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
@@ -415,6 +420,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMVTextDetectorResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
@@ -484,6 +490,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseMLVisionTextModel/GoogleMVTextDetectorResources.bundle",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
@@ -507,6 +514,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMVTextDetectorResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
@@ -752,7 +760,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -761,7 +769,7 @@
 				);
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.16.4;
+				MARKETING_VERSION = 3.17.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -781,11 +789,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.16.4;
+				MARKETING_VERSION = 3.17.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

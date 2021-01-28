@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 
+import { deliveryStates as DS } from 'Helpers';
 import { Creators as deviceActions } from 'Reducers/device';
 import { Creators as deliveryActions, selectedStop } from 'Reducers/delivery';
 
@@ -13,16 +14,20 @@ export default connect(
       buttonAccessibility: state.device.buttonAccessibility,
       canPanForeground:
         (state.delivery?.hasRoutes &&
-          state.delivery?.deliveryStatus !== 3 &&
+          state.delivery?.status !== DS.DELC &&
           state.delivery.optimizedRoutes) ||
         (!state.delivery.optimizedRoutes && currentSelectedStop) ||
-        (state.delivery?.deliveryStatus === 0 && state.delivery?.hasRoutes),
+        ([DS.NCI, DS.LV, DS.SSC, DS.DELC, DS.SEC].includes(
+          state.delivery?.status
+        ) &&
+          state.delivery?.hasRoutes),
+      checklist: state.delivery?.checklist,
       currentLocation: state.device.position?.coords,
-      deliveryStatus: state.delivery?.deliveryStatus,
       foregroundSize: state.device.foregroundSize,
       optimizedRoutes: state.delivery.optimizedRoutes,
       returnPosition: state.device.returnPosition,
-      selectedStop: currentSelectedStop
+      selectedStop: currentSelectedStop,
+      status: state.delivery?.status
     };
   },
   {

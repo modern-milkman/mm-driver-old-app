@@ -3,7 +3,7 @@ import { createActions, createReducer } from 'reduxsauce';
 
 import I18n from 'Locales/I18n';
 import NavigationService from 'Navigation/service';
-import { checkAtLeastOneItem, toggle } from 'Helpers';
+import { toggle, deliveryStates as DS } from 'Helpers';
 import { Point, solve as salesman } from 'Services/salesman';
 
 import { produce, updateProps } from '../shared';
@@ -13,6 +13,7 @@ export const { Types, Creators } = createActions(
     acknowledgeClaim: ['id', 'selectedStopId'],
     acknowledgeClaimFailure: null,
     acknowledgeClaimSuccess: ['payload', 'selectedStopId'],
+    deleteVanDamageImage: ['key', 'index'],
     driverReply: [
       'claimId',
       'comment',
@@ -38,6 +39,11 @@ export const { Types, Creators } = createActions(
     optimizeStops: ['currentLocation', 'returnPosition'],
     redirectSetSelectedClaim: ['claim'],
     refreshDriverData: null,
+    resetChecklistPayload: ['resetType'],
+    saveVehicleChecks: ['saveType'],
+    saveVehicleChecksFailure: null,
+    saveVehicleChecksSuccess: ['payload', 'saveType'],
+    showMustComplyWithTerms: null,
     setCustomerClaims: ['payload', 'selectedStopId'],
     setDelivered: ['id'],
     setDeliveredOrRejectedFailure: null,
@@ -49,14 +55,20 @@ export const { Types, Creators } = createActions(
       'selectedStopId'
     ],
     setItemOutOfStock: ['id'],
+    setMileage: ['mileage'],
     setProductsOrder: ['payload'],
+    setRegistration: ['reg'],
     setRejected: ['id', 'reasonMessage'],
     setSelectedClaim: ['claim'],
     setSelectedStopImage: ['payload', 'props'],
+    setVanDamageComment: ['key', 'comment'],
+    setVanDamageImage: ['key', 'image', 'imageType'],
     startDelivering: [],
+    toggleCheckJson: ['key'],
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
     toggleReplyModal: ['show'],
+    updateChecklistProps: ['props'],
     updateDirectionsPolyline: ['payload'],
     updateDriverResponse: ['data'],
     updateProps: ['props'],
@@ -66,14 +78,6 @@ export const { Types, Creators } = createActions(
   { prefix: 'delivery/' }
 );
 
-/*
-Delivery status:
-  0-NOT_CHECKED_IN
-  1-LOADED_VAN
-  2-DELIVERING
-  3-DELIVERY_COMPLETE
-*/
-
 const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 const initialClaim = {
   driverResponse: { text: null, image: null, imageType: null },
@@ -81,13 +85,50 @@ const initialClaim = {
   list: [],
   selectedClaim: null
 };
+const initialVehicleChecks = {
+  shiftStart: false,
+  shiftEnd: false,
+  vehicleRegistration: '',
+  currentMileage: '',
+  checksJson: '',
+  vehicleCheckDamage: {}
+};
 
 const initialState = {
   allItemsDone: false,
+  checklist: {
+    deliveryComplete: false,
+    loadedVan: false,
+    shiftEndVanChecks: false,
+    shiftStartVanChecks: false,
+    payload: { ...initialVehicleChecks },
+    payloadAltered: false
+  },
+  checksJson: {
+    Odometer: false,
+    Keys: false,
+    Brakes: false,
+    'Horn and steering': false,
+    Lights: false,
+    'Mirrors & glass': false,
+    'Seats & seat belts': false,
+    'Washers and wipers': false,
+    'Warning lights': false,
+    'No smoking sign': false,
+    'Maximum height sticker': false,
+    Battery: false,
+    'Fluid levels, leaks, filler caps': false,
+    'Bodywork and doors': false,
+    Exhaust: false,
+    'Tyres and wheels': false,
+    'Load security / Internal damage': false,
+    'Interior clean': false,
+    'Exterior clean': false,
+    'Audible warning devices': false
+  },
   claims: { showClaimModal: false, showReplyModal: false, processing: false },
   completedStopsIds: [],
   confirmedItem: [],
-  deliveryStatus: 0,
   directionsPolyline: [],
   hasRoutes: false,
   optimizedRoutes: false,
@@ -97,6 +138,7 @@ const initialState = {
   previousStopId: null,
   processing: true,
   selectedStopId: null,
+  status: DS.NCI,
   stock: [],
   stockWithData: {},
   stops: {}
@@ -134,6 +176,15 @@ const claimProcessing = (state) =>
     draft.claims.processing = true;
   });
 
+const deleteVanDamageImage = (state, { key, index }) =>
+  produce(state, (draft) => {
+    draft.checklist.payload.vehicleCheckDamage[
+      key
+    ].vehicleCheckDamageImage = draft.checklist.payload.vehicleCheckDamage[
+      key
+    ].vehicleCheckDamageImage.filter((image, idx) => idx !== index);
+  });
+
 const claimFinishedProcessing = (state) =>
   produce(state, (draft) => {
     draft.claims.processing = false;
@@ -164,6 +215,11 @@ const driverReplySuccess = (state, { payload, acknowledgeClaim }) =>
     draft.claims.processing = false;
   });
 
+const processingFalse = (state) =>
+  produce(state, (draft) => {
+    draft.processing = false;
+  });
+
 const processingTrue = (state) =>
   produce(state, (draft) => {
     draft.processing = true;
@@ -174,6 +230,13 @@ const resetSelectedStopInfo = (draft) => {
   draft.allItemsDone = false;
   draft.confirmedItem = [];
   draft.outOfStockIds = [];
+};
+
+const resetVanDamage = (draft, key) => {
+  return (draft.checklist.payload.vehicleCheckDamage[key] = {
+    vehicleCheckDamageImage: [],
+    comments: ''
+  });
 };
 
 export const getVehicleStockForDriverSuccess = (
@@ -226,6 +289,7 @@ export const getVehicleStockForDriverSuccess = (
         draft.orderedStock.push(misplacedProducts[misplacedProductKey]);
       }
     }
+    draft.processing = false;
   });
 
 export const getForDriverSuccess = (
@@ -234,14 +298,40 @@ export const getForDriverSuccess = (
 ) =>
   produce(state, (draft) => {
     draft.stockWithData = payload;
-    const deliveryStatus = checkAtLeastOneItem(payload?.items, 1, true)
-      ? checkAtLeastOneItem(payload?.items, 1)
-        ? 2
-        : 3
-      : 0;
 
-    if (!isRefreshData || deliveryStatus === 3) {
-      draft.deliveryStatus = deliveryStatus;
+    /*
+    BE delivery_stateID values
+    Pending = 1,
+    Delivered = 2,
+    OutOfStock = 3,
+    Rejected = 4,
+    Cancelled = 5,
+    RejectedRefunded = 6
+    */
+
+    let hasNonPendingOrders = false;
+    let markedOrders = 0;
+    for (const item of draft.stockWithData.items) {
+      if (item.delivery_stateID !== 1) {
+        hasNonPendingOrders = true;
+        markedOrders++;
+      }
+    }
+
+    if (!isRefreshData) {
+      if (markedOrders === draft.stockWithData.items.length) {
+        draft.status = DS.DELC;
+        draft.checklist.deliveryComplete = true;
+        draft.checklist.shiftStartVanChecks = true;
+        draft.checklist.loadedVan = true;
+      } else if (hasNonPendingOrders) {
+        draft.status = DS.DEL;
+        draft.checklist.shiftStartVanChecks = true;
+        draft.checklist.loadedVan = true;
+      }
+    } else if (markedOrders === draft.stockWithData.items.length) {
+      draft.checklist.deliveryComplete = true;
+      draft.status = DS.DELC;
     }
 
     // PREPARE RAW STOPS
@@ -373,18 +463,45 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     if (hasDummy) {
       optimizedRoute.splice(optimizedRoute.indexOf(dummyIndex), 1);
     }
+
     if (returnPosition) {
       optimizedRoute.splice(optimizedRoute.indexOf(returnPositionIndex), 1);
     }
+
     draft.orderedStopsIds = [];
     optimizedRoute.map((i) => draft.orderedStopsIds.push(stops[i].key));
     draft.selectedStopId = draft.orderedStopsIds[0];
-    draft.deliveryStatus = 2;
+
+    draft.status = DS.DEL;
     draft.optimizedRoutes = true;
     draft.processing = false;
   });
 
 export const reset = () => initialState;
+
+export const resetChecklistPayload = (state, { resetType }) =>
+  produce(state, (draft) =>
+    updateChecklistProps(state, {
+      props: {
+        payloadAltered: true,
+        payload: {
+          ...initialVehicleChecks,
+          ...(resetType === 'shiftEnd' && { shiftEnd: true }),
+          ...(resetType === 'shiftStart' && { shiftStart: true }),
+          checksJson: { ...draft.checksJson }
+        }
+      }
+    })
+  );
+
+export const saveVehicleChecksSuccess = (state, { payload, saveType }) =>
+  produce(state, (draft) => {
+    draft.checklist[saveType] = true;
+    if (saveType === 'shiftEndVanChecks') {
+      draft.status = DS.SC;
+    }
+    draft.processing = false;
+  });
 
 export const setCustomerClaims = (state, { payload, selectedStopId }) =>
   produce(state, (draft) => {
@@ -436,7 +553,8 @@ export const setDeliveredOrRejectedSuccess = (state) =>
       }
     } else {
       draft.selectedStopId = null;
-      draft.deliveryStatus = 3;
+      draft.status = DS.DELC;
+      draft.checklist.deliveryComplete = true;
     }
     draft.processing = false;
   });
@@ -449,6 +567,16 @@ export const setDriverReplyImage = (
     draft.claims[selectedStopId].list[claimIndex].driverResponses[
       driverResponseIndex
     ].image = payload;
+  });
+
+export const setMileage = (state, { mileage }) =>
+  produce(state, (draft) => {
+    draft.checklist.payload.currentMileage = mileage;
+  });
+
+export const setRegistration = (state, { reg }) =>
+  produce(state, (draft) => {
+    draft.checklist.payload.vehicleRegistration = reg;
   });
 
 export const setProductsOrder = (state, { payload }) =>
@@ -464,6 +592,35 @@ export const setSelectedStopImage = (
     draft.stops[key].customerAddressImage = base64Image;
   });
 
+export const setVanDamageComment = (state, { key, comment }) =>
+  produce(state, (draft) => {
+    if (!draft.checklist.payload.vehicleCheckDamage[key]) {
+      resetVanDamage(draft, key);
+    }
+
+    draft.checklist.payload.vehicleCheckDamage[key].comments = comment;
+  });
+
+export const setVanDamageImage = (state, { key, image, imageType }) =>
+  produce(state, (draft) => {
+    if (!draft.checklist.payload.vehicleCheckDamage[key]) {
+      resetVanDamage(draft, key);
+    }
+
+    const images = [
+      ...draft.checklist.payload.vehicleCheckDamage[key].vehicleCheckDamageImage
+    ];
+
+    images.push({
+      image,
+      imageType
+    });
+
+    draft.checklist.payload.vehicleCheckDamage[
+      key
+    ].vehicleCheckDamageImage = images;
+  });
+
 export const setSelectedClaim = (state, { claim }) =>
   produce(state, (draft) => {
     const selectedStopId = draft.selectedStopId;
@@ -473,11 +630,17 @@ export const setSelectedClaim = (state, { claim }) =>
 export const startDelivering = (state) =>
   produce(state, (draft) => {
     if (!state.optimizedRoutes) {
-      draft.deliveryStatus = 2;
+      draft.status = DS.DEL;
       draft.processing = false;
     } else {
       draft.processing = true;
     }
+  });
+
+export const toggleCheckJson = (state, { key }) =>
+  produce(state, (draft) => {
+    draft.checklist.payload.checksJson[key] = !draft.checklist.payload
+      .checksJson[key];
   });
 
 export const toggleConfirmedItem = (state, { id }) =>
@@ -511,6 +674,11 @@ export const toggleReplyModal = (state, { show }) =>
     draft.claims.showReplyModal = show;
   });
 
+export const updateChecklistProps = (state, { props }) =>
+  updateProps(state, {
+    props: { checklist: { ...state.checklist, ...props } }
+  });
+
 export const updateDirectionsPolyline = (state, { payload }) =>
   produce(state, (draft) => {
     draft.directionsPolyline = payload;
@@ -536,43 +704,50 @@ export default createReducer(initialState, {
   [Types.ACKNOWLEDGE_CLAIM]: claimProcessing,
   [Types.ACKNOWLEDGE_CLAIM_FAILURE]: claimFinishedProcessing,
   [Types.ACKNOWLEDGE_CLAIM_SUCCESS]: acknowledgeClaimSuccess,
+  [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DRIVER_REPLY]: claimProcessing,
   [Types.DRIVER_REPLY_FAILURE]: claimFinishedProcessing,
   [Types.DRIVER_REPLY_SUCCESS]: driverReplySuccess,
   [Types.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS]: getDriverReplySingleImageSuccess,
-  [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_FOR_DRIVER]: processingTrue,
+  [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.REDIRECT_SET_SELECTED_CLAIM]: setSelectedClaim,
+  [Types.RESET_CHECKLIST_PAYLOAD]: resetChecklistPayload,
+  [Types.SAVE_VEHICLE_CHECKS]: processingTrue,
+  [Types.SAVE_VEHICLE_CHECKS_FAILURE]: processingFalse,
+  [Types.SAVE_VEHICLE_CHECKS_SUCCESS]: saveVehicleChecksSuccess,
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
   [Types.SET_DELIVERED]: processingTrue,
   [Types.SET_DRIVER_REPLY_IMAGE]: setDriverReplyImage,
+  [Types.SET_MILEAGE]: setMileage,
   [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
+  [Types.SET_REGISTRATION]: setRegistration,
   [Types.SET_REJECTED]: processingTrue,
   [Types.SET_SELECTED_CLAIM]: setSelectedClaim,
   [Types.SET_SELECTED_STOP_IMAGE]: setSelectedStopImage,
+  [Types.SET_VAN_DAMAGE_COMMENT]: setVanDamageComment,
+  [Types.SET_VAN_DAMAGE_IMAGE]: setVanDamageImage,
   [Types.START_DELIVERING]: startDelivering,
+  [Types.TOGGLE_CHECK_JSON]: toggleCheckJson,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,
   [Types.TOGGLE_REPLY_MODAL]: toggleReplyModal,
+  [Types.UPDATE_CHECKLIST_PROPS]: updateChecklistProps,
   [Types.UPDATE_DIRECTIONS_POLYLINE]: updateDirectionsPolyline,
   [Types.UPDATE_DRIVER_RESPONSE]: updateDriverResponse,
   [Types.UPDATE_PROPS]: updateProps,
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
 });
 
+export const checklist = (state) => state.delivery?.checklist;
+
 export const claims = (state) => state.delivery?.claims;
 
 export const completedStopsIds = (state) => state.delivery?.completedStopsIds;
-
-export const deliveryStatus = (state) => state.delivery?.deliveryStatus;
-
-export const hasItemsLeftToDeliver = (state) => {
-  return checkAtLeastOneItem(state.delivery?.stockWithData?.items);
-};
 
 export const itemCount = (state) => state.delivery?.itemCount || 0;
 
@@ -591,6 +766,8 @@ export const selectedStop = (state) => {
 };
 
 export const selectedStopId = (state) => state.delivery?.selectedStopId;
+
+export const status = (state) => state.delivery?.status;
 
 export const stops = (state) => state.delivery?.stops;
 

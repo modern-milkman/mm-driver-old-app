@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { ActivityIndicator, Animated, Pressable } from 'react-native';
 
 import I18n from 'Locales/I18n';
-import { ukTimeNow } from 'Helpers';
 import { CustomIcon } from 'Images';
 import { colors, defaults, sizes } from 'Theme';
 import { ColumnView, RowView } from 'Containers';
-import { Button, Icon, NavBar, Text, Separator } from 'Components';
+import { deliveryStates as DS, ukTimeNow } from 'Helpers';
+import { Button, NavBar, Text, Separator } from 'Components';
 
 import style from './style';
 
@@ -20,9 +20,11 @@ const renderButtonTitle = (foregroundState) => {
     case 'COME_BACK_LATER':
       return I18n.t('screens:checkIn.checkIn');
     case 'START_ROUTE':
-      return I18n.t('general:go');
+      return I18n.t('screens:checkIn.go');
     case 'DELIVERING':
       return I18n.t('general:details');
+    case 'VEHICLE_CHECKS_END':
+      return I18n.t('screens:checkIn.checkVan');
   }
 };
 
@@ -39,6 +41,8 @@ const renderHeading = (foregroundState, { routeDescription, selectedStop }) => {
       return routeDescription;
     case 'DELIVERING':
       return selectedStop.title;
+    case 'VEHICLE_CHECKS_END':
+      return I18n.t('screens:checkIn.helperMessages.checkVanEnd');
   }
 };
 
@@ -49,16 +53,6 @@ const renderLeftIcon = (onChevronUpPress) => (
     icon={'expand'}
     iconColor={colors.white}
     onPress={onChevronUpPress}
-  />
-);
-
-const renderRightIcon = () => (
-  <Icon
-    name={'alert-outline'}
-    color={colors.white}
-    size={defaults.topNavigation.iconSize}
-    containerSize={defaults.topNavigation.height}
-    disabled
   />
 );
 
@@ -79,6 +73,8 @@ const renderSubHeading = (foregroundState, { stopCount, selectedStop }) => {
       return I18n.t('screens:main.activeDeliveryFor', {
         itemCount: selectedStop.itemCount
       });
+    default:
+      return ' ';
   }
 };
 
@@ -89,7 +85,7 @@ const onLayout = (onTitleLayoutChange, e) => {
 const ForegroundContent = (props) => {
   const {
     buttonTitleColor,
-    deliveryStatus,
+    checklist,
     foregroundActionTop,
     foregroundDetailsIconsOpacity,
     foregroundDetailsTitleOpacity,
@@ -103,6 +99,7 @@ const ForegroundContent = (props) => {
     optimizedRoutes,
     processing,
     resetHourDay,
+    status,
     stopCount,
     selectedStop,
     onTitleLayoutChange
@@ -110,29 +107,41 @@ const ForegroundContent = (props) => {
 
   let foregroundState = 'COME_BACK_LATER';
 
-  if (deliveryStatus === 0) {
-    if (stopCount === 0) {
-      // < handled by default version
-      if (ukTimeNow(true) > resetHourDay) {
+  switch (status) {
+    case DS.NCI:
+    case DS.LV:
+    case DS.SSC:
+      if (stopCount === 0) {
+        // < handled by default version
+        if (ukTimeNow(true) > resetHourDay) {
+          foregroundState = 'NO_DELIVERIES';
+        }
+      } else if (checklist.loadedVan && checklist.shiftStartVanChecks) {
+        foregroundState = 'START_ROUTE';
+      } else {
+        foregroundState = 'CHECKIN';
+      }
+      break;
+
+    case DS.DEL:
+      if (selectedStop) {
+        foregroundState = 'DELIVERING';
+      } else if (!optimizedRoutes) {
+        foregroundState = 'MANUAL';
+      }
+      break;
+
+    case DS.DELC:
+    case DS.SEC:
+      foregroundState = 'VEHICLE_CHECKS_END';
+      break;
+
+    case DS.SC:
+      if (ukTimeNow(true) < resetHourDay) {
+        foregroundState = 'COME_BACK_LATER';
+      } else {
         foregroundState = 'NO_DELIVERIES';
       }
-    } else {
-      foregroundState = 'CHECKIN';
-    }
-  } else if (deliveryStatus === 1) {
-    foregroundState = 'START_ROUTE';
-  } else if (deliveryStatus === 2) {
-    if (selectedStop) {
-      foregroundState = 'DELIVERING';
-    } else if (!optimizedRoutes) {
-      foregroundState = 'MANUAL';
-    }
-  } else if (deliveryStatus === 3) {
-    if (ukTimeNow(true) < resetHourDay) {
-      foregroundState = 'COME_BACK_LATER';
-    } else {
-      foregroundState = 'NO_DELIVERIES';
-    }
   }
 
   return (
@@ -196,10 +205,12 @@ const ForegroundContent = (props) => {
                   <NavBar
                     LeftComponent={renderLeftIcon.bind(null, onChevronUpPress)}
                     title={''}
-                    RightComponent={
-                      [3, 4].includes(selectedStop?.satisfactionStatus) &&
-                      renderRightIcon
+                    rightIcon={
+                      [3, 4].includes(selectedStop?.satisfactionStatus)
+                        ? 'alert-outline'
+                        : null
                     }
+                    rightColor={colors.white}
                     marginHorizontal={defaults.marginHorizontal / 2}
                   />
                 </Animated.View>
@@ -243,7 +254,7 @@ const ForegroundContent = (props) => {
 
 ForegroundContent.propTypes = {
   buttonTitleColor: PropTypes.instanceOf(Animated.Value),
-  deliveryStatus: PropTypes.number,
+  checklist: PropTypes.object,
   foregroundActionTop: PropTypes.instanceOf(Animated.Value),
   foregroundDetailsIconsOpacity: PropTypes.instanceOf(Animated.Value),
   foregroundDetailsTitleOpacity: PropTypes.instanceOf(Animated.Value),
@@ -260,6 +271,7 @@ ForegroundContent.propTypes = {
   resetHourDay: PropTypes.number,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
+  status: PropTypes.string,
   stopCount: PropTypes.number
 };
 

@@ -8,8 +8,8 @@ import Search from './view';
 export default connect(
   (state) => {
     return {
-      deliveryStatus: state.delivery?.deliveryStatus,
       searchValue: state.transient.searchValue,
+      status: state.delivery?.status,
       stops: Object.values(state.delivery?.stops || {})
     };
   },

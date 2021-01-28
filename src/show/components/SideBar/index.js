@@ -9,14 +9,14 @@ export default connect(
   (state) => ({
     appcenter: state.device.appcenter,
     availableNavApps: state.device?.availableNavApps,
-    deliveryStatus: state.delivery?.deliveryStatus,
     driverId: state.user.driverId,
     name: state.user.name,
     sideBarOpen: state.application.sideBarOpen,
     source: state.device?.position?.coords || {
       latitude: parseFloat(Config.DEFAULT_LATITUDE),
       longitude: parseFloat(Config.DEFAULT_LONGITUDE)
-    }
+    },
+    status: state.delivery?.status
   }),
   {
     updateProps: applicationActions.updateProps

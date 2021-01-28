@@ -5,6 +5,7 @@ import { Animated, PanResponder, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ColumnView } from 'Containers';
+import { deliveryStates as DS } from 'Helpers';
 import { colors, defaults, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
 import {
@@ -27,8 +28,8 @@ import {
 const { height, width } = deviceFrame();
 
 const mainForegroundAction = ({
+  checklist,
   currentLocation,
-  deliveryStatus,
   foregroundPaddingTop,
   optimizedRoutes,
   optimizeStops,
@@ -39,11 +40,14 @@ const mainForegroundAction = ({
   snapMiddleY,
   snapTopY,
   startDelivering,
+  status,
   top,
   updateDeviceProps
 }) => {
-  switch (deliveryStatus) {
-    case 0:
+  switch (status) {
+    case DS.NCI:
+    case DS.DELC:
+    case DS.SEC:
       springForeground({
         animatedValues: [pullHandlePan.y, pullHandleMoveY],
         toValue: snapTopY,
@@ -56,10 +60,26 @@ const mainForegroundAction = ({
         updateDeviceProps
       });
       break;
-    case 1:
-      startDelivering();
+    case DS.LV:
+    case DS.SSC:
+      if (checklist.loadedVan && checklist.shiftStartVanChecks) {
+        startDelivering();
+      } else {
+        springForeground({
+          animatedValues: [pullHandlePan.y, pullHandleMoveY],
+          toValue: snapTopY,
+          snapMiddleY,
+          snapTopY,
+          pullHandleMoveY,
+          foregroundPaddingTop,
+          routeName: 'CheckIn',
+          top,
+          updateDeviceProps
+        });
+      }
+
       break;
-    case 2:
+    case DS.DEL:
       if (selectedStop) {
         springForeground({
           animatedValues: [pullHandlePan.y, pullHandleMoveY],
@@ -137,14 +157,15 @@ const Main = (props) => {
   const {
     buttonAccessibility,
     canPanForeground,
+    checklist,
     currentLocation,
     foregroundSize,
-    deliveryStatus,
     optimizedRoutes,
     optimizeStops,
     returnPosition,
     selectedStop,
     startDelivering,
+    status,
     updateDeviceProps
   } = props;
 
@@ -388,7 +409,7 @@ const Main = (props) => {
         snapTopY,
         pullHandleMoveY,
         foregroundPaddingTop,
-        routeName: deliveryStatus === 2 ? 'Deliver' : 'CheckIn',
+        routeName: status === DS.DEL ? 'Deliver' : 'CheckIn',
         top,
         updateDeviceProps
       });
@@ -493,8 +514,8 @@ const Main = (props) => {
           foregroundTitleTop={interpolatedValues.foregroundTitleTop}
           onTitleLayoutChange={setForegroundTitleHeight}
           onButtonPress={mainForegroundAction.bind(null, {
+            checklist,
             currentLocation,
-            deliveryStatus,
             foregroundPaddingTop,
             optimizedRoutes,
             optimizeStops,
@@ -505,6 +526,7 @@ const Main = (props) => {
             snapMiddleY,
             snapTopY,
             startDelivering,
+            status,
             top,
             updateDeviceProps
           })}
@@ -531,20 +553,21 @@ const Main = (props) => {
 Main.propTypes = {
   buttonAccessibility: PropTypes.number,
   canPanForeground: PropTypes.bool,
+  checklist: PropTypes.object,
   currentLocation: PropTypes.object,
-  deliveryStatus: PropTypes.number,
   foregroundSize: PropTypes.string,
   optimizedRoutes: PropTypes.bool,
   optimizeStops: PropTypes.func,
   returnPosition: PropTypes.object,
   selectedStop: PropTypes.any,
   startDelivering: PropTypes.func,
+  status: PropTypes.string,
   updateDeviceProps: PropTypes.func
 };
 
 Main.defaultProps = {
   canPanForeground: false,
-  deliveryStatus: 0
+  status: DS.NCI
 };
 
 export default Main;

@@ -10,9 +10,13 @@ import { defaults, colors } from 'Theme';
 import { ListItem } from 'Components/List';
 import Separator from 'Components/Separator';
 import NavigationService from 'Navigation/service';
-import { deviceFrame, triggerDriverUpdate } from 'Helpers';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
 import { navigateInSheet } from 'Screens/session/Main/helpers';
+import {
+  deviceFrame,
+  deliveryStates as DS,
+  triggerDriverUpdate
+} from 'Helpers';
 
 import styles from './styles';
 
@@ -30,12 +34,12 @@ const SideBar = (props) => {
   const {
     appcenter,
     availableNavApps,
-    deliveryStatus,
     driverId,
     name,
     updateProps,
     sideBarOpen,
-    source
+    source,
+    status
   } = props;
   const [left] = useState(new Animated.Value(-sidebarWidth));
   const [opacity] = useState(new Animated.Value(0));
@@ -141,7 +145,7 @@ const SideBar = (props) => {
                     />
                   )}
 
-                {deliveryStatus === 2 && (
+                {status === DS.DEL && (
                   <ListItem
                     title={I18n.t('screens:checkIn.loadVan')}
                     rightIcon={'chevron-right'}
@@ -192,11 +196,11 @@ const SideBar = (props) => {
 SideBar.propTypes = {
   appcenter: PropTypes.object,
   availableNavApps: PropTypes.array,
-  deliveryStatus: PropTypes.number,
   driverId: PropTypes.number,
   name: PropTypes.string,
   sideBarOpen: PropTypes.bool,
   source: PropTypes.object,
+  status: PropTypes.string,
   updateProps: PropTypes.func,
   userId: PropTypes.func
 };

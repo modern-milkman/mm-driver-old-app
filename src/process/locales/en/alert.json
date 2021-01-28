@@ -23,6 +23,12 @@
         "message": "Try refreshing route data again. If the problem persists, contact your supervisor.",
         "refreshMessage": "Tap this message to reload route data. If the problem persists, contact your supervisor."
       }
+    },
+    "vanChecks": {
+      "mustComplyWithTerms": {
+        "title": "Missing requirements",
+        "message": "You need to comply with all terms to start your shift"
+      }
     }
   }
 }

@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import { mock } from 'Helpers';
 import Text from 'Components/Text';
 import Icon from 'Components/Icon';
-import { RowView } from 'Containers';
+import { CustomIcon } from 'Images';
+
+import { ColumnView, RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
 
 const NavBar = ({
@@ -14,6 +16,11 @@ const NavBar = ({
   leftIconColor,
   marginHorizontal,
   RightComponent,
+  rightAction,
+  rightText,
+  rightIcon,
+  rightCustomIcon,
+  rightColor,
   title
 }) => {
   return (
@@ -33,7 +40,16 @@ const NavBar = ({
       )}
 
       <Text.Input color={colors.secondary}>{title}</Text.Input>
-      {(RightComponent && <RightComponent />) || (
+      {RightComponent || rightText || rightIcon || rightCustomIcon ? (
+        renderRight(
+          RightComponent,
+          rightText,
+          rightIcon,
+          rightCustomIcon,
+          rightColor,
+          rightAction
+        )
+      ) : (
         <RowView
           width={defaults.topNavigation.height}
           height={defaults.topNavigation.height}
@@ -43,6 +59,61 @@ const NavBar = ({
   );
 };
 
+const renderRight = (
+  RightComponent,
+  rightText,
+  rightIcon,
+  rightCustomIcon,
+  rightColor,
+  rightAction
+) => {
+  if (RightComponent) {
+    return <RightComponent />;
+  }
+
+  if (rightText) {
+    return (
+      <ColumnView
+        width={60}
+        alignItems={'flex-end'}
+        justifyContent={'center'}
+        height={defaults.topNavigation.height}>
+        <Text.Label
+          color={rightColor}
+          onPress={rightAction}
+          align={'right'}
+          lineHeight={defaults.topNavigation.height}>
+          {rightText}
+        </Text.Label>
+      </ColumnView>
+    );
+  }
+
+  if (rightCustomIcon) {
+    return (
+      <CustomIcon
+        width={defaults.topNavigation.iconSize}
+        containerWidth={defaults.topNavigation.height}
+        icon={rightCustomIcon}
+        iconColor={rightColor}
+        disabled
+      />
+    );
+  }
+
+  if (rightIcon) {
+    return (
+      <Icon
+        name={rightIcon}
+        color={rightColor}
+        size={defaults.topNavigation.iconSize}
+        containerSize={defaults.topNavigation.height}
+        disabled
+      />
+    );
+  }
+};
+
 NavBar.propTypes = {
   LeftComponent: PropTypes.func,
   leftIcon: PropTypes.string,
@@ -50,13 +121,19 @@ NavBar.propTypes = {
   leftIconColor: PropTypes.any,
   marginHorizontal: PropTypes.number,
   RightComponent: PropTypes.func,
+  rightColor: PropTypes.string,
+  rightCustomIcon: PropTypes.string,
+  rightAction: PropTypes.func,
+  rightIcon: PropTypes.string,
+  rightText: PropTypes.string,
   title: PropTypes.string
 };
 
 NavBar.defaultProps = {
   leftIconAction: mock,
   leftIconColor: colors.secondary,
-  marginHorizontal: defaults.marginHorizontal
+  marginHorizontal: defaults.marginHorizontal,
+  rightColor: colors.primary
 };
 
 export default NavBar;

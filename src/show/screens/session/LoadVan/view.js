@@ -3,34 +3,18 @@ import PropTypes from 'prop-types';
 
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
-import { colors, defaults } from 'Theme';
-import { List, NavBar, Text } from 'Components';
+import { colors } from 'Theme';
+import { List, NavBar } from 'Components';
 import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView } from 'Containers';
 
 const LoadVan = (props) => {
-  const { itemCount, orderedStock, readOnly, updateProps } = props;
+  const { itemCount, orderedStock, readOnly, updateChecklistProps } = props;
 
   const doneLoadedVan = () => {
-    updateProps({ deliveryStatus: 1 });
+    updateChecklistProps({ loadedVan: true });
     NavigationService.goBack();
   };
-
-  const doneButton = () => (
-    <ColumnView
-      width={60}
-      alignItems={'flex-end'}
-      justifyContent={'center'}
-      height={defaults.topNavigation.height}>
-      <Text.Label
-        color={colors.primary}
-        onPress={doneLoadedVan}
-        align={'right'}
-        lineHeight={defaults.topNavigation.height}>
-        {I18n.t('screens:loadVan.done')}
-      </Text.Label>
-    </ColumnView>
-  );
 
   return (
     <SafeAreaView top bottom>
@@ -42,7 +26,8 @@ const LoadVan = (props) => {
           leftIcon={'chevron-left'}
           leftIconAction={NavigationService.goBack}
           title={`${itemCount} ${I18n.t('screens:loadVan.title')}`}
-          RightComponent={readOnly ? null : doneButton}
+          rightText={readOnly ? null : I18n.t('screens:loadVan.done')}
+          rightAction={doneLoadedVan}
         />
         <List data={orderedStock} />
       </ColumnView>
@@ -54,14 +39,14 @@ LoadVan.propTypes = {
   itemCount: PropTypes.number,
   orderedStock: PropTypes.array,
   readOnly: PropTypes.bool,
-  updateProps: PropTypes.func
+  updateChecklistProps: PropTypes.func
 };
 
 LoadVan.defaultProps = {
   itemCount: 0,
   orderedStock: [],
   readOnly: false,
-  updateProps: mock
+  updateChecklistProps: mock
 };
 
 export default LoadVan;

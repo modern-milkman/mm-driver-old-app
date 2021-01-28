@@ -8,13 +8,14 @@ export default connect((state) => {
   const selectedStopId = state.delivery?.selectedStopId;
 
   return {
-    deliveryStatus: state.delivery?.deliveryStatus,
+    checklist: state.delivery?.checklist,
     foregroundSize: state.device.foregroundSize,
     optimizedRoutes: state.delivery.optimizedRoutes,
     processing: state.delivery.processing,
     resetHourDay: state.device.resetHourDay,
     routeDescription: state.delivery?.stockWithData?.routeDescription || null,
     selectedStop: state.delivery?.stops[selectedStopId] || null,
+    status: state.delivery?.status,
     stopCount: stopCount(state)
   };
 }, {})(ForegroundContent);

@@ -7,28 +7,26 @@ import {
   Linking,
   NativeModules
 } from 'react-native';
+import { Base64 } from 'js-base64';
 
 import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 
-const blacklistApiEndpointFailureTracking = [
-  `${Config.FLEET_TRACKER_URL}/drivers`
-];
+const base64ToHex = (base64) => {
+  return [...Base64.atob(base64)]
+    .map((c) => c.charCodeAt(0).toString(16).padStart(2, 0))
+    .join('')
+    .toUpperCase();
+};
+
+const blacklists = {
+  apiEndpointFailureTracking: [`${Config.FLEET_TRACKER_URL}/drivers`],
+  addToStackRoute: ['CustomerIssueModal'],
+  resetStackRoutes: ['CheckIn']
+};
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
-const checkAtLeastOneItem = (items, statusId, exclude = false) => {
-  if (items) {
-    if (exclude) {
-      return items.some((i) => i.delivery_stateID !== statusId);
-    }
-
-    return items.some((i) => i.delivery_stateID === statusId);
-  }
-
-  return false;
-};
 
 const customerSatisfactionColor = (satisfactionStatus) => {
   switch (satisfactionStatus) {
@@ -48,6 +46,16 @@ const customerSatisfactionColor = (satisfactionStatus) => {
 const defaultRoutes = {
   public: 'Home',
   session: 'Main'
+};
+
+const deliveryStates = {
+  DEL: 'Delivering',
+  DELC: 'Delivery Complete',
+  NCI: 'Not Checked In',
+  LV: 'Loading Van',
+  SSC: 'Shift Start Checks',
+  SEC: 'Shift End Checks',
+  SC: 'Shift Completed'
 };
 
 const deviceFrame = () => Dimensions.get('window');
@@ -156,6 +164,39 @@ const toggle = (collection, item) => {
   return duplicate;
 };
 
+const plateRecognition = (search, plates) => {
+  let plateRecognized = '';
+  const kCharMatched = 5;
+
+  for (
+    let i = 0;
+    i < plates.length && plateRecognized.length === 0 && search.length === 7;
+    i++
+  ) {
+    const plateSpellCheckking = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ];
+
+    for (let j = 0; j < search.length; j++) {
+      if (plates[i][j] === search[j]) {
+        plateSpellCheckking.push(true);
+      }
+    }
+
+    if (plateSpellCheckking.reduce((a, item) => a + item, 0) >= kCharMatched) {
+      plateRecognized = plates[i];
+    }
+  }
+
+  return plateRecognized;
+};
+
 const randomKey = () =>
   Math.random()
     .toString(36)
@@ -187,10 +228,11 @@ const usePrevious = (value) => {
 };
 
 export {
-  blacklistApiEndpointFailureTracking,
+  base64ToHex,
+  blacklists,
   capitalize,
-  checkAtLeastOneItem,
   customerSatisfactionColor,
+  deliveryStates,
   deviceFrame,
   defaultRoutes,
   formatDate,
@@ -199,11 +241,12 @@ export {
   jiggleAnimation,
   mock,
   openDriverUpdate,
+  plateRecognition,
+  randomKey,
+  statusBarHeight,
   timeToHMArray,
   toggle,
   triggerDriverUpdate,
-  randomKey,
-  statusBarHeight,
   ukTimeNow,
   usePrevious
 };

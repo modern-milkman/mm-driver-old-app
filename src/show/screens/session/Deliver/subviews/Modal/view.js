@@ -51,12 +51,8 @@ const CustomerIssueModal = (props) => {
 
   const openActionSheet = () => {
     actionSheet({
-      [I18n.t(
-        'screens:deliver.customerIssue.modal.actionSheet.takePhoto'
-      )]: openPicker.bind(null, 'openCamera'),
-      [I18n.t(
-        'screens:deliver.customerIssue.modal.actionSheet.openGalery'
-      )]: openPicker.bind(null, 'openPicker')
+      [I18n.t('general:takePhoto')]: openPicker.bind(null, 'openCamera'),
+      [I18n.t('general:openGalery')]: openPicker.bind(null, 'openPicker')
     });
   };
 

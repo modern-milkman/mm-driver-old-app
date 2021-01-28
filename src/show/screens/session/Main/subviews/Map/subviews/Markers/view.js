@@ -1,20 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { deliveryStates as DS } from 'Helpers';
+
 import { Marker } from '../';
 
 const Markers = (props) => {
   const {
     completedStopsIds,
-    deliveryStatus,
     mapMarkerSize,
     orderedStopsIds,
     selectedStopId,
-    showDoneDeliveries
+    showDoneDeliveries,
+    status
   } = props;
 
-  const hasMarkers = deliveryStatus < 3 && orderedStopsIds?.length > 0;
-  const disabled = deliveryStatus < 2;
+  const hasMarkers =
+    [DS.NCI, DS.LV, DS.DEL, DS.SSC].includes(status) &&
+    orderedStopsIds?.length > 0;
+  const disabled = status !== DS.DEL;
 
   return (
     (hasMarkers && (
@@ -51,11 +55,11 @@ Markers.defaultProps = {};
 
 Markers.propTypes = {
   completedStopsIds: PropTypes.array,
-  deliveryStatus: PropTypes.number,
   mapMarkerSize: PropTypes.number,
   orderedStopsIds: PropTypes.array,
   selectedStopId: PropTypes.number,
-  showDoneDeliveries: PropTypes.bool
+  showDoneDeliveries: PropTypes.bool,
+  status: PropTypes.string
 };
 
 export default Markers;

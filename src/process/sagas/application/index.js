@@ -11,11 +11,7 @@ import Analytics, { EVENTS } from 'Services/analytics';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
 import { user as userSelector, Types as UserTypes } from 'Reducers/user';
 
-import {
-  blacklistApiEndpointFailureTracking,
-  defaultRoutes,
-  isAppInstalled
-} from 'Helpers';
+import { blacklists, defaultRoutes, isAppInstalled } from 'Helpers';
 import {
   Types as TransientTypes,
   transient as transientSelector
@@ -41,10 +37,10 @@ const navigationAppList = Platform.select({
 // EXPORTED
 export const apiError = function* ({ error, status }) {
   if (
-    !blacklistApiEndpointFailureTracking.includes(
+    !blacklists.apiEndpointFailureTracking.includes(
       `${error?.config?.baseURL}${error?.config?.url}`
     ) &&
-    !blacklistApiEndpointFailureTracking.includes(error?.config?.url)
+    !blacklists.apiEndpointFailureTracking.includes(error?.config?.url)
   ) {
     switch (status) {
       case 400:

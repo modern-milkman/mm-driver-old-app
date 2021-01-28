@@ -1,14 +1,21 @@
 import { connect } from 'react-redux';
 
-import { itemCount, Creators as deliveryActions } from 'Reducers/delivery';
+import {
+  itemCount,
+  Creators as deliveryActions,
+  stopCount
+} from 'Reducers/delivery';
 
 import Main from './view';
 
 export default connect(
   (state) => ({
-    availableNavApps: state.device?.availableNavApps,
     itemCount: itemCount(state),
-    deliveryStatus: state.delivery?.deliveryStatus
+    status: state.delivery?.status,
+    checklist: state.delivery?.checklist,
+    stopCount: stopCount(state)
   }),
-  { startDelivering: deliveryActions.startDelivering }
+  {
+    startDelivering: deliveryActions.startDelivering
+  }
 )(Main);

@@ -7,7 +7,7 @@ import I18n from 'Locales/I18n';
 import List from 'Components/List';
 import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
-import { statusBarHeight, mock } from 'Helpers';
+import { deliveryStates as DS, statusBarHeight, mock } from 'Helpers';
 import SafeKeyboardAreaView from 'Containers/SafeKeyboardAreaView';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
 
@@ -28,9 +28,9 @@ const handleSearchFilter = (items, searchValue) => {
 
 const Search = (props) => {
   const {
-    deliveryStatus,
     panY,
     searchValue,
+    status,
     stops,
     updateSelectedStop,
     updateTransientProps
@@ -93,7 +93,7 @@ const Search = (props) => {
   }, [focused, height]);
 
   return (
-    deliveryStatus === 2 && (
+    status === DS.DEL && (
       <>
         <View
           style={[
@@ -166,8 +166,8 @@ const Search = (props) => {
 Search.propTypes = {
   panY: PropTypes.object,
   searchValue: PropTypes.string,
+  status: PropTypes.string,
   stops: PropTypes.array,
-  deliveryStatus: PropTypes.number,
   updateSelectedStop: PropTypes.func,
   updateTransientProps: PropTypes.func
 };

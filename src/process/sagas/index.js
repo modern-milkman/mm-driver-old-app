@@ -41,6 +41,10 @@ import {
   optimizeStops,
   redirectSetSelectedClaim,
   refreshDriverData,
+  saveVehicleChecks,
+  saveVehicleChecksFailure,
+  saveVehicleChecksSuccess,
+  showMustComplyWithTerms,
   setCustomerClaims,
   setDelivered,
   setDeliveredOrRejectedSuccess,
@@ -99,6 +103,19 @@ export default function* root() {
       redirectSetSelectedClaim
     ), // TODO check if in use anywhere
     takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
+    takeLatest(DeliveryTypes.SAVE_VEHICLE_CHECKS, saveVehicleChecks),
+    takeLatest(
+      DeliveryTypes.SAVE_VEHICLE_CHECKS_FAILURE,
+      saveVehicleChecksFailure
+    ),
+    takeLatest(
+      DeliveryTypes.SAVE_VEHICLE_CHECKS_SUCCESS,
+      saveVehicleChecksSuccess
+    ),
+    takeLatest(
+      DeliveryTypes.SHOW_MUST_COMPLY_WITH_TERMS,
+      showMustComplyWithTerms
+    ),
     takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, setCustomerClaims),
     takeEvery(DeliveryTypes.SET_DELIVERED, setDelivered),
     takeEvery(

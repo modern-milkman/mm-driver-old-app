@@ -3,20 +3,22 @@ import { call, delay, put, select } from 'redux-saga/effects';
 import Api from 'Api';
 import I18n from 'Locales/I18n';
 import { Base64 } from 'js-base64';
+import { base64ToHex, deliveryStates as DS } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 import {
+  checklist as checklistSelector,
   claims as claimsSelector,
-  selectedStopId as selectedStopIdSelector,
   completedStopsIds as completedStopsIdsSelector,
-  deliveryStatus as deliveryStatusSelector,
   isOptimizedRoutes as optimizedRoutesSelector,
   orderedStopsIds as orderedStopsIdsSelector,
   outOfStockItems as outOfStockItemsSelector,
   selectedStop as selectedStopSelector,
+  selectedStopId as selectedStopIdSelector,
+  status as statusSelector,
   stops as stopsSelector,
   Types as DeliveryTypes
 } from 'Reducers/delivery';
@@ -25,24 +27,14 @@ import {
   device as deviceSelector
 } from 'Reducers/device';
 
-const updateTrackerData = function* ({ deliveryStatus }) {
+const updateTrackerData = function* ({ status }) {
   const user = yield select(userSelector);
   const device = yield select(deviceSelector);
-  let stringifiedDeliveryStatus = 'NCI';
-  switch (deliveryStatus) {
-    case 1:
-    case 2:
-      stringifiedDeliveryStatus = 'DELIVERING';
-      break;
-    case 3:
-      stringifiedDeliveryStatus = 'DELIVERY_COMPLETE';
-      break;
-  }
   yield put({
     type: Api.API_CALL,
     promise: Api.repositories.fleet.drivers({
       id: `${user.driverId}`,
-      deliveryStatus: stringifiedDeliveryStatus,
+      deliveryStatus: status,
       ...(device.position?.coords && { location: device.position.coords })
     })
   });
@@ -140,14 +132,25 @@ export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
 };
 
 export const foregroundDeliveryActions = function* ({}) {
-  const deliveryStatus = yield select(deliveryStatusSelector);
-  if (deliveryStatus === 0) {
+  const status = yield select(statusSelector);
+  if (status === DS.NCI) {
     yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
   }
 };
 
+export const getCustomerClaims = function* ({ customerId, selectedStopId }) {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS }
+    },
+    promise: Api.repositories.delivery.getCustomerClaims({ customerId }),
+    selectedStopId
+  });
+};
+
 export const getDriverDataFailure = function* ({}) {
-  const deliveryStatus = yield select(deliveryStatusSelector);
+  const status = yield select(statusSelector);
   yield put({
     type: DeliveryTypes.UPDATE_PROPS,
     props: { processing: false }
@@ -159,10 +162,10 @@ export const getDriverDataFailure = function* ({}) {
       title: I18n.t('alert:errors.api.driverData.title'),
       message: I18n.t(
         `alert:errors.api.driverData.${
-          deliveryStatus < 2 ? 'refreshMessage' : 'message'
+          status === DS.DEL ? 'message' : 'refreshMessage'
         }`
       ),
-      ...(deliveryStatus < 2 && {
+      ...(status !== DS.DEL && {
         interval: -1,
         payload: {
           action: DeliveryTypes.REFRESH_DRIVER_DATA
@@ -232,29 +235,121 @@ export const getVehicleStockForDriverSuccess = function* ({
   payload,
   props: { isRefreshData }
 }) {
-  const deliveryStatus = yield select(deliveryStatusSelector);
-
-  if (!isRefreshData && deliveryStatus === 2) {
+  const checklist = yield select(checklistSelector);
+  const status = yield select(statusSelector);
+  if (!isRefreshData && !checklist.deliveryComplete && status === DS.DEL) {
     yield put({
       type: DeliveryTypes.START_DELIVERING
     });
-  } else {
-    yield put({
-      type: DeliveryTypes.UPDATE_PROPS,
-      props: { processing: false }
-    });
   }
-  yield call(updateTrackerData, { deliveryStatus });
   Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, {
     payload
   });
 };
 
+export const optimizeStops = function* () {
+  const sID = yield select(selectedStopIdSelector);
+  yield call(updateSelectedStop, sID);
+  Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
+};
+
+export const redirectSetSelectedClaim = function* () {
+  NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
+};
+
 export const refreshDriverData = function* () {
-  const deliveryStatus = yield select(deliveryStatusSelector);
+  const status = yield select(statusSelector);
 
   yield put({ type: DeliveryTypes.GET_FOR_DRIVER, isRefreshData: true });
-  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { deliveryStatus });
+  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { status });
+};
+
+export const saveVehicleChecks = function* ({ saveType }) {
+  const checklist = yield select(checklistSelector);
+
+  const vehicleCheckDamage = Object.values(
+    checklist.payload.vehicleCheckDamage
+  ).map((damage, index) => {
+    const images = damage.vehicleCheckDamageImage.map((image) => ({
+      imageType: image.imageType,
+      image: base64ToHex(image.image)
+    }));
+
+    return {
+      locationOfDamage: Object.keys(checklist.payload.vehicleCheckDamage)[
+        index
+      ],
+      comments: damage.comments,
+      vehicleCheckDamageImage: images
+    };
+  });
+
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SAVE_VEHICLE_CHECKS_SUCCESS },
+      fail: { type: DeliveryTypes.SAVE_VEHICLE_CHECKS_FAILURE }
+    },
+    promise: Api.repositories.delivery.postVechicleChecks({
+      payload: {
+        ...checklist.payload,
+        vehicleCheckDamage,
+        currentMileage: parseInt(checklist.payload.currentMileage)
+      }
+    }),
+    saveType
+  });
+};
+
+export const saveVehicleChecksFailure = function* ({ saveType }) {
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'error',
+      title: I18n.t('alert:errors.api.backend.title', { status: 'BE' }),
+      message: I18n.t('alert:errors.api.backend.message')
+    }
+  });
+};
+
+export const saveVehicleChecksSuccess = function* () {
+  yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
+  NavigationService.navigate({ routeName: 'CheckIn' });
+};
+
+export const showMustComplyWithTerms = function* () {
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'error',
+      title: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.title'),
+      message: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.message')
+    }
+  });
+};
+
+export const setCustomerClaims = function* ({ payload, selectedStopId }) {
+  for (const [claimIndex, claim] of payload.entries()) {
+    for (const [
+      driverResponseIndex,
+      driverResponse
+    ] of claim.driverResponses.entries()) {
+      if (driverResponse.hasImage) {
+        yield put({
+          type: Api.API_CALL,
+          actions: {
+            success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
+          },
+          promise: Api.repositories.delivery.getDriverResponseImage({
+            id: driverResponse.claimDriverResponseId
+          }),
+          claimIndex,
+          driverResponseIndex,
+          selectedStopId
+        });
+      }
+    }
+  }
 };
 
 export const setDelivered = function* ({ id }) {
@@ -282,7 +377,7 @@ export const setDelivered = function* ({ id }) {
 
 export const setDeliveredOrRejectedSuccess = function* () {
   const completedStopsIds = yield select(completedStopsIdsSelector);
-  const deliveryStatus = yield select(deliveryStatusSelector);
+  const status = yield select(statusSelector);
   const isOptimizedRoutes = yield select(optimizedRoutesSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
   const stops = yield select(stopsSelector);
@@ -296,12 +391,11 @@ export const setDeliveredOrRejectedSuccess = function* () {
     yield call(updateSelectedStop, sID);
   }
 
-  yield call(updateTrackerData, { deliveryStatus });
-
   yield put({
     type: Api.API_CALL,
     promise: Api.repositories.fleet.drivers({
       id: `${user.driverId}`,
+      deliveryStatus: status,
       deliveries: {
         completed: totalDeliveries - deliveriesLeft,
         total: totalDeliveries,
@@ -352,19 +446,10 @@ export const setRejected = function* ({ id, reasonMessage }) {
   });
 };
 
-export const redirectSetSelectedClaim = function* () {
-  NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
-};
-
-export const optimizeStops = function* () {
-  const sID = yield select(selectedStopIdSelector);
-  yield call(updateSelectedStop, sID);
-  Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
-};
-
 export const startDelivering = function* () {
   const device = yield select(deviceSelector);
   const isOptimizedRoutes = yield select(optimizedRoutesSelector);
+  const status = yield select(statusSelector);
 
   if (isOptimizedRoutes) {
     yield delay(750); // delay required because lots of animations + transitions + navigation + processing result in sluggish interface dropping frames. slight delay here makes everything smooth
@@ -375,13 +460,14 @@ export const startDelivering = function* () {
       returnPosition: device.returnPosition
     });
   }
+  yield call(updateTrackerData, { status });
   Analytics.trackEvent(EVENTS.START_DELIVERING);
 };
 
-export const updateProps = function* ({ props: { deliveryStatus } }) {
+export const updateProps = function* ({ props: { status } }) {
   const user = yield select(userSelector);
-  if (user && deliveryStatus) {
-    yield call(updateTrackerData, { deliveryStatus });
+  if (user && status) {
+    yield call(updateTrackerData, { status });
   }
 };
 
@@ -446,39 +532,4 @@ export const updateSelectedStop = function* ({ sID }) {
       orders: Object.keys(selectedStop.orders)
     }
   });
-};
-
-export const getCustomerClaims = function* ({ customerId, selectedStopId }) {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS }
-    },
-    promise: Api.repositories.delivery.getCustomerClaims({ customerId }),
-    selectedStopId
-  });
-};
-
-export const setCustomerClaims = function* ({ payload, selectedStopId }) {
-  for (const [claimIndex, claim] of payload.entries()) {
-    for (const [
-      driverResponseIndex,
-      driverResponse
-    ] of claim.driverResponses.entries()) {
-      if (driverResponse.hasImage) {
-        yield put({
-          type: Api.API_CALL,
-          actions: {
-            success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
-          },
-          promise: Api.repositories.delivery.getDriverResponseImage({
-            id: driverResponse.claimDriverResponseId
-          }),
-          claimIndex,
-          driverResponseIndex,
-          selectedStopId
-        });
-      }
-    }
-  }
 };

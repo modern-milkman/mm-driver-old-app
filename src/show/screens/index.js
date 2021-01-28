@@ -4,23 +4,29 @@ import UpgradeApp from './public/UpgradeApp';
 
 // SESSION ONLY
 import CheckIn from './session/CheckIn';
+import Checklist from './session/VehicleCheckWizard/Checklist';
 import CustomerIssueDetails from './session/Deliver/subviews/Details';
 import CustomerIssueList from './session/Deliver/subviews/List';
 import CustomerIssueModal from './session/Deliver/subviews/Modal';
+import DamageReport from './session/VehicleCheckWizard/DamageReport';
 import Deliver from './session/Deliver';
 import LoadVan from './session/LoadVan';
 import Main from './session/Main';
+import RegistrationMileage from './session/VehicleCheckWizard/RegistrationMileage';
 import Settings from './session/Settings';
 
 export {
   CheckIn,
+  Checklist,
   CustomerIssueDetails,
   CustomerIssueList,
   CustomerIssueModal,
+  DamageReport,
   Deliver,
   Home,
   LoadVan,
   Main,
+  RegistrationMileage,
   Settings,
   UpgradeApp
 };
