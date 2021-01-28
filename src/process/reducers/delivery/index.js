@@ -234,6 +234,10 @@ export const getForDriverSuccess = (
 ) =>
   produce(state, (draft) => {
     draft.stockWithData = payload;
+    draft.stops = {};
+    draft.orderedStopsIds = [];
+    draft.completedStopsIds = [];
+
     const deliveryStatus = checkAtLeastOneItem(payload?.items, 1, true)
       ? checkAtLeastOneItem(payload?.items, 1)
         ? 2
@@ -251,12 +255,6 @@ export const getForDriverSuccess = (
       } = item;
 
       if (!draft.stops[key]) {
-        if (item.delivery_stateID === 1) {
-          draft.orderedStopsIds.push(key);
-        } else {
-          draft.completedStopsIds.push(key);
-        }
-
         draft.stops[key] = {
           key,
           customerId: item.customerId,
@@ -269,12 +267,13 @@ export const getForDriverSuccess = (
               ? deliveryInstructions
               : null,
           icon: null,
+          itemCount: 0,
           latitude,
           longitude,
           orderID: item.orderID,
           orders: {},
           phoneNumber: item.phoneNumber,
-          status: item.delivery_stateID === 1 ? 'pending' : 'completed',
+          status: 'completed',
           title:
             (item.address.name_number ? `${item.address.name_number}` : '') +
             (item.address.line1 ? ` ${item.address.line1}` : '') +
@@ -287,6 +286,19 @@ export const getForDriverSuccess = (
         };
       }
 
+      if (item.delivery_stateID === 1) {
+        if (!draft.orderedStopsIds.includes(key)) {
+          draft.orderedStopsIds.push(key);
+        }
+        if (draft.stops[key].status === 'completed') {
+          draft.stops[key].status = 'pending';
+        }
+      } else {
+        if (!draft.completedStopsIds.includes(key)) {
+          draft.completedStopsIds.push(key);
+        }
+      }
+
       draft.stops[key].orders[item.orderItemId] = {
         description: item.measureDescription,
         image: `${productImageUri}${item.productId}`,
@@ -295,9 +307,7 @@ export const getForDriverSuccess = (
         title: item.productName
       };
 
-      draft.stops[key].itemCount =
-        (draft.stops[key]?.itemCount ? draft.stops[key].itemCount : 0) +
-        item.quantity;
+      draft.stops[key].itemCount += item.quantity;
     }
   });
 
