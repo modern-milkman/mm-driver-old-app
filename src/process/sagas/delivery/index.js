@@ -231,6 +231,18 @@ export const getProductsOrder = function* () {
   });
 };
 
+export const getVehicleChecks = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_VEHICLE_CHECKS },
+      fail: { type: DeliveryTypes.UPDATE_PROPS }
+    },
+    promise: Api.repositories.delivery.getVehicleChecks(),
+    props: { processing: false }
+  });
+};
+
 export const getVehicleStockForDriverSuccess = function* ({
   payload,
   props: { isRefreshData }
@@ -416,6 +428,10 @@ export const setItemOutOfStock = function* ({ id }) {
 };
 
 export const setProductsOrder = function* () {
+  yield put({ type: DeliveryTypes.GET_VEHICLE_CHECKS });
+};
+
+export const setVehicleChecks = function* () {
   const user_session = yield select(userSessionPresentSelector);
   if (user_session) {
     yield put({ type: DeliveryTypes.GET_FOR_DRIVER });

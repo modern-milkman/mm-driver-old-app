@@ -27,6 +27,9 @@ export default {
   getProductsOrder() {
     return Api.get('Product/GetProductOrder');
   },
+  getVehicleChecks() {
+    return Api.get('/Driver/VehicleCheck');
+  },
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
   },

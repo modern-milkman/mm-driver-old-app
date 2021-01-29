@@ -37,6 +37,7 @@ import {
   getForDriver,
   getForDriverSuccess,
   getProductsOrder,
+  getVehicleChecks,
   getVehicleStockForDriverSuccess,
   optimizeStops,
   redirectSetSelectedClaim,
@@ -51,6 +52,7 @@ import {
   setItemOutOfStock,
   setProductsOrder,
   setRejected,
+  setVehicleChecks,
   startDelivering,
   updateProps as updateDeliveryProps,
   updateSelectedStop,
@@ -93,6 +95,7 @@ export default function* root() {
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
     takeLatest(DeliveryTypes.GET_PRODUCTS_ORDER, getProductsOrder),
+    takeLatest(DeliveryTypes.GET_VEHICLE_CHECKS, getVehicleChecks),
     takeLatest(
       DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
       getVehicleStockForDriverSuccess
@@ -125,6 +128,7 @@ export default function* root() {
     takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
     takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
     takeEvery(DeliveryTypes.SET_REJECTED, setRejected),
+    takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, setVehicleChecks),
     takeEvery(DeliveryTypes.START_DELIVERING, startDelivering),
     takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
     takeEvery(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),

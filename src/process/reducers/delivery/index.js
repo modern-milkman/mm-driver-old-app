@@ -30,6 +30,7 @@ export const { Types, Creators } = createActions(
     getForDriver: ['isRefreshData'],
     getForDriverSuccess: ['payload', 'isRefreshData'],
     getProductsOrder: null,
+    getVehicleChecks: null,
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: [
       'payload',
@@ -63,6 +64,7 @@ export const { Types, Creators } = createActions(
     setSelectedStopImage: ['payload', 'props'],
     setVanDamageComment: ['key', 'comment'],
     setVanDamageImage: ['key', 'image', 'imageType'],
+    setVehicleChecks: ['payload'],
     startDelivering: [],
     toggleCheckJson: ['key'],
     toggleConfirmedItem: ['id'],
@@ -103,28 +105,6 @@ const initialState = {
     shiftStartVanChecks: false,
     payload: { ...initialVehicleChecks },
     payloadAltered: false
-  },
-  checksJson: {
-    Odometer: false,
-    Keys: false,
-    Brakes: false,
-    'Horn and steering': false,
-    Lights: false,
-    'Mirrors & glass': false,
-    'Seats & seat belts': false,
-    'Washers and wipers': false,
-    'Warning lights': false,
-    'No smoking sign': false,
-    'Maximum height sticker': false,
-    Battery: false,
-    'Fluid levels, leaks, filler caps': false,
-    'Bodywork and doors': false,
-    Exhaust: false,
-    'Tyres and wheels': false,
-    'Load security / Internal damage': false,
-    'Interior clean': false,
-    'Exterior clean': false,
-    'Audible warning devices': false
   },
   claims: { showClaimModal: false, showReplyModal: false, processing: false },
   completedStopsIds: [],
@@ -636,6 +616,11 @@ export const setSelectedClaim = (state, { claim }) =>
     draft.claims[selectedStopId].selectedClaim = claim;
   });
 
+export const setVehicleChecks = (state, { payload }) =>
+  produce(state, (draft) => {
+    draft.checksJson = payload;
+  });
+
 export const startDelivering = (state) =>
   produce(state, (draft) => {
     if (!state.optimizedRoutes) {
@@ -740,6 +725,7 @@ export default createReducer(initialState, {
   [Types.SET_SELECTED_STOP_IMAGE]: setSelectedStopImage,
   [Types.SET_VAN_DAMAGE_COMMENT]: setVanDamageComment,
   [Types.SET_VAN_DAMAGE_IMAGE]: setVanDamageImage,
+  [Types.SET_VEHICLE_CHECKS]: setVehicleChecks,
   [Types.START_DELIVERING]: startDelivering,
   [Types.TOGGLE_CHECK_JSON]: toggleCheckJson,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
