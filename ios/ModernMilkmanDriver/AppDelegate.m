@@ -9,6 +9,7 @@
 #import <AppCenterReactNativeAnalytics.h>
 #import <AppCenterReactNativeCrashes.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import <Firebase.h> 
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -17,8 +18,6 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-
-#import <Firebase.h> 
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -58,7 +57,7 @@ static void InitializeFlipper(UIApplication *application) {
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
 
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
-  [FIRApp configure]; 
+  [FIRApp configure];
   return YES;
 }
 
