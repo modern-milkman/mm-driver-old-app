@@ -146,30 +146,33 @@ export const foregroundDeliveryActions = function* ({}) {
   }
 };
 
-export const getDriverDataFailure = function* ({}) {
+export const getDriverDataFailure = function* ({ status }) {
   const deliveryStatus = yield select(deliveryStatusSelector);
+  const user_session = yield select(userSessionPresentSelector);
   yield put({
     type: DeliveryTypes.UPDATE_PROPS,
     props: { processing: false }
   });
-  yield put({
-    type: GrowlTypes.ALERT,
-    props: {
-      type: 'error',
-      title: I18n.t('alert:errors.api.driverData.title'),
-      message: I18n.t(
-        `alert:errors.api.driverData.${
-          deliveryStatus < 2 ? 'refreshMessage' : 'message'
-        }`
-      ),
-      ...(deliveryStatus < 2 && {
-        interval: -1,
-        payload: {
-          action: DeliveryTypes.REFRESH_DRIVER_DATA
-        }
-      })
-    }
-  });
+  if (status !== 404 && user_session) {
+    yield put({
+      type: GrowlTypes.ALERT,
+      props: {
+        type: 'error',
+        title: I18n.t('alert:errors.api.driverData.title'),
+        message: I18n.t(
+          `alert:errors.api.driverData.${
+            deliveryStatus < 2 ? 'refreshMessage' : 'message'
+          }`
+        ),
+        ...(deliveryStatus < 2 && {
+          interval: -1,
+          payload: {
+            action: DeliveryTypes.REFRESH_DRIVER_DATA
+          }
+        })
+      }
+    });
+  }
 };
 
 export const getDriverReplySingleImage = function* ({ id, selectedStopId }) {
