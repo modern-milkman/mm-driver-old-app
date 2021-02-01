@@ -1,9 +1,6 @@
 import Api from 'Api';
 
 export default {
-  acknowledgeClaim({ id }) {
-    return Api.post(`/Claim/Acknowledge/${id}`);
-  },
   driverReply({ claimId, comment, image, imageType }) {
     return Api.post('/Claim/DriverResponse', {
       claimId,

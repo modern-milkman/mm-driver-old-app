@@ -54,7 +54,6 @@
         "customerIssue": "Customer Issue",
         "date": "Date: ",
         "listTitle": "Reply #{{id}}",
-        "markAsRead": "Mark as read",
         "productsAffected": "Products affected: ",
         "reason": "Reason: ",
         "reply": "Reply",

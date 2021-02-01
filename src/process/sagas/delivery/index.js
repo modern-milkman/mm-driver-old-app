@@ -11,7 +11,6 @@ import Analytics, { EVENTS } from 'Services/analytics';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 import {
   checklist as checklistSelector,
-  claims as claimsSelector,
   completedStopsIds as completedStopsIdsSelector,
   isOptimizedRoutes as optimizedRoutesSelector,
   orderedStopsIds as orderedStopsIdsSelector,
@@ -41,32 +40,12 @@ const updateTrackerData = function* ({ status }) {
 };
 
 // EXPORTED
-export const acknowledgeClaim = function* ({ id, selectedStopId }) {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS },
-      fail: { type: DeliveryTypes.ACKNOWLEDGE_CLAIM_FAILURE }
-    },
-    promise: Api.repositories.delivery.acknowledgeClaim({ id }),
-    selectedStopId
-  });
-};
-
-export const acknowledgeClaimSuccess = function* () {
-  const claims = yield select(claimsSelector);
-  const { showClaimModal, showReplyModal } = claims;
-  if (!showClaimModal && !showReplyModal) {
-    NavigationService.goBack();
-  }
-};
-
 export const driverReply = function* ({
   claimId,
   comment,
   image,
   imageType,
-  acknowledgedClaim = true
+  acknowledgedClaim
 }) {
   let imageHex = null;
   if (image) {
@@ -95,11 +74,7 @@ export const driverReply = function* ({
 };
 
 export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
-  const claims = yield select(claimsSelector);
   const selectedStopId = yield select(selectedStopIdSelector);
-  const {
-    selectedClaim: { customerIssueIdx }
-  } = claims[selectedStopId];
 
   if (payload.hasImage) {
     yield call(
@@ -108,26 +83,6 @@ export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
         selectedStopId
       })
     );
-  }
-
-  yield put({
-    type: DeliveryTypes.SET_SELECTED_CLAIM,
-    claim: {
-      ...claims[selectedStopId].list.filter(
-        (claim) => claim.claimId === payload.claimId
-      )[0],
-      customerIssueIdx
-    }
-  });
-
-  if (acknowledgedClaim) {
-    yield put({
-      type: DeliveryTypes.ACKNOWLEDGE_CLAIM,
-      id: payload.claimId,
-      selectedStopId
-    });
-  } else {
-    NavigationService.goBack();
   }
 };
 

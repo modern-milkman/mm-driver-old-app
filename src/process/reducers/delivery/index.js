@@ -10,9 +10,6 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
-    acknowledgeClaim: ['id', 'selectedStopId'],
-    acknowledgeClaimFailure: null,
-    acknowledgeClaimSuccess: ['payload', 'selectedStopId'],
     deleteVanDamageImage: ['key', 'index'],
     driverReply: [
       'claimId',
@@ -124,33 +121,6 @@ const initialState = {
   stops: {}
 };
 
-const acknowledgeClaimSuccess = (state, { payload, selectedStopId }) =>
-  produce(state, (draft) => {
-    draft.claims[selectedStopId].list = draft.claims[selectedStopId].list.map(
-      (item) => {
-        if (item.claimId === payload.claimId) {
-          return payload;
-        }
-        return item;
-      }
-    );
-
-    const driverUnacknowledgedList = draft.claims[selectedStopId].list.filter(
-      (item) => item.driverAcknowledged === false
-    );
-
-    if (driverUnacknowledgedList.length > 0) {
-      draft.claims[selectedStopId].selectedClaim = driverUnacknowledgedList[0];
-      draft.claims[selectedStopId].showedUnacknowledgedNr += 1;
-      draft.claims.showReplyModal = false;
-    } else {
-      draft.claims.showClaimModal = false;
-      NavigationService.goBack();
-    }
-
-    draft.claims.processing = false;
-  });
-
 const claimProcessing = (state) =>
   produce(state, (draft) => {
     draft.claims.processing = true;
@@ -170,20 +140,38 @@ const claimFinishedProcessing = (state) =>
     draft.claims.processing = false;
   });
 
-const driverReplySuccess = (state, { payload, acknowledgeClaim }) =>
+const driverReplySuccess = (state, { payload, acknowledgedClaim }) =>
   produce(state, (draft) => {
     const selectedStopId = draft.selectedStopId;
 
-    if (!acknowledgeClaim) {
-      draft.claims[selectedStopId].list = draft.claims[selectedStopId].list.map(
-        (claim) => {
-          if (claim.claimId === payload.claimId) {
-            claim.driverResponses.push(payload);
-          }
-
-          return claim;
+    draft.claims[selectedStopId].list = draft.claims[selectedStopId].list.map(
+      (claim) => {
+        if (claim.claimId === payload.claimId) {
+          claim.driverResponses.push(payload);
+          claim.driverAcknowledged = true;
         }
+
+        return claim;
+      }
+    );
+
+    if (!acknowledgedClaim) {
+      const driverUnacknowledgedList = draft.claims[selectedStopId].list.filter(
+        (item) => item.driverAcknowledged === false
       );
+
+      if (driverUnacknowledgedList.length > 0) {
+        draft.claims[selectedStopId].selectedClaim =
+          driverUnacknowledgedList[0];
+        draft.claims[selectedStopId].showedUnacknowledgedNr += 1;
+      } else {
+        draft.claims.showClaimModal = false;
+        NavigationService.goBack();
+      }
+    } else {
+      draft.claims[selectedStopId].selectedClaim = draft.claims[
+        selectedStopId
+      ].list.filter((claim) => claim.claimId === payload.claimId)[0];
     }
 
     draft.claims[selectedStopId].driverResponse = {
@@ -191,7 +179,7 @@ const driverReplySuccess = (state, { payload, acknowledgeClaim }) =>
       image: null,
       imageType: null
     };
-
+    draft.claims.showReplyModal = false;
     draft.claims.processing = false;
   });
 
@@ -695,9 +683,6 @@ export const updateSelectedStop = (state, { sID }) =>
   });
 
 export default createReducer(initialState, {
-  [Types.ACKNOWLEDGE_CLAIM]: claimProcessing,
-  [Types.ACKNOWLEDGE_CLAIM_FAILURE]: claimFinishedProcessing,
-  [Types.ACKNOWLEDGE_CLAIM_SUCCESS]: acknowledgeClaimSuccess,
   [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DRIVER_REPLY]: claimProcessing,
   [Types.DRIVER_REPLY_FAILURE]: claimFinishedProcessing,

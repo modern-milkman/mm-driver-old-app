@@ -27,8 +27,6 @@ import {
 } from './application';
 
 import {
-  acknowledgeClaim,
-  acknowledgeClaimSuccess,
   driverReply,
   driverReplySuccess,
   foregroundDeliveryActions,
@@ -86,8 +84,6 @@ export default function* root() {
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
     takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
 
-    takeEvery(DeliveryTypes.ACKNOWLEDGE_CLAIM, acknowledgeClaim),
-    takeEvery(DeliveryTypes.ACKNOWLEDGE_CLAIM_SUCCESS, acknowledgeClaimSuccess),
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
     takeEvery(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),

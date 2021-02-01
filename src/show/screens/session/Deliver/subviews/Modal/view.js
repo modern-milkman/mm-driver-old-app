@@ -21,7 +21,6 @@ const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/I
 
 const CustomerIssueModal = (props) => {
   const {
-    acknowledgeClaim,
     claims: {
       driverResponse,
       driverUnacknowledgedNr,
@@ -30,7 +29,7 @@ const CustomerIssueModal = (props) => {
     },
     driverReply,
     processing,
-    selectedStopId,
+
     showReplyModal,
     showClaimModal,
     toggleReplyModal,
@@ -167,33 +166,24 @@ const CustomerIssueModal = (props) => {
               }
               disabled={processing}
             />
-            <Button.Primary
-              title={I18n.t(
-                `screens:deliver.customerIssue.modal.${
-                  showReplyModal ? 'send' : 'markAsRead'
-                }`
-              )}
-              disabled={showReplyModal && !image && !text}
-              width={'50%'}
-              noBorderRadius
-              processing={processing}
-              onPress={
-                showReplyModal
-                  ? driverReply.bind(
-                      null,
-                      selectedClaim.claimId,
-                      text,
-                      image,
-                      imageType,
-                      showClaimModal
-                    )
-                  : acknowledgeClaim.bind(
-                      null,
-                      selectedClaim.claimId,
-                      selectedStopId
-                    )
-              }
-            />
+
+            {showReplyModal && (
+              <Button.Primary
+                title={I18n.t('screens:deliver.customerIssue.modal.send')}
+                disabled={showReplyModal && !image && !text}
+                width={showReplyModal ? '50%' : '100%'}
+                noBorderRadius
+                processing={processing}
+                onPress={driverReply.bind(
+                  null,
+                  selectedClaim.claimId,
+                  text,
+                  image,
+                  imageType,
+                  !showClaimModal
+                )}
+              />
+            )}
           </RowView>
         </ColumnView>
       </ColumnView>
@@ -321,11 +311,9 @@ const renderCustomerIssueBody = ({ customerComment, data, reason }) => {
 };
 
 CustomerIssueModal.propTypes = {
-  acknowledgeClaim: PropTypes.func,
   claims: PropTypes.object,
   driverReply: PropTypes.func,
   processing: PropTypes.bool,
-  selectedStopId: PropTypes.number,
   showClaimModal: PropTypes.bool,
   showReplyModal: PropTypes.bool,
   toggleReplyModal: PropTypes.func,
@@ -333,7 +321,6 @@ CustomerIssueModal.propTypes = {
 };
 
 CustomerIssueModal.defaultProps = {
-  acknowledgeClaim: mock,
   claims: {},
   driverReply: mock,
   processing: false,
