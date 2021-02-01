@@ -39,7 +39,12 @@ const CustomerIssueModal = (props) => {
 
   const { text, image, imageType } = driverResponse;
 
-  const { claimDateTime = '', reason = '', claimItem = [] } = selectedClaim;
+  const {
+    claimDateTime = '',
+    reason = '',
+    claimItem = [],
+    customerComment
+  } = selectedClaim;
 
   const data = claimItem.map((item) => {
     return {
@@ -143,7 +148,7 @@ const CustomerIssueModal = (props) => {
                 text,
                 openActionSheet
               })
-            : renderCustomerIssueBody({ reason, data })}
+            : renderCustomerIssueBody({ customerComment, data, reason })}
 
           <Separator color={colors.input} width={'100%'} />
           <RowView>
@@ -268,24 +273,41 @@ const renderReplyBody = ({
   );
 };
 
-const renderCustomerIssueBody = ({ reason, data }) => {
+const renderCustomerIssueBody = ({ customerComment, data, reason }) => {
   return (
     <>
       <RowView
-        paddingTop={defaults.marginVertical}
-        paddingBottom={defaults.marginVertical / 2}
+        paddingVertical={defaults.marginVertical / 2}
         paddingHorizontal={defaults.marginHorizontal / 2}
-        justifyContent={'flex-start'}>
+        justifyContent={'flex-start'}
+        alignItems={'flex-start'}>
         <Text.List color={colors.secondaryLight}>
           {I18n.t('screens:deliver.customerIssue.modal.reason')}
         </Text.List>
 
-        <Text.List color={colors.secondary}>{reason}</Text.List>
+        <Text.List color={colors.secondary} flex={1}>
+          {reason}
+        </Text.List>
       </RowView>
+
+      {customerComment?.length > 0 && (
+        <RowView
+          paddingHorizontal={defaults.marginHorizontal / 2}
+          justifyContent={'flex-start'}
+          alignItems={'flex-start'}>
+          <Text.List color={colors.secondaryLight}>
+            {I18n.t('screens:deliver.customerIssue.modal.customerComment')}
+          </Text.List>
+
+          <Text.List color={colors.secondary} flex={1}>
+            {customerComment}
+          </Text.List>
+        </RowView>
+      )}
 
       <ColumnView
         alignItems={'flex-start'}
-        paddingVertical={defaults.marginVertical / 4}
+        paddingVertical={defaults.marginVertical / 2}
         paddingHorizontal={defaults.marginHorizontal / 2}
         justifyContent={'flex-start'}>
         <Text.List color={colors.secondaryLight}>

@@ -26,6 +26,7 @@ const CustomerIssueDetails = (props) => {
     claimItem,
     driverResponses,
     claimDateTime,
+    customerComment,
     customerIssueIdx,
     reason
   } = selectedClaim;
@@ -70,6 +71,22 @@ const CustomerIssueDetails = (props) => {
 
   const listData = [];
 
+  if (customerComment?.length > 0) {
+    listData.push({
+      title: I18n.t('screens:deliver.customerIssue.modal.customerComment'),
+      data: [
+        {
+          disabled: true,
+          customIcon: 'customerIssue',
+          customIconProps: {
+            width: sizes.list.image
+          },
+          title: customerComment
+        }
+      ]
+    });
+  }
+
   if (data && data.length) {
     listData.push({
       title: I18n.t('screens:deliver.customerIssue.modal.productsAffected'),
@@ -81,6 +98,16 @@ const CustomerIssueDetails = (props) => {
     listData.push({
       title: I18n.t('screens:deliver.customerIssue.details.driverReplies'),
       data: driverReplyData
+    });
+  } else {
+    listData.push({
+      title: I18n.t('screens:deliver.customerIssue.details.driverReplies'),
+      data: [
+        {
+          disabled: true,
+          title: I18n.t('screens:deliver.customerIssue.details.noReplies')
+        }
+      ]
     });
   }
 

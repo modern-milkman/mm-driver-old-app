@@ -96,7 +96,7 @@ const renderRight = (
         containerWidth={defaults.topNavigation.height}
         icon={rightCustomIcon}
         iconColor={rightColor}
-        disabled
+        onPress={rightAction}
       />
     );
   }
@@ -108,7 +108,7 @@ const renderRight = (
         color={rightColor}
         size={defaults.topNavigation.iconSize}
         containerSize={defaults.topNavigation.height}
-        disabled
+        onPress={rightAction}
       />
     );
   }

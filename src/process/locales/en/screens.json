@@ -50,6 +50,7 @@
     },
     "customerIssue": {
       "modal": {
+        "customerComment": "Comment: ",
         "customerIssue": "Customer Issue",
         "date": "Date: ",
         "listTitle": "Reply #{{id}}",
@@ -69,6 +70,7 @@
         "title": "Customer issue #{{issueNr}}"
       },
       "details": {
+        "noReplies": "No replies",
         "dateTime": "{{date}} at {{time}}",
         "driverReplies": "Driver Replies"
       }
