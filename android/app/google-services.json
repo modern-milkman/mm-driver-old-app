@@ -1,40 +1,49 @@
 {
   "project_info": {
-    "project_number": "423253453247",
-    "project_id": "themodernmilkmandriver",
-    "storage_bucket": "themodernmilkmandriver.appspot.com"
+    "project_number": "487552711834",
+    "firebase_url": "https://milkman-delivery.firebaseio.com",
+    "project_id": "milkman-delivery",
+    "storage_bucket": "milkman-delivery.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:423253453247:android:b16cdc3c66de97948c590a",
+        "mobilesdk_app_id": "1:487552711834:android:931bbd3e17b7d0ec",
         "android_client_info": {
           "package_name": "com.luminos.modernmilkmandriver.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "423253453247-16dktigticaveg3ju2fpn50m6h0eu9f0.apps.googleusercontent.com",
+          "client_id": "487552711834-vs1v42nmi7i2fnjkb7qks6mop735mrmu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.luminos.modernmilkmandriver.app",
+            "certificate_hash": "e16c3d5c27fd8668b3a54f5b21899db2e1db803f"
+          }
+        },
+        {
+          "client_id": "487552711834-pl4iad3gcc4jt1lrqs41tip1msia6s9p.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDeOzlw4O8YAiN3HOHhVJmprWdbyn7Ctuk"
+          "current_key": "AIzaSyCHZ94VBZKVmCxkHGFEaD-fRNaPh3CIkaM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "423253453247-16dktigticaveg3ju2fpn50m6h0eu9f0.apps.googleusercontent.com",
+              "client_id": "487552711834-pl4iad3gcc4jt1lrqs41tip1msia6s9p.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "423253453247-g9dhqn52ai2sl75usmioulj93olc2rag.apps.googleusercontent.com",
+              "client_id": "487552711834-ejvre2fh07fcone7jijmj8dr9kbnm684.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.luminos.meew.app"
+                "bundle_id": "com.luminos.modernmilkmandriver.app"
               }
             }
           ]

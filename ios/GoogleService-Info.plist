@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>423253453247-fgoj0gj6h7qm20f8jk8kpgjvvfo1h14k.apps.googleusercontent.com</string>
+	<string>487552711834-omi526cgh3lbi0m5nq7ra353giiu59uu.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.423253453247-fgoj0gj6h7qm20f8jk8kpgjvvfo1h14k</string>
+	<string>com.googleusercontent.apps.487552711834-omi526cgh3lbi0m5nq7ra353giiu59uu</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>487552711834-vs1v42nmi7i2fnjkb7qks6mop735mrmu.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDVUqysSgnAH0MeLPyPxhEGwNPmvab-lrQ</string>
+	<string>AIzaSyD_4tDgI4oNU57_O5ADqmk1QhnnQOkeA5U</string>
 	<key>GCM_SENDER_ID</key>
-	<string>423253453247</string>
+	<string>487552711834</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.luminos.modernmilkmandriver.app</string>
 	<key>PROJECT_ID</key>
-	<string>themodernmilkmandriver</string>
+	<string>milkman-delivery</string>
 	<key>STORAGE_BUCKET</key>
-	<string>themodernmilkmandriver.appspot.com</string>
+	<string>milkman-delivery.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:423253453247:ios:afef77594d34245f8c590a</string>
+	<string>1:487552711834:ios:c49c285ecfb365c6bb7323</string>
+	<key>DATABASE_URL</key>
+	<string>https://milkman-delivery.firebaseio.com</string>
 </dict>
 </plist>
