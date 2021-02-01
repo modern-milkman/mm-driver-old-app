@@ -104,30 +104,32 @@ export const getCustomerClaims = function* ({ customerId, selectedStopId }) {
   });
 };
 
-export const getDriverDataFailure = function* ({}) {
-  const status = yield select(statusSelector);
+export const getDriverDataFailure = function* ({ status }) {
+  const user_session = yield select(userSessionPresentSelector);
   yield put({
     type: DeliveryTypes.UPDATE_PROPS,
     props: { processing: false }
   });
-  yield put({
-    type: GrowlTypes.ALERT,
-    props: {
-      type: 'error',
-      title: I18n.t('alert:errors.api.driverData.title'),
-      message: I18n.t(
-        `alert:errors.api.driverData.${
-          status === DS.DEL ? 'message' : 'refreshMessage'
-        }`
-      ),
-      ...(status !== DS.DEL && {
-        interval: -1,
-        payload: {
-          action: DeliveryTypes.REFRESH_DRIVER_DATA
-        }
-      })
-    }
-  });
+  if (status !== 404 && user_session) {
+    yield put({
+      type: GrowlTypes.ALERT,
+      props: {
+        type: 'error',
+        title: I18n.t('alert:errors.api.driverData.title'),
+        message: I18n.t(
+          `alert:errors.api.driverData.${
+            status === DS.DEL ? 'message' : 'refreshMessage'
+          }`
+        ),
+        ...(status !== DS.DEL && {
+          interval: -1,
+          payload: {
+            action: DeliveryTypes.REFRESH_DRIVER_DATA
+          }
+        })
+      }
+    });
+  }
 };
 
 export const getDriverReplySingleImage = function* ({ id, selectedStopId }) {
