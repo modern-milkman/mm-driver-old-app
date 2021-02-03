@@ -3,6 +3,7 @@ import { RNCamera } from 'react-native-camera';
 import React, { useState, useRef } from 'react';
 import NavigationService from 'Navigation/service';
 import { Platform, Pressable } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
 import { defaults, colors } from 'Theme';
@@ -25,13 +26,38 @@ const UKregex = RegExp(
   '(^[A-Z]{2}[0-9]{2}s?[A-Z]{3}$)|(^[A-Z][0-9]{1,3}[A-Z]{3}$)|(^[A-Z]{3}[0-9]{1,3}[A-Z]$)|(^[0-9]{1,4}[A-Z]{1,2}$)|(^[0-9]{1,3}[A-Z]{1,3}$)|(^[A-Z]{1,2}[0-9]{1,4}$)|(^[A-Z]{1,3}[0-9]{1,3}$)|(^[A-Z]{1,3}[0-9]{1,4}$)|(^[0-9]{3}[DX]{1}[0-9]{3}$)'
 );
 
-const RegistrationMileage = ({ payload, setMileage, setRegistration }) => {
-  const { currentMileage, vehicleRegistration } = payload;
+const updateCurrentMileage = (
+  updateTransientProps,
+  setMileage,
+  prop,
+  value
+) => {
+  const update = {};
+  update[`${prop}`] = value;
+  updateTransientProps(update);
+  setMileage(value);
+};
+
+const RegistrationMileage = ({
+  currentMileage,
+  currentMileageErrorMessage,
+  currentMileageHasError,
+  payload,
+  setMileage,
+  setRegistration,
+  updateTransientProps
+}) => {
+  const {
+    currentMileage: payloadCurrentMileage,
+    vehicleRegistration
+  } = payload;
   const camera = useRef();
   const [plateImage, setPlateImage] = useState('');
 
   const disabled =
-    currentMileage?.length === 0 || vehicleRegistration?.length === 0;
+    currentMileageHasError ||
+    currentMileage?.length === 0 ||
+    vehicleRegistration?.length === 0;
 
   const setNrPlateAndStop = async (plate) => {
     const data = await camera.current.takePictureAsync({
@@ -63,6 +89,11 @@ const RegistrationMileage = ({ payload, setMileage, setRegistration }) => {
 
   return (
     <SafeAreaView top bottom>
+      <NavigationEvents
+        onDidFocus={updateTransientProps.bind(null, {
+          currentMileage: payloadCurrentMileage
+        })}
+      />
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}
@@ -152,8 +183,16 @@ const RegistrationMileage = ({ payload, setMileage, setRegistration }) => {
             marginHorizontal={defaults.marginHorizontal}
             marginVertical={defaults.marginVertical / 2}>
             <TextInput
+              keyboardType={'numeric'}
+              error={currentMileageHasError}
+              errorMessage={currentMileageErrorMessage}
               autoCapitalize={'none'}
-              onChangeText={setMileage.bind(null)}
+              onChangeText={updateCurrentMileage.bind(
+                null,
+                updateTransientProps,
+                setMileage,
+                'currentMileage'
+              )}
               onSubmitEditing={
                 disabled
                   ? mock
@@ -163,7 +202,6 @@ const RegistrationMileage = ({ payload, setMileage, setRegistration }) => {
               }
               placeholder={I18n.t('input:placeholder.mileage')}
               value={currentMileage}
-              disableErrors
               ref={mileageReference}
               returnKeyType={'next'}
             />
@@ -188,9 +226,13 @@ const RegistrationMileage = ({ payload, setMileage, setRegistration }) => {
 };
 
 RegistrationMileage.propTypes = {
+  currentMileage: PropTypes.string,
+  currentMileageErrorMessage: PropTypes.string,
+  currentMileageHasError: PropTypes.bool,
   payload: PropTypes.object,
   setMileage: PropTypes.func,
-  setRegistration: PropTypes.func
+  setRegistration: PropTypes.func,
+  updateTransientProps: PropTypes.func
 };
 
 export default RegistrationMileage;

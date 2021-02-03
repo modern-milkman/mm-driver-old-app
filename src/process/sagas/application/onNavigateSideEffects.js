@@ -70,8 +70,10 @@ export function* onNavigateSideEffects(navigateParams) {
       }
   }
 
-  InteractionManager.runAfterInteractions(() => {
-    const { dispatch } = store().store;
-    dispatch(TransientCreators.reset());
-  });
+  if (routeName && !blacklists.transientReset.includes(routeName)) {
+    InteractionManager.runAfterInteractions(() => {
+      const { dispatch } = store().store;
+      dispatch(TransientCreators.reset());
+    });
+  }
 }

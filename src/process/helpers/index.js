@@ -23,7 +23,8 @@ const base64ToHex = (base64) => {
 const blacklists = {
   apiEndpointFailureTracking: [`${Config.FLEET_TRACKER_URL}/drivers`],
   addToStackRoute: ['CustomerIssueModal'],
-  resetStackRoutes: ['CheckIn']
+  resetStackRoutes: ['CheckIn'],
+  transientReset: ['RegistrationMileage']
 };
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);

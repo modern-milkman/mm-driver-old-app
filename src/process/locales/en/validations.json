@@ -1,5 +1,6 @@
 {
   "invalid": {
-    "email": "Email is invalid"
+    "email": "Email is invalid",
+    "currentMileage": "Can only contain digits"
   }
 }

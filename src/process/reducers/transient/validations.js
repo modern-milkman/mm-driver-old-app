@@ -14,5 +14,17 @@ export default {
       );
     },
     message: I18n.t('validations:invalid.email')
+  },
+  currentMileage: {
+    isValid: (value) => {
+      const numberRegex = new RegExp(/^[1-9][0-9]*$/);
+      return (
+        value === null ||
+        value === undefined ||
+        value.length === 0 ||
+        numberRegex.test(value)
+      );
+    },
+    message: I18n.t('validations:invalid.currentMileage')
   }
 };
