@@ -170,7 +170,10 @@ const RegistrationMileage = ({ payload, setMileage, setRegistration }) => {
           </RowView>
         </ColumnView>
 
-        <RowView width={'auto'} paddingHorizontal={defaults.marginHorizontal}>
+        <RowView
+          width={'auto'}
+          paddingHorizontal={defaults.marginHorizontal}
+          marginBottom={defaults.marginVertical}>
           <Button.Primary
             onPress={NavigationService.navigate.bind(null, {
               routeName: 'DamageReport'

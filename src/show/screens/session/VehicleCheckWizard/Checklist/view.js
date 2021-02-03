@@ -56,7 +56,10 @@ const Checklist = ({
         {renderProgressBar(3, payload)}
         <ColumnView flex={1} justifyContent={'space-between'}>
           <List data={data} onPress={toggleCheckJson} disabled={processing} />
-          <RowView width={'auto'} marginHorizontal={defaults.marginHorizontal}>
+          <RowView
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}
+            marginBottom={defaults.marginVertical}>
             <Button.Primary
               title={mainActionTitle}
               disabled={processing}

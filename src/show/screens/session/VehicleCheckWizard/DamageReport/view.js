@@ -103,7 +103,10 @@ const DamageReport = ({
             )}
           </ColumnView>
 
-          <RowView width={'auto'} marginHorizontal={defaults.marginHorizontal}>
+          <RowView
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}
+            marginBottom={defaults.marginVertical}>
             <Button.Primary
               title={mainActionTitle}
               onPress={NavigationService.navigate.bind(null, {
