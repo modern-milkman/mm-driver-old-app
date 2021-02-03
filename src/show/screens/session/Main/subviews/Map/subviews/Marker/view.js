@@ -63,6 +63,7 @@ const Marker = (props) => {
         }}
         onPress={disabled ? mock : updateSelectedStop.bind(null, id)}
         anchor={{ x: 0.5, y: 1 }}
+        {...(completed && { zIndex: -1 })}
         {...(selectedStopId === id && { zIndex: 1 })}
         tracksViewChanges={tracksViewChanges}>
         <View
@@ -127,10 +128,12 @@ const Marker = (props) => {
 };
 
 Marker.defaultProps = {
+  completed: false,
   disabled: false
 };
 
 Marker.propTypes = {
+  completed: PropTypes.bool,
   completedStopsIds: PropTypes.array,
   disabled: PropTypes.bool,
   id: PropTypes.number,
@@ -143,6 +146,7 @@ Marker.propTypes = {
 
 const areEqual = (prevProps, nextProps) => {
   return !(
+    prevProps.completed !== nextProps.completed ||
     prevProps.mapMarkerSize !== nextProps.mapMarkerSize ||
     nextProps.selectedStopId === nextProps.id ||
     nextProps.previousStopId === nextProps.id

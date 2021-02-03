@@ -36,6 +36,7 @@ const Markers = (props) => {
               key={`${sID}-${mapMarkerSize}-${disabled}`}
               id={sID}
               disabled={disabled}
+              completed
             />
           ))}
         {!showDoneDeliveries && completedStopsIds.includes(selectedStopId) && (
@@ -43,6 +44,7 @@ const Markers = (props) => {
             key={`${selectedStopId}-${mapMarkerSize}-${disabled}`}
             id={selectedStopId}
             disabled={disabled}
+            completed
           />
         )}
       </>
