@@ -88,7 +88,8 @@ export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
 
 export const foregroundDeliveryActions = function* ({}) {
   const status = yield select(statusSelector);
-  if (status === DS.NCI) {
+  const user_session = yield select(userSessionPresentSelector);
+  if (status === DS.NCI && user_session) {
     yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
   }
 };
