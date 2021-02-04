@@ -41,7 +41,8 @@ export const triggerDriverAlert = ({
             : triggerDriverAlert.bind(null, {
                 mandatoryPrompts,
                 promptIndex: promptIndex + 1,
-                saveVehicleChecks
+                saveVehicleChecks,
+                showMustComplyWithTerms
               })
       }
     ],

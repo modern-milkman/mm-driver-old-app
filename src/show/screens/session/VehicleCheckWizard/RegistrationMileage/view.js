@@ -90,7 +90,7 @@ const RegistrationMileage = ({
   return (
     <SafeAreaView top bottom>
       <NavigationEvents
-        onDidFocus={updateTransientProps.bind(null, {
+        onWillFocus={updateTransientProps.bind(null, {
           currentMileage: payloadCurrentMileage
         })}
       />
