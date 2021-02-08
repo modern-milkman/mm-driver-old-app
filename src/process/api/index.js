@@ -1,4 +1,5 @@
 import axios from 'axios';
+import EM from 'es-event-emitter';
 import { gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 
@@ -14,6 +15,11 @@ import { blacklistApiEndpointFailureTracking, timeToHMArray } from 'Helpers';
 let TOKEN = null;
 let REFRESH_TOKEN = null;
 
+const api = axios.create({
+  baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
+  timeout: parseInt(Config.API_TIMEOUT)
+});
+
 const defaultConfig = {
   internal: true,
   headers: {
@@ -23,10 +29,9 @@ const defaultConfig = {
   }
 };
 
-const api = axios.create({
-  baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
-  timeout: parseInt(Config.API_TIMEOUT)
-});
+const refreshTokenBus = new EM();
+let refreshTokenLock = false;
+let refreshTimeout = null;
 
 const interceptors = {
   config: (config) => {
@@ -49,17 +54,38 @@ const interceptors = {
           dispatch(ApplicationActions.logout());
           return Promise.reject(error);
         } else {
-          const refreshResponse = await repositories.user.refreshToken(
-            Api.getToken(),
-            Api.getRefreshToken()
-          );
+          if (refreshTokenLock) {
+            await new Promise((resolve) =>
+              refreshTokenBus.once('unlocked', resolve)
+            );
+          } else if (Api.getToken() && Api.getRefreshToken()) {
+            refreshTokenLock = true;
 
-          Api.setToken(
-            refreshResponse.data.jwtToken,
-            refreshResponse.data.refreshToken
-          );
+            refreshTimeout = setTimeout(() => {
+              refreshTokenLock = false;
+              refreshTokenBus.emit('unlocked');
+            }, parseInt(Config.API_TIMEOUT));
 
-          dispatch(UserActions.updateProps({ ...refreshResponse.data }));
+            const refreshResponse = await repositories.user.refreshToken(
+              Api.getToken(),
+              Api.getRefreshToken()
+            );
+
+            clearTimeout(refreshTimeout);
+
+            Api.setToken(
+              refreshResponse.data.jwtToken,
+              refreshResponse.data.refreshToken
+            );
+
+            dispatch(UserActions.updateProps({ ...refreshResponse.data }));
+
+            refreshTokenLock = false;
+            refreshTokenBus.emit('unlocked');
+          } else {
+            dispatch(ApplicationActions.logout());
+            return Promise.reject(error);
+          }
 
           return api(originalRequest);
         }
