@@ -2,6 +2,7 @@ import { enableES5 } from 'immer';
 import Crashes from 'appcenter-crashes';
 import Config from 'react-native-config';
 import { AppRegistry } from 'react-native';
+import Analytics from 'appcenter-analytics';
 
 import Application from './src/show/Application';
 import { name as appName } from './package.json';
@@ -17,6 +18,9 @@ if (global.location && global.location.pathname.includes('/debugger-ui')) {
 
 if (Config.ENVIRONMENT === 'development') {
   Crashes.setEnabled(false);
+  Analytics.setEnabled(false);
+} else if (Config.ENVIRONMENT === 'staging') {
+  Analytics.setEnabled(false);
 }
 
 AppRegistry.registerComponent(appName, () => Application);
