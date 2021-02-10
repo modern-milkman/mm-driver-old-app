@@ -19,6 +19,152 @@ import style from './style';
 const { width, height } = deviceFrame();
 const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
+const openActionSheet = ({ driverResponse, updateDriverResponse }) => {
+  actionSheet({
+    [I18n.t('general:takePhoto')]: openPicker.bind(null, {
+      driverResponse,
+      method: 'openCamera',
+      updateDriverResponse
+    }),
+    [I18n.t('general:openGalery')]: openPicker.bind(null, {
+      driverResponse,
+      method: 'openPicker',
+      updateDriverResponse
+    })
+  });
+};
+
+const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
+  ImagePicker[method]({
+    width: 1000,
+    height: 1000,
+    cropping: true,
+
+    includeBase64: true
+  }).then((img) => {
+    updateDriverResponse({
+      text: driverResponse?.text,
+      image: `data:${img.mime};base64,${img.data}`,
+      imageType: img.mime
+    });
+  });
+};
+
+const updateText = (updateDriverResponse, driverResponse, text) => {
+  updateDriverResponse({
+    image: driverResponse?.image,
+    imageType: driverResponse?.imageType,
+    text
+  });
+};
+
+const renderReplyBody = ({ driverResponse, updateDriverResponse }) => {
+  return (
+    <ColumnView
+      paddingTop={defaults.marginVertical}
+      paddingBottom={defaults.marginVertical / 2}
+      paddingHorizontal={defaults.marginHorizontal}
+      justifyContent={'flex-start'}>
+      <TextInput
+        onChangeText={updateText.bind(
+          this,
+          updateDriverResponse,
+          driverResponse
+        )}
+        multiline
+        value={driverResponse?.text}
+        multilineHeight={100}
+        placeholder={I18n.t('input:placeholder.customerIssueModal')}
+      />
+      <RowView justifyContent={'flex-start'}>
+        {driverResponse.image && driverResponse.image !== '' ? (
+          <TouchableOpacity
+            onPress={updateDriverResponse.bind(null, {
+              text: driverResponse?.text,
+              image: null,
+              imageType: null
+            })}
+            style={style.photoWrapper}>
+            <Image
+              source={{
+                uri: driverResponse?.image
+              }}
+              style={{ borderRadius: defaults.borderRadius }}
+              width={sizes.list.image}
+              height={sizes.list.image}
+            />
+            <CustomIcon
+              icon={'close'}
+              containerWidth={sizes.list.image / 2}
+              style={style.closeIcon}
+              onPress={updateDriverResponse.bind(null, {
+                text: driverResponse?.text,
+                image: null,
+                imageType: null
+              })}
+            />
+          </TouchableOpacity>
+        ) : (
+          <CustomIcon
+            containerWidth={sizes.list.image}
+            width={sizes.list.image}
+            icon={'addPhoto'}
+            iconColor={colors.Primary}
+            style={style.addPhotoIcon}
+            onPress={openActionSheet.bind(null, {
+              driverResponse,
+              updateDriverResponse
+            })}
+          />
+        )}
+      </RowView>
+    </ColumnView>
+  );
+};
+
+const renderCustomerIssueBody = ({ customerComment, reason, sectionData }) => {
+  return (
+    <ColumnView maxHeight={height * 0.4}>
+      <RowView
+        paddingVertical={defaults.marginVertical / 2}
+        paddingHorizontal={defaults.marginHorizontal}
+        justifyContent={'flex-start'}
+        alignItems={'flex-start'}>
+        <Text.List color={colors.secondaryLight}>
+          {I18n.t('screens:deliver.customerIssue.modal.reason')}
+        </Text.List>
+
+        <Text.List color={colors.secondary} flex={1}>
+          {reason}
+        </Text.List>
+      </RowView>
+
+      {customerComment?.length > 0 && (
+        <>
+          <Separator color={colors.input} width={'100%'} />
+          <RowView
+            paddingHorizontal={defaults.marginHorizontal}
+            paddingVertical={defaults.marginVertical / 2}
+            justifyContent={'flex-start'}
+            alignItems={'flex-start'}>
+            <Text.List color={colors.secondaryLight}>
+              {I18n.t('screens:deliver.customerIssue.modal.customerComment')}
+            </Text.List>
+
+            <Text.List color={colors.secondary} flex={1}>
+              {customerComment}
+            </Text.List>
+          </RowView>
+        </>
+      )}
+
+      <Separator color={colors.input} width={'100%'} />
+
+      <List data={sectionData} hasSections />
+    </ColumnView>
+  );
+};
+
 const CustomerIssueModal = (props) => {
   const {
     claims: {
@@ -35,8 +181,6 @@ const CustomerIssueModal = (props) => {
     toggleReplyModal,
     updateDriverResponse
   } = props;
-
-  const { text, image, imageType } = driverResponse;
 
   const {
     claimDateTime = '',
@@ -57,29 +201,6 @@ const CustomerIssueModal = (props) => {
       })
     }
   ];
-
-  const openActionSheet = () => {
-    actionSheet({
-      [I18n.t('general:takePhoto')]: openPicker.bind(null, 'openCamera'),
-      [I18n.t('general:openGalery')]: openPicker.bind(null, 'openPicker')
-    });
-  };
-
-  const openPicker = (method) => {
-    ImagePicker[method]({
-      width: 1000,
-      height: 1000,
-      cropping: true,
-
-      includeBase64: true
-    }).then((img) => {
-      updateDriverResponse({
-        text,
-        image: `data:${img.mime};base64,${img.data}`,
-        imageType: img.mime
-      });
-    });
-  };
 
   return (
     <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
@@ -145,13 +266,7 @@ const CustomerIssueModal = (props) => {
           <Separator color={colors.input} width={'100%'} />
 
           {showReplyModal
-            ? renderReplyBody({
-                updateDriverResponse,
-                image,
-                imageType,
-                text,
-                openActionSheet
-              })
+            ? renderReplyBody({ driverResponse, updateDriverResponse })
             : renderCustomerIssueBody({ customerComment, reason, sectionData })}
 
           <Separator color={colors.input} width={'100%'} />
@@ -175,16 +290,20 @@ const CustomerIssueModal = (props) => {
             {showReplyModal && (
               <Button.Primary
                 title={I18n.t('screens:deliver.customerIssue.modal.send')}
-                disabled={showReplyModal && !image && !text}
+                disabled={
+                  showReplyModal &&
+                  !driverResponse?.image &&
+                  !driverResponse?.text
+                }
                 width={showReplyModal ? '50%' : '100%'}
                 noBorderRadius
                 processing={processing}
                 onPress={driverReply.bind(
                   null,
                   selectedClaim.claimId,
-                  text,
-                  image,
-                  imageType,
+                  driverResponse?.text,
+                  driverResponse?.image,
+                  driverResponse?.imageType,
                   !showClaimModal
                 )}
               />
@@ -192,121 +311,6 @@ const CustomerIssueModal = (props) => {
           </RowView>
         </ColumnView>
       </ColumnView>
-    </ColumnView>
-  );
-};
-
-const updateText = (updateDriverResponse, image, imageType, text) => {
-  updateDriverResponse({ image, imageType, text });
-};
-
-const renderReplyBody = ({
-  updateDriverResponse,
-  image,
-  imageType,
-  text,
-  openActionSheet
-}) => {
-  return (
-    <ColumnView
-      paddingTop={defaults.marginVertical}
-      paddingBottom={defaults.marginVertical / 2}
-      paddingHorizontal={defaults.marginHorizontal}
-      justifyContent={'flex-start'}>
-      <TextInput
-        onChangeText={updateText.bind(
-          this,
-          updateDriverResponse,
-          image,
-          imageType
-        )}
-        multiline
-        value={text}
-        multilineHeight={100}
-        placeholder={I18n.t('input:placeholder.customerIssueModal')}
-      />
-      <RowView justifyContent={'flex-start'}>
-        {image && image !== '' ? (
-          <TouchableOpacity
-            onPress={updateDriverResponse.bind(null, {
-              text,
-              image: null,
-              imageType: null
-            })}
-            style={style.photoWrapper}>
-            <Image
-              source={{
-                uri: image
-              }}
-              style={{ borderRadius: defaults.borderRadius }}
-              width={sizes.list.image}
-              height={sizes.list.image}
-            />
-            <CustomIcon
-              icon={'close'}
-              containerWidth={sizes.list.image / 2}
-              style={style.closeIcon}
-              onPress={updateDriverResponse.bind(null, {
-                text,
-                image: null,
-                imageType: null
-              })}
-            />
-          </TouchableOpacity>
-        ) : (
-          <CustomIcon
-            containerWidth={sizes.list.image}
-            width={sizes.list.image}
-            icon={'addPhoto'}
-            iconColor={colors.Primary}
-            style={style.addPhotoIcon}
-            onPress={openActionSheet}
-          />
-        )}
-      </RowView>
-    </ColumnView>
-  );
-};
-
-const renderCustomerIssueBody = ({ customerComment, reason, sectionData }) => {
-  return (
-    <ColumnView maxHeight={height * 0.4}>
-      <RowView
-        paddingVertical={defaults.marginVertical / 2}
-        paddingHorizontal={defaults.marginHorizontal}
-        justifyContent={'flex-start'}
-        alignItems={'flex-start'}>
-        <Text.List color={colors.secondaryLight}>
-          {I18n.t('screens:deliver.customerIssue.modal.reason')}
-        </Text.List>
-
-        <Text.List color={colors.secondary} flex={1}>
-          {reason}
-        </Text.List>
-      </RowView>
-
-      {customerComment?.length > 0 && (
-        <>
-          <Separator color={colors.input} width={'100%'} />
-          <RowView
-            paddingHorizontal={defaults.marginHorizontal}
-            paddingVertical={defaults.marginVertical / 2}
-            justifyContent={'flex-start'}
-            alignItems={'flex-start'}>
-            <Text.List color={colors.secondaryLight}>
-              {I18n.t('screens:deliver.customerIssue.modal.customerComment')}
-            </Text.List>
-
-            <Text.List color={colors.secondary} flex={1}>
-              {customerComment}
-            </Text.List>
-          </RowView>
-        </>
-      )}
-
-      <Separator color={colors.input} width={'100%'} />
-
-      <List data={sectionData} hasSections />
     </ColumnView>
   );
 };
