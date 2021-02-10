@@ -19,10 +19,8 @@ const handleSearchFilter = (items, searchValue) => {
   if (items && items.length <= 0) {
     return [];
   }
-  return items.filter(
-    (item) =>
-      item?.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
-      item?.customerId?.toString()?.includes(searchValue.toLowerCase())
+  return items.filter((item) =>
+    item?.searchHandle?.includes(searchValue.toLowerCase())
   );
 };
 

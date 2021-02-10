@@ -312,6 +312,14 @@ export const getForDriverSuccess = (
       } = item;
 
       if (!draft.stops[key]) {
+        const title =
+          (item.address.name_number ? `${item.address.name_number}` : '') +
+          (item.address.line1 ? ` ${item.address.line1}` : '') +
+          (item.address.postcodeOutward
+            ? `, ${item.address.postcodeOutward}`
+            : '') +
+          (item.address.postcodeInward ? `${item.address.postcodeInward}` : '');
+
         draft.stops[key] = {
           key,
           customerId: item.customerId,
@@ -331,15 +339,8 @@ export const getForDriverSuccess = (
           orders: {},
           phoneNumber: item.phoneNumber,
           status: 'completed',
-          title:
-            (item.address.name_number ? `${item.address.name_number}` : '') +
-            (item.address.line1 ? ` ${item.address.line1}` : '') +
-            (item.address.postcodeOutward
-              ? `, ${item.address.postcodeOutward}`
-              : '') +
-            (item.address.postcodeInward
-              ? `${item.address.postcodeInward}`
-              : '')
+          title,
+          searchHandle: title.toLowerCase() + item.customerId.toString()
         };
       }
 
@@ -363,6 +364,8 @@ export const getForDriverSuccess = (
         miscelaneousTop: item.quantity,
         title: item.productName
       };
+
+      draft.stops[key].searchHandle += ` ${item.productName.toLowerCase()}`;
 
       draft.stops[key].itemCount += item.quantity;
     }
