@@ -17,7 +17,6 @@ import { Button, Text, TextInput, Image, List, Separator } from 'Components';
 import style from './style';
 
 const { width, height } = deviceFrame();
-const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
 const openActionSheet = ({ driverResponse, updateDriverResponse }) => {
   actionSheet({
@@ -50,13 +49,7 @@ const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
   });
 };
 
-const updateText = (updateDriverResponse, driverResponse, text) => {
-  updateDriverResponse({
-    image: driverResponse?.image,
-    imageType: driverResponse?.imageType,
-    text
-  });
-};
+const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
 const renderReplyBody = ({ driverResponse, updateDriverResponse }) => {
   return (
@@ -163,6 +156,14 @@ const renderCustomerIssueBody = ({ customerComment, reason, sectionData }) => {
       <List data={sectionData} hasSections />
     </ColumnView>
   );
+};
+
+const updateText = (updateDriverResponse, driverResponse, text) => {
+  updateDriverResponse({
+    image: driverResponse?.image,
+    imageType: driverResponse?.imageType,
+    text
+  });
 };
 
 const CustomerIssueModal = (props) => {
