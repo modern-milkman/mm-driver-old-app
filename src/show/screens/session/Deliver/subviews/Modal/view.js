@@ -16,7 +16,7 @@ import { Button, Text, TextInput, Image, List, Separator } from 'Components';
 
 import style from './style';
 
-const { width } = deviceFrame();
+const { width, height } = deviceFrame();
 const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
 const CustomerIssueModal = (props) => {
@@ -41,13 +41,18 @@ const CustomerIssueModal = (props) => {
 
   const { claimDateTime = '', reason = '', claimItem = [] } = selectedClaim;
 
-  const data = claimItem.map((item) => {
-    return {
-      disabled: true,
-      image: `${productImageUri}${item.productId}`,
-      title: item.productName
-    };
-  });
+  const sectionData = [
+    {
+      title: I18n.t('screens:deliver.customerIssue.modal.productsAffected'),
+      data: claimItem.map((item) => {
+        return {
+          disabled: true,
+          image: `${productImageUri}${item.productId}`,
+          title: item.productName
+        };
+      })
+    }
+  ];
 
   const openActionSheet = () => {
     actionSheet({
@@ -96,7 +101,7 @@ const CustomerIssueModal = (props) => {
             justifyContent={'space-between'}
             alignItems={'center'}
             paddingVertical={defaults.marginVertical / 2}
-            paddingHorizontal={defaults.marginHorizontal / 2}>
+            paddingHorizontal={defaults.marginHorizontal}>
             <RowView
               justifyContent={'flex-start'}
               flex={1}
@@ -127,7 +132,7 @@ const CustomerIssueModal = (props) => {
 
           <RowView
             paddingVertical={defaults.marginVertical / 2}
-            paddingHorizontal={defaults.marginHorizontal / 2}
+            paddingHorizontal={defaults.marginHorizontal}
             justifyContent={'flex-start'}>
             <Text.List color={colors.secondaryLight}>
               {I18n.t('screens:deliver.customerIssue.modal.date')}
@@ -147,7 +152,7 @@ const CustomerIssueModal = (props) => {
                 text,
                 openActionSheet
               })
-            : renderCustomerIssueBody({ reason, data })}
+            : renderCustomerIssueBody({ reason, sectionData })}
 
           <Separator color={colors.input} width={'100%'} />
           <RowView>
@@ -215,7 +220,7 @@ const renderReplyBody = ({
     <ColumnView
       paddingTop={defaults.marginVertical}
       paddingBottom={defaults.marginVertical / 2}
-      paddingHorizontal={defaults.marginHorizontal / 2}
+      paddingHorizontal={defaults.marginHorizontal}
       justifyContent={'flex-start'}>
       <TextInput
         onChangeText={updateText.bind(
@@ -272,14 +277,14 @@ const renderReplyBody = ({
   );
 };
 
-const renderCustomerIssueBody = ({ reason, data }) => {
+const renderCustomerIssueBody = ({ reason, sectionData }) => {
   return (
-    <>
+    <ColumnView maxHeight={height * 0.4}>
       <RowView
-        paddingTop={defaults.marginVertical}
-        paddingBottom={defaults.marginVertical / 2}
-        paddingHorizontal={defaults.marginHorizontal / 2}
-        justifyContent={'flex-start'}>
+        paddingVertical={defaults.marginVertical / 2}
+        paddingHorizontal={defaults.marginHorizontal}
+        justifyContent={'flex-start'}
+        alignItems={'flex-start'}>
         <Text.List color={colors.secondaryLight}>
           {I18n.t('screens:deliver.customerIssue.modal.reason')}
         </Text.List>
@@ -287,18 +292,10 @@ const renderCustomerIssueBody = ({ reason, data }) => {
         <Text.List color={colors.secondary}>{reason}</Text.List>
       </RowView>
 
-      <ColumnView
-        alignItems={'flex-start'}
-        paddingVertical={defaults.marginVertical / 4}
-        paddingHorizontal={defaults.marginHorizontal / 2}
-        justifyContent={'flex-start'}>
-        <Text.List color={colors.secondaryLight}>
-          {I18n.t('screens:deliver.customerIssue.modal.productsAffected')}
-        </Text.List>
+      <Separator color={colors.input} width={'100%'} />
 
-        <List listItemStyle={style.listMargin} data={data} />
-      </ColumnView>
-    </>
+      <List data={sectionData} hasSections />
+    </ColumnView>
   );
 };
 
