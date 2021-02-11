@@ -81,6 +81,15 @@ export const init = function* () {
   });
 
   yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
+  if (Platform.OS === 'android') {
+    yield put({
+      type: Api.API_CALL,
+      actions: {
+        success: { type: DeviceTypes.SET_LATEST_APP }
+      },
+      promise: Api.repositories.appcenter.getLatest()
+    });
+  }
   Analytics.trackEvent(EVENTS.APP_INIT);
 };
 
