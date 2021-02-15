@@ -7,6 +7,7 @@ import LoadVan from './view';
 export default connect(
   (state) => ({
     itemCount: itemCount(state),
+    deliveredStock: state.delivery?.deliveredStock,
     orderedStock: state.delivery?.orderedStock,
     readOnly: state.application.lastRouteParams?.readOnly
   }),
