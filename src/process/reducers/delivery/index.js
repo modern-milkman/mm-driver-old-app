@@ -34,6 +34,7 @@ export const { Types, Creators } = createActions(
       'deliveryDate',
       'isRefreshData'
     ],
+    incrementDeliveredStock: ['productId', 'quantity'],
     optimizeStops: ['currentLocation', 'returnPosition'],
     redirectSetSelectedClaim: ['claim'],
     refreshDriverData: null,
@@ -106,6 +107,7 @@ const initialState = {
   claims: { showClaimModal: false, showReplyModal: false, processing: false },
   completedStopsIds: [],
   confirmedItem: [],
+  deliveredStock: {},
   directionsPolyline: [],
   hasRoutes: false,
   optimizedRoutes: false,
@@ -183,6 +185,13 @@ const driverReplySuccess = (state, { payload, acknowledgedClaim }) =>
     draft.claims.processing = false;
   });
 
+const privateIncrementDeliveredStock = (draft, { productId, quantity }) => {
+  if (!draft.deliveredStock[productId]) {
+    draft.deliveredStock[productId] = 0;
+  }
+  draft.deliveredStock[productId] += quantity;
+};
+
 const processingFalse = (state) =>
   produce(state, (draft) => {
     draft.processing = false;
@@ -225,7 +234,7 @@ export const getVehicleStockForDriverSuccess = (
           disabled: true, // items in load van should not be tappable
           image: `${productImageUri}${item.productId}`,
           key: item.productId,
-          miscelaneousTop: item.quantity,
+          quantity: item.quantity,
           title: item.productName
         };
 
@@ -235,14 +244,13 @@ export const getVehicleStockForDriverSuccess = (
           );
 
           if (draft.orderedStock[productSortedIndex]) {
-            draft.orderedStock[productSortedIndex].miscelaneousTop +=
-              item.quantity;
+            draft.orderedStock[productSortedIndex].quantity += item.quantity;
           } else {
             draft.orderedStock[productSortedIndex] = formattedProduct;
           }
         } else {
           if (misplacedProducts[item.productId]) {
-            misplacedProducts[item.productId].miscelaneousTop += item.quantity;
+            misplacedProducts[item.productId].quantity += item.quantity;
           } else {
             misplacedProducts[item.productId] = formattedProduct;
           }
@@ -269,6 +277,7 @@ export const getForDriverSuccess = (
     draft.stops = {};
     draft.orderedStopsIds = [];
     draft.completedStopsIds = [];
+    draft.deliveredStock = {};
 
     /*
     BE delivery_stateID values
@@ -352,6 +361,7 @@ export const getForDriverSuccess = (
           draft.stops[key].status = 'pending';
         }
       } else {
+        privateIncrementDeliveredStock(draft, item);
         if (!draft.completedStopsIds.includes(key)) {
           draft.completedStopsIds.push(key);
         }
@@ -362,6 +372,8 @@ export const getForDriverSuccess = (
         image: `${productImageUri}${item.productId}`,
         key: item.orderItemId,
         miscelaneousTop: item.quantity,
+        productId: item.productId,
+        quantity: item.quantity,
         title: item.productName
       };
 
@@ -396,6 +408,11 @@ export const getDriverReplySingleImageSuccess = (
       }
       return dr;
     });
+  });
+
+export const incrementDeliveredStock = (state, { productId, quantity }) =>
+  produce(state, (draft) => {
+    privateIncrementDeliveredStock(draft, { productId, quantity });
   });
 
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
@@ -698,6 +715,7 @@ export default createReducer(initialState, {
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
+  [Types.INCREMENT_DELIVERED_STOCK]: incrementDeliveredStock,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.REDIRECT_SET_SELECTED_CLAIM]: setSelectedClaim,
   [Types.RESET_CHECKLIST_PAYLOAD]: resetChecklistPayload,

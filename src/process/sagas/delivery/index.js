@@ -357,6 +357,16 @@ export const setDeliveredOrRejectedSuccess = function* () {
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
+  const lastStop = stops[completedStopsIds[completedStopsIds.length - 1]];
+  for (const key in lastStop.orders) {
+    const order = lastStop.orders[key];
+    yield put({
+      type: DeliveryTypes.INCREMENT_DELIVERED_STOCK,
+      productId: order.productId,
+      quantity: order.quantity
+    });
+  }
+
   if (deliveriesLeft > 0 && isOptimizedRoutes) {
     yield call(updateSelectedStop, sID);
   }
