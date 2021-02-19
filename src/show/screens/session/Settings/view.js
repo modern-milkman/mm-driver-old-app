@@ -33,8 +33,10 @@ const onVibrateChange = (updateDeviceProps, vibrate) => {
   }
 };
 
-const onShowDoneDeliveries = (updateDeviceProps, showDoneDeliveries) => {
-  updateDeviceProps({ showDoneDeliveries });
+const toggleDeviceProp = (updateDeviceProps, prop, value) => {
+  const updateProp = {};
+  updateProp[prop] = value;
+  updateDeviceProps({ ...updateProp });
 };
 
 const onOptimization = (
@@ -58,6 +60,7 @@ const Settings = (props) => {
     optimizeStops,
     returnPosition,
     showDoneDeliveries,
+    showMapControlsOnMovement,
     updateDeliveryProps,
     updateDeviceProps,
     vibrate
@@ -112,11 +115,35 @@ const Settings = (props) => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.showMapControlsOnMovement')}
+            </Text.List>
+            <Switch
+              value={showMapControlsOnMovement}
+              onValueChange={toggleDeviceProp.bind(
+                null,
+                updateDeviceProps,
+                'showMapControlsOnMovement'
+              )}
+            />
+          </RowView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
               {I18n.t('screens:settings.switches.showDoneDeliveries')}
             </Text.List>
             <Switch
               value={showDoneDeliveries}
-              onValueChange={onShowDoneDeliveries.bind(null, updateDeviceProps)}
+              onValueChange={toggleDeviceProp.bind(
+                null,
+                updateDeviceProps,
+                'showDoneDeliveries'
+              )}
             />
           </RowView>
 
@@ -233,6 +260,7 @@ Settings.propTypes = {
   optimizeStops: PropTypes.func,
   returnPosition: PropTypes.object,
   showDoneDeliveries: PropTypes.bool,
+  showMapControlsOnMovement: PropTypes.bool,
   updateDeliveryProps: PropTypes.func,
   updateDeviceProps: PropTypes.func,
   vibrate: PropTypes.bool

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+
 import { colors } from 'Theme';
 
 const style = StyleSheet.create({
@@ -16,8 +17,7 @@ const style = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
-    elevation: 3,
-    zIndex: 1
+    elevation: 3
   }
 });
 

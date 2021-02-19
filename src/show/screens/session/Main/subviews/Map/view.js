@@ -8,9 +8,8 @@ import MapView, {
 } from 'react-native-maps';
 
 import { sizes } from 'Theme';
+import { deviceFrame } from 'Helpers';
 import { CurrentLocation } from 'Images';
-import { deviceFrame, usePrevious } from 'Helpers';
-import Analytics, { EVENTS } from 'Services/analytics';
 
 import styles from './style';
 import mapStyle from './mapStyle';
@@ -24,11 +23,13 @@ const cameraAnimationOptions = {
 const regionChangeComplete = (
   {
     mapNoTrackingHeading,
-    mapNoTrackingZoom,
     mapRef,
-    mapTrackingZoom,
+    mapZoom,
     setMapIsInteracting,
+    setMapMode,
+    shouldTrackHeading,
     shouldTrackLocation,
+    showMapControlsOnMovement,
     updateDeviceProps
   },
   region,
@@ -37,17 +38,17 @@ const regionChangeComplete = (
   if (mapRef) {
     mapRef.getCamera().then((currentCamera) => {
       updateDeviceProps({
-        ...(shouldTrackLocation && {
-          mapTrackingZoom: currentCamera.zoom
+        ...(!shouldTrackHeading && {
+          mapNoTrackingHeading: currentCamera.heading
         }),
-        ...(!shouldTrackLocation && {
-          mapNoTrackingHeading: currentCamera.heading,
-          mapNoTrackingZoom: currentCamera.zoom
-        })
+        mapZoom: currentCamera.zoom
       });
     });
     if (isGesture) {
       setMapIsInteracting(false);
+      if (showMapControlsOnMovement) {
+        setMapMode('manual');
+      }
     }
   }
 };
@@ -58,20 +59,18 @@ const Map = (props) => {
     fabTop,
     height,
     mapNoTrackingHeading,
-    mapNoTrackingZoom,
     mapPadding,
-    mapTrackingZoom,
+    mapZoom,
+    setMapMode,
+    shouldPitchMap,
+    shouldTrackHeading,
+    shouldTrackLocation,
+    showMapControlsOnMovement,
     updateDeviceProps
   } = props;
 
   const [mapIsInteracting, setMapIsInteracting] = useState(false);
   const [mapRef, setRef] = useState(undefined);
-  const [shouldTrackLocation, toggleLocationTracking] = useState(false);
-
-  const previousShouldTrackLocation = usePrevious(shouldTrackLocation);
-  const previousHeading = usePrevious(heading);
-  const previousLatitude = usePrevious(latitude);
-  const previousLongitude = usePrevious(longitude);
 
   const initialCamera = {
     altitude: 1000,
@@ -79,16 +78,9 @@ const Map = (props) => {
       latitude,
       longitude
     },
-    ...(shouldTrackLocation
-      ? {
-          pitch: 90,
-          zoom: mapTrackingZoom
-        }
-      : {
-          heading: mapNoTrackingHeading,
-          pitch: 0,
-          zoom: mapNoTrackingZoom
-        })
+    pitch: shouldPitchMap ? 90 : 0,
+    zoom: mapZoom,
+    heading: shouldTrackHeading ? heading : mapNoTrackingHeading
   };
 
   const animateCamera = useCallback(
@@ -105,35 +97,17 @@ const Map = (props) => {
   );
 
   useEffect(() => {
-    if (previousShouldTrackLocation !== shouldTrackLocation) {
-      setMapIsInteracting(true);
+    if (!mapIsInteracting) {
       mapRef?.getCamera().then((currentCamera) => {
         animateCamera(currentCamera, {
-          pitch: shouldTrackLocation ? 90 : 0
-        });
-      });
-      setTimeout(
-        setMapIsInteracting.bind(null, false),
-        cameraAnimationOptions.duration
-      );
-      Analytics.trackEvent(EVENTS.MAP_MODE, {
-        mode: shouldTrackLocation ? 'track' : 'birds-eye'
-      });
-    }
-    if (
-      !mapIsInteracting &&
-      shouldTrackLocation &&
-      (previousLatitude !== latitude ||
-        previousLongitude !== longitude ||
-        previousHeading !== heading)
-    ) {
-      mapRef?.getCamera().then((currentCamera) => {
-        animateCamera(currentCamera, {
-          center: {
-            latitude,
-            longitude
-          },
-          heading
+          ...(shouldTrackLocation && {
+            center: {
+              latitude,
+              longitude
+            }
+          }),
+          heading: shouldTrackHeading ? heading : mapNoTrackingHeading,
+          pitch: shouldPitchMap ? 90 : 0
         });
       });
     }
@@ -143,11 +117,10 @@ const Map = (props) => {
     latitude,
     longitude,
     mapIsInteracting,
+    mapNoTrackingHeading,
     mapRef,
-    previousHeading,
-    previousLatitude,
-    previousLongitude,
-    previousShouldTrackLocation,
+    shouldPitchMap,
+    shouldTrackHeading,
     shouldTrackLocation
   ]);
 
@@ -160,11 +133,13 @@ const Map = (props) => {
         onStartShouldSetResponder={setMapIsInteracting.bind(null, true)}
         onRegionChangeComplete={regionChangeComplete.bind(null, {
           mapNoTrackingHeading,
-          mapNoTrackingZoom,
           mapRef,
-          mapTrackingZoom,
+          mapZoom,
           setMapIsInteracting,
+          setMapMode,
+          shouldTrackHeading,
           shouldTrackLocation,
+          showMapControlsOnMovement,
           updateDeviceProps
         })}
         pitchEnabled={false}
@@ -173,7 +148,8 @@ const Map = (props) => {
         showsCompass={false}
         showsMyLocationButton={false}
         showsUserLocation={false}
-        style={[styles.map, { height }]}>
+        style={[styles.map, { height }]}
+        zoomTapEnabled={false}>
         {latitude && longitude && (
           <RNMMarker
             key={'current-location'}
@@ -193,8 +169,7 @@ const Map = (props) => {
       <Fabs
         fabTop={fabTop}
         mapPadding={mapPadding}
-        shouldTrackLocation={shouldTrackLocation}
-        toggleLocationTracking={toggleLocationTracking}
+        setMapIsInteracting={setMapIsInteracting}
       />
     </View>
   );
@@ -208,17 +183,25 @@ Map.defaultProps = {
   },
   height: 0,
   mapMarkerSize: sizes.marker.normal,
-  mapPadding: { bottom: 0 }
+  mapPadding: { bottom: 0 },
+  shouldPitchMap: false,
+  shouldTrackHeading: false,
+  shouldTrackLocation: false,
+  showMapControlsOnMovement: true
 };
 
 Map.propTypes = {
   coords: PropTypes.object,
   fabTop: PropTypes.instanceOf(Animated.Value),
   height: PropTypes.number,
-  mapNoTrackingZoom: PropTypes.number,
   mapNoTrackingHeading: PropTypes.number,
   mapPadding: PropTypes.object,
-  mapTrackingZoom: PropTypes.number,
+  mapZoom: PropTypes.number,
+  setMapMode: PropTypes.func,
+  shouldPitchMap: PropTypes.bool,
+  shouldTrackHeading: PropTypes.bool,
+  shouldTrackLocation: PropTypes.bool,
+  showMapControlsOnMovement: PropTypes.bool,
   updateDeviceProps: PropTypes.func
 };
 

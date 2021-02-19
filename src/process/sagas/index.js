@@ -57,7 +57,11 @@ import {
   updateReturnPosition
 } from './delivery';
 
-import { requestLocationPermissionAndWatch, setLocation } from './device';
+import {
+  requestLocationPermissionAndWatch,
+  setLocation,
+  setMapMode
+} from './device';
 
 import { alert } from './growl';
 
@@ -130,14 +134,15 @@ export default function* root() {
     takeEvery(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
 
-    takeEvery(GrowlTypes.ALERT, alert),
-
-    takeEvery(UserTypes.GET_DRIVER, getDriver),
-
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,
       requestLocationPermissionAndWatch
     ),
+    takeLatest(DeviceTypes.SET_MAP_MODE, setMapMode),
+
+    takeEvery(GrowlTypes.ALERT, alert),
+
+    takeEvery(UserTypes.GET_DRIVER, getDriver),
 
     takeLatest(REDUX_SAGA_LOCATION_ACTION_SET_POSITION, setLocation)
   ]);

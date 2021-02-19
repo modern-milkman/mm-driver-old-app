@@ -15,6 +15,7 @@ export default connect(
     optimizedRoutes: state.delivery.optimizedRoutes,
     returnPosition: state.device.returnPosition,
     showDoneDeliveries: state.device.showDoneDeliveries,
+    showMapControlsOnMovement: state.device.showMapControlsOnMovement,
     vibrate: state.device.vibrate
   }),
   {
