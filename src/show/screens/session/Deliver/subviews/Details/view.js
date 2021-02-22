@@ -125,6 +125,7 @@ const CustomerIssueDetails = (props) => {
         <Separator color={colors.input} width={'100%'} />
 
         <ListItem
+          disabled
           title={reason}
           description={formatDate(new Date(claimDateTime))}
           icon={null}

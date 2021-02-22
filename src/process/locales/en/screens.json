@@ -63,6 +63,7 @@
       "list": {
         "clientIdIssues": "Client ID #{{cId}} Issues",
         "dateOrTime": "{{value}}",
+        "empty": "No claims",
         "nrReplies": "{{nr}} Replies",
         "new": "New",
         "previous": "Previous",

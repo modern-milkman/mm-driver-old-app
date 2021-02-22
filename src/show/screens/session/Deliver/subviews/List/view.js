@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import I18n from 'Locales/I18n';
-import { formatDate, mock } from 'Helpers';
 import { SafeAreaView } from 'Containers';
-import { List, NavBar, Text } from 'Components';
+import { formatDate, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
+import { List, ListHeader, NavBar, Text } from 'Components';
 
 const CustomerIssueList = (props) => {
   const { claims, selectedStop, setSelectedClaim } = props;
@@ -18,67 +18,72 @@ const CustomerIssueList = (props) => {
     title: I18n.t('screens:deliver.customerIssue.list.previous'),
     data: []
   };
-
-  claims.list.forEach((item, idx) => {
-    let date = formatDate(new Date(item.claimDateTime));
-    const tempItem = {
-      customerIssueIdx: idx + 1,
-      claimItem: item.claimItem,
-      key: item.claimId,
-      description: item.reason,
-      date: date,
-      miscelaneousTop: I18n.t('screens:deliver.customerIssue.list.dateOrTime', {
-        value: date,
-        interpolation: { escapeValue: false }
-      }),
-      MiscelaneousTopTextComponent: Text.Caption,
-      miscelaneousBottom: I18n.t(
-        'screens:deliver.customerIssue.list.nrReplies',
-        { nr: item.driverResponses.length }
-      ),
-      rightIcon: 'chevron-right',
-      icon: null,
-      title: I18n.t('screens:deliver.customerIssue.list.title', {
-        issueNr: idx + 1
-      }),
-      onPress: setSelectedClaim.bind(null, {
-        ...item,
-        customerIssueIdx: idx + 1
-      })
-    };
-
-    if (
-      new Date(item.claimDateTime).valueOf() >
-      new Date().setHours(0, 0, 0, 0).valueOf()
-    ) {
-      date = new Date(item.claimDateTime).toLocaleString('en-UK', {
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      });
-
-      tempItem.miscelaneousTop = I18n.t(
-        'screens:deliver.customerIssue.list.dateOrTime',
-        { value: date }
-      );
-    }
-
-    if (
-      new Date(item.claimDateTime).valueOf() >
-      new Date().valueOf() - 24 * 60 * 60 * 1000
-    ) {
-      newList.data.push(tempItem);
-    } else {
-      previousList.data.push(tempItem);
-    }
-  });
-
   const listItems = [];
-  if (newList.data.length > 0) {
-    listItems.push(newList);
-  }
-  if (previousList.data.length > 0) {
-    listItems.push(previousList);
+
+  if (claims?.list && claims?.list.length > 0) {
+    claims.list.forEach((item, idx) => {
+      let date = formatDate(new Date(item.claimDateTime));
+      const tempItem = {
+        customerIssueIdx: idx + 1,
+        claimItem: item.claimItem,
+        key: item.claimId,
+        description: item.reason,
+        date: date,
+        miscelaneousTop: I18n.t(
+          'screens:deliver.customerIssue.list.dateOrTime',
+          {
+            value: date,
+            interpolation: { escapeValue: false }
+          }
+        ),
+        MiscelaneousTopTextComponent: Text.Caption,
+        miscelaneousBottom: I18n.t(
+          'screens:deliver.customerIssue.list.nrReplies',
+          { nr: item.driverResponses.length }
+        ),
+        rightIcon: 'chevron-right',
+        icon: null,
+        title: I18n.t('screens:deliver.customerIssue.list.title', {
+          issueNr: idx + 1
+        }),
+        onPress: setSelectedClaim.bind(null, {
+          ...item,
+          customerIssueIdx: idx + 1
+        })
+      };
+
+      if (
+        new Date(item.claimDateTime).valueOf() >
+        new Date().setHours(0, 0, 0, 0).valueOf()
+      ) {
+        date = new Date(item.claimDateTime).toLocaleString('en-UK', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        });
+
+        tempItem.miscelaneousTop = I18n.t(
+          'screens:deliver.customerIssue.list.dateOrTime',
+          { value: date }
+        );
+      }
+
+      if (
+        new Date(item.claimDateTime).valueOf() >
+        new Date().valueOf() - 24 * 60 * 60 * 1000
+      ) {
+        newList.data.push(tempItem);
+      } else {
+        previousList.data.push(tempItem);
+      }
+    });
+
+    if (newList.data.length > 0) {
+      listItems.push(newList);
+    }
+    if (previousList.data.length > 0) {
+      listItems.push(previousList);
+    }
   }
 
   return (
@@ -91,7 +96,13 @@ const CustomerIssueList = (props) => {
         })}
       />
 
-      <List data={listItems} hasSections />
+      {listItems.length > 0 ? (
+        <List data={listItems} hasSections />
+      ) : (
+        <ListHeader
+          title={I18n.t('screens:deliver.customerIssue.list.empty')}
+        />
+      )}
     </SafeAreaView>
   );
 };
