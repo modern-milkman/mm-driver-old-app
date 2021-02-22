@@ -22,10 +22,11 @@ class Growl extends React.Component {
     updateProps({ dropdownAlertInstance: null });
   };
 
-  onTap = ({ payload: { onTap = null, action = null } }) => {
+  onTap = ({ payload }) => {
+    const { onTap = null, action = null, ...rest } = payload;
     if (action) {
       const { dispatch } = store().store;
-      dispatch({ type: action });
+      dispatch({ type: action, ...rest });
     } else if (onTap) {
       onTap();
     }

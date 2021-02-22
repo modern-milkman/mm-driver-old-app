@@ -99,11 +99,36 @@ export const getCustomerClaims = function* ({ customerId, selectedStopId }) {
   yield put({
     type: Api.API_CALL,
     actions: {
-      success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS }
+      success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS },
+      fail: { type: DeliveryTypes.GET_CUSTOMER_CLAIMS_FAILURE }
     },
     promise: Api.repositories.delivery.getCustomerClaims({ customerId }),
+    customerId,
     selectedStopId
   });
+};
+
+export const getCustomerClaimsFailure = function* ({
+  customerId,
+  selectedStopId
+}) {
+  const user_session = yield select(userSessionPresentSelector);
+
+  if (user_session) {
+    yield put({
+      type: GrowlTypes.ALERT,
+      props: {
+        type: 'error',
+        title: I18n.t('alert:errors.api.customerClaims.title'),
+        message: I18n.t('alert:errors.api.customerClaims.message'),
+        payload: {
+          action: DeliveryTypes.GET_CUSTOMER_CLAIMS,
+          customerId,
+          selectedStopId
+        }
+      }
+    });
+  }
 };
 
 export const getDriverDataFailure = function* ({ status }) {

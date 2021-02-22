@@ -22,6 +22,7 @@ export const { Types, Creators } = createActions(
     driverReplySuccess: ['payload', 'acknowledgedClaim'],
     foregroundDeliveryActions: null,
     getCustomerClaims: ['customerId', 'selectedStopId'],
+    getCustomerClaimsFailure: ['customerId', 'selectedStopId'],
     getDriverDataFailure: null,
     getDriverReplySingleImageSuccess: ['payload', 'id', 'selectedStopId'],
     getForDriver: ['isRefreshData'],
@@ -107,7 +108,11 @@ const initialState = {
     payload: { ...initialVehicleChecks },
     payloadAltered: false
   },
-  claims: { showClaimModal: false, showReplyModal: false, processing: false },
+  claims: {
+    showClaimModal: false,
+    showReplyModal: false,
+    processing: false
+  },
   completedStopsIds: [],
   confirmedItem: [],
   deliveredStock: {},
@@ -413,6 +418,11 @@ export const getDriverReplySingleImageSuccess = (
     });
   });
 
+export const getCustomerClaims = (state) =>
+  produce(state, (draft) => {
+    draft.claims.processing = true;
+  });
+
 export const incrementDeliveredStock = (state, { productId, quantity }) =>
   produce(state, (draft) => {
     privateIncrementDeliveredStock(draft, { productId, quantity });
@@ -527,6 +537,8 @@ export const setCustomerClaims = (state, { payload, selectedStopId }) =>
         draft.claims[selectedStopId].showedUnacknowledgedNr = 1;
       }
     }
+
+    draft.claims.processing = false;
   });
 
 export const setDeliveredOrRejectedFailure = (state) =>
@@ -719,6 +731,7 @@ export default createReducer(initialState, {
   [Types.DRIVER_REPLY]: claimProcessing,
   [Types.DRIVER_REPLY_FAILURE]: claimFinishedProcessing,
   [Types.DRIVER_REPLY_SUCCESS]: driverReplySuccess,
+  [Types.GET_CUSTOMER_CLAIMS]: getCustomerClaims,
   [Types.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS]: getDriverReplySingleImageSuccess,
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
@@ -731,9 +744,9 @@ export default createReducer(initialState, {
   [Types.SAVE_VEHICLE_CHECKS_FAILURE]: processingFalse,
   [Types.SAVE_VEHICLE_CHECKS_SUCCESS]: saveVehicleChecksSuccess,
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
+  [Types.SET_DELIVERED]: processingTrue,
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
-  [Types.SET_DELIVERED]: processingTrue,
   [Types.SET_DIRECTIONS_POLYLINE]: setDirectionsPolyline,
   [Types.SET_DRIVER_REPLY_IMAGE]: setDriverReplyImage,
   [Types.SET_MILEAGE]: setMileage,

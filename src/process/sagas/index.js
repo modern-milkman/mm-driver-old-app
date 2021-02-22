@@ -31,6 +31,7 @@ import {
   driverReplySuccess,
   foregroundDeliveryActions,
   getCustomerClaims,
+  getCustomerClaimsFailure,
   getDriverDataFailure,
   getForDriver,
   getForDriverSuccess,
@@ -80,9 +81,9 @@ export default function* root() {
 
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
     takeLatest(ApplicationTypes.INIT, init),
+    takeLatest(ApplicationTypes.LOGIN, login),
     takeLatest(ApplicationTypes.LOGIN_ERROR, login_error),
     takeLatest(ApplicationTypes.LOGIN_SUCCESS, login_success),
-    takeLatest(ApplicationTypes.LOGIN, login),
     takeLatest(ApplicationTypes.LOGOUT, logout),
     takeLatest(ApplicationTypes.MOUNTED, mounted),
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
@@ -93,6 +94,10 @@ export default function* root() {
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
     takeEvery(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
+    takeEvery(
+      DeliveryTypes.GET_CUSTOMER_CLAIMS_FAILURE,
+      getCustomerClaimsFailure
+    ),
     takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),

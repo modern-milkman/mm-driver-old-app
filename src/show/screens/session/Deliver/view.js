@@ -231,6 +231,7 @@ const Deliver = (props) => {
   const {
     allItemsDone,
     confirmedItem,
+    processing,
     claims: { list },
     showClaimModal,
     outOfStock,
@@ -421,7 +422,7 @@ const Deliver = (props) => {
                   null,
                   setDelivered.bind(null, selectedStop.orderID)
                 )}
-                disabled={!allItemsDone}
+                disabled={!allItemsDone || processing}
               />
             </RowView>
             <RowView marginVertical={defaults.marginVertical}>
@@ -433,6 +434,7 @@ const Deliver = (props) => {
                   setModalType,
                   setModalVisible
                 )}
+                disabled={processing}
               />
             </RowView>
           </ColumnView>
@@ -447,12 +449,13 @@ Deliver.propTypes = {
   claims: PropTypes.object,
   confirmedItem: PropTypes.array,
   outOfStock: PropTypes.array,
+  processing: PropTypes.bool,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
-  showClaimModal: PropTypes.bool,
   selectedStop: PropTypes.object,
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,
+  showClaimModal: PropTypes.bool,
   toggleConfirmedItem: PropTypes.func,
   toggleOutOfStock: PropTypes.func,
   updateTransientProps: PropTypes.func
@@ -463,6 +466,7 @@ Deliver.defaultProps = {
   claims: {},
   confirmedItem: [],
   outOfStock: [],
+  processing: false,
   reasonMessage: '',
   routeDescription: null,
   selectedStop: {},
