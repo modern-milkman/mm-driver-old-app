@@ -3,11 +3,12 @@ import { call, delay, put, select } from 'redux-saga/effects';
 import Api from 'Api';
 import I18n from 'Locales/I18n';
 import { Base64 } from 'js-base64';
-import { base64ToHex, deliveryStates as DS } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { distance as distanceFn } from 'Services/salesman';
+import { base64ToHex, deliveryStates as DS } from 'Helpers';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 import {
   checklist as checklistSelector,
@@ -481,23 +482,51 @@ export const updateReturnPosition = function* ({ clear }) {
   });
 };
 
+export const updateDirectionsPolyline = function* () {
+  const device = yield select(deviceSelector);
+  const selectedStop = yield select(selectedStopSelector);
+
+  if (device && device.position && device.position.coords && selectedStop) {
+    const originLatitude = device.position.coords.latitude;
+    const originLongitude = device.position.coords.longitude;
+    const destinationLatitude = selectedStop.latitude;
+    const destinationLongitude = selectedStop.longitude;
+
+    const distance = distanceFn(
+      {
+        x: originLatitude,
+        y: originLongitude
+      },
+      {
+        x: destinationLatitude,
+        y: destinationLongitude
+      },
+      'ME'
+    );
+
+    if (distance > 100 && device?.computeDirections) {
+      yield put({
+        type: Api.API_CALL,
+        actions: {
+          success: { type: DeliveryTypes.SET_DIRECTIONS_POLYLINE }
+        },
+        promise: Api.repositories.delivery.updateDirectionsPolyline({
+          originLatitude: device.position.coords.latitude,
+          originLongitude: device.position.coords.longitude,
+          destinationLatitude: selectedStop.latitude,
+          destinationLongitude: selectedStop.longitude
+        })
+      });
+    }
+  }
+};
+
 export const updateSelectedStop = function* ({ sID }) {
   const selectedStop = yield select(selectedStopSelector);
-  const device = yield select(deviceSelector);
-  if (device && device.position && device.position.coords && selectedStop) {
-    yield put({
-      type: Api.API_CALL,
-      actions: {
-        success: { type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE }
-      },
-      promise: Api.repositories.delivery.updateDirectionsPolyline({
-        originLatitude: device.position.coords.latitude,
-        originLongitude: device.position.coords.longitude,
-        destinationLatitude: selectedStop.latitude,
-        destinationLongitude: selectedStop.longitude
-      })
-    });
-  }
+
+  yield put({
+    type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE
+  });
 
   if (
     selectedStop.satisfactionStatus === 3 ||

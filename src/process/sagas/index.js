@@ -44,7 +44,6 @@ import {
   saveVehicleChecks,
   saveVehicleChecksFailure,
   saveVehicleChecksSuccess,
-  showMustComplyWithTerms,
   setCustomerClaims,
   setDelivered,
   setDeliveredOrRejectedSuccess,
@@ -52,10 +51,12 @@ import {
   setProductsOrder,
   setRejected,
   setVehicleChecks,
+  showMustComplyWithTerms,
   startDelivering,
+  updateDirectionsPolyline,
   updateProps as updateDeliveryProps,
-  updateSelectedStop,
-  updateReturnPosition
+  updateReturnPosition,
+  updateSelectedStop
 } from './delivery';
 
 import {
@@ -139,6 +140,10 @@ export default function* root() {
     takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
     takeEvery(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
+    takeEvery(
+      DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE,
+      updateDirectionsPolyline
+    ),
 
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,

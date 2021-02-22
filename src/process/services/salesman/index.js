@@ -156,6 +156,7 @@ function distance(p, q, unit) {
   //:::           where: 'M' is statute miles (default)                         :::
   //:::                  'K' is kilometers                                      :::
   //:::                  'N' is nautical miles                                  :::
+  //:::                  'ME' is meters                                         :::
   //:::                                                                         :::
   //:::  Worldwide cities and other features databases with latitude longitude  :::
   //:::  are available at https://www.geodatasource.com                         :::
@@ -191,8 +192,11 @@ function distance(p, q, unit) {
     if (unit === 'N') {
       dist = dist * 0.8684;
     }
+    if (unit === 'ME') {
+      dist = dist * 1609.344;
+    }
     return dist;
   }
 }
 
-export { Point, solve };
+export { distance, Point, solve };

@@ -32,7 +32,11 @@ export function* onNavigateSideEffects(navigateParams) {
     case null:
       // back navigation
       switch (lastRoute) {
+        case 'Settings': {
+          yield put({ type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE });
+        }
       }
+
       yield put({ type: ApplicationTypes.DISMISS_KEYBOARD });
       break;
 

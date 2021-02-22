@@ -48,6 +48,7 @@ export const { Types, Creators } = createActions(
     setDelivered: ['id'],
     setDeliveredOrRejectedFailure: null,
     setDeliveredOrRejectedSuccess: null,
+    setDirectionsPolyline: ['payload'],
     setDriverReplyImage: [
       'payload',
       'claimIndex',
@@ -71,7 +72,7 @@ export const { Types, Creators } = createActions(
     toggleOutOfStock: ['id'],
     toggleReplyModal: ['show'],
     updateChecklistProps: ['props'],
-    updateDirectionsPolyline: ['payload'],
+    updateDirectionsPolyline: null,
     updateDriverResponse: ['data'],
     updateProps: ['props'],
     updateReturnPosition: ['clear'],
@@ -688,7 +689,7 @@ export const updateChecklistProps = (state, { props }) =>
     props: { checklist: { ...state.checklist, ...props } }
   });
 
-export const updateDirectionsPolyline = (state, { payload }) =>
+export const setDirectionsPolyline = (state, { payload }) =>
   produce(state, (draft) => {
     draft.directionsPolyline = payload;
   });
@@ -733,6 +734,7 @@ export default createReducer(initialState, {
   [Types.SET_DELIVERED_OR_REJECTED_FAILURE]: setDeliveredOrRejectedFailure,
   [Types.SET_DELIVERED_OR_REJECTED_SUCCESS]: setDeliveredOrRejectedSuccess,
   [Types.SET_DELIVERED]: processingTrue,
+  [Types.SET_DIRECTIONS_POLYLINE]: setDirectionsPolyline,
   [Types.SET_DRIVER_REPLY_IMAGE]: setDriverReplyImage,
   [Types.SET_MILEAGE]: setMileage,
   [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
@@ -750,13 +752,14 @@ export default createReducer(initialState, {
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,
   [Types.TOGGLE_REPLY_MODAL]: toggleReplyModal,
   [Types.UPDATE_CHECKLIST_PROPS]: updateChecklistProps,
-  [Types.UPDATE_DIRECTIONS_POLYLINE]: updateDirectionsPolyline,
   [Types.UPDATE_DRIVER_RESPONSE]: updateDriverResponse,
   [Types.UPDATE_PROPS]: updateProps,
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
 });
 
 export const checklist = (state) => state.delivery?.checklist;
+
+export const directionsPolyline = (state) => state.delivery?.directionsPolyline;
 
 export const claims = (state) => state.delivery?.claims;
 

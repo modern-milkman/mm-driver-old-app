@@ -59,6 +59,7 @@ const Settings = (props) => {
     optimizedRoutes,
     optimizeStops,
     returnPosition,
+    computeDirections,
     showDoneDeliveries,
     showMapControlsOnMovement,
     updateDeliveryProps,
@@ -108,6 +109,26 @@ const Settings = (props) => {
           <Separator />
 
           <ListHeader title={I18n.t('screens:settings.sections.map')} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.computeDirections')}
+            </Text.List>
+            <Switch
+              value={computeDirections}
+              onValueChange={toggleDeviceProp.bind(
+                null,
+                updateDeviceProps,
+                'computeDirections'
+              )}
+            />
+          </RowView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
 
           <RowView
             marginHorizontal={defaults.marginHorizontal}
@@ -259,6 +280,7 @@ Settings.propTypes = {
   optimizedRoutes: PropTypes.bool,
   optimizeStops: PropTypes.func,
   returnPosition: PropTypes.object,
+  computeDirections: PropTypes.bool,
   showDoneDeliveries: PropTypes.bool,
   showMapControlsOnMovement: PropTypes.bool,
   updateDeliveryProps: PropTypes.func,

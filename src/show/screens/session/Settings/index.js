@@ -14,6 +14,7 @@ export default connect(
     mapMarkerSize: state.device.mapMarkerSize,
     optimizedRoutes: state.delivery.optimizedRoutes,
     returnPosition: state.device.returnPosition,
+    computeDirections: state.device.computeDirections,
     showDoneDeliveries: state.device.showDoneDeliveries,
     showMapControlsOnMovement: state.device.showMapControlsOnMovement,
     vibrate: state.device.vibrate

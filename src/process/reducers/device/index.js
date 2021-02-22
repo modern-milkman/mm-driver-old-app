@@ -30,6 +30,7 @@ const initialState = {
   shouldTrackLocation: false,
   resetHourDay: parseInt(Config.RESET_HOUR_DAY),
   returnPosition: null,
+  computeDirections: false,
   showDoneDeliveries: false,
   showMapControlsOnMovement: true,
   uniqueID: 'uninitialized',
