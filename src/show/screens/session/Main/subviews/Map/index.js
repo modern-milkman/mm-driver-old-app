@@ -8,12 +8,16 @@ export default connect(
   (state) => {
     return {
       coords: state.device?.position?.coords,
-      mapNoTrackingZoom: state.device.mapNoTrackingZoom,
-      mapNoTrackingHeading: state.device.mapNoTrackingHeading,
-      mapTrackingZoom: state.device.mapTrackingZoom
+      mapNoTrackingHeading: state.device?.mapNoTrackingHeading,
+      mapZoom: state.device?.mapZoom,
+      shouldPitchMap: state.device?.shouldPitchMap,
+      shouldTrackHeading: state.device?.shouldTrackHeading,
+      shouldTrackLocation: state.device?.shouldTrackLocation,
+      showMapControlsOnMovement: state.device?.showMapControlsOnMovement
     };
   },
   {
+    setMapMode: deviceActions.setMapMode,
     updateDeviceProps: deviceActions.updateProps
   }
 )(Map);

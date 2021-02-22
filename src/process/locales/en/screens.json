@@ -135,6 +135,7 @@
       "foreground": "Large foreground",
       "manualRouting": "Use manual routing",
       "showDoneDeliveries": "Show done deliveries",
+      "showMapControlsOnMovement": "Show controls on manual movement",
       "vibrations": "Vibrations"
     }
   },

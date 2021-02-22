@@ -7,6 +7,12 @@ import Icon from 'Components/Icon';
 
 import styles from './style';
 
+const rotationInterpolation = {
+  inputRange: [-1000, 0, 1000],
+  outputRange: ['-1000deg', '0deg', '1000deg'],
+  extrapolate: 'clamp'
+};
+
 const Fab = (props) => {
   const {
     bottom,
@@ -18,11 +24,14 @@ const Fab = (props) => {
     left,
     onLongPress,
     onPress,
+    opacity,
     processing,
+    rotate,
     right,
     size,
     top,
-    type
+    type,
+    zIndex
   } = props;
 
   const composedStyle = {
@@ -33,7 +42,12 @@ const Fab = (props) => {
     right,
     top,
     width: containerSize,
-    transform: [{ translateY: fabTop }]
+    opacity,
+    transform: [
+      { translateY: fabTop },
+      { rotate: rotate.interpolate(rotationInterpolation) }
+    ],
+    zIndex
   };
 
   return (
@@ -65,11 +79,14 @@ Fab.defaultProps = {
   left: undefined,
   onLongPress: () => {},
   onPress: () => {},
+  opacity: new Animated.Value(1),
   processing: false,
+  rotate: new Animated.Value(0),
   right: undefined,
   size: 44,
   top: undefined,
-  type: 'material-community'
+  type: 'material-community',
+  zIndex: 1
 };
 
 Fab.propTypes = {
@@ -82,11 +99,14 @@ Fab.propTypes = {
   left: PropTypes.number,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
+  opacity: PropTypes.instanceOf(Animated.Value),
   processing: PropTypes.bool,
   right: PropTypes.number,
+  rotate: PropTypes.instanceOf(Animated.Value),
   size: PropTypes.number,
   top: PropTypes.number,
-  type: PropTypes.string
+  type: PropTypes.string,
+  zIndex: PropTypes.number
 };
 
 export default Fab;

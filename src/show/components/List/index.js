@@ -69,7 +69,7 @@ const renderItemInterface = (
     disabled: listDisabled,
     onPress: listOnPress,
     onLongPress: listOnLongPress,
-    listItemStyle
+    listItemStyle: listStyle
   },
   { item }
 ) => {
@@ -85,6 +85,7 @@ const renderItemInterface = (
     iconColor = colors.secondary,
     image,
     key,
+    listItemStyle,
     miscelaneousBottom,
     MiscelaneousBottomTextComponent = Text.Caption,
     miscelaneousColor,
@@ -108,7 +109,7 @@ const renderItemInterface = (
 
   return (
     <TouchableOpacity
-      style={[style.listItemWrapper, listItemStyle]}
+      style={[style.listItemWrapper, listStyle, listItemStyle]}
       disabled={disabled}
       onPress={computedOnPress}
       onLongPress={computedOnLongPress}
