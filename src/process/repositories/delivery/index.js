@@ -22,7 +22,10 @@ export default {
     return Api.get('/Delivery/GetForDriver');
   },
   getProductsOrder() {
-    return Api.get('Product/GetProductOrder');
+    return Api.get('/Product/GetProductOrder');
+  },
+  getReasons() {
+    return Api.get('/RejectReason');
   },
   getVehicleChecks() {
     return Api.get('/Driver/VehicleCheck');
@@ -46,13 +49,14 @@ export default {
   },
   patchRejected(
     orderId,
+    reasonId,
     description,
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null
   ) {
     return Api.patch('/Delivery/SetRejected', {
       orderId,
-      reasonType: 3, //Reason Types are: WrongAddress = 1, PinWrong = 2, Other = 3
+      reasonType: reasonId,
       description,
       deliveryLocationLatitude,
       deliveryLocationLongitude

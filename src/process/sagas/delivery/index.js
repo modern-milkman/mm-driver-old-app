@@ -189,6 +189,18 @@ export const getProductsOrder = function* () {
   });
 };
 
+export const getRejectDeliveryReasons = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_REJECT_DELIVERY_REASONS },
+      fail: { type: DeliveryTypes.UPDATE_PROPS }
+    },
+    promise: Api.repositories.delivery.getReasons(),
+    props: { processing: false }
+  });
+};
+
 export const getVehicleChecks = function* () {
   yield put({
     type: Api.API_CALL,
@@ -406,7 +418,7 @@ export const setVehicleChecks = function* () {
   }
 };
 
-export const setRejected = function* ({ id, reasonMessage }) {
+export const setRejected = function* ({ id, reasonId, reasonMessage }) {
   // TODO - trigger out of stock requests even in reject delivery mode
   const device = yield select(deviceSelector);
 
@@ -418,6 +430,7 @@ export const setRejected = function* ({ id, reasonMessage }) {
     },
     promise: Api.repositories.delivery.patchRejected(
       id,
+      reasonId,
       reasonMessage,
       device.position?.coords.latitude,
       device.position?.coords.longitude
@@ -426,6 +439,7 @@ export const setRejected = function* ({ id, reasonMessage }) {
   });
   Analytics.trackEvent(EVENTS.TAP_SKIP_DELIVERY, {
     id,
+    reasonId,
     reasonMessage
   });
 };

@@ -2,11 +2,12 @@ import ActionSheetAndroid from './ActionSheetAndroid';
 import Button from './Button';
 import CustomBackHandler from './CustomBackHandler';
 import Fab from './Fab';
-import Icon from './Icon';
 import Growl from './Growl';
+import Icon from './Icon';
 import Image from './Image';
 import List, { ListHeader, ListItem } from './List';
 import NavBar from './NavBar';
+import Picker from './Picker';
 import ProgressBar from './ProgressBar';
 import Separator from './Separator';
 import SideBar from './SideBar';
@@ -20,14 +21,15 @@ export {
   Button,
   CustomBackHandler,
   Fab,
+  Growl,
   Icon,
   Image,
-  Growl,
-  ProgressBar,
   List,
   ListHeader,
   ListItem,
   NavBar,
+  Picker,
+  ProgressBar,
   Separator,
   SideBar,
   Slider,

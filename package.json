@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "3.23.0",
+  "version": "3.24.0",
   "versionCode": "23",
   "private": true,
   "scripts": {
@@ -16,6 +16,7 @@
     "@react-native-community/geolocation": "2.0.2",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/toolbar-android": "0.1.0-rc.2",
+    "@react-native-picker/picker": "1.9.10",
     "amplitude": "5.1.4",
     "appcenter": "4.0.2",
     "appcenter-analytics": "4.0.2",

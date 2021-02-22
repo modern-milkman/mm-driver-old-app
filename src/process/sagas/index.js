@@ -35,6 +35,7 @@ import {
   getForDriver,
   getForDriverSuccess,
   getProductsOrder,
+  getRejectDeliveryReasons,
   getVehicleChecks,
   getVehicleStockForDriverSuccess,
   optimizeStops,
@@ -95,6 +96,10 @@ export default function* root() {
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
     takeLatest(DeliveryTypes.GET_PRODUCTS_ORDER, getProductsOrder),
+    takeLatest(
+      DeliveryTypes.GET_REJECT_DELIVERY_REASONS,
+      getRejectDeliveryReasons
+    ),
     takeLatest(DeliveryTypes.GET_VEHICLE_CHECKS, getVehicleChecks),
     takeLatest(
       DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
@@ -104,7 +109,8 @@ export default function* root() {
     takeLatest(
       DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM,
       redirectSetSelectedClaim
-    ), // TODO check if in use anywhere
+    ),
+    takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getProductsOrder),
     takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
     takeLatest(DeliveryTypes.SAVE_VEHICLE_CHECKS, saveVehicleChecks),
     takeLatest(

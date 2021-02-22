@@ -15,9 +15,10 @@ import {
   List,
   ListItem,
   NavBar,
+  Picker,
+  Separator,
   Text,
-  TextInput,
-  Separator
+  TextInput
 } from 'Components';
 
 import style from './style';
@@ -82,8 +83,8 @@ const contentOpacity = [
   new Animated.Value(0)
 ];
 
-const handleChangeSkip = (updateTransientProps, value) => {
-  updateTransientProps({ reasonMessage: value });
+const handleChangeSkip = (updateTransientProps, key, value) => {
+  updateTransientProps({ [key]: value });
 };
 
 const navigateBack = (callback) => {
@@ -99,9 +100,11 @@ const navigateBack = (callback) => {
 
 const renderSkipModal = ({
   reasonMessage,
+  rejectReasons,
   selectedStop,
   setModalVisible,
   setRejected,
+  reasonId,
   updateTransientProps
 }) => (
   <ColumnView
@@ -121,15 +124,28 @@ const renderSkipModal = ({
           {I18n.t('screens:deliver.modal.title')}
         </Text.Heading>
 
-        <RowView paddingTop={defaults.marginVertical}>
+        <ColumnView>
+          <Picker
+            items={rejectReasons}
+            selected={reasonId}
+            onChange={handleChangeSkip.bind(
+              null,
+              updateTransientProps,
+              'reasonId'
+            )}
+          />
           <TextInput
             multiline
             value={reasonMessage}
             placeholder={I18n.t('screens:deliver.modal.inputPlaceholder')}
-            onChangeText={handleChangeSkip.bind(null, updateTransientProps)}
+            onChangeText={handleChangeSkip.bind(
+              null,
+              updateTransientProps,
+              'reasonMessage'
+            )}
             ref={reasonMessageRef}
           />
-        </RowView>
+        </ColumnView>
       </ColumnView>
 
       <Separator color={colors.input} width={'100%'} />
@@ -148,7 +164,12 @@ const renderSkipModal = ({
             disabled={reasonMessage === ''}
             onPress={navigateBack.bind(
               null,
-              setRejected.bind(null, selectedStop.orderID, reasonMessage)
+              setRejected.bind(
+                null,
+                selectedStop.orderID,
+                reasonId,
+                reasonMessage
+              )
             )}
             noBorderRadius
           />
@@ -205,6 +226,7 @@ const showModal = (type, setModalType, setModalVisible) => {
 
 const Deliver = (props) => {
   const [modalType, setModalType] = useState('skip');
+
   const [modalVisible, setModalVisible] = useState(false);
   const {
     allItemsDone,

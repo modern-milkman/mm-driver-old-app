@@ -34,6 +34,7 @@ export const { Types, Creators } = createActions(
       'deliveryDate',
       'isRefreshData'
     ],
+    getRejectDeliveryReasons: null,
     incrementDeliveredStock: ['productId', 'quantity'],
     optimizeStops: ['currentLocation', 'returnPosition'],
     redirectSetSelectedClaim: ['claim'],
@@ -57,9 +58,10 @@ export const { Types, Creators } = createActions(
     setMileage: ['mileage'],
     setProductsOrder: ['payload'],
     setRegistration: ['reg'],
-    setRejected: ['id', 'reasonMessage'],
+    setRejected: ['id', 'reasonId', 'reasonMessage'],
     setSelectedClaim: ['claim'],
     setSelectedStopImage: ['payload', 'props'],
+    setRejectDeliveryReasons: ['payload'],
     setVanDamageComment: ['key', 'comment'],
     setVanDamageImage: ['key', 'image', 'imageType'],
     setVehicleChecks: ['payload'],
@@ -581,6 +583,11 @@ export const setProductsOrder = (state, { payload }) =>
     draft.productsOrder = payload;
   });
 
+export const setRejectDeliveryReasons = (state, { payload }) =>
+  produce(state, (draft) => {
+    draft.rejectReasons = payload;
+  });
+
 export const setSelectedStopImage = (
   state,
   { payload: { base64Image }, props: { key } }
@@ -730,6 +737,7 @@ export default createReducer(initialState, {
   [Types.SET_MILEAGE]: setMileage,
   [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
   [Types.SET_REGISTRATION]: setRegistration,
+  [Types.SET_REJECT_DELIVERY_REASONS]: setRejectDeliveryReasons,
   [Types.SET_REJECTED]: processingTrue,
   [Types.SET_SELECTED_CLAIM]: setSelectedClaim,
   [Types.SET_SELECTED_STOP_IMAGE]: setSelectedStopImage,
