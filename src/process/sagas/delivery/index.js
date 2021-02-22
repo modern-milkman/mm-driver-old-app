@@ -35,7 +35,7 @@ const updateTrackerData = function* ({ status }) {
     promise: Api.repositories.fleet.drivers({
       id: `${user.driverId}`,
       deliveryStatus: status,
-      ...(device.position?.coords && { location: device.position.coords })
+      ...(device.position && { location: device.position })
     })
   });
 };
@@ -351,8 +351,8 @@ export const setDelivered = function* ({ id }) {
     },
     promise: Api.repositories.delivery.patchDelivered(
       id,
-      device.position?.coords.latitude,
-      device.position?.coords.longitude
+      device.position?.latitude,
+      device.position?.longitude
     )
   });
   Analytics.trackEvent(EVENTS.TAP_DONE_DELIVER, { id });
@@ -433,8 +433,8 @@ export const setRejected = function* ({ id, reasonId, reasonMessage }) {
       id,
       reasonId,
       reasonMessage,
-      device.position?.coords.latitude,
-      device.position?.coords.longitude
+      device.position?.latitude,
+      device.position?.longitude
     ),
     id
   });
@@ -455,7 +455,7 @@ export const startDelivering = function* () {
 
     yield put({
       type: DeliveryTypes.OPTIMIZE_STOPS,
-      currentLocation: device.position.coords,
+      currentLocation: device.position,
       returnPosition: device.returnPosition
     });
   }
@@ -472,7 +472,7 @@ export const updateProps = function* ({ props: { status } }) {
 
 export const updateReturnPosition = function* ({ clear }) {
   const device = yield select(deviceSelector);
-  let returnPosition = device?.position?.coords || null;
+  let returnPosition = device?.position || null;
   if (clear) {
     returnPosition = null;
   }
@@ -486,9 +486,9 @@ export const updateDirectionsPolyline = function* () {
   const device = yield select(deviceSelector);
   const selectedStop = yield select(selectedStopSelector);
 
-  if (device && device.position && device.position.coords && selectedStop) {
-    const originLatitude = device.position.coords.latitude;
-    const originLongitude = device.position.coords.longitude;
+  if (device && device.position && selectedStop) {
+    const originLatitude = device.position.latitude;
+    const originLongitude = device.position.longitude;
     const destinationLatitude = selectedStop.latitude;
     const destinationLongitude = selectedStop.longitude;
 
@@ -511,8 +511,8 @@ export const updateDirectionsPolyline = function* () {
           success: { type: DeliveryTypes.SET_DIRECTIONS_POLYLINE }
         },
         promise: Api.repositories.delivery.updateDirectionsPolyline({
-          originLatitude: device.position.coords.latitude,
-          originLongitude: device.position.coords.longitude,
+          originLatitude: device.position.latitude,
+          originLongitude: device.position.longitude,
           destinationLatitude: selectedStop.latitude,
           destinationLongitude: selectedStop.longitude
         })

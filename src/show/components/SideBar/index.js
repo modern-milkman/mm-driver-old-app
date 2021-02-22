@@ -12,7 +12,7 @@ export default connect(
     driverId: state.user.driverId,
     name: state.user.name,
     sideBarOpen: state.application.sideBarOpen,
-    source: state.device?.position?.coords || {
+    source: state.device?.position || {
       latitude: parseFloat(Config.DEFAULT_LATITUDE),
       longitude: parseFloat(Config.DEFAULT_LONGITUDE)
     },

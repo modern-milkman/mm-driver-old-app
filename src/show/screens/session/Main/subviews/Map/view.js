@@ -22,6 +22,7 @@ const cameraAnimationOptions = {
 
 const regionChangeComplete = (
   {
+    heading,
     mapNoTrackingHeading,
     mapRef,
     mapZoom,
@@ -45,6 +46,13 @@ const regionChangeComplete = (
       });
     });
     if (isGesture) {
+      mapRef.getCamera().then((currentCamera) => {
+        if (
+          Math.abs(Math.abs(currentCamera.heading) - Math.abs(heading)) > 10
+        ) {
+          updateDeviceProps({ shouldTrackHeading: false });
+        }
+      });
       setMapIsInteracting(false);
       if (showMapControlsOnMovement) {
         setMapMode('manual');
@@ -53,14 +61,19 @@ const regionChangeComplete = (
   }
 };
 
+const triggerManualMove = ({ setMapIsInteracting, updateDeviceProps }) => {
+  setMapIsInteracting(true);
+  updateDeviceProps({ shouldTrackLocation: false });
+};
+
 const Map = (props) => {
   const {
-    coords: { heading, latitude, longitude },
     fabTop,
     height,
     mapNoTrackingHeading,
     mapPadding,
     mapZoom,
+    position: { heading, latitude, longitude },
     setMapMode,
     shouldPitchMap,
     shouldTrackHeading,
@@ -80,7 +93,7 @@ const Map = (props) => {
     },
     pitch: shouldPitchMap ? 90 : 0,
     zoom: mapZoom,
-    heading: shouldTrackHeading ? heading : mapNoTrackingHeading
+    heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading
   };
 
   const animateCamera = useCallback(
@@ -106,7 +119,7 @@ const Map = (props) => {
               longitude
             }
           }),
-          heading: shouldTrackHeading ? heading : mapNoTrackingHeading,
+          heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading,
           pitch: shouldPitchMap ? 90 : 0
         });
       });
@@ -130,8 +143,12 @@ const Map = (props) => {
         customMapStyle={mapStyle}
         initialCamera={initialCamera}
         mapPadding={mapPadding}
-        onStartShouldSetResponder={setMapIsInteracting.bind(null, true)}
+        onStartShouldSetResponder={triggerManualMove.bind(null, {
+          setMapIsInteracting,
+          updateDeviceProps
+        })}
         onRegionChangeComplete={regionChangeComplete.bind(null, {
+          heading,
           mapNoTrackingHeading,
           mapRef,
           mapZoom,
@@ -176,14 +193,14 @@ const Map = (props) => {
 };
 
 Map.defaultProps = {
-  coords: {
+  height: 0,
+  mapMarkerSize: sizes.marker.normal,
+  mapPadding: { bottom: 0 },
+  position: {
     heading: 0,
     latitude: parseFloat(Config.DEFAULT_LATITUDE),
     longitude: parseFloat(Config.DEFAULT_LONGITUDE)
   },
-  height: 0,
-  mapMarkerSize: sizes.marker.normal,
-  mapPadding: { bottom: 0 },
   shouldPitchMap: false,
   shouldTrackHeading: false,
   shouldTrackLocation: false,
@@ -191,12 +208,12 @@ Map.defaultProps = {
 };
 
 Map.propTypes = {
-  coords: PropTypes.object,
   fabTop: PropTypes.instanceOf(Animated.Value),
   height: PropTypes.number,
   mapNoTrackingHeading: PropTypes.number,
   mapPadding: PropTypes.object,
   mapZoom: PropTypes.number,
+  position: PropTypes.object,
   setMapMode: PropTypes.func,
   shouldPitchMap: PropTypes.bool,
   shouldTrackHeading: PropTypes.bool,

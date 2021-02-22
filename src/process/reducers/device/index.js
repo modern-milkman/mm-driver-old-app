@@ -9,6 +9,7 @@ export const { Types, Creators } = createActions(
     requestUserLocationPermisions: null,
     setLatestApp: ['payload'],
     setLocation: ['position'],
+    setLocationHeading: ['heading'],
     setMapMode: ['mode'],
     updateProps: ['props']
   },
@@ -23,7 +24,11 @@ const initialState = {
   mapNoTrackingHeading: 0,
   mapMarkerSize: sizes.marker.normal,
   mapZoom: 14,
-  position: null,
+  position: {
+    heading: 0,
+    latitude: parseFloat(Config.DEFAULT_LATITUDE),
+    longitude: parseFloat(Config.DEFAULT_LONGITUDE)
+  },
   mapMode: 'auto',
   shouldPitchMap: false,
   shouldTrackHeading: false,
@@ -47,10 +52,21 @@ export const setLocation = (state, action) =>
     const { position } = action;
     if (
       position &&
-      !isNaN(parseFloat(position.coords.latitude)) &&
-      !isNaN(parseFloat(position.coords.longitude))
+      !isNaN(parseFloat(position.latitude)) &&
+      !isNaN(parseFloat(position.longitude))
     ) {
-      draft.position = position;
+      draft.position = {
+        ...draft.position,
+        ...position
+      };
+    }
+  });
+
+export const setLocationHeading = (state, action) =>
+  produce(state, (draft) => {
+    const { heading } = action;
+    if (draft.position) {
+      draft.position.heading = heading;
     }
   });
 
@@ -63,6 +79,7 @@ export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps,
   [Types.SET_LATEST_APP]: setLatestApp,
   [Types.SET_LOCATION]: setLocation,
+  [Types.SET_LOCATION_HEADING]: setLocationHeading,
   [Types.SET_MAP_MODE]: setMapMode
 });
 

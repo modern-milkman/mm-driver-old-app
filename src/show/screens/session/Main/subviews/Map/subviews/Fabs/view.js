@@ -37,11 +37,11 @@ const Fabs = (props) => {
   const {
     availableNavApps,
     buttonAccessibility,
-    coords,
     fabTop,
     mapMode,
     mapNoTrackingHeading,
     mapPadding,
+    position,
     processing,
     refreshDriverData,
     selectedStopId,
@@ -58,7 +58,10 @@ const Fabs = (props) => {
   const rotate = useRef(new Animated.Value(0)).current;
   const right = useRef(new Animated.Value(0)).current;
 
-  const source = { latitude: coords?.latitude, longitude: coords?.longitude };
+  const source = {
+    latitude: position?.latitude,
+    longitude: position?.longitude
+  };
 
   const destination =
     stops && selectedStopId && stops[selectedStopId]
@@ -275,11 +278,11 @@ Fabs.defaultProps = {
 Fabs.propTypes = {
   availableNavApps: PropTypes.array,
   buttonAccessibility: PropTypes.number,
-  coords: PropTypes.object,
   fabTop: PropTypes.instanceOf(Animated.Value),
   mapNoTrackingHeading: PropTypes.number,
   mapMode: PropTypes.string,
   mapPadding: PropTypes.object,
+  position: PropTypes.object,
   processing: PropTypes.bool,
   refreshDriverData: PropTypes.func,
   returnPosition: PropTypes.object,
@@ -298,8 +301,8 @@ Fabs.propTypes = {
 const areEqual = (prevProps, nextProps) => {
   return !(
     prevProps.processing !== nextProps.processing ||
-    prevProps.coords?.latitude !== nextProps.coords?.latitude ||
-    prevProps.coords?.longitude !== nextProps.coords?.longitude ||
+    prevProps.position?.latitude !== nextProps.position?.latitude ||
+    prevProps.position?.longitude !== nextProps.position?.longitude ||
     prevProps.mapMode !== nextProps.mapMode ||
     prevProps.mapNoTrackingHeading !== nextProps.mapNoTrackingHeading ||
     prevProps.selectedStopId !== nextProps.selectedStopId ||

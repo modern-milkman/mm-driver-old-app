@@ -7,9 +7,9 @@ import Map from './view';
 export default connect(
   (state) => {
     return {
-      coords: state.device?.position?.coords,
       mapNoTrackingHeading: state.device?.mapNoTrackingHeading,
       mapZoom: state.device?.mapZoom,
+      position: state.device?.position,
       shouldPitchMap: state.device?.shouldPitchMap,
       shouldTrackHeading: state.device?.shouldTrackHeading,
       shouldTrackLocation: state.device?.shouldTrackLocation,

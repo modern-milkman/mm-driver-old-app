@@ -22,7 +22,7 @@ export default connect(
         ) &&
           state.delivery?.hasRoutes),
       checklist: state.delivery?.checklist,
-      currentLocation: state.device.position?.coords,
+      currentLocation: state.device.position,
       foregroundSize: state.device.foregroundSize,
       optimizedRoutes: state.delivery.optimizedRoutes,
       returnPosition: state.device.returnPosition,

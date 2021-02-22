@@ -10,9 +10,9 @@ export default connect(
     return {
       availableNavApps: state.device?.availableNavApps,
       buttonAccessibility: state.device.buttonAccessibility,
-      coords: state.device?.position?.coords,
       mapMode: state.device?.mapMode,
       mapNoTrackingHeading: state.device?.mapNoTrackingHeading,
+      position: state.device?.position,
       processing: state.delivery.processing,
       returnPosition: state.device?.returnPosition,
       selectedStopId: state.delivery?.selectedStopId,
