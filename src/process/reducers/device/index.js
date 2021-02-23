@@ -19,6 +19,8 @@ export const { Types, Creators } = createActions(
 const initialState = {
   appcenter: null,
   buttonAccessibility: sizes.button.large,
+  computeDirections: false,
+  computeShortDirections: false,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info
   mapNoTrackingHeading: 0,
@@ -35,7 +37,6 @@ const initialState = {
   shouldTrackLocation: false,
   resetHourDay: parseInt(Config.RESET_HOUR_DAY),
   returnPosition: null,
-  computeDirections: false,
   showDoneDeliveries: false,
   showMapControlsOnMovement: true,
   uniqueID: 'uninitialized',

@@ -136,6 +136,7 @@
       "foreground": "Large foreground",
       "manualRouting": "Use manual routing",
       "computeDirections": "Compute delivery directions",
+      "computeShortDirections": "Compute delivery directions within 500m",
       "showDoneDeliveries": "Show done deliveries",
       "showMapControlsOnMovement": "Show controls on manual movement",
       "vibrations": "Vibrations"

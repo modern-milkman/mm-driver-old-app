@@ -9,12 +9,13 @@ import Settings from './view';
 export default connect(
   (state) => ({
     buttonAccessibility: state.device.buttonAccessibility,
+    computeDirections: state.device.computeDirections,
+    computeShortDirections: state.device.computeShortDirections,
     currentLocation: state.device.position,
     foregroundSize: state.device.foregroundSize,
     mapMarkerSize: state.device.mapMarkerSize,
     optimizedRoutes: state.delivery.optimizedRoutes,
     returnPosition: state.device.returnPosition,
-    computeDirections: state.device.computeDirections,
     showDoneDeliveries: state.device.showDoneDeliveries,
     showMapControlsOnMovement: state.device.showMapControlsOnMovement,
     vibrate: state.device.vibrate

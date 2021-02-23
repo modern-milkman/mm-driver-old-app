@@ -52,6 +52,8 @@ const onOptimization = (
 const Settings = (props) => {
   const {
     buttonAccessibility,
+    computeDirections,
+    computeShortDirections,
     currentLocation,
     foregroundSize,
     logout,
@@ -59,7 +61,6 @@ const Settings = (props) => {
     optimizedRoutes,
     optimizeStops,
     returnPosition,
-    computeDirections,
     showDoneDeliveries,
     showMapControlsOnMovement,
     updateDeliveryProps,
@@ -130,6 +131,30 @@ const Settings = (props) => {
           </RowView>
 
           <Separator marginLeft={defaults.marginHorizontal} />
+
+          {computeDirections && (
+            <>
+              <RowView
+                marginHorizontal={defaults.marginHorizontal}
+                justifyContent={'space-between'}
+                marginVertical={defaults.marginVertical / 2}
+                width={'auto'}>
+                <Text.List color={colors.secondary}>
+                  {I18n.t('screens:settings.switches.computeShortDirections')}
+                </Text.List>
+                <Switch
+                  value={computeShortDirections}
+                  onValueChange={toggleDeviceProp.bind(
+                    null,
+                    updateDeviceProps,
+                    'computeShortDirections'
+                  )}
+                />
+              </RowView>
+
+              <Separator marginLeft={defaults.marginHorizontal} />
+            </>
+          )}
 
           <RowView
             marginHorizontal={defaults.marginHorizontal}
@@ -274,6 +299,8 @@ const Settings = (props) => {
 
 Settings.propTypes = {
   buttonAccessibility: PropTypes.number,
+  computeDirections: PropTypes.bool,
+  computeShortDirections: PropTypes.bool,
   currentLocation: PropTypes.object,
   foregroundSize: PropTypes.string,
   logout: PropTypes.func,
@@ -281,7 +308,6 @@ Settings.propTypes = {
   optimizedRoutes: PropTypes.bool,
   optimizeStops: PropTypes.func,
   returnPosition: PropTypes.object,
-  computeDirections: PropTypes.bool,
   showDoneDeliveries: PropTypes.bool,
   showMapControlsOnMovement: PropTypes.bool,
   updateDeliveryProps: PropTypes.func,

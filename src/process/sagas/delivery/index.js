@@ -1,13 +1,14 @@
+import Config from 'react-native-config';
 import { call, delay, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
 import I18n from 'Locales/I18n';
 import { Base64 } from 'js-base64';
+import { distance } from 'Services/salesman';
 import NavigationService from 'Navigation/service';
 import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
-import { distance as distanceFn } from 'Services/salesman';
 import { base64ToHex, deliveryStates as DS } from 'Helpers';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 import {
@@ -517,7 +518,7 @@ export const updateDirectionsPolyline = function* () {
     const destinationLatitude = selectedStop.latitude;
     const destinationLongitude = selectedStop.longitude;
 
-    const distance = distanceFn(
+    const distanceToStop = distance(
       {
         x: originLatitude,
         y: originLongitude
@@ -529,7 +530,11 @@ export const updateDirectionsPolyline = function* () {
       'ME'
     );
 
-    if (distance > 100 && device?.computeDirections) {
+    if (
+      (distanceToStop > parseInt(Config.DIRECTIONS_THRESHOLD) ||
+        device?.computeShortDirections) &&
+      device?.computeDirections
+    ) {
       yield put({
         type: Api.API_CALL,
         actions: {
