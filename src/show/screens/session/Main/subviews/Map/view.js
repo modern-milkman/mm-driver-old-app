@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { Animated, View } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import MapView, {
   Marker as RNMMarker,
   PROVIDER_GOOGLE
@@ -17,7 +17,7 @@ import { DirectionsPolyline, Fabs, Markers } from './subviews';
 
 const deviceHeight = deviceFrame().height;
 const cameraAnimationOptions = {
-  duration: 500
+  duration: 325
 };
 
 const regionChangeComplete = (
@@ -36,8 +36,8 @@ const regionChangeComplete = (
   region,
   { isGesture }
 ) => {
-  if (mapRef) {
-    mapRef.getCamera().then((currentCamera) => {
+  if (mapRef.current) {
+    mapRef.current.getCamera().then((currentCamera) => {
       updateDeviceProps({
         ...(!shouldTrackHeading && {
           mapNoTrackingHeading: currentCamera.heading
@@ -47,7 +47,7 @@ const regionChangeComplete = (
     });
     if (isGesture) {
       if (shouldTrackHeading) {
-        mapRef.getCamera().then((currentCamera) => {
+        mapRef.current.getCamera().then((currentCamera) => {
           if (
             Math.abs(Math.abs(currentCamera.heading) - Math.abs(heading)) > 10
           ) {
@@ -61,6 +61,10 @@ const regionChangeComplete = (
       }
     }
   }
+};
+
+const setMapRef = (mapRef, ref) => {
+  mapRef.current = ref;
 };
 
 const triggerManualMove = ({
@@ -91,7 +95,8 @@ const Map = (props) => {
   } = props;
 
   let mapIsInteracting = useRef(false);
-  const [mapRef, setRef] = useState(undefined);
+  let mapRef = useRef(undefined);
+  let mapIsAnimating = useRef(false);
 
   const initialCamera = {
     altitude: 1000,
@@ -106,20 +111,26 @@ const Map = (props) => {
 
   const animateCamera = useCallback(
     (currentCamera, newCameraProps) => {
-      mapRef.animateCamera(
-        {
-          ...currentCamera,
-          ...newCameraProps
-        },
-        cameraAnimationOptions
-      );
+      if (!mapIsAnimating.current) {
+        mapIsAnimating.current = true;
+        mapRef.current.animateCamera(
+          {
+            ...currentCamera,
+            ...newCameraProps
+          },
+          cameraAnimationOptions
+        );
+        setTimeout(() => {
+          mapIsAnimating.current = false;
+        }, cameraAnimationOptions.duration);
+      }
     },
     [mapRef]
   );
 
   useEffect(() => {
     if (!mapIsInteracting.current) {
-      mapRef?.getCamera().then((currentCamera) => {
+      mapRef.current?.getCamera().then((currentCamera) => {
         animateCamera(currentCamera, {
           ...(shouldTrackLocation && {
             center: {
@@ -170,7 +181,7 @@ const Map = (props) => {
         })}
         pitchEnabled={false}
         provider={PROVIDER_GOOGLE}
-        ref={(ref) => setRef(ref)}
+        ref={setMapRef.bind(null, mapRef)}
         showsCompass={false}
         showsMyLocationButton={false}
         showsUserLocation={false}
