@@ -26,11 +26,11 @@ const changeReturnPosition = (props) => {
   actionSheet(actions, { destructiveButtonIndex: 2 });
 };
 
-const toggleProp = (setMapIsInteracting, setMapMode, callback) => {
+const toggleProp = (mapIsInteracting, setMapMode, callback) => {
   setMapMode('manual');
-  setMapIsInteracting(true);
+  mapIsInteracting.current = true;
   callback();
-  setMapIsInteracting(false);
+  mapIsInteracting.current = false;
 };
 
 const Fabs = (props) => {
@@ -38,6 +38,7 @@ const Fabs = (props) => {
     availableNavApps,
     buttonAccessibility,
     fabTop,
+    mapIsInteracting,
     mapMode,
     mapNoTrackingHeading,
     mapPadding,
@@ -45,7 +46,6 @@ const Fabs = (props) => {
     processing,
     refreshDriverData,
     selectedStopId,
-    setMapIsInteracting,
     setMapMode,
     shouldPitchMap,
     shouldTrackHeading,
@@ -158,7 +158,7 @@ const Fabs = (props) => {
         }
         onPress={toggleProp.bind(
           null,
-          setMapIsInteracting,
+          mapIsInteracting,
           setMapMode,
           updateDeviceProps.bind(null, {
             shouldTrackLocation: !shouldTrackLocation
@@ -188,7 +188,7 @@ const Fabs = (props) => {
         }
         onPress={toggleProp.bind(
           null,
-          setMapIsInteracting,
+          mapIsInteracting,
           setMapMode,
           updateDeviceProps.bind(null, {
             shouldTrackHeading: !shouldTrackHeading
@@ -212,7 +212,7 @@ const Fabs = (props) => {
         }
         onPress={toggleProp.bind(
           null,
-          setMapIsInteracting,
+          mapIsInteracting,
           setMapMode,
           updateDeviceProps.bind(null, {
             shouldPitchMap: !shouldPitchMap
@@ -279,6 +279,7 @@ Fabs.propTypes = {
   availableNavApps: PropTypes.array,
   buttonAccessibility: PropTypes.number,
   fabTop: PropTypes.instanceOf(Animated.Value),
+  mapIsInteracting: PropTypes.object,
   mapNoTrackingHeading: PropTypes.number,
   mapMode: PropTypes.string,
   mapPadding: PropTypes.object,
@@ -287,7 +288,6 @@ Fabs.propTypes = {
   refreshDriverData: PropTypes.func,
   returnPosition: PropTypes.object,
   selectedStopId: PropTypes.number,
-  setMapIsInteracting: PropTypes.func,
   setMapMode: PropTypes.func,
   shouldPitchMap: PropTypes.bool,
   shouldTrackHeading: PropTypes.bool,

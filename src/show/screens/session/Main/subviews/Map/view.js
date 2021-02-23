@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { Animated, View } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import MapView, {
   Marker as RNMMarker,
   PROVIDER_GOOGLE
@@ -23,10 +23,10 @@ const cameraAnimationOptions = {
 const regionChangeComplete = (
   {
     heading,
+    mapIsInteracting,
     mapNoTrackingHeading,
     mapRef,
     mapZoom,
-    setMapIsInteracting,
     setMapMode,
     shouldTrackHeading,
     shouldTrackLocation,
@@ -46,14 +46,16 @@ const regionChangeComplete = (
       });
     });
     if (isGesture) {
-      mapRef.getCamera().then((currentCamera) => {
-        if (
-          Math.abs(Math.abs(currentCamera.heading) - Math.abs(heading)) > 10
-        ) {
-          updateDeviceProps({ shouldTrackHeading: false });
-        }
-      });
-      setMapIsInteracting(false);
+      if (shouldTrackHeading) {
+        mapRef.getCamera().then((currentCamera) => {
+          if (
+            Math.abs(Math.abs(currentCamera.heading) - Math.abs(heading)) > 10
+          ) {
+            updateDeviceProps({ shouldTrackHeading: false });
+          }
+        });
+      }
+      mapIsInteracting.current = false;
       if (showMapControlsOnMovement) {
         setMapMode('manual');
       }
@@ -61,9 +63,15 @@ const regionChangeComplete = (
   }
 };
 
-const triggerManualMove = ({ setMapIsInteracting, updateDeviceProps }) => {
-  setMapIsInteracting(true);
-  updateDeviceProps({ shouldTrackLocation: false });
+const triggerManualMove = ({
+  mapIsInteracting,
+  shouldTrackLocation,
+  updateDeviceProps
+}) => {
+  mapIsInteracting.current = true;
+  if (shouldTrackLocation) {
+    updateDeviceProps({ shouldTrackLocation: false });
+  }
 };
 
 const Map = (props) => {
@@ -82,7 +90,7 @@ const Map = (props) => {
     updateDeviceProps
   } = props;
 
-  const [mapIsInteracting, setMapIsInteracting] = useState(false);
+  let mapIsInteracting = useRef(false);
   const [mapRef, setRef] = useState(undefined);
 
   const initialCamera = {
@@ -110,7 +118,7 @@ const Map = (props) => {
   );
 
   useEffect(() => {
-    if (!mapIsInteracting) {
+    if (!mapIsInteracting.current) {
       mapRef?.getCamera().then((currentCamera) => {
         animateCamera(currentCamera, {
           ...(shouldTrackLocation && {
@@ -144,15 +152,16 @@ const Map = (props) => {
         initialCamera={initialCamera}
         mapPadding={mapPadding}
         onStartShouldSetResponder={triggerManualMove.bind(null, {
-          setMapIsInteracting,
+          mapIsInteracting,
+          shouldTrackLocation,
           updateDeviceProps
         })}
         onRegionChangeComplete={regionChangeComplete.bind(null, {
           heading,
+          mapIsInteracting,
           mapNoTrackingHeading,
           mapRef,
           mapZoom,
-          setMapIsInteracting,
           setMapMode,
           shouldTrackHeading,
           shouldTrackLocation,
@@ -186,7 +195,7 @@ const Map = (props) => {
       <Fabs
         fabTop={fabTop}
         mapPadding={mapPadding}
-        setMapIsInteracting={setMapIsInteracting}
+        mapIsInteracting={mapIsInteracting}
       />
     </View>
   );
