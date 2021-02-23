@@ -81,6 +81,7 @@ const Settings = (props) => {
           marginHorizontal={defaults.marginHorizontal / 3}
         />
         <ColumnView
+          scrollable
           flex={1}
           justifyContent={'flex-start'}
           alignItems={'stretch'}
