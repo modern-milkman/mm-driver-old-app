@@ -5,6 +5,7 @@ import I18n from 'Locales/I18n';
 import Vibration from 'Services/vibration';
 import { colors, defaults, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
+import Analytics, { EVENTS } from 'Services/analytics';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import {
   Button,
@@ -37,6 +38,11 @@ const toggleDeviceProp = (updateDeviceProps, prop, value) => {
   const updateProp = {};
   updateProp[prop] = value;
   updateDeviceProps({ ...updateProp });
+};
+
+const triggerLogout = (logout) => {
+  Analytics.trackEvent(EVENTS.TAP_LOGOUT);
+  logout();
 };
 
 const onOptimization = (
@@ -290,7 +296,10 @@ const Settings = (props) => {
           width={'auto'}
           marginHorizontal={defaults.marginHorizontal}
           marginVertical={defaults.marginVertical}>
-          <Button.Error title={I18n.t('general:logout')} onPress={logout} />
+          <Button.Error
+            title={I18n.t('general:logout')}
+            onPress={triggerLogout.bind(null, logout)}
+          />
         </RowView>
       </ColumnView>
     </SafeAreaView>
