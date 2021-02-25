@@ -6,6 +6,7 @@ import { Platform, TextInput as RNTextInput, View } from 'react-native';
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
 import Text from 'Components/Text';
+import Icon from 'Components/Icon';
 import { CustomIcon } from 'Images';
 import { ColumnView, RowView } from 'Containers';
 import { alphaColor, colors, shadows } from 'Theme';
@@ -61,6 +62,8 @@ const TextInput = forwardRef((props, ref) => {
   const [focused, setFocus] = useState(
     ref?.isFocused && ref.isFocused() ? true : false
   );
+  const [showPassword, setShowPassword] = useState(false);
+
   const height = inputHeight(size, disableErrors, multiline, multilineHeight);
   const onFocusChangedInternalEvent = (focus) => {
     setFocus(focus);
@@ -118,7 +121,7 @@ const TextInput = forwardRef((props, ref) => {
               placeholderTextColor={colors.input}
               ref={ref}
               returnKeyType={returnKeyType}
-              secureTextEntry={secureTextEntry}
+              secureTextEntry={!showPassword && secureTextEntry}
               style={[
                 style.input,
                 {
@@ -128,12 +131,21 @@ const TextInput = forwardRef((props, ref) => {
               {...(multiline && { textAlignVertical: 'top' })}
               defaultValue={value}
             />
-            {focused && value?.length > 0 && (
-              <CustomIcon
-                icon={'close'}
-                onPress={onChangeText.bind(null, '')}
-              />
-            )}
+            {focused &&
+              value?.length > 0 &&
+              (secureTextEntry ? (
+                <Icon
+                  name={'eye'}
+                  color={colors.secondary}
+                  onPress={setShowPassword.bind(null, !showPassword)}
+                  size={24}
+                />
+              ) : (
+                <CustomIcon
+                  icon={'close'}
+                  onPress={onChangeText.bind(null, '')}
+                />
+              ))}
           </RowView>
         </InsetShadow>
       </View>
