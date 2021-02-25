@@ -493,7 +493,7 @@ export const resetChecklistPayload = (state, { resetType }) =>
   produce(state, (draft) =>
     updateChecklistProps(state, {
       props: {
-        payloadAltered: true,
+        payloadAltered: resetType ? true : false,
         payload: {
           ...initialVehicleChecks,
           ...(resetType === 'shiftEnd' && { shiftEnd: true }),
