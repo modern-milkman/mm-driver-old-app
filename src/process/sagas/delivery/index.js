@@ -258,7 +258,7 @@ export const getVehicleStockForDriverSuccess = function* ({
 
 export const optimizeStops = function* () {
   const sID = yield select(selectedStopIdSelector);
-  yield call(updateSelectedStop, sID);
+  yield call(updateSelectedStop, { sID });
   Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
 };
 
@@ -407,7 +407,7 @@ export const setDeliveredOrRejectedSuccess = function* () {
   }
 
   if (deliveriesLeft > 0 && isOptimizedRoutes) {
-    yield call(updateSelectedStop, sID);
+    yield call(updateSelectedStop, { sID });
   }
 
   yield put({
