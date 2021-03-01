@@ -88,6 +88,7 @@ apply from: "../../node_modules/react-native/react.gradle"
 project.ext.envConfigFiles = [
     debug: ".env.development",
     releasestaging: ".env.staging",
+    releaseuat: ".env.uat",
     release: ".env.production"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -174,6 +175,11 @@ android {
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
         }
         releaseStaging {
+            initWith(buildTypes.release)
+            matchingFallbacks = ['release']
+            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+        }
+        releaseUat {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
