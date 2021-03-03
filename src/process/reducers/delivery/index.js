@@ -519,7 +519,6 @@ export const setCustomerClaims = (state, { payload, selectedStopId }) =>
       if (!draft.claims[selectedStopId]) {
         draft.claims[selectedStopId] = { ...initialClaim };
       }
-
       draft.claims[selectedStopId].list = payload;
       const driverUnacknowledgedList = draft.claims[selectedStopId].list.filter(
         (item) => item.driverAcknowledged === false

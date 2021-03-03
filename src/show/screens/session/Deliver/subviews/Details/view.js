@@ -7,7 +7,7 @@ import { formatDate, mock } from 'Helpers';
 import { defaults, colors, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
-import { Button, NavBar, Separator, List, ListItem } from 'Components';
+import { Button, NavBar, Separator, Label, List, ListItem } from 'Components';
 
 const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
@@ -24,10 +24,11 @@ const CustomerIssueDetails = (props) => {
 
   const {
     claimItem,
-    driverResponses,
     claimDateTime,
     customerComment,
     customerIssueIdx,
+    driverResponses,
+    finalEscalation,
     reason
   } = selectedClaim;
 
@@ -129,6 +130,15 @@ const CustomerIssueDetails = (props) => {
           title={reason}
           description={formatDate(new Date(claimDateTime))}
           icon={null}
+          {...(finalEscalation && {
+            rightComponent: (
+              <Label
+                text={I18n.t(
+                  'screens:deliver.customerIssue.modal.finalEscalation'
+                )}
+              />
+            )
+          })}
         />
 
         <Separator color={colors.input} width={'100%'} />

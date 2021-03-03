@@ -53,6 +53,7 @@
         "customerComment": "Comment: ",
         "customerIssue": "Customer Issue",
         "date": "Date: ",
+        "finalEscalation": "Final Escalation",
         "listTitle": "Reply #{{id}}",
         "productsAffected": "Products affected: ",
         "reason": "Reason: ",

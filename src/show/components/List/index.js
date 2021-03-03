@@ -94,6 +94,7 @@ const renderItemInterface = (
     moreInfo,
     onLongPress,
     onPress,
+    rightComponent = mock,
     rightIcon,
     rightIconColor = colors.primary,
     rightImage,
@@ -171,6 +172,7 @@ const renderItemInterface = (
             </MiscelaneousBottomTextComponent>
           </ColumnView>
         )}
+        {rightComponent}
         {(customRightIcon || rightImage || rightIcon || enforceLayout) && (
           <RowView width={style.image.width} justifyContent={'flex-end'}>
             {(customRightIcon || rightImage || rightIcon) &&
@@ -305,6 +307,7 @@ ListItem.propTypes = {
   moreInfo: PropTypes.any,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
+  rightComponent: PropTypes.func,
   rightIcon: PropTypes.string,
   rightIconColor: PropTypes.string,
   rightImage: PropTypes.string,
@@ -333,6 +336,7 @@ ListItem.defaultProps = {
   moreInfo: null,
   onLongPress: mock,
   onPress: mock,
+  rightComponent: mock,
   rightIcon: null,
   rightIconColor: colors.primary,
   rightImage: null,

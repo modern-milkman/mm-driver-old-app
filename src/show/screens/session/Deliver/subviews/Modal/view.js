@@ -12,7 +12,15 @@ import { ColumnView, RowView } from 'Containers';
 import NavigationService from 'Navigation/service';
 import { deviceFrame, formatDate, mock } from 'Helpers';
 import { alphaColor, colors, defaults, sizes } from 'Theme';
-import { Button, Text, TextInput, Image, List, Separator } from 'Components';
+import {
+  Button,
+  Text,
+  TextInput,
+  Image,
+  Label,
+  List,
+  Separator
+} from 'Components';
 
 import style from './style';
 
@@ -176,7 +184,6 @@ const CustomerIssueModal = (props) => {
     },
     driverReply,
     processing,
-
     showReplyModal,
     showClaimModal,
     toggleReplyModal,
@@ -184,9 +191,10 @@ const CustomerIssueModal = (props) => {
   } = props;
 
   const {
-    claimDateTime = '',
-    reason = '',
-    claimItem = [],
+    finalEscalation,
+    claimDateTime,
+    reason,
+    claimItem,
     customerComment
   } = selectedClaim;
 
@@ -255,13 +263,22 @@ const CustomerIssueModal = (props) => {
           <RowView
             paddingVertical={defaults.marginVertical / 2}
             paddingHorizontal={defaults.marginHorizontal}
-            justifyContent={'flex-start'}>
-            <Text.List color={colors.secondaryLight}>
-              {I18n.t('screens:deliver.customerIssue.modal.date')}
-            </Text.List>
-            <Text.List color={colors.secondary}>
-              {formatDate(new Date(claimDateTime))}
-            </Text.List>
+            justifyContent={'space-between'}>
+            <RowView flex={1} justifyContent={'flex-start'}>
+              <Text.List color={colors.secondaryLight}>
+                {I18n.t('screens:deliver.customerIssue.modal.date')}
+              </Text.List>
+              <Text.List color={colors.secondary}>
+                {formatDate(new Date(claimDateTime))}
+              </Text.List>
+            </RowView>
+            {finalEscalation && (
+              <Label
+                text={I18n.t(
+                  'screens:deliver.customerIssue.modal.finalEscalation'
+                )}
+              />
+            )}
           </RowView>
 
           <Separator color={colors.input} width={'100%'} />

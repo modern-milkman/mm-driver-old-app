@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import { SafeAreaView } from 'Containers';
 import { formatDate, mock } from 'Helpers';
@@ -41,7 +42,8 @@ const CustomerIssueList = (props) => {
           'screens:deliver.customerIssue.list.nrReplies',
           { nr: item.driverResponses.length }
         ),
-        rightIcon: 'chevron-right',
+        rightIcon: item.finalEscalation ? 'alert' : 'chevron-right',
+        rightIconColor: item.finalEscalation ? colors.error : colors.primary,
         icon: null,
         title: I18n.t('screens:deliver.customerIssue.list.title', {
           issueNr: idx + 1
