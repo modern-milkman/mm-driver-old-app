@@ -126,6 +126,7 @@
   },
   "settings": {
     "sections": {
+      "device": "Device",
       "map": "Map",
       "routing": "Routing"
     },

@@ -90,33 +90,9 @@ const Settings = (props) => {
         />
         <ColumnView
           scrollable
-          flex={1}
           justifyContent={'flex-start'}
           alignItems={'stretch'}
           width={'auto'}>
-          <ListHeader title={I18n.t('screens:settings.sections.routing')} />
-
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.manualRouting')}
-            </Text.List>
-            <Switch
-              value={!optimizedRoutes}
-              onValueChange={onOptimization.bind(null, {
-                optimizeStops,
-                currentLocation,
-                returnPosition,
-                updateDeliveryProps
-              })}
-            />
-          </RowView>
-
-          <Separator />
-
           <ListHeader title={I18n.t('screens:settings.sections.map')} />
 
           <RowView
@@ -227,22 +203,6 @@ const Settings = (props) => {
             justifyContent={'space-between'}
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.vibrations')}
-            </Text.List>
-            <Switch
-              value={vibrate}
-              onValueChange={onVibrateChange.bind(null, updateDeviceProps)}
-            />
-          </RowView>
-
-          <Separator marginLeft={defaults.marginHorizontal} />
-
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.secondary}>
                 {I18n.t('screens:settings.switches.deliveriesRemaining')}
@@ -260,33 +220,6 @@ const Settings = (props) => {
               )}
             />
           </RowView>
-
-          <Separator marginLeft={defaults.marginHorizontal} />
-
-          <ColumnView
-            alignItems={'flex-start'}
-            marginVertical={defaults.marginVertical / 2}
-            marginHorizontal={defaults.marginHorizontal}
-            width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.sliders.buttons')}
-            </Text.List>
-            <Text.Caption color={colors.secondary}>
-              {I18n.t('screens:settings.sliders.drag')}
-            </Text.Caption>
-
-            <Slider
-              onSlidingComplete={onSliderChange.bind(
-                null,
-                updateDeviceProps,
-                'buttonAccessibility'
-              )}
-              minimumValue={sizes.button.small}
-              maximumValue={sizes.button.large}
-              step={sizes.button.step}
-              value={buttonAccessibility}
-            />
-          </ColumnView>
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
@@ -316,10 +249,79 @@ const Settings = (props) => {
           </ColumnView>
 
           <Separator />
+
+          <ListHeader title={I18n.t('screens:settings.sections.routing')} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.manualRouting')}
+            </Text.List>
+            <Switch
+              value={!optimizedRoutes}
+              onValueChange={onOptimization.bind(null, {
+                optimizeStops,
+                currentLocation,
+                returnPosition,
+                updateDeliveryProps
+              })}
+            />
+          </RowView>
+
+          <Separator />
+
+          <ListHeader title={I18n.t('screens:settings.sections.device')} />
+
+          <ColumnView
+            alignItems={'flex-start'}
+            marginVertical={defaults.marginVertical / 2}
+            marginHorizontal={defaults.marginHorizontal}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.sliders.buttons')}
+            </Text.List>
+            <Text.Caption color={colors.secondary}>
+              {I18n.t('screens:settings.sliders.drag')}
+            </Text.Caption>
+
+            <Slider
+              onSlidingComplete={onSliderChange.bind(
+                null,
+                updateDeviceProps,
+                'buttonAccessibility'
+              )}
+              minimumValue={sizes.button.small}
+              maximumValue={sizes.button.large}
+              step={sizes.button.step}
+              value={buttonAccessibility}
+            />
+          </ColumnView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.vibrations')}
+            </Text.List>
+            <Switch
+              value={vibrate}
+              onValueChange={onVibrateChange.bind(null, updateDeviceProps)}
+            />
+          </RowView>
+
+          <Separator />
         </ColumnView>
         <RowView
           alignItems={'stretch'}
           width={'auto'}
+          height={buttonAccessibility}
           marginHorizontal={defaults.marginHorizontal}
           marginVertical={defaults.marginVertical}>
           <Button.Error
