@@ -4,6 +4,7 @@ import { call, delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
+import store from 'Redux/store';
 import I18n from 'Locales/I18n';
 import NavigationService from 'Navigation/service';
 import { Types as GrowlTypes } from 'Reducers/growl';
@@ -125,9 +126,12 @@ export const login_success = function* ({ payload }) {
 };
 
 export const logout = function* () {
-  yield put({ type: 'state/RESET' });
-  Api.setToken();
   NavigationService.navigate({ routeName: defaultRoutes.public });
+  InteractionManager.runAfterInteractions(() => {
+    const { dispatch } = store().store;
+    dispatch({ type: 'state/RESET' });
+    Api.setToken();
+  });
   Analytics.trackEvent(EVENTS.LOGOUT);
 };
 
