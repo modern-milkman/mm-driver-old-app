@@ -17,6 +17,7 @@ export const { Types, Creators } = createActions(
 );
 
 const initialState = {
+  countDown: false,
   appcenter: null,
   buttonAccessibility: sizes.button.large,
   computeDirections: false,

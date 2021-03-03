@@ -8,6 +8,7 @@ import Settings from './view';
 
 export default connect(
   (state) => ({
+    countDown: state.device.countDown,
     buttonAccessibility: state.device.buttonAccessibility,
     computeDirections: state.device.computeDirections,
     computeShortDirections: state.device.computeShortDirections,

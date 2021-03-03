@@ -8,6 +8,7 @@ import Navigation from './view';
 export default connect(
   (state) => {
     return {
+      countDown: state.device.countDown,
       completedStopsIds: state.delivery?.completedStopsIds,
       status: state.delivery?.status,
       stopCount: stopCount(state)
