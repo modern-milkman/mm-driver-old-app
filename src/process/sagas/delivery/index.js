@@ -257,7 +257,7 @@ export const refreshDriverData = function* () {
   Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { deliveryStatus });
 };
 
-export const setDelivered = function* ({ id }) {
+export const setDelivered = function* ({ id, selectedStopId }) {
   const outOfStockItems = yield select(outOfStockItemsSelector);
   const device = yield select(deviceSelector);
 
@@ -275,7 +275,8 @@ export const setDelivered = function* ({ id }) {
       id,
       device.position?.coords.latitude,
       device.position?.coords.longitude
-    )
+    ),
+    selectedStopId
   });
   Analytics.trackEvent(EVENTS.TAP_DONE_DELIVER, { id });
 };
@@ -328,7 +329,7 @@ export const setProductsOrder = function* () {
   }
 };
 
-export const setRejected = function* ({ id, reasonMessage }) {
+export const setRejected = function* ({ id, reasonMessage, selectedStopId }) {
   // TODO - trigger out of stock requests even in reject delivery mode
   const device = yield select(deviceSelector);
 
@@ -344,7 +345,7 @@ export const setRejected = function* ({ id, reasonMessage }) {
       device.position?.coords.latitude,
       device.position?.coords.longitude
     ),
-    id
+    selectedStopId
   });
   Analytics.trackEvent(EVENTS.TAP_SKIP_DELIVERY, {
     id,

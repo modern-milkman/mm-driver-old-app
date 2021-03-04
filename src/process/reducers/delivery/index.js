@@ -39,9 +39,9 @@ export const { Types, Creators } = createActions(
     redirectSetSelectedClaim: ['claim'],
     refreshDriverData: null,
     setCustomerClaims: ['payload', 'selectedStopId'],
-    setDelivered: ['id'],
-    setDeliveredOrRejectedFailure: null,
-    setDeliveredOrRejectedSuccess: null,
+    setDelivered: ['id', 'selectedStopId'],
+    setDeliveredOrRejectedFailure: ['selectedStopId'],
+    setDeliveredOrRejectedSuccess: ['selectedStopId'],
     setDriverReplyImage: [
       'payload',
       'claimIndex',
@@ -50,7 +50,7 @@ export const { Types, Creators } = createActions(
     ],
     setItemOutOfStock: ['id'],
     setProductsOrder: ['payload'],
-    setRejected: ['id', 'reasonMessage'],
+    setRejected: ['id', 'reasonMessage', 'selectedStopId'],
     setSelectedClaim: ['claim'],
     setSelectedStopImage: ['payload', 'props'],
     startDelivering: [],
@@ -428,21 +428,24 @@ export const setDeliveredOrRejectedFailure = (state) =>
     draft.processing = false;
   });
 
-export const setDeliveredOrRejectedSuccess = (state) =>
+export const setDeliveredOrRejectedSuccess = (state, { selectedStopId }) =>
   produce(state, (draft) => {
     draft.completedStopsIds.push(
       ...draft.orderedStopsIds.splice(
-        draft.orderedStopsIds.indexOf(draft.selectedStopId),
+        draft.orderedStopsIds.indexOf(selectedStopId),
         1
       )
     );
     resetSelectedStopInfo(draft);
-    draft.stops[draft.selectedStopId].status = 'completed';
+    draft.stops[selectedStopId].status = 'completed';
 
     if (draft.orderedStopsIds.length > 0) {
-      draft.selectedStopId = draft.orderedStopsIds[0];
-      if (!draft.optimizedRoutes) {
-        draft.selectedStopId = null;
+      if (draft.selectedStopId === selectedStopId) {
+        // user didn't tap on another pin while request was processing
+        draft.selectedStopId = draft.orderedStopsIds[0];
+        if (!draft.optimizedRoutes) {
+          draft.selectedStopId = null;
+        }
       }
     } else {
       draft.selectedStopId = null;
@@ -537,6 +540,7 @@ export const updateSelectedStop = (state, { sID }) =>
     resetSelectedStopInfo(draft);
     draft.optimizedRoutes = false;
     draft.previousStopId = draft.selectedStopId;
+    draft.processing = false;
     draft.selectedStopId = sID;
     draft.claims.showClaimModal = false;
     draft.claims.showReplyModal = false;

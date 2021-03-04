@@ -148,7 +148,12 @@ const renderSkipModal = ({
             disabled={reasonMessage === ''}
             onPress={navigateBack.bind(
               null,
-              setRejected.bind(null, selectedStop.orderID, reasonMessage)
+              setRejected.bind(
+                null,
+                selectedStop.orderID,
+                reasonMessage,
+                selectedStop.key
+              )
             )}
             noBorderRadius
           />
@@ -411,7 +416,11 @@ const Deliver = (props) => {
                 title={I18n.t('general:done')}
                 onPress={navigateBack.bind(
                   null,
-                  setDelivered.bind(null, selectedStop.orderID)
+                  setDelivered.bind(
+                    null,
+                    selectedStop.orderID,
+                    selectedStop.key
+                  )
                 )}
                 disabled={!allItemsDone}
               />
