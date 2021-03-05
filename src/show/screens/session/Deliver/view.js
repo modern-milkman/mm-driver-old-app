@@ -168,7 +168,8 @@ const renderSkipModal = ({
                 null,
                 selectedStop.orderID,
                 reasonId,
-                reasonMessage
+                reasonMessage,
+                selectedStop.key
               )
             )}
             noBorderRadius
@@ -420,7 +421,11 @@ const Deliver = (props) => {
                 title={I18n.t('general:done')}
                 onPress={navigateBack.bind(
                   null,
-                  setDelivered.bind(null, selectedStop.orderID)
+                  setDelivered.bind(
+                    null,
+                    selectedStop.orderID,
+                    selectedStop.key
+                  )
                 )}
                 disabled={!allItemsDone || processing}
               />
