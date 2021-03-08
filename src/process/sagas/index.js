@@ -61,6 +61,7 @@ import {
 } from './delivery';
 
 import {
+  lowConnectionUpdate,
   requestLocationPermissionAndWatch,
   setLocation,
   setMapMode
@@ -150,6 +151,7 @@ export default function* root() {
       updateDirectionsPolyline
     ),
 
+    takeLatest(DeviceTypes.LOW_CONNECTION_UPDATE, lowConnectionUpdate),
     takeLatest(
       DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,
       requestLocationPermissionAndWatch

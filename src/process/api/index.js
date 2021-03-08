@@ -14,6 +14,7 @@ import { blacklists, timeToHMArray } from 'Helpers';
 
 let TOKEN = null;
 let REFRESH_TOKEN = null;
+const requestCountTimes = [];
 
 const api = axios.create({
   baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
@@ -35,13 +36,23 @@ let refreshTimeout = null;
 
 const interceptors = {
   config: (config) => {
+    config.meta = config.meta || {};
+    config.meta.requestStartedAt = new Date().getTime();
+
     if (TOKEN && config.internal) {
       config.headers.Authorization = 'Bearer ' + TOKEN;
     }
     return config;
   },
-  responseSuccess: (response) => response,
+  responseSuccess: (response) => {
+    interceptors.getRequestTime(response);
+    return response;
+  },
   responseError: async (error) => {
+    if (!blacklists.apiEndpointFailureTracking.includes(error.config.url)) {
+      interceptors.getRequestTime(error);
+    }
+
     const originalRequest = error.config;
     const { dispatch, getState } = store().store;
     const { user } = getState();
@@ -93,6 +104,10 @@ const interceptors = {
     }
 
     return Promise.reject(error);
+  },
+  getRequestTime: (response) => {
+    const time = new Date().getTime() - response.config.meta.requestStartedAt;
+    Api.executionTimingmeanRequestTime(time);
   }
 };
 
@@ -107,7 +122,6 @@ const Api = {
   API_CALL: 'API_CALL',
   API_ERROR: 'API_ERROR',
   NETWORK_ERROR: 'NETWORK_ERROR',
-
   repositories,
 
   async setToken(jwtToken = null, refreshToken = null) {
@@ -120,6 +134,31 @@ const Api = {
       REFRESH_TOKEN = refreshToken;
     } else {
       REFRESH_TOKEN = null;
+    }
+  },
+
+  executionTimingmeanRequestTime(lastReqTime) {
+    const { dispatch, getState } = store().store;
+    const {
+      device: { lowConnection }
+    } = getState();
+
+    if (requestCountTimes.length >= parseInt(Config.REQUEST_COUNT_LIMIT)) {
+      requestCountTimes.splice();
+    }
+
+    requestCountTimes.push(lastReqTime);
+
+    const meanRequestTime =
+      requestCountTimes.reduce((total, item) => total + item, 0) /
+      requestCountTimes.length;
+
+    if (
+      (meanRequestTime > parseInt(Config.REQUEST_TIME_LIMIT) &&
+        !lowConnection) ||
+      (meanRequestTime <= parseInt(Config.REQUEST_TIME_LIMIT) && lowConnection)
+    ) {
+      dispatch(DeviceActions.lowConnectionUpdate(!lowConnection));
     }
   },
 

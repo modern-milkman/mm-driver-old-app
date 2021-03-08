@@ -8,6 +8,7 @@ import Checklist from './session/VehicleCheckWizard/Checklist';
 import CustomerIssueDetails from './session/Deliver/subviews/Details';
 import CustomerIssueList from './session/Deliver/subviews/List';
 import CustomerIssueModal from './session/Deliver/subviews/Modal';
+import LowConnectionModal from './session/Main/subviews/Navigation/LowConnectionModal';
 import DamageReport from './session/VehicleCheckWizard/DamageReport';
 import Deliver from './session/Deliver';
 import LoadVan from './session/LoadVan';
@@ -25,6 +26,7 @@ export {
   Deliver,
   Home,
   LoadVan,
+  LowConnectionModal,
   Main,
   RegistrationMileage,
   Settings,

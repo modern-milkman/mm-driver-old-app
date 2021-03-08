@@ -22,7 +22,7 @@ const base64ToHex = (base64) => {
 
 const blacklists = {
   apiEndpointFailureTracking: [`${Config.FLEET_TRACKER_URL}/drivers`],
-  addToStackRoute: ['CustomerIssueModal'],
+  addToStackRoute: ['CustomerIssueModal', 'LowConnectionModal'],
   resetStackRoutes: ['CheckIn'],
   transientReset: ['RegistrationMileage']
 };

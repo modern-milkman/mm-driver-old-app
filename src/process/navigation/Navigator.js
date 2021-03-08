@@ -13,6 +13,7 @@ import {
   Deliver,
   Home,
   LoadVan,
+  LowConnectionModal,
   Main,
   RegistrationMileage,
   Settings,
@@ -78,6 +79,9 @@ const Modals = createStackNavigator(
   {
     CustomerIssueModal: {
       screen: CustomerIssueModal
+    },
+    LowConnectionModal: {
+      screen: LowConnectionModal
     }
   },
   {
@@ -87,7 +91,7 @@ const Modals = createStackNavigator(
         backgroundColor: 'transparent'
       }
     },
-    initialRouteName: 'CustomerIssueModal'
+    initialRouteName: 'LowConnectionModal'
   }
 );
 

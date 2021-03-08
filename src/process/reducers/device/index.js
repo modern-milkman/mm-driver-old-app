@@ -6,6 +6,7 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
+    lowConnectionUpdate: ['lowConnection'],
     requestUserLocationPermisions: null,
     setLatestApp: ['payload'],
     setLocation: ['position'],
@@ -32,6 +33,7 @@ const initialState = {
     latitude: parseFloat(Config.DEFAULT_LATITUDE),
     longitude: parseFloat(Config.DEFAULT_LONGITUDE)
   },
+  lowConnection: false,
   mapMode: 'auto',
   shouldPitchMap: false,
   shouldTrackHeading: false,

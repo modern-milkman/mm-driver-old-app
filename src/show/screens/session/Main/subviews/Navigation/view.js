@@ -6,8 +6,9 @@ import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
+import NavigationService from 'Navigation/service';
+import { Icon, ProgressBar, Text } from 'Components';
 import { statusBarHeight, deliveryStates as DS } from 'Helpers';
-import { ProgressBar, Text } from 'Components';
 
 import style from './style';
 
@@ -53,10 +54,22 @@ const renderProgressBar = ({ completed, stopCount, props }) => (
   </RowView>
 );
 
+const renderLowConnection = () => (
+  <Icon
+    size={30}
+    color={colors.warning}
+    name={'wifi-strength-1-alert'}
+    onPress={NavigationService.navigate.bind(null, {
+      routeName: 'LowConnectionModal'
+    })}
+  />
+);
+
 const Navigation = (props) => {
   const {
-    countDown,
     completedStopsIds,
+    countDown,
+    lowConnection,
     paddingBottom,
     panY,
     status,
@@ -95,6 +108,7 @@ const Navigation = (props) => {
               : renderCountUp(completed, stopCount)}
           </RowView>
         )}
+        {lowConnection && renderLowConnection()}
       </RowView>
     </Animated.View>
   );
@@ -103,6 +117,7 @@ const Navigation = (props) => {
 Navigation.defaultProps = {
   countDown: false,
   completedStopsIds: [],
+  lowConnection: false,
   panY: new Animated.Value(0),
   status: DS.NCI,
   stopCount: 0
@@ -111,6 +126,7 @@ Navigation.defaultProps = {
 Navigation.propTypes = {
   countDown: PropTypes.bool,
   completedStopsIds: PropTypes.array,
+  lowConnection: PropTypes.bool,
   paddingBottom: PropTypes.number,
   panY: PropTypes.object,
   status: PropTypes.string,

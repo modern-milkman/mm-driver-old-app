@@ -15,6 +15,14 @@ import {
 
 export { requestLocationPermissionAndWatch } from './extras/requestLocationPermissionAndWatch';
 
+export function* lowConnectionUpdate({ lowConnection }) {
+  yield delay(5000);
+  yield put({
+    type: DeviceTypes.UPDATE_PROPS,
+    props: { lowConnection: lowConnection }
+  });
+}
+
 export function* setLocation({ position }) {
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
