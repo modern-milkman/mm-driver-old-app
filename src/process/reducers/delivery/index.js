@@ -538,6 +538,10 @@ export const updateDriverResponse = (state, { data }) =>
 export const updateSelectedStop = (state, { sID }) =>
   produce(state, (draft) => {
     resetSelectedStopInfo(draft);
+    if (draft.selectedStopId) {
+      delete draft.stops[draft.selectedStopId].customerAddressImage; // Deletes customer image
+    }
+
     draft.optimizedRoutes = false;
     draft.previousStopId = draft.selectedStopId;
     draft.processing = false;
