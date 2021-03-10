@@ -98,7 +98,7 @@
       "or": "OR"
     },
     "lowConnectionModal": {
-      "title": "Your device has low connection",
+      "title": "Slow connection to server",
       "description": "You might experience lags while the app connects to the server, which means you might see that loading icons stay on longer than usual. There’s no need to log out and the longest you have to wait is 30 seconds.",
       "whatToExpect": "What else to expect:",
       "images": "Images not loading",
