@@ -341,8 +341,8 @@ export const getForDriverSuccess = (
           key,
           customerId: item.customerId,
           satisfactionStatus: item.satisfactionStatus || 0,
-          description: I18n.t('screens:deliver.customerID', {
-            customerId: item.customerId
+          description: I18n.t('screens:deliver.userID', {
+            userID: item.userId
           }),
           deliveryInstructions:
             deliveryInstructions && deliveryInstructions.length > 0
@@ -357,6 +357,7 @@ export const getForDriverSuccess = (
           phoneNumber: item.phoneNumber,
           status: 'completed',
           title,
+          userId: item.userId,
           searchHandle: title.toLowerCase() + item.customerId.toString()
         };
       }

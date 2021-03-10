@@ -311,8 +311,8 @@ const Deliver = (props) => {
             })}
             miscelaneousColor={colors.Primarylight}
             icon={null}
-            description={I18n.t('screens:deliver.customerID', {
-              customerId: selectedStop?.customerId
+            description={I18n.t('screens:deliver.userID', {
+              userId: selectedStop?.userId
             })}
             disabled
           />

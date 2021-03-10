@@ -41,7 +41,7 @@
     "title": "Damage Report"
   },
   "deliver": {
-    "customerID": "Customer ID #{{customerId}}",
+    "userID": "User ID #{{userId}}",
     "deliveryItems": "Delivery items",
     "routeDescription": "Route ID #{{routeDescription}}",
     "modal": {
