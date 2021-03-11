@@ -182,6 +182,7 @@ const driverReplySuccess = (state, { payload, acknowledgedClaim }) =>
       draft.claims[selectedStopId].selectedClaim = draft.claims[
         selectedStopId
       ].list.filter((claim) => claim.claimId === payload.claimId)[0];
+      NavigationService.goBack();
     }
 
     draft.claims[selectedStopId].driverResponse = {
