@@ -87,7 +87,7 @@ const initialClaim = {
   driverResponse: { text: null, image: null, imageType: null },
   driverUnacknowledgedNr: 0,
   list: [],
-  selectedClaim: null
+  selectedClaim: {}
 };
 const initialVehicleChecks = {
   shiftStart: false,
