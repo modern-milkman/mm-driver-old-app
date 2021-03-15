@@ -33,11 +33,11 @@ export default {
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
   },
-  patchDelivered(
+  patchDelivered({
     orderId,
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null
-  ) {
+  }) {
     return Api.patch('/Delivery/SetDelivered', {
       orderId,
       deliveryLocationLatitude,
@@ -47,13 +47,13 @@ export default {
   patchItemOutOfStock(itemId) {
     return Api.patch(`/Delivery/SetOutfStock/${itemId}`);
   },
-  patchRejected(
+  patchRejected({
     orderId,
     reasonId,
     description,
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null
-  ) {
+  }) {
     return Api.patch('/Delivery/SetRejected', {
       orderId,
       reasonType: reasonId,

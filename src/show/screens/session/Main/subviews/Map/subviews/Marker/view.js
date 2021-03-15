@@ -11,6 +11,10 @@ import { colors, defaults } from 'Theme';
 
 import style from './style';
 
+const markerOnPress = ({ updateSelectedStop, id }) => {
+  updateSelectedStop(id);
+};
+
 const Marker = (props) => {
   const {
     completedStopsIds,
@@ -61,7 +65,9 @@ const Marker = (props) => {
           latitude: selectedStop.latitude,
           longitude: selectedStop.longitude
         }}
-        onPress={disabled ? mock : updateSelectedStop.bind(null, id)}
+        onPress={
+          disabled ? mock : markerOnPress.bind(null, { updateSelectedStop, id })
+        }
         anchor={{ x: 0.5, y: 1 }}
         {...(completed && { zIndex: -1 })}
         {...(selectedStopId === id && { zIndex: 1 })}

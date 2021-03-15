@@ -31,7 +31,7 @@ const mainForegroundAction = ({
   checklist,
   currentLocation,
   foregroundPaddingTop,
-  optimizedRoutes,
+  manualRoutes,
   optimizeStops,
   pullHandleMoveY,
   pullHandlePan,
@@ -92,7 +92,7 @@ const mainForegroundAction = ({
           top,
           updateDeviceProps
         });
-      } else if (!optimizedRoutes) {
+      } else if (manualRoutes) {
         optimizeStops({ returnPosition, currentLocation });
       }
       break;
@@ -160,7 +160,7 @@ const Main = (props) => {
     checklist,
     currentLocation,
     foregroundSize,
-    optimizedRoutes,
+    manualRoutes,
     optimizeStops,
     returnPosition,
     selectedStop,
@@ -517,7 +517,7 @@ const Main = (props) => {
             checklist,
             currentLocation,
             foregroundPaddingTop,
-            optimizedRoutes,
+            manualRoutes,
             optimizeStops,
             pullHandleMoveY,
             pullHandlePan,
@@ -556,7 +556,7 @@ Main.propTypes = {
   checklist: PropTypes.object,
   currentLocation: PropTypes.object,
   foregroundSize: PropTypes.string,
-  optimizedRoutes: PropTypes.bool,
+  manualRoutes: PropTypes.bool,
   optimizeStops: PropTypes.func,
   returnPosition: PropTypes.object,
   selectedStop: PropTypes.any,

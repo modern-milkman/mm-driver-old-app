@@ -43,14 +43,10 @@ import {
   redirectSetSelectedClaim,
   refreshDriverData,
   saveVehicleChecks,
-  saveVehicleChecksFailure,
-  saveVehicleChecksSuccess,
   setCustomerClaims,
-  setDelivered,
-  setDeliveredOrRejectedSuccess,
+  setDeliveredOrRejected,
   setItemOutOfStock,
   setProductsOrder,
-  setRejected,
   setVehicleChecks,
   showMustComplyWithTerms,
   startDelivering,
@@ -121,26 +117,20 @@ export default function* root() {
     takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
     takeLatest(DeliveryTypes.SAVE_VEHICLE_CHECKS, saveVehicleChecks),
     takeLatest(
-      DeliveryTypes.SAVE_VEHICLE_CHECKS_FAILURE,
-      saveVehicleChecksFailure
-    ),
-    takeLatest(
-      DeliveryTypes.SAVE_VEHICLE_CHECKS_SUCCESS,
-      saveVehicleChecksSuccess
-    ),
-    takeLatest(
       DeliveryTypes.SHOW_MUST_COMPLY_WITH_TERMS,
       showMustComplyWithTerms
     ),
     takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, setCustomerClaims),
-    takeEvery(DeliveryTypes.SET_DELIVERED, setDelivered),
     takeEvery(
-      DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS,
-      setDeliveredOrRejectedSuccess
+      DeliveryTypes.SET_DELIVERED,
+      setDeliveredOrRejected.bind(null, 'delivered')
     ),
     takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
     takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
-    takeEvery(DeliveryTypes.SET_REJECTED, setRejected),
+    takeEvery(
+      DeliveryTypes.SET_REJECTED,
+      setDeliveredOrRejected.bind(null, 'rejected')
+    ),
     takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, setVehicleChecks),
     takeEvery(DeliveryTypes.START_DELIVERING, startDelivering),
     takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),

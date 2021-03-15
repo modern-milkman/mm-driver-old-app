@@ -47,10 +47,10 @@ const triggerLogout = (logout) => {
 
 const onOptimization = (
   { updateDeliveryProps, optimizeStops, currentLocation, returnPosition },
-  optimizedRoutes
+  manualRoutes
 ) => {
-  updateDeliveryProps({ optimizedRoutes: !optimizedRoutes });
-  if (!optimizedRoutes) {
+  updateDeliveryProps({ manualRoutes });
+  if (!manualRoutes) {
     optimizeStops({ currentLocation, returnPosition });
   }
 };
@@ -65,7 +65,7 @@ const Settings = (props) => {
     foregroundSize,
     logout,
     mapMarkerSize,
-    optimizedRoutes,
+    manualRoutes,
     optimizeStops,
     returnPosition,
     showDoneDeliveries,
@@ -261,7 +261,7 @@ const Settings = (props) => {
               {I18n.t('screens:settings.switches.manualRouting')}
             </Text.List>
             <Switch
-              value={!optimizedRoutes}
+              value={manualRoutes}
               onValueChange={onOptimization.bind(null, {
                 optimizeStops,
                 currentLocation,
@@ -343,7 +343,7 @@ Settings.propTypes = {
   foregroundSize: PropTypes.string,
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
-  optimizedRoutes: PropTypes.bool,
+  manualRoutes: PropTypes.bool,
   optimizeStops: PropTypes.func,
   returnPosition: PropTypes.object,
   showDoneDeliveries: PropTypes.bool,

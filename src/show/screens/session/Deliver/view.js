@@ -98,7 +98,13 @@ const navigateBack = (callback) => {
   NavigationService.goBack();
 };
 
+const rejectAndNavigateBack = (callback, setModalVisible) => {
+  setModalVisible(false);
+  setTimeout(navigateBack.bind(null, callback), 250);
+};
+
 const renderSkipModal = ({
+  outOfStockIds,
   reasonMessage,
   rejectReasons,
   selectedStop,
@@ -162,15 +168,17 @@ const renderSkipModal = ({
             title={I18n.t('general:skip')}
             width={'50%'}
             disabled={reasonMessage === ''}
-            onPress={navigateBack.bind(
+            onPress={rejectAndNavigateBack.bind(
               null,
               setRejected.bind(
                 null,
                 selectedStop.orderID,
+                selectedStop.key,
+                outOfStockIds,
                 reasonId,
-                reasonMessage,
-                selectedStop.key
-              )
+                reasonMessage
+              ),
+              setModalVisible
             )}
             noBorderRadius
           />
@@ -235,7 +243,7 @@ const Deliver = (props) => {
     processing,
     claims: { list },
     showClaimModal,
-    outOfStock,
+    outOfStockIds,
     routeDescription,
     selectedStop,
     setDelivered,
@@ -245,7 +253,7 @@ const Deliver = (props) => {
 
   const optimizedStopOrders = selectedStop
     ? Object.values(selectedStop.orders).map((order) => {
-        const isOutOfStock = outOfStock.includes(order.key);
+        const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,
           disabled: selectedStop.status === 'completed',
@@ -424,7 +432,8 @@ const Deliver = (props) => {
                   setDelivered.bind(
                     null,
                     selectedStop.orderID,
-                    selectedStop.key
+                    selectedStop.key,
+                    outOfStockIds
                   )
                 )}
                 disabled={!allItemsDone || processing}
@@ -453,7 +462,7 @@ Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
   claims: PropTypes.object,
   confirmedItem: PropTypes.array,
-  outOfStock: PropTypes.array,
+  outOfStockIds: PropTypes.array,
   processing: PropTypes.bool,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
@@ -470,7 +479,7 @@ Deliver.defaultProps = {
   allItemsDone: false,
   claims: {},
   confirmedItem: [],
-  outOfStock: [],
+  outOfStockIds: [],
   processing: false,
   reasonMessage: '',
   routeDescription: null,

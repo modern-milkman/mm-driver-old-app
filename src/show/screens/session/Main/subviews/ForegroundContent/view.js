@@ -96,7 +96,7 @@ const ForegroundContent = (props) => {
     foregroundSize,
     onButtonPress,
     onChevronUpPress,
-    optimizedRoutes,
+    manualRoutes,
     processing,
     resetHourDay,
     status,
@@ -126,7 +126,7 @@ const ForegroundContent = (props) => {
     case DS.DEL:
       if (selectedStop) {
         foregroundState = 'DELIVERING';
-      } else if (!optimizedRoutes) {
+      } else if (manualRoutes) {
         foregroundState = 'MANUAL';
       }
       break;
@@ -266,7 +266,7 @@ ForegroundContent.propTypes = {
   onButtonPress: PropTypes.func,
   onChevronUpPress: PropTypes.func,
   onTitleLayoutChange: PropTypes.func,
-  optimizedRoutes: PropTypes.bool,
+  manualRoutes: PropTypes.bool,
   processing: PropTypes.bool,
   resetHourDay: PropTypes.number,
   routeDescription: PropTypes.string,

@@ -14,9 +14,8 @@ import { userSessionPresent as userSessionPresentSelector } from 'Reducers/appli
 import {
   checklist as checklistSelector,
   completedStopsIds as completedStopsIdsSelector,
-  isOptimizedRoutes as optimizedRoutesSelector,
+  manualRoutes as manualRoutesSelector,
   orderedStopsIds as orderedStopsIdsSelector,
-  outOfStockItems as outOfStockItemsSelector,
   selectedStop as selectedStopSelector,
   selectedStopId as selectedStopIdSelector,
   status as statusSelector,
@@ -295,33 +294,14 @@ export const saveVehicleChecks = function* ({ saveType }) {
 
   yield put({
     type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.SAVE_VEHICLE_CHECKS_SUCCESS },
-      fail: { type: DeliveryTypes.SAVE_VEHICLE_CHECKS_FAILURE }
-    },
     promise: Api.repositories.delivery.postVechicleChecks({
       payload: {
         ...checklist.payload,
         vehicleCheckDamage,
         currentMileage: parseInt(checklist.payload.currentMileage)
       }
-    }),
-    saveType
+    })
   });
-};
-
-export const saveVehicleChecksFailure = function* ({ saveType }) {
-  yield put({
-    type: GrowlTypes.ALERT,
-    props: {
-      type: 'error',
-      title: I18n.t('alert:errors.api.backend.title', { status: 'BE' }),
-      message: I18n.t('alert:errors.api.backend.message')
-    }
-  });
-};
-
-export const saveVehicleChecksSuccess = function* () {
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
   NavigationService.navigate({ routeName: 'CheckIn' });
 };
@@ -361,45 +341,42 @@ export const setCustomerClaims = function* ({ payload, selectedStopId }) {
   }
 };
 
-export const setDelivered = function* ({ id, selectedStopId }) {
-  const outOfStockItems = yield select(outOfStockItemsSelector);
-  const device = yield select(deviceSelector);
-
-  for (const i of outOfStockItems) {
-    yield put({ type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK, id: i });
-  }
-
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS },
-      fail: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_FAILURE }
-    },
-    promise: Api.repositories.delivery.patchDelivered(
-      id,
-      device.position?.latitude,
-      device.position?.longitude
-    ),
-    selectedStopId
-  });
-  Analytics.trackEvent(EVENTS.TAP_DONE_DELIVER, { id });
-};
-
-export const setDeliveredOrRejectedSuccess = function* () {
+export const setDeliveredOrRejected = function* (
+  requestType,
+  { id, outOfStockIds, selectedStopId, reasonId, reasonMessage }
+) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
-  const status = yield select(statusSelector);
-  const isOptimizedRoutes = yield select(optimizedRoutesSelector);
+  const device = yield select(deviceSelector);
+  const manualRoutes = yield select(manualRoutesSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
+  const status = yield select(statusSelector);
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
-  const sID = orderedStopsIds[0];
 
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
-  const lastStop = stops[completedStopsIds[completedStopsIds.length - 1]];
-  for (const key in lastStop.orders) {
-    const order = lastStop.orders[key];
+  const promisePayload = {
+    orderId: id,
+    deliveryLocationLatitude: device.position?.latitude,
+    deliveryLocationLongitude: device.position?.longitude
+  };
+  const promise =
+    requestType === 'delivered'
+      ? Api.repositories.delivery.patchDelivered
+      : Api.repositories.delivery.patchRejected;
+
+  if (deliveriesLeft > 0 && !manualRoutes) {
+    yield put({
+      type: DeliveryTypes.UPDATE_SELECTED_STOP,
+      sID: orderedStopsIds[0],
+      manualRoutes
+    });
+  }
+
+  const selectedStopOrders = stops[selectedStopId].orders;
+  for (const key in selectedStopOrders) {
+    const order = selectedStopOrders[key];
     yield put({
       type: DeliveryTypes.INCREMENT_DELIVERED_STOCK,
       productId: order.productId,
@@ -407,9 +384,20 @@ export const setDeliveredOrRejectedSuccess = function* () {
     });
   }
 
-  if (deliveriesLeft > 0 && isOptimizedRoutes) {
-    yield call(updateSelectedStop, { sID });
+  for (const i of outOfStockIds) {
+    yield put({ type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK, id: i });
   }
+
+  yield put({
+    type: Api.API_CALL,
+    promise: promise({
+      ...promisePayload,
+      ...(requestType === 'rejected' && {
+        reasonType: reasonId,
+        description: reasonMessage
+      })
+    })
+  });
 
   yield put({
     type: Api.API_CALL,
@@ -423,7 +411,16 @@ export const setDeliveredOrRejectedSuccess = function* () {
       }
     })
   });
-  Analytics.trackEvent(EVENTS.SET_DELIVERED_OR_REJECTED_SUCCESS);
+
+  Analytics.trackEvent(
+    requestType === 'delivered'
+      ? EVENTS.TAP_DONE_DELIVER
+      : EVENTS.TAP_SKIP_DELIVERY,
+    {
+      id,
+      ...(requestType === 'rejected' && { reasonId, reasonMessage })
+    }
+  );
 };
 
 export const setItemOutOfStock = function* ({ id }) {
@@ -446,43 +443,12 @@ export const setVehicleChecks = function* () {
   }
 };
 
-export const setRejected = function* ({
-  id,
-  reasonId,
-  reasonMessage,
-  selectedStopId
-}) {
-  // TODO - trigger out of stock requests even in reject delivery mode
-  const device = yield select(deviceSelector);
-
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS },
-      fail: { type: DeliveryTypes.SET_DELIVERED_OR_REJECTED_FAILURE }
-    },
-    promise: Api.repositories.delivery.patchRejected(
-      id,
-      reasonId,
-      reasonMessage,
-      device.position?.latitude,
-      device.position?.longitude
-    ),
-    selectedStopId
-  });
-  Analytics.trackEvent(EVENTS.TAP_SKIP_DELIVERY, {
-    id,
-    reasonId,
-    reasonMessage
-  });
-};
-
 export const startDelivering = function* () {
   const device = yield select(deviceSelector);
-  const isOptimizedRoutes = yield select(optimizedRoutesSelector);
+  const manualRoutes = yield select(manualRoutesSelector);
   const status = yield select(statusSelector);
 
-  if (isOptimizedRoutes) {
+  if (!manualRoutes) {
     yield delay(750); // delay required because lots of animations + transitions + navigation + processing result in sluggish interface dropping frames. slight delay here makes everything smooth
 
     yield put({

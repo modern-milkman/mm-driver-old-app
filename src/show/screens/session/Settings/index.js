@@ -15,7 +15,7 @@ export default connect(
     currentLocation: state.device.position,
     foregroundSize: state.device.foregroundSize,
     mapMarkerSize: state.device.mapMarkerSize,
-    optimizedRoutes: state.delivery.optimizedRoutes,
+    manualRoutes: state.delivery.manualRoutes,
     returnPosition: state.device.returnPosition,
     showDoneDeliveries: state.device.showDoneDeliveries,
     showMapControlsOnMovement: state.device.showMapControlsOnMovement,
