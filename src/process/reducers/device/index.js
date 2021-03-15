@@ -18,28 +18,32 @@ export const { Types, Creators } = createActions(
 );
 
 const initialState = {
-  countDown: false,
   appcenter: null,
   buttonAccessibility: sizes.button.large,
   computeDirections: false,
   computeShortDirections: false,
+  countDown: false,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info
+  lowConnection: false,
   mapNoTrackingHeading: 0,
   mapMarkerSize: sizes.marker.normal,
   mapZoom: 14,
+  mapMode: 'auto',
   position: {
     heading: 0,
     latitude: parseFloat(Config.DEFAULT_LATITUDE),
     longitude: parseFloat(Config.DEFAULT_LONGITUDE)
   },
-  lowConnection: false,
-  mapMode: 'auto',
+  resetHourDay: parseInt(Config.RESET_HOUR_DAY),
+  requestQueues: {
+    offline: [],
+    failed: []
+  },
+  returnPosition: null,
   shouldPitchMap: false,
   shouldTrackHeading: false,
   shouldTrackLocation: false,
-  resetHourDay: parseInt(Config.RESET_HOUR_DAY),
-  returnPosition: null,
   showDoneDeliveries: false,
   showMapControlsOnMovement: true,
   uniqueID: 'uninitialized',
