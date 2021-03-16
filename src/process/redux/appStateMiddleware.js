@@ -30,6 +30,7 @@ export default () => (createStore) => (...args) => {
   };
 
   AppState.addEventListener('change', handleAppStateChange);
+  //TODO check here for remove listener
 
   return store;
 };

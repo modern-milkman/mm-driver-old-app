@@ -12,6 +12,7 @@ import { storeConfig } from './config';
 import rootReducer from './rootReducer';
 import apiMiddleware from './apiMiddleware';
 import appStateMiddleware from './appStateMiddleware';
+import connectionMiddleware from './connectionMiddleware';
 
 let rehydrationComplete;
 const middlewares = [];
@@ -26,6 +27,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 middlewares.push(createReactNavigationReduxMiddleware((state) => state.nav));
 middlewares.push(apiMiddleware);
+middlewares.push(connectionMiddleware);
 middlewares.push(sagaMiddleware);
 
 if (Config.ENVIRONMENT === 'development') {

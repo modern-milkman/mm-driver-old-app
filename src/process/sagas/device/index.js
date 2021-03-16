@@ -23,6 +23,13 @@ export function* lowConnectionUpdate({ lowConnection }) {
   });
 }
 
+export function* reduxSagaNetstatChange({ netStatProps }) {
+  yield put({
+    type: DeviceTypes.UPDATE_NETWORK_PROPS,
+    props: { ...netStatProps, status: netStatProps.isConnected ? 0 : 2 }
+  });
+}
+
 export function* setLocation({ position }) {
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);

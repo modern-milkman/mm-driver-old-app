@@ -176,6 +176,19 @@ const SideBar = (props) => {
                   )}
                 />
 
+                <ListItem
+                  icon={'information-outline'}
+                  title={I18n.t('routes:reports')}
+                  rightIcon={'chevron-right'}
+                  onPress={navigateAndClose.bind(
+                    null,
+                    updateProps,
+                    NavigationService.navigate.bind(null, {
+                      routeName: 'Reports'
+                    })
+                  )}
+                />
+
                 <RowView
                   justifyContent={'flex-start'}
                   marginHorizontal={defaults.marginHorizontal}>

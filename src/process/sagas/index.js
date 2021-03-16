@@ -58,6 +58,7 @@ import {
 
 import {
   lowConnectionUpdate,
+  reduxSagaNetstatChange,
   requestLocationPermissionAndWatch,
   setLocation,
   setMapMode
@@ -73,6 +74,7 @@ export default function* root() {
 
     takeEvery('API_ERROR', apiError),
     takeEvery('NETWORK_ERROR', apiError),
+    takeEvery('REDUX_SAGA_NETSTAT_CHANGE', reduxSagaNetstatChange),
 
     takeLatest('APP_STATE.FOREGROUND', foregroundDeliveryActions),
 

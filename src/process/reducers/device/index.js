@@ -12,6 +12,7 @@ export const { Types, Creators } = createActions(
     setLocation: ['position'],
     setLocationHeading: ['heading'],
     setMapMode: ['mode'],
+    updateNetworkProps: ['props'],
     updateProps: ['props']
   },
   { prefix: 'device/' }
@@ -26,20 +27,24 @@ const initialState = {
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info
   lowConnection: false,
-  mapNoTrackingHeading: 0,
   mapMarkerSize: sizes.marker.normal,
-  mapZoom: 14,
   mapMode: 'auto',
+  mapNoTrackingHeading: 0,
+  mapZoom: 14,
+  network: {
+    isConnected: false,
+    status: 0 //0-Online * 1-Soft Offline * 2-offline
+  },
   position: {
     heading: 0,
     latitude: parseFloat(Config.DEFAULT_LATITUDE),
     longitude: parseFloat(Config.DEFAULT_LONGITUDE)
   },
-  resetHourDay: parseInt(Config.RESET_HOUR_DAY),
   requestQueues: {
     offline: [],
     failed: []
   },
+  resetHourDay: parseInt(Config.RESET_HOUR_DAY),
   returnPosition: null,
   shouldPitchMap: false,
   shouldTrackHeading: false,
@@ -78,17 +83,36 @@ export const setLocationHeading = (state, action) =>
     }
   });
 
+export const updateNetworkProps = (state, { props }) =>
+  produce(state, (draft) => {
+    let data = { ...props };
+
+    if (props.status) {
+      if (!(state.network.status === 2 && props.status === 1)) {
+        data.status = props.status;
+      } else {
+        data.status = state.network.status;
+      }
+    }
+
+    draft.network = {
+      ...state.network,
+      ...data
+    };
+  });
+
 export const setMapMode = (state, action) =>
   produce(state, (draft) => {
     draft.mapMode = action.mode;
   });
 
 export default createReducer(initialState, {
-  [Types.UPDATE_PROPS]: updateProps,
   [Types.SET_LATEST_APP]: setLatestApp,
-  [Types.SET_LOCATION]: setLocation,
   [Types.SET_LOCATION_HEADING]: setLocationHeading,
-  [Types.SET_MAP_MODE]: setMapMode
+  [Types.SET_LOCATION]: setLocation,
+  [Types.SET_MAP_MODE]: setMapMode,
+  [Types.UPDATE_NETWORK_PROPS]: updateNetworkProps,
+  [Types.UPDATE_PROPS]: updateProps
 });
 
 export const device = (state) => state.device;

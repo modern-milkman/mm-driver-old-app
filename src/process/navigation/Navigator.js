@@ -15,6 +15,7 @@ import {
   LoadVan,
   LowConnectionModal,
   Main,
+  Reports,
   RegistrationMileage,
   Settings,
   UpgradeApp
@@ -64,7 +65,10 @@ const MainNavigator = createStackNavigator(
     CustomerIssueDetails: {
       screen: CustomerIssueDetails
     },
-    VechicleCheckWizardNavigator
+    VechicleCheckWizardNavigator,
+    Reports: {
+      screen: Reports
+    }
   },
   {
     initialRouteName: 'Main',
