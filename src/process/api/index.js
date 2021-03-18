@@ -93,14 +93,18 @@ const interceptors = {
   responseError: async (error) => {
     const originalRequest = error.config;
     const { dispatch, getState } = store().store;
-    const { user } = getState();
+    const { user, device } = getState();
 
     if (!blacklists.apiEndpointFailureTracking.includes(error.config.url)) {
       dispatch(DeviceActions.updateNetworkProps({ status: 1 }));
       interceptors.getRequestTime(error);
     }
 
-    if (error?.response?.status === 401) {
+    if (
+      error?.response?.status === 401 &&
+      device.network.status === 0 &&
+      device.requestQueues.offline.length === 0
+    ) {
       if (originalRequest.url.includes('/Security/Refresh')) {
         dispatch(ApplicationActions.logout());
         return Promise.reject(error);
