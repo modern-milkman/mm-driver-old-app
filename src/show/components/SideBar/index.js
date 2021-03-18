@@ -11,6 +11,7 @@ export default connect(
     availableNavApps: state.device?.availableNavApps,
     driverId: state.user.driverId,
     name: state.user.name,
+    requestQueues: state.device.requestQueues,
     sideBarOpen: state.application.sideBarOpen,
     source: state.device?.position || {
       latitude: parseFloat(Config.DEFAULT_LATITUDE),

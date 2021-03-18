@@ -69,7 +69,7 @@ const UpgradeApp = (props) => {
                 alignItems={'center'}>
                 <Pressable
                   onPress={openDriverUpdate}
-                  tyle={style.pressableContainer}>
+                  style={style.pressableContainer}>
                   <Text.Caption>
                     {I18n.t('screens:upgradeApp.other')}
                   </Text.Caption>

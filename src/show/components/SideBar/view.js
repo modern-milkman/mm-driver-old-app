@@ -37,10 +37,15 @@ const SideBar = (props) => {
     driverId,
     name,
     updateProps,
+    requestQueues,
     sideBarOpen,
     source,
     status
   } = props;
+
+  const showOfflineLabel =
+    requestQueues.offline.length > 0 || requestQueues.failed.length > 0;
+
   const [left] = useState(new Animated.Value(-sidebarWidth));
   const [opacity] = useState(new Animated.Value(0));
   const [show, setShow] = useState(sideBarOpen);
@@ -125,26 +130,6 @@ const SideBar = (props) => {
                 justifyContent={'flex-start'}
                 alignItems={'flex-start'}
                 marginVertical={defaults.marginVertical}>
-                {appcenter &&
-                  appcenter?.short_version &&
-                  appcenter?.download_url &&
-                  semverGt(
-                    appcenter?.short_version,
-                    Config.APP_VERSION_NAME
-                  ) && (
-                    <ListItem
-                      title={I18n.t('screens:upgradeApp.download', {
-                        version: appcenter.short_version
-                      })}
-                      icon={'cellphone-android'}
-                      rightIcon={'cloud-download-outline'}
-                      onPress={triggerDriverUpdate.bind(
-                        null,
-                        appcenter?.download_url
-                      )}
-                    />
-                  )}
-
                 {status === DS.DEL && (
                   <ListItem
                     title={I18n.t('screens:checkIn.loadVan')}
@@ -176,18 +161,40 @@ const SideBar = (props) => {
                   )}
                 />
 
-                <ListItem
-                  icon={'information-outline'}
-                  title={I18n.t('routes:reports')}
-                  rightIcon={'chevron-right'}
-                  onPress={navigateAndClose.bind(
-                    null,
-                    updateProps,
-                    NavigationService.navigate.bind(null, {
-                      routeName: 'Reports'
-                    })
+                {showOfflineLabel && (
+                  <ListItem
+                    icon={'information-outline'}
+                    title={I18n.t('routes:reports')}
+                    rightIcon={'chevron-right'}
+                    onPress={navigateAndClose.bind(
+                      null,
+                      updateProps,
+                      NavigationService.navigate.bind(null, {
+                        routeName: 'Reports'
+                      })
+                    )}
+                  />
+                )}
+
+                {appcenter &&
+                  appcenter?.short_version &&
+                  appcenter?.download_url &&
+                  semverGt(
+                    appcenter?.short_version,
+                    Config.APP_VERSION_NAME
+                  ) && (
+                    <ListItem
+                      title={I18n.t('screens:upgradeApp.download', {
+                        version: appcenter.short_version
+                      })}
+                      icon={'cellphone-android'}
+                      rightIcon={'cloud-download-outline'}
+                      onPress={triggerDriverUpdate.bind(
+                        null,
+                        appcenter?.download_url
+                      )}
+                    />
                   )}
-                />
 
                 <RowView
                   justifyContent={'flex-start'}
@@ -211,6 +218,7 @@ SideBar.propTypes = {
   availableNavApps: PropTypes.array,
   driverId: PropTypes.number,
   name: PropTypes.string,
+  requestQueues: PropTypes.object,
   sideBarOpen: PropTypes.bool,
   source: PropTypes.object,
   status: PropTypes.string,

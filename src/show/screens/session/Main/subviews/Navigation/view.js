@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Animated, Platform } from 'react-native';
+import { Animated, Platform, Pressable } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
 import NavigationService from 'Navigation/service';
-import { Icon, ProgressBar, Text } from 'Components';
+import { Icon, Label, ProgressBar, Text } from 'Components';
 import { statusBarHeight, deliveryStates as DS } from 'Helpers';
 
 import style from './style';
@@ -70,13 +70,18 @@ const Navigation = (props) => {
     completedStopsIds,
     countDown,
     lowConnection,
+    network,
     paddingBottom,
     panY,
+    requestQueues,
     status,
     stopCount,
     updateProps
   } = props;
+
   const completed = completedStopsIds.length;
+  const showOfflineLabel =
+    [1, 2].includes(network.status) || requestQueues.offline.length > 0;
 
   return (
     <Animated.View
@@ -102,13 +107,26 @@ const Navigation = (props) => {
           onPress={() => updateProps({ sideBarOpen: true })}
         />
         {status === DS.DEL && (
-          <RowView flex={1} marginLeft={defaults.marginHorizontal / 2}>
+          <RowView
+            flex={1}
+            marginLeft={defaults.marginHorizontal / 2}
+            {...(showOfflineLabel && {
+              marginRight: defaults.marginHorizontal / 2
+            })}>
             {countDown
               ? renderCountDown(completed, stopCount)
               : renderCountUp(completed, stopCount)}
           </RowView>
         )}
-        {lowConnection && renderLowConnection()}
+        {showOfflineLabel && (
+          <Pressable
+            onPress={NavigationService.navigate.bind(null, {
+              routeName: 'Reports'
+            })}>
+            <Label text={I18n.t('offline')} />
+          </Pressable>
+        )}
+        {lowConnection && network.status === 0 && renderLowConnection()}
       </RowView>
     </Animated.View>
   );
@@ -127,8 +145,10 @@ Navigation.propTypes = {
   countDown: PropTypes.bool,
   completedStopsIds: PropTypes.array,
   lowConnection: PropTypes.bool,
+  network: PropTypes.object,
   paddingBottom: PropTypes.number,
   panY: PropTypes.object,
+  requestQueues: PropTypes.object,
   status: PropTypes.string,
   stopCount: PropTypes.number,
   updateProps: PropTypes.func
