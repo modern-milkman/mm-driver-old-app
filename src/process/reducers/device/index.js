@@ -7,11 +7,14 @@ import { produce, updateProps } from '../shared';
 export const { Types, Creators } = createActions(
   {
     lowConnectionUpdate: ['lowConnection'],
+    pushRequest: ['queue', 'payload'],
     requestUserLocationPermisions: null,
     setLatestApp: ['payload'],
     setLocation: ['position'],
     setLocationHeading: ['heading'],
     setMapMode: ['mode'],
+    syncOffline: null,
+    shareOfflineData: null,
     updateNetworkProps: ['props'],
     updateProps: ['props']
   },
@@ -54,6 +57,11 @@ const initialState = {
   uniqueID: 'uninitialized',
   vibrate: true
 };
+
+export const pushRequest = (state, { queue, payload }) =>
+  produce(state, (draft) => {
+    draft.requestQueues[queue].push({ datetime: Date.now(), ...payload });
+  });
 
 export const setLatestApp = (state, action) =>
   produce(state, (draft) => {
@@ -106,13 +114,27 @@ export const setMapMode = (state, action) =>
     draft.mapMode = action.mode;
   });
 
+export const syncOffline = (state, { lastRequest, status }) =>
+  produce(state, (draft) => {
+    if (lastRequest === 'synced') {
+      draft.requestQueues.offline.splice(0, 1);
+    }
+    if (lastRequest === 'failure' && status !== 'TIMEOUT') {
+      draft.requestQueues.failed.push(draft.requestQueues.offline.splice(0, 1));
+    }
+  });
+
 export default createReducer(initialState, {
+  [Types.PUSH_REQUEST]: pushRequest,
   [Types.SET_LATEST_APP]: setLatestApp,
-  [Types.SET_LOCATION_HEADING]: setLocationHeading,
   [Types.SET_LOCATION]: setLocation,
+  [Types.SET_LOCATION_HEADING]: setLocationHeading,
   [Types.SET_MAP_MODE]: setMapMode,
+  [Types.SYNC_OFFLINE]: syncOffline,
   [Types.UPDATE_NETWORK_PROPS]: updateNetworkProps,
   [Types.UPDATE_PROPS]: updateProps
 });
 
 export const device = (state) => state.device;
+export const network = (state) => state.device.network;
+export const requestQueues = (state) => state.device.requestQueues;

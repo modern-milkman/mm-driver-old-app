@@ -353,13 +353,14 @@ export const setDeliveredOrRejected = function* (
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
 
+  const { position, requestQueues } = device;
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
   const promisePayload = {
     orderId: id,
-    deliveryLocationLatitude: device.position?.latitude,
-    deliveryLocationLongitude: device.position?.longitude
+    deliveryLocationLatitude: position?.latitude,
+    deliveryLocationLongitude: position?.longitude
   };
   const promise =
     requestType === 'delivered'
@@ -411,6 +412,24 @@ export const setDeliveredOrRejected = function* (
       }
     })
   });
+
+  if (
+    status === DS.DELC &&
+    (requestQueues.offline.length > 0 || requestQueues.failed.length > 0)
+  ) {
+    yield put({
+      type: GrowlTypes.ALERT,
+      props: {
+        type: 'error',
+        title: I18n.t('alert:errors.offline.data.title'),
+        message: I18n.t('alert:errors.offline.data.message'),
+        interval: -1,
+        payload: {
+          action: DeviceTypes.SHARE_OFFLINE_DATA
+        }
+      }
+    });
+  }
 
   Analytics.trackEvent(
     requestType === 'delivered'

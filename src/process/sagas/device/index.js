@@ -10,7 +10,9 @@ import { userSessionPresent as userSessionPresentSelector } from 'Reducers/appli
 
 import {
   Types as DeviceTypes,
-  Creators as DeviceCreators
+  Creators as DeviceCreators,
+  network as networkSelector,
+  requestQueues as requestQueuesSelector
 } from 'Reducers/device';
 
 export { requestLocationPermissionAndWatch } from './extras/requestLocationPermissionAndWatch';
@@ -64,5 +66,45 @@ export function* setMapMode({ mode }) {
       type: DeviceTypes.SET_MAP_MODE,
       mode: 'auto'
     });
+  }
+}
+
+export function* shareOfflineData() {
+  yield null;
+}
+
+export function* syncOffline({ status }) {
+  const { offline } = yield select(requestQueuesSelector);
+  if (offline.length > 0 && status !== 'TIMEOUT') {
+    const { body, config, method, path } = offline[0];
+    const params =
+      method === 'delete'
+        ? [{ ...config, queued: true }]
+        : [body, { ...config, queued: true }];
+
+    // TODO should it take into account driverId on BE?
+    yield put({
+      type: Api.API_CALL,
+      promise: Api[method](path, ...params),
+      actions: {
+        success: {
+          type: DeviceTypes.SYNC_OFFLINE,
+          lastRequest: 'synced'
+        },
+        fail: {
+          type: DeviceTypes.SYNC_OFFLINE,
+          lastRequest: 'failure'
+        }
+      }
+    });
+  }
+}
+
+export function* updateNetworkProps() {
+  const { status } = yield select(networkSelector);
+  const { offline } = yield select(requestQueuesSelector);
+
+  if (status === 0 && offline.length > 0) {
+    yield put({ type: DeviceTypes.SYNC_OFFLINE });
   }
 }

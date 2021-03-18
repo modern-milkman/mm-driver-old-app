@@ -5,14 +5,12 @@ import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
 import store from 'Redux/store';
-import I18n from 'Locales/I18n';
 import NavigationService from 'Navigation/service';
-import { Types as GrowlTypes } from 'Reducers/growl';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { defaultRoutes, isAppInstalled } from 'Helpers';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
 import { user as userSelector, Types as UserTypes } from 'Reducers/user';
 
-import { blacklists, defaultRoutes, isAppInstalled } from 'Helpers';
 import {
   Types as TransientTypes,
   transient as transientSelector
@@ -36,30 +34,6 @@ const navigationAppList = Platform.select({
 });
 
 // EXPORTED
-export const apiError = function* ({ error, status }) {
-  if (
-    !blacklists.apiEndpointFailureTracking.includes(
-      `${error?.config?.baseURL}${error?.config?.url}`
-    ) &&
-    !blacklists.apiEndpointFailureTracking.includes(error?.config?.url)
-  ) {
-    switch (status) {
-      case 400:
-      case 500:
-      case 'TIMEOUT':
-        yield put({
-          type: GrowlTypes.ALERT,
-          props: {
-            type: 'error',
-            title: I18n.t('alert:errors.api.backend.title', { status }),
-            message: I18n.t('alert:errors.api.backend.message')
-          }
-        });
-        break;
-    }
-  }
-};
-
 export const dismissKeyboard = function () {
   Keyboard.dismiss();
 };
