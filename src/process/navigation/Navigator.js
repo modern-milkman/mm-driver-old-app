@@ -1,5 +1,5 @@
 //TODO upgrade to nav v5
-import { createAppContainer } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import {
@@ -79,7 +79,7 @@ const MainNavigator = createStackNavigator(
   }
 );
 
-const Modals = createStackNavigator(
+const Modals = createSwitchNavigator(
   {
     CustomerIssueModal: {
       screen: CustomerIssueModal
@@ -90,12 +90,9 @@ const Modals = createStackNavigator(
   },
   {
     defaultNavigationOptions: {
-      headerShown: false,
-      cardStyle: {
-        backgroundColor: 'transparent'
-      }
-    },
-    initialRouteName: 'LowConnectionModal'
+      initialRouteName: 'CustomerIssueModal',
+      backBehavior: 'history'
+    }
   }
 );
 

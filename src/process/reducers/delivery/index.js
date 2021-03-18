@@ -89,7 +89,7 @@ const initialClaim = {
   driverResponse: { text: null, image: null, imageType: null },
   driverUnacknowledgedNr: 0,
   list: [],
-  selectedClaim: null
+  selectedClaim: {}
 };
 const initialVehicleChecks = {
   shiftStart: false,
@@ -184,6 +184,7 @@ const driverReplySuccess = (state, { payload, acknowledgedClaim }) =>
       draft.claims[selectedStopId].selectedClaim = draft.claims[
         selectedStopId
       ].list.filter((claim) => claim.claimId === payload.claimId)[0];
+      NavigationService.goBack();
     }
 
     draft.claims[selectedStopId].driverResponse = {

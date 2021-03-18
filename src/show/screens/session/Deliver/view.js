@@ -110,7 +110,7 @@ const renderSkipModal = ({
   selectedStop,
   setModalVisible,
   setRejected,
-  reasonId,
+  reasonId = rejectReasons[0].id,
   updateTransientProps
 }) => (
   <ColumnView
@@ -239,14 +239,14 @@ const Deliver = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {
     allItemsDone,
-    confirmedItem,
-    processing,
     claims: { list },
-    showClaimModal,
+    confirmedItem,
     outOfStockIds,
+    processing,
     routeDescription,
     selectedStop,
     setDelivered,
+    showClaimModal,
     toggleConfirmedItem,
     toggleOutOfStock
   } = props;
