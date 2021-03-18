@@ -30,6 +30,48 @@ const defaultConfig = {
   }
 };
 
+const handleRequestsQueue = (
+  error,
+  { body = null, config = null, path = null }
+) => {
+  if (
+    !config?.queued &&
+    error.config.method !== 'get' &&
+    !blacklists.apiEndpointOfflineTracking.includes(
+      `${error.config.baseURL}${error.config.url}`
+    ) &&
+    !blacklists.apiEndpointOfflineTracking.includes(error.config.url)
+  ) {
+    const { dispatch, getState } = store().store;
+    const { user } = getState();
+    dispatch(
+      DeviceActions.pushRequest(
+        error.response.status === 'TIMEOUT' ? 'offline' : 'failed',
+        {
+          body,
+          config,
+          driverId: user.driverId,
+          method: error.config.method,
+          path
+        }
+      )
+    );
+  }
+};
+
+const trackInAmplitude = (error) => {
+  if (
+    !blacklists.apiEndpointFailureTracking.includes(
+      `${error.config.baseURL}${error.config.url}`
+    ) &&
+    !blacklists.apiEndpointFailureTracking.includes(error.config.url)
+  ) {
+    Analytics.trackEvent(EVENTS.API_ERROR, {
+      error
+    });
+  }
+};
+
 const refreshTokenBus = new EM();
 let refreshTokenLock = false;
 let refreshTimeout = null;
@@ -49,9 +91,9 @@ const interceptors = {
     return response;
   },
   responseError: async (error) => {
-    const { user } = getState();
     const originalRequest = error.config;
     const { dispatch, getState } = store().store;
+    const { user } = getState();
 
     if (!blacklists.apiEndpointFailureTracking.includes(error.config.url)) {
       dispatch(DeviceActions.updateNetworkProps({ status: 1 }));
@@ -122,8 +164,6 @@ api.interceptors.response.use(
 
 const Api = {
   API_CALL: 'API_CALL',
-  API_ERROR: 'API_ERROR',
-  NETWORK_ERROR: 'NETWORK_ERROR',
   repositories,
 
   async setToken(jwtToken = null, refreshToken = null) {
@@ -193,51 +233,50 @@ const Api = {
     return REFRESH_TOKEN;
   },
 
-  catchError(error) {
-    if (
-      !blacklists.apiEndpointFailureTracking.includes(
-        `${error.config.baseURL}${error.config.url}`
-      ) &&
-      !blacklists.apiEndpointFailureTracking.includes(error.config.url)
-    ) {
-      Analytics.trackEvent(EVENTS.API_ERROR, {
-        error
-      });
+  catchError(payload, error) {
+    if (!error.response) {
+      error.response = {
+        statusText: error.message,
+        status: 'TIMEOUT'
+      };
     }
+
+    handleRequestsQueue(error, payload);
+    trackInAmplitude(error);
   },
 
   get(path, config = defaultConfig) {
     const request = api.get(path, config);
     request.then(this.testCustomHeaders);
-    request.catch(Api.catchError);
+    request.catch(Api.catchError.bind(null, { config, path }));
     return request;
   },
 
   post(path, body, config = defaultConfig) {
     const request = api.post(path, body, config);
     request.then(this.testCustomHeaders);
-    request.catch(Api.catchError);
+    request.catch(Api.catchError.bind(null, { body, config, path }));
     return request;
   },
 
   put(path, body, config = defaultConfig) {
     const request = api.put(path, body, config);
     request.then(this.testCustomHeaders);
-    request.catch(Api.catchError);
+    request.catch(Api.catchError.bind(null, { body, config, path }));
     return request;
   },
 
   patch(path, body, config = defaultConfig) {
     const request = api.patch(path, body, config);
     request.then(this.testCustomHeaders);
-    request.catch(Api.catchError);
+    request.catch(Api.catchError.bind(null, { body, config, path }));
     return request;
   },
 
   delete(path, config = defaultConfig) {
     const request = api.delete(path, config);
     request.then(this.testCustomHeaders);
-    request.catch(Api.catchError);
+    request.catch(Api.catchError.bind(null, { config, path }));
     return request;
   }
 };

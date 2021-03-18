@@ -13,29 +13,18 @@ export default function apiMiddleware() {
     return promise
       .then((payload) => {
         if (success && success.type) {
-          next({ ...rest, payload: payload.data, type: success.type });
+          return next({ ...rest, payload: payload.data, ...success });
         }
       })
       .catch((error) => {
-        const response = error.response || {
-          statusText: error.message,
-          status: 'TIMEOUT'
-        };
+        const response = error.response;
 
         if (fail && fail.type) {
-          next({
+          return next({
             ...rest,
-            type: fail.type,
             ...response,
-            error
-          });
-        } else {
-          next({
-            ...rest,
-            type:
-              response.status === 'TIMEOUT' ? Api.NETWORK_ERROR : Api.API_ERROR,
-            ...response,
-            error
+            error,
+            ...fail
           });
         }
       });

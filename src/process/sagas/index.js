@@ -12,7 +12,6 @@ import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/act
 
 // SAGAS
 import {
-  apiError,
   dismissKeyboard,
   init,
   login_error,
@@ -61,7 +60,10 @@ import {
   reduxSagaNetstatChange,
   requestLocationPermissionAndWatch,
   setLocation,
-  setMapMode
+  setMapMode,
+  shareOfflineData,
+  syncOffline,
+  updateNetworkProps
 } from './device';
 
 import { alert } from './growl';
@@ -72,8 +74,6 @@ export default function* root() {
   yield all([
     spawn(watchLocationChannel),
 
-    takeEvery('API_ERROR', apiError),
-    takeEvery('NETWORK_ERROR', apiError),
     takeEvery('REDUX_SAGA_NETSTAT_CHANGE', reduxSagaNetstatChange),
 
     takeLatest('APP_STATE.FOREGROUND', foregroundDeliveryActions),
@@ -149,6 +149,9 @@ export default function* root() {
       requestLocationPermissionAndWatch
     ),
     takeLatest(DeviceTypes.SET_MAP_MODE, setMapMode),
+    takeLatest(DeviceTypes.SHARE_OFFLINE_DATA, shareOfflineData),
+    takeLatest(DeviceTypes.SYNC_OFFLINE, syncOffline),
+    takeLatest(DeviceTypes.UPDATE_NETWORK_PROPS, updateNetworkProps),
 
     takeEvery(GrowlTypes.ALERT, alert),
 

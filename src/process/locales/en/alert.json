@@ -14,10 +14,6 @@
   },
   "errors": {
     "api": {
-      "backend": {
-        "title": "Processing error [{{status}}]",
-        "message": "There was an error processing your request(s). Please try again. If the problem persists, contact your supervisor."
-      },
       "customerClaims": {
         "title": "Error getting customer claims",
         "message": "Tap this message to reload customer claims. If the problem persists, contact your supervisor."
@@ -26,6 +22,12 @@
         "title": "Error getting route data",
         "message": "Try refreshing route data again. If the problem persists, contact your supervisor.",
         "refreshMessage": "Tap this message to reload route data. If the problem persists, contact your supervisor."
+      }
+    },
+    "offline": {
+      "data": {
+        "title": "Pushing data to server failure!",
+        "message": "There were failures in pushing your work to the server. Tap here to send data to your supervisor now!"
       }
     },
     "vanChecks": {
