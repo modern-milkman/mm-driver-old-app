@@ -421,8 +421,8 @@ export const setDeliveredOrRejected = function* (
       type: GrowlTypes.ALERT,
       props: {
         type: 'error',
-        title: I18n.t('alert:errors.offline.data.title'),
-        message: I18n.t('alert:errors.offline.data.message'),
+        title: I18n.t('alert:errors.reports.data.title'),
+        message: I18n.t('alert:errors.reports.data.message'),
         interval: -1,
         payload: {
           action: DeviceTypes.SHARE_OFFLINE_DATA

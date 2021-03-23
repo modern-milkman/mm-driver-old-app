@@ -6,6 +6,7 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
+    clearFailedRequests: null,
     lowConnectionUpdate: ['lowConnection'],
     pushRequest: ['queue', 'payload'],
     requestUserLocationPermisions: null,
@@ -16,6 +17,7 @@ export const { Types, Creators } = createActions(
     syncOffline: null,
     shareOfflineData: null,
     updateNetworkProps: ['props'],
+    updateProcessor: ['processor', 'value'],
     updateProps: ['props']
   },
   { prefix: 'device/' }
@@ -43,6 +45,9 @@ const initialState = {
     latitude: parseFloat(Config.DEFAULT_LATITUDE),
     longitude: parseFloat(Config.DEFAULT_LONGITUDE)
   },
+  processors: {
+    syncData: false
+  },
   requestQueues: {
     offline: [],
     failed: []
@@ -57,6 +62,11 @@ const initialState = {
   uniqueID: 'uninitialized',
   vibrate: true
 };
+
+export const clearFailedRequests = (state) =>
+  produce(state, (draft) => {
+    draft.requestQueues.failed = [];
+  });
 
 export const pushRequest = (state, { queue, payload }) =>
   produce(state, (draft) => {
@@ -109,6 +119,11 @@ export const updateNetworkProps = (state, { props }) =>
     };
   });
 
+export const updateProcessor = (state, { processor, value }) =>
+  produce(state, (draft) => {
+    draft.processors[processor] = value;
+  });
+
 export const setMapMode = (state, action) =>
   produce(state, (draft) => {
     draft.mapMode = action.mode;
@@ -116,15 +131,29 @@ export const setMapMode = (state, action) =>
 
 export const syncOffline = (state, { lastRequest, status }) =>
   produce(state, (draft) => {
+    if (!lastRequest) {
+      draft.requestQueues.syncHasErrors = false;
+      draft.requestQueues.toSync = draft.requestQueues.offline.length;
+    }
+    if (draft.requestQueues.offline.length > 0) {
+      draft.processors.syncData = true;
+    }
     if (lastRequest === 'synced') {
       draft.requestQueues.offline.splice(0, 1);
     }
     if (lastRequest === 'failure' && status !== 'TIMEOUT') {
-      draft.requestQueues.failed.push(draft.requestQueues.offline.splice(0, 1));
+      draft.requestQueues.failed.push(
+        draft.requestQueues.offline.splice(0, 1)[0]
+      );
+      draft.requestQueues.syncHasErrors = true;
+    }
+    if (draft.requestQueues.offline.length === 0 || status === 'TIMEOUT') {
+      draft.requestQueues.toSync = 0;
     }
   });
 
 export default createReducer(initialState, {
+  [Types.CLEAR_FAILED_REQUESTS]: clearFailedRequests,
   [Types.PUSH_REQUEST]: pushRequest,
   [Types.SET_LATEST_APP]: setLatestApp,
   [Types.SET_LOCATION]: setLocation,
@@ -132,6 +161,7 @@ export default createReducer(initialState, {
   [Types.SET_MAP_MODE]: setMapMode,
   [Types.SYNC_OFFLINE]: syncOffline,
   [Types.UPDATE_NETWORK_PROPS]: updateNetworkProps,
+  [Types.UPDATE_PROCESSOR]: updateProcessor,
   [Types.UPDATE_PROPS]: updateProps
 });
 

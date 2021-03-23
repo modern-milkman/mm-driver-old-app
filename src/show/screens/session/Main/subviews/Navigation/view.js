@@ -126,7 +126,10 @@ const Navigation = (props) => {
             <Label text={I18n.t('offline')} />
           </Pressable>
         )}
-        {lowConnection && network.status === 0 && renderLowConnection()}
+        {!showOfflineLabel &&
+          lowConnection &&
+          network.status === 0 &&
+          renderLowConnection()}
       </RowView>
     </Animated.View>
   );

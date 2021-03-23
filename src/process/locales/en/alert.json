@@ -24,16 +24,40 @@
         "refreshMessage": "Tap this message to reload route data. If the problem persists, contact your supervisor."
       }
     },
-    "offline": {
+    "reports": {
       "data": {
         "title": "Pushing data to server failure!",
         "message": "There were failures in pushing your work to the server. Tap here to send data to your supervisor now!"
+      },
+      "retrySync": {
+        "title": "Error synchronising data",
+        "message": "Please try again or \"Send data to supervisor\". Your work may be lost unless it is pushed to the server or sent to your supervisor. Tap to retry."
+      },
+      "sendToSuper": {
+        "title": "Error sending data to supervisor",
+        "message": "Please try again. Your work may be lost unless it is pushed to the server or sent to your supervisor. Tap to dismiss."
+      },
+      "sync": {
+        "title": "Error synchronising data",
+        "message": "Please \"Send data to supervisor\". Your work may be lost unless it is pushed to the server or sent to your supervisor. Tap to dismiss."
       }
     },
     "vanChecks": {
       "mustComplyWithTerms": {
         "title": "Missing requirements",
         "message": "You need to comply with all terms to start your shift"
+      }
+    }
+  },
+  "success": {
+    "reports": {
+      "sendToSuper": {
+        "title": "Successfully sent data to supervisor",
+        "message": "Data sent to supervisor has been removed from the device. Tap to dismiss."
+      },
+      "sync": {
+        "title": "Successfully pushed all your offline data!",
+        "message": "All work data has been successfully pushed to the server. Tap to dismiss."
       }
     }
   }

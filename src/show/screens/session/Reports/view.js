@@ -1,15 +1,155 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import Config from 'react-native-config';
+import { ActivityIndicator } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
 import NavigationService from 'Navigation/service';
-import { ColumnView, SafeAreaView } from 'Containers';
-import { NavBar, Text } from 'Components';
+import { ColumnView, RowView, SafeAreaView } from 'Containers';
+import { Button, ListHeader, NavBar, ProgressBar, Text } from 'Components';
 
-const Reports = ({ network }) => {
+let reportsTimer = null;
+
+const startTimer = (setProcessing) => {
+  if (setProcessing) {
+    reportsTimer = setTimeout(
+      setProcessing.bind(null, false),
+      parseInt(Config.API_TIMEOUT)
+    );
+  }
+};
+
+const clearTimer = (setProcessing) => {
+  clearTimeout(reportsTimer);
+};
+
+const renderFailedRequests = ({
+  processing,
+  syncingData,
+  shareOfflineData
+}) => (
+  <>
+    <ListHeader title={I18n.t('screens:reports.sections.failed')} />
+    <ColumnView
+      width={'auto'}
+      alignItems={'flex-start'}
+      marginHorizontal={defaults.marginHorizontal}
+      marginVertical={defaults.marginVertical / 2}>
+      <Text.List color={colors.error}>
+        {I18n.t('screens:reports.failed.hasData')}
+      </Text.List>
+    </ColumnView>
+    <RowView
+      width={'auto'}
+      marginHorizontal={defaults.marginHorizontal}
+      marginVertical={defaults.marginVertical / 2}>
+      <Button.Primary
+        title={I18n.t('screens:reports.buttons.sendToSuper')}
+        onPress={shareOfflineData}
+        disabled={syncingData || processing}
+      />
+    </RowView>
+  </>
+);
+
+const renderOfflineData = ({
+  processing,
+  requestQueues,
+  syncOffline,
+  syncingData
+}) => (
+  <ColumnView
+    marginHorizontal={defaults.marginHorizontal}
+    justifyContent={'space-between'}
+    alignItems={'flex-start'}
+    marginVertical={defaults.marginVertical / 2}
+    width={'auto'}>
+    <Text.List color={colors.secondary}>
+      {requestQueues.offline.length === 0
+        ? I18n.t('screens:reports.offline.noData')
+        : I18n.t('screens:reports.offline.hasData', {
+            requests: requestQueues.offline.length
+          })}
+    </Text.List>
+    {requestQueues.offline.length > 0 &&
+      renderReconnectAndSyncButton({ processing, syncOffline, syncingData })}
+  </ColumnView>
+);
+
+const renderReconnectAndSyncButton = ({
+  processing,
+  syncOffline,
+  syncingData
+}) => (
+  <RowView width={'auto'} marginVertical={defaults.marginVertical / 2}>
+    <Button.Primary
+      title={I18n.t('screens:reports.buttons.reconnectAndSync')}
+      onPress={syncOffline}
+      processing={syncingData}
+      disabled={syncingData || processing}
+    />
+  </RowView>
+);
+
+const renderSyncingData = ({
+  processing,
+  requestQueues,
+  syncingData,
+  syncOffline
+}) => (
+  <ColumnView
+    marginHorizontal={defaults.marginHorizontal}
+    justifyContent={'space-between'}
+    marginVertical={defaults.marginVertical / 2}
+    width={'auto'}>
+    <RowView
+      width={'100%'}
+      justifyContent={'space-between'}
+      marginVertical={defaults.marginVertical / 4}>
+      <Text.List color={colors.secondary}>
+        {I18n.t('screens:reports.offline.accuracy')}
+      </Text.List>
+      <Text.List color={colors.secondary}>
+        {I18n.t('screens:reports.offline.percentage', {
+          percentage: requestQueues.toSync
+            ? Math.floor(
+                ((requestQueues.toSync - requestQueues.offline.length) * 100) /
+                  requestQueues.toSync
+              )
+            : 0
+        })}
+      </Text.List>
+    </RowView>
+    <RowView height={4}>
+      <ProgressBar
+        height={4}
+        progress={
+          requestQueues.toSync
+            ? requestQueues.toSync - requestQueues.offline.length
+            : 0
+        }
+        total={requestQueues.toSync}
+      />
+    </RowView>
+    {renderReconnectAndSyncButton({ processing, syncOffline, syncingData })}
+  </ColumnView>
+);
+
+const Reports = ({
+  requestQueues,
+  shareOfflineData,
+  syncingData,
+  syncOffline
+}) => {
+  const [processing, setProcessing] = useState(true);
   return (
     <SafeAreaView top bottom>
+      <NavigationEvents
+        onDidFocus={startTimer.bind(null, setProcessing)}
+        onDidBlur={clearTimer.bind(null, setProcessing)}
+      />
       <ColumnView
         flex={1}
         justifyContent={'flex-start'}
@@ -22,21 +162,47 @@ const Reports = ({ network }) => {
           marginHorizontal={defaults.marginHorizontal / 3}
         />
 
-        <ColumnView paddingTop={20} alignItems={'flex-start'}>
-          <Text.Heading color={'black'}>
-            Is Connected : {JSON.stringify(network.isConnected)}
-          </Text.Heading>
-          <Text.Heading color={'black'}>
-            Network Status : {JSON.stringify(network.status)}
-          </Text.Heading>
-        </ColumnView>
+        {processing && (
+          <RowView marginHorizontal={defaults.marginHorizontal} width={'auto'}>
+            <ColumnView
+              marginRight={defaults.marginHorizontal / 2}
+              width={'auto'}>
+              <ActivityIndicator color={colors.primary} />
+            </ColumnView>
+            <Text.Caption color={colors.inputDark}>
+              {I18n.t('screens:reports.generating.message')}
+            </Text.Caption>
+          </RowView>
+        )}
+
+        <ListHeader title={I18n.t('screens:reports.sections.offline')} />
+
+        {syncingData
+          ? renderSyncingData({
+              processing,
+              requestQueues,
+              syncingData,
+              syncOffline
+            })
+          : renderOfflineData({
+              processing,
+              requestQueues,
+              syncingData,
+              syncOffline
+            })}
+
+        {requestQueues.failed.length > 0 &&
+          renderFailedRequests({ processing, syncingData, shareOfflineData })}
       </ColumnView>
     </SafeAreaView>
   );
 };
 
 Reports.propTypes = {
-  network: PropTypes.object
+  requestQueues: PropTypes.object,
+  shareOfflineData: PropTypes.func,
+  syncingData: PropTypes.bool,
+  syncOffline: PropTypes.func
 };
 
 Reports.defaultProps = {};

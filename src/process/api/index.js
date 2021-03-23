@@ -6,11 +6,11 @@ import Config from 'react-native-config';
 import store from 'Redux/store';
 import repositories from 'Repositories';
 import NavigationService from 'Navigation/service';
+import { blacklists, timeToHMArray } from 'Helpers';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
 import { Creators as DeviceActions } from 'Reducers/device';
 import { Creators as ApplicationActions } from 'Reducers/application';
-import { blacklists, timeToHMArray } from 'Helpers';
 
 let TOKEN = null;
 let REFRESH_TOKEN = null;
@@ -95,22 +95,26 @@ const interceptors = {
     const { dispatch, getState } = store().store;
     const { user, device } = getState();
 
+    const bypassLogout =
+      [0, 1].includes(device.network.status) &&
+      device.requestQueues.offline.length === 0;
+
     if (!blacklists.apiEndpointFailureTracking.includes(error.config.url)) {
       dispatch(DeviceActions.updateNetworkProps({ status: 1 }));
       interceptors.getRequestTime(error);
     }
 
-    if (
-      error?.response?.status === 401 &&
-      device.network.status === 0 &&
-      device.requestQueues.offline.length === 0
-    ) {
+    if (error?.response?.status === 401) {
       if (originalRequest.url.includes('/Security/Refresh')) {
-        dispatch(ApplicationActions.logout());
+        if (!bypassLogout) {
+          dispatch(ApplicationActions.logout());
+        }
         return Promise.reject(error);
       } else {
         if (new Date(user.refreshExpiry) < new Date()) {
-          dispatch(ApplicationActions.logout());
+          if (!bypassLogout) {
+            dispatch(ApplicationActions.logout());
+          }
           return Promise.reject(error);
         } else {
           if (refreshTokenLock) {
@@ -142,7 +146,9 @@ const interceptors = {
             refreshTokenLock = false;
             refreshTokenBus.emit('unlocked');
           } else {
-            dispatch(ApplicationActions.logout());
+            if (!bypassLogout) {
+              dispatch(ApplicationActions.logout());
+            }
             return Promise.reject(error);
           }
 

@@ -126,11 +126,36 @@
     "gasStation": "Find a nearby gas station",
     "loadedStock": "Loaded Stock"
   },
-  "upgradeApp": {
-    "description": "Unfortunately this version of Modern Milkman Driver is no longer supported. To continue using Modern Milkman Driver, please update at your earliest convenience.",
-    "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}",
-    "download": "Download Driver {{version}}",
-    "other": "or try another version"
+  "registrationMileage": {
+    "title": "Registration & Mileage",
+    "registration": "Registration",
+    "or": "OR",
+    "mileage": "Mileage"
+  },
+  "reports": {
+    "buttons": {
+      "reconnectAndSync": "Reconnect & Sync Data",
+      "sendToSuper": "Send Data to Supervisor"
+    },
+    "failed": {
+      "hasData": "There's been work saved on the device that hasn't been pushed successfully to the server. If you've finished your round you should \"SEND DATA TO SUPERVISOR\" using the button below."
+    },
+    "generating": {
+      "message": "Please wait, gathering data can take up to 30 seconds"
+    },
+    "offline": {
+      "accuracy": "Data accuracy",
+      "noData": "No offline data",
+      "hasData": "{{requests}} offline requests need to be synchronised.",
+      "percentage": "{{percentage}}%"
+    },
+    "sections": {
+      "offline": "Offline data",
+      "failed": "Failed requests data"
+    },
+    "share": {
+      "title": "Deliveries Report"
+    }
   },
   "settings": {
     "sections": {
@@ -155,10 +180,10 @@
       "vibrations": "Vibrations"
     }
   },
-  "registrationMileage": {
-    "title": "Registration & Mileage",
-    "registration": "Registration",
-    "or": "OR",
-    "mileage": "Mileage"
+  "upgradeApp": {
+    "description": "Unfortunately this version of Modern Milkman Driver is no longer supported. To continue using Modern Milkman Driver, please update at your earliest convenience.",
+    "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}",
+    "download": "Download Driver {{version}}",
+    "other": "or try another version"
   }
 }

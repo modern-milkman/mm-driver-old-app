@@ -1,11 +1,14 @@
 // DEVICE SAGAS BELOW
 // could be used for offline / online / set position
+import Share from 'react-native-share';
 import { put, delay, select } from 'redux-saga/effects';
 import CompassHeading from 'react-native-compass-heading';
 
 import Api from 'Api';
 import store from 'Redux/store';
+import I18n from 'Locales/I18n';
 import { user as userSelector } from 'Reducers/user';
+import { Creators as GrowlCreators, Types as GrowlTypes } from 'Reducers/growl';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 
 import {
@@ -70,11 +73,40 @@ export function* setMapMode({ mode }) {
 }
 
 export function* shareOfflineData() {
-  yield null;
+  const requestQueues = yield select(requestQueuesSelector);
+  const { dispatch } = store().store;
+
+  Share.open({
+    title: I18n.t('screens:reports.share.title'),
+    message: JSON.stringify({
+      ...requestQueues
+    })
+  })
+    .then(() => {
+      dispatch(DeviceCreators.clearFailedRequests());
+      dispatch(
+        GrowlCreators.alert({
+          type: 'info',
+          title: I18n.t('alert:success.reports.sendToSuper.title'),
+          message: I18n.t('alert:success.reports.sendToSuper.message'),
+          interval: -1
+        })
+      );
+    })
+    .catch(() => {
+      dispatch(
+        GrowlCreators.alert({
+          type: 'error',
+          title: I18n.t('alert:errors.reports.sendToSuper.title'),
+          message: I18n.t('alert:errors.reports.sendToSuper.message'),
+          interval: -1
+        })
+      );
+    });
 }
 
 export function* syncOffline({ status }) {
-  const { offline } = yield select(requestQueuesSelector);
+  const { offline, syncHasErrors } = yield select(requestQueuesSelector);
   if (offline.length > 0 && status !== 'TIMEOUT') {
     const { body, config, method, path } = offline[0];
     const params =
@@ -96,6 +128,51 @@ export function* syncOffline({ status }) {
           lastRequest: 'failure'
         }
       }
+    });
+  } else if (status === 'TIMEOUT') {
+    yield put({
+      type: DeviceTypes.UPDATE_PROCESSOR,
+      processor: 'syncData',
+      value: false
+    });
+    yield put({
+      type: GrowlTypes.ALERT,
+      props: {
+        type: 'error',
+        title: I18n.t('alert:errors.reports.retrySync.title'),
+        message: I18n.t('alert:errors.reports.retrySync.message'),
+        interval: -1,
+        payload: {
+          action: DeviceTypes.SYNC_OFFLINE
+        }
+      }
+    });
+  } else if (offline.length === 0) {
+    if (syncHasErrors) {
+      yield put({
+        type: GrowlTypes.ALERT,
+        props: {
+          type: 'error',
+          title: I18n.t('alert:errors.reports.sync.title'),
+          message: I18n.t('alert:errors.reports.sync.message'),
+          interval: -1
+        }
+      });
+    } else {
+      yield put({
+        type: GrowlTypes.ALERT,
+        props: {
+          type: 'info',
+          title: I18n.t('alert:success.reports.sync.title'),
+          message: I18n.t('alert:success.reports.sync.message'),
+          interval: -1
+        }
+      });
+    }
+    yield put({
+      type: DeviceTypes.UPDATE_PROCESSOR,
+      processor: 'syncData',
+      value: false
     });
   }
 }
