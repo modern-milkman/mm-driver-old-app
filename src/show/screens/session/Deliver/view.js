@@ -239,17 +239,22 @@ const Deliver = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {
     allItemsDone,
-    claims: { list },
     confirmedItem,
     outOfStockIds,
-    processing,
     routeDescription,
     selectedStop,
     setDelivered,
-    showClaimModal,
     toggleConfirmedItem,
     toggleOutOfStock
   } = props;
+
+  if (!selectedStop) {
+    return null;
+  }
+
+  const {
+    claims: { acknowledgedList, showClaimModal }
+  } = selectedStop;
 
   const optimizedStopOrders = selectedStop
     ? Object.values(selectedStop.orders).map((order) => {
@@ -298,7 +303,9 @@ const Deliver = (props) => {
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
           title={I18n.t('general:details')}
-          rightCustomIcon={list?.length > 0 ? 'customerIssue' : null}
+          rightCustomIcon={
+            acknowledgedList?.length > 0 ? 'customerIssue' : null
+          }
           rightColor={colors.error}
           rightAction={NavigationService.navigate.bind(null, {
             routeName: 'CustomerIssueList'
@@ -436,7 +443,7 @@ const Deliver = (props) => {
                     outOfStockIds
                   )
                 )}
-                disabled={!allItemsDone || processing}
+                disabled={!allItemsDone}
               />
             </RowView>
             <RowView marginVertical={defaults.marginVertical}>
@@ -448,7 +455,6 @@ const Deliver = (props) => {
                   setModalType,
                   setModalVisible
                 )}
-                disabled={processing}
               />
             </RowView>
           </ColumnView>
@@ -460,16 +466,13 @@ const Deliver = (props) => {
 
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
-  claims: PropTypes.object,
   confirmedItem: PropTypes.array,
   outOfStockIds: PropTypes.array,
-  processing: PropTypes.bool,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,
-  showClaimModal: PropTypes.bool,
   toggleConfirmedItem: PropTypes.func,
   toggleOutOfStock: PropTypes.func,
   updateTransientProps: PropTypes.func
@@ -477,15 +480,12 @@ Deliver.propTypes = {
 
 Deliver.defaultProps = {
   allItemsDone: false,
-  claims: {},
   confirmedItem: [],
   outOfStockIds: [],
-  processing: false,
   reasonMessage: '',
   routeDescription: null,
   selectedStop: {},
   setDelivered: mock,
-  showClaimModal: false,
   setRejected: mock,
   toggleConfirmedItem: mock,
   toggleOutOfStock: mock,

@@ -9,7 +9,7 @@ import NavigationService from 'Navigation/service';
 import { List, ListHeader, NavBar, Text } from 'Components';
 
 const CustomerIssueList = (props) => {
-  const { claims, selectedStop, setSelectedClaim } = props;
+  const { claims, selectedStop, setSelectedClaimId } = props;
 
   const newList = {
     title: I18n.t('screens:deliver.customerIssue.list.new'),
@@ -21,11 +21,10 @@ const CustomerIssueList = (props) => {
   };
   const listItems = [];
 
-  if (claims?.list && claims?.list.length > 0) {
-    claims.list.forEach((item, idx) => {
+  if (claims?.acknowledgedList && claims?.acknowledgedList.length > 0) {
+    claims.acknowledgedList.forEach((item) => {
       let date = formatDate(new Date(item.claimDateTime));
       const tempItem = {
-        customerIssueIdx: idx + 1,
         claimItem: item.claimItem,
         key: item.claimId,
         description: item.reason,
@@ -46,12 +45,9 @@ const CustomerIssueList = (props) => {
         rightIconColor: item.finalEscalation ? colors.error : colors.primary,
         icon: null,
         title: I18n.t('screens:deliver.customerIssue.list.title', {
-          issueNr: idx + 1
+          issueNr: item.index
         }),
-        onPress: setSelectedClaim.bind(null, {
-          ...item,
-          customerIssueIdx: idx + 1
-        })
+        onPress: setSelectedClaimId.bind(null, item.claimId)
       };
 
       if (
@@ -112,13 +108,13 @@ const CustomerIssueList = (props) => {
 CustomerIssueList.propTypes = {
   claims: PropTypes.object,
   selectedStop: PropTypes.object,
-  setSelectedClaim: PropTypes.func
+  setSelectedClaimId: PropTypes.func
 };
 
 CustomerIssueList.defaultProps = {
   claims: {},
   selectedStop: {},
-  setSelectedClaim: mock
+  setSelectedClaimId: mock
 };
 
 export default CustomerIssueList;

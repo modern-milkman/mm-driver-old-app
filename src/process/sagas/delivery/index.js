@@ -60,10 +60,6 @@ export const driverReply = function* ({
 
   yield put({
     type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS },
-      fail: { type: DeliveryTypes.DRIVER_REPLY_FAILURE }
-    },
     promise: Api.repositories.delivery.driverReply({
       claimId,
       comment,
@@ -74,19 +70,6 @@ export const driverReply = function* ({
   });
 };
 
-export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
-  const selectedStopId = yield select(selectedStopIdSelector);
-
-  if (payload.hasImage) {
-    yield call(
-      getDriverReplySingleImage.bind(null, {
-        id: payload.claimDriverResponseId,
-        selectedStopId
-      })
-    );
-  }
-};
-
 export const foregroundDeliveryActions = function* ({}) {
   const status = yield select(statusSelector);
   const user_session = yield select(userSessionPresentSelector);
@@ -95,40 +78,16 @@ export const foregroundDeliveryActions = function* ({}) {
   }
 };
 
-export const getCustomerClaims = function* ({ customerId, selectedStopId }) {
+export const getCustomerClaims = function* ({ customerId, stopId }) {
   yield put({
     type: Api.API_CALL,
     actions: {
-      success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS },
-      fail: { type: DeliveryTypes.GET_CUSTOMER_CLAIMS_FAILURE }
+      success: { type: DeliveryTypes.SET_CUSTOMER_CLAIMS }
     },
     promise: Api.repositories.delivery.getCustomerClaims({ customerId }),
     customerId,
-    selectedStopId
+    stopId
   });
-};
-
-export const getCustomerClaimsFailure = function* ({
-  customerId,
-  selectedStopId
-}) {
-  const user_session = yield select(userSessionPresentSelector);
-
-  if (user_session) {
-    yield put({
-      type: GrowlTypes.ALERT,
-      props: {
-        type: 'error',
-        title: I18n.t('alert:errors.api.customerClaims.title'),
-        message: I18n.t('alert:errors.api.customerClaims.message'),
-        payload: {
-          action: DeliveryTypes.GET_CUSTOMER_CLAIMS,
-          customerId,
-          selectedStopId
-        }
-      }
-    });
-  }
 };
 
 export const getDriverDataFailure = function* ({ status }) {
@@ -159,18 +118,6 @@ export const getDriverDataFailure = function* ({ status }) {
   }
 };
 
-export const getDriverReplySingleImage = function* ({ id, selectedStopId }) {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS }
-    },
-    promise: Api.repositories.delivery.getDriverResponseImage({ id }),
-    id,
-    selectedStopId
-  });
-};
-
 export const getForDriver = function* ({ isRefreshData = false }) {
   yield put({
     type: Api.API_CALL,
@@ -188,6 +135,18 @@ export const getForDriverSuccess = function* ({
   payload,
   props: { isRefreshData }
 }) {
+  const stops = yield select(stopsSelector);
+
+  for (const stop of Object.values(stops)) {
+    if (stop.satisfactionStatus === 3 || stop.satisfactionStatus === 4) {
+      yield put({
+        type: DeliveryTypes.GET_CUSTOMER_CLAIMS,
+        customerId: stop.customerId,
+        stopId: stop.key
+      });
+    }
+  }
+
   yield put({
     type: Api.API_CALL,
     actions: {
@@ -261,7 +220,7 @@ export const optimizeStops = function* () {
   Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
 };
 
-export const redirectSetSelectedClaim = function* () {
+export const redirectSetSelectedClaimId = function* () {
   NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
 };
 
@@ -316,27 +275,28 @@ export const showMustComplyWithTerms = function* () {
     }
   });
 };
-
-export const setCustomerClaims = function* ({ payload, selectedStopId }) {
-  for (const [claimIndex, claim] of payload.entries()) {
-    for (const [
-      driverResponseIndex,
-      driverResponse
-    ] of claim.driverResponses.entries()) {
-      if (driverResponse.hasImage) {
-        yield put({
-          type: Api.API_CALL,
-          actions: {
-            success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
-          },
-          promise: Api.repositories.delivery.getDriverResponseImage({
-            id: driverResponse.claimDriverResponseId
-          }),
-          claimIndex,
-          driverResponseIndex,
-          selectedStopId
-        });
-      }
+export const getDriverReplyImage = function* ({
+  driverResponses,
+  claimIndex,
+  stopId
+}) {
+  for (const [
+    driverResponseIndex,
+    driverResponse
+  ] of driverResponses.entries()) {
+    if (driverResponse.hasImage) {
+      yield put({
+        type: Api.API_CALL,
+        actions: {
+          success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
+        },
+        promise: Api.repositories.delivery.getDriverResponseImage({
+          id: driverResponse.claimDriverResponseId
+        }),
+        claimIndex,
+        driverResponseIndex,
+        stopId
+      });
     }
   }
 };
@@ -548,17 +508,6 @@ export const updateSelectedStop = function* ({ sID }) {
   yield put({
     type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE
   });
-
-  if (
-    selectedStop.satisfactionStatus === 3 ||
-    selectedStop.satisfactionStatus === 4
-  ) {
-    yield put({
-      type: DeliveryTypes.GET_CUSTOMER_CLAIMS,
-      customerId: selectedStop.customerId,
-      selectedStopId: sID
-    });
-  }
 
   if (!selectedStop.customerAddressImage) {
     yield put({

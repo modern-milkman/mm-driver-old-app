@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
 import { formatDate, mock } from 'Helpers';
@@ -20,13 +21,19 @@ const replyModal = (toggleReplyModal) => {
 };
 
 const CustomerIssueDetails = (props) => {
-  const { selectedClaim, toggleReplyModal } = props;
+  const {
+    getDriverReplyImage,
+    isConnected,
+    selectedClaim,
+    selectedStop,
+    toggleReplyModal
+  } = props;
 
   const {
     claimItem,
     claimDateTime,
     customerComment,
-    customerIssueIdx,
+    index,
     driverResponses,
     finalEscalation,
     reason
@@ -114,11 +121,23 @@ const CustomerIssueDetails = (props) => {
 
   return (
     <SafeAreaView top bottom>
+      <NavigationEvents
+        onWillFocus={
+          isConnected &&
+          getDriverReplyImage.bind(
+            null,
+            driverResponses,
+            index - 1,
+            selectedStop?.key
+          )
+        }
+      />
+
       <NavBar
         leftIcon={'chevron-left'}
         leftIconAction={NavigationService.goBack}
         title={I18n.t('screens:deliver.customerIssue.list.title', {
-          issueNr: customerIssueIdx
+          issueNr: index
         })}
       />
 
@@ -163,12 +182,18 @@ const CustomerIssueDetails = (props) => {
 };
 
 CustomerIssueDetails.propTypes = {
+  getDriverReplyImage: PropTypes.func,
+  isConnected: PropTypes.bool,
   selectedClaim: PropTypes.object,
+  selectedStop: PropTypes.object,
   toggleReplyModal: PropTypes.func
 };
 
 CustomerIssueDetails.defaultProps = {
+  getDriverReplyImage: mock,
+  isConnected: false,
   selectedClaim: {},
+  selectedStop: {},
   toggleReplyModal: mock
 };
 

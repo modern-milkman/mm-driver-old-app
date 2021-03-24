@@ -7,12 +7,18 @@ import CustomerIssueDetails from './view';
 export default connect(
   (state) => {
     const selectedStopId = state.delivery?.selectedStopId;
+    const selectedStop = state.delivery?.stops[selectedStopId];
 
     return {
-      selectedClaim: state.delivery?.claims[selectedStopId]?.selectedClaim
+      isConnected: state.device.network.isConnected,
+      selectedStop: selectedStop,
+      selectedClaim: selectedStop?.claims.acknowledgedList.filter(
+        (claim) => claim.claimId === selectedStop.claims.selectedClaimId
+      )[0]
     };
   },
   {
+    getDriverReplyImage: deliveryActions.getDriverReplyImage,
     toggleReplyModal: deliveryActions.toggleReplyModal
   }
 )(CustomerIssueDetails);

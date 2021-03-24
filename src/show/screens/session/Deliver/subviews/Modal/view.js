@@ -123,7 +123,11 @@ const renderReplyBody = ({ driverResponse, updateDriverResponse }) => {
   );
 };
 
-const renderCustomerIssueBody = ({ customerComment, reason, sectionData }) => {
+const renderCustomerIssueBody = ({
+  customerComment = '',
+  reason = '',
+  sectionData = []
+}) => {
   return (
     <ColumnView maxHeight={height * 0.4}>
       <RowView
@@ -177,37 +181,44 @@ const updateText = (updateDriverResponse, driverResponse, text) => {
 const CustomerIssueModal = (props) => {
   const {
     claims: {
-      driverResponse,
-      driverUnacknowledgedNr,
-      selectedClaim,
-      showedUnacknowledgedNr
+      acknowledgedList,
+      selectedClaimId,
+      showClaimModal,
+      showCount,
+      showReplyModal,
+      unacknowledgedList,
+      unacknowledgedListNr
     },
     driverReply,
-    processing,
-    showReplyModal,
-    showClaimModal,
+    driverResponse,
     toggleReplyModal,
     updateDriverResponse
   } = props;
 
-  const {
-    finalEscalation,
-    claimDateTime,
-    reason,
-    claimItem,
-    customerComment
-  } = selectedClaim;
+  let selectedClaimData;
+  if (unacknowledgedList.length > 0) {
+    selectedClaimData = unacknowledgedList.filter(
+      (claim) => claim.claimId === selectedClaimId
+    )[0];
+  }
+
+  if (!selectedClaimData) {
+    selectedClaimData = acknowledgedList.filter(
+      (claim) => claim.claimId === selectedClaimId
+    )[0];
+  }
 
   const sectionData = [
     {
       title: I18n.t('screens:deliver.customerIssue.modal.productsAffected'),
-      data: claimItem.map((item) => {
-        return {
-          disabled: true,
-          image: `${productImageUri}${item.productId}`,
-          title: item.productName
-        };
-      })
+      data:
+        selectedClaimData?.claimItem.map((item) => {
+          return {
+            disabled: true,
+            image: `${productImageUri}${item.productId}`,
+            title: item.productName
+          };
+        }) || []
     }
   ];
 
@@ -252,9 +263,10 @@ const CustomerIssueModal = (props) => {
             </RowView>
 
             {!showReplyModal && (
-              <Text.Heading color={colors.secondaryLight}>
-                {` ${showedUnacknowledgedNr} / ${driverUnacknowledgedNr}`}
-              </Text.Heading>
+              <Text.Heading
+                color={
+                  colors.secondaryLight
+                }>{` ${showCount} / ${unacknowledgedListNr}`}</Text.Heading>
             )}
           </RowView>
 
@@ -269,10 +281,10 @@ const CustomerIssueModal = (props) => {
                 {I18n.t('screens:deliver.customerIssue.modal.date')}
               </Text.List>
               <Text.List color={colors.secondary}>
-                {formatDate(new Date(claimDateTime))}
+                {formatDate(new Date(selectedClaimData?.claimDateTime))}
               </Text.List>
             </RowView>
-            {finalEscalation && (
+            {selectedClaimData?.finalEscalation && (
               <Label
                 text={I18n.t(
                   'screens:deliver.customerIssue.modal.finalEscalation'
@@ -285,7 +297,11 @@ const CustomerIssueModal = (props) => {
 
           {showReplyModal
             ? renderReplyBody({ driverResponse, updateDriverResponse })
-            : renderCustomerIssueBody({ customerComment, reason, sectionData })}
+            : renderCustomerIssueBody({
+                customerComment: selectedClaimData?.customerComment,
+                reason: selectedClaimData?.reason,
+                sectionData
+              })}
 
           <Separator color={colors.input} width={'100%'} />
           <RowView>
@@ -302,7 +318,6 @@ const CustomerIssueModal = (props) => {
                   ? toggleReplyModal.bind(null, !showReplyModal)
                   : NavigationService.goBack
               }
-              disabled={processing}
             />
 
             {showReplyModal && (
@@ -315,10 +330,9 @@ const CustomerIssueModal = (props) => {
                 }
                 width={showReplyModal ? '50%' : '100%'}
                 noBorderRadius
-                processing={processing}
                 onPress={driverReply.bind(
                   null,
-                  selectedClaim.claimId,
+                  selectedClaimData?.claimId,
                   driverResponse?.text,
                   driverResponse?.image,
                   driverResponse?.imageType,
@@ -336,9 +350,7 @@ const CustomerIssueModal = (props) => {
 CustomerIssueModal.propTypes = {
   claims: PropTypes.object,
   driverReply: PropTypes.func,
-  processing: PropTypes.bool,
-  showClaimModal: PropTypes.bool,
-  showReplyModal: PropTypes.bool,
+  driverResponse: PropTypes.object,
   toggleReplyModal: PropTypes.func,
   updateDriverResponse: PropTypes.func
 };
@@ -346,9 +358,7 @@ CustomerIssueModal.propTypes = {
 CustomerIssueModal.defaultProps = {
   claims: {},
   driverReply: mock,
-  processing: false,
-  showClaimModal: false,
-  showReplyModal: false,
+  driverResponse: {},
   toggleReplyModal: mock,
   updateDriverResponse: mock
 };

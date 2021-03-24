@@ -9,11 +9,11 @@ export default connect(
     const selectedStopId = state.delivery?.selectedStopId;
 
     return {
-      claims: state.delivery?.claims[selectedStopId],
+      claims: state.delivery?.stops[selectedStopId].claims,
       selectedStop: selectedStop(state)
     };
   },
   {
-    setSelectedClaim: deliveryActions.redirectSetSelectedClaim
+    setSelectedClaimId: deliveryActions.redirectSetSelectedClaimId
   }
 )(CustomerIssueList);

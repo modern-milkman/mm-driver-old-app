@@ -502,6 +502,8 @@ PODS:
     - TOCropViewController
   - RNScreens (2.18.1):
     - React-Core
+  - RNShare (5.1.4):
+    - React-Core
   - RNSharedElement (0.7.0):
     - React
   - RNSVG (12.1.0):
@@ -586,6 +588,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNSharedElement (from `../node_modules/react-native-shared-element`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -720,6 +723,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-crop-picker"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNSharedElement:
     :path: "../node_modules/react-native-shared-element"
   RNSVG:
@@ -809,6 +814,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNImageCropPicker: e641bf83ac47324994cac139bde74635ec52c17c
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
+  RNShare: 8af5349f05fc042d230674dd650d19789187ff9c
   RNSharedElement: 00b1a1420d213a34459bb9a5aacabb38107d7948
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4

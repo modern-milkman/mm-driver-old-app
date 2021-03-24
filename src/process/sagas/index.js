@@ -27,11 +27,10 @@ import {
 
 import {
   driverReply,
-  driverReplySuccess,
   foregroundDeliveryActions,
   getCustomerClaims,
-  getCustomerClaimsFailure,
   getDriverDataFailure,
+  getDriverReplyImage,
   getForDriver,
   getForDriverSuccess,
   getProductsOrder,
@@ -39,10 +38,9 @@ import {
   getVehicleChecks,
   getVehicleStockForDriverSuccess,
   optimizeStops,
-  redirectSetSelectedClaim,
+  redirectSetSelectedClaimId,
   refreshDriverData,
   saveVehicleChecks,
-  setCustomerClaims,
   setDeliveredOrRejected,
   setItemOutOfStock,
   setProductsOrder,
@@ -89,14 +87,9 @@ export default function* root() {
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
     takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
-
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
-    takeEvery(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
+
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
-    takeEvery(
-      DeliveryTypes.GET_CUSTOMER_CLAIMS_FAILURE,
-      getCustomerClaimsFailure
-    ),
     takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
@@ -112,8 +105,8 @@ export default function* root() {
     ),
     takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
     takeLatest(
-      DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM,
-      redirectSetSelectedClaim
+      DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM_ID,
+      redirectSetSelectedClaimId
     ),
     takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getProductsOrder),
     takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
@@ -122,7 +115,7 @@ export default function* root() {
       DeliveryTypes.SHOW_MUST_COMPLY_WITH_TERMS,
       showMustComplyWithTerms
     ),
-    takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, setCustomerClaims),
+    takeEvery(DeliveryTypes.GET_DRIVER_REPLY_IMAGE, getDriverReplyImage),
     takeEvery(
       DeliveryTypes.SET_DELIVERED,
       setDeliveredOrRejected.bind(null, 'delivered')

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 
 import { Creators as deliveryActions } from 'Reducers/delivery';
+import { Creators as transientActions } from 'Reducers/transient';
 
 import CustomerIssueModal from './view';
 
@@ -9,15 +10,13 @@ export default connect(
     const selectedStopId = state.delivery?.selectedStopId;
 
     return {
-      claims: state.delivery?.claims[selectedStopId],
-      processing: state.delivery?.claims.processing,
-      showClaimModal: state.delivery?.claims.showClaimModal,
-      showReplyModal: state.delivery?.claims.showReplyModal
+      driverResponse: { ...state.transient },
+      claims: state.delivery?.stops[selectedStopId].claims
     };
   },
   {
     driverReply: deliveryActions.driverReply,
     toggleReplyModal: deliveryActions.toggleReplyModal,
-    updateDriverResponse: deliveryActions.updateDriverResponse
+    updateDriverResponse: transientActions.updateProps
   }
 )(CustomerIssueModal);
