@@ -142,9 +142,10 @@ export const syncOffline = (state, { lastRequest, status }) =>
       draft.requestQueues.offline.splice(0, 1);
     }
     if (lastRequest === 'failure' && status !== 'TIMEOUT') {
-      draft.requestQueues.failed.push(
-        draft.requestQueues.offline.splice(0, 1)[0]
-      );
+      draft.requestQueues.failed.push({
+        ...draft.requestQueues.offline.splice(0, 1)[0],
+        status
+      });
       draft.requestQueues.syncHasErrors = true;
     }
     if (draft.requestQueues.offline.length === 0 || status === 'TIMEOUT') {

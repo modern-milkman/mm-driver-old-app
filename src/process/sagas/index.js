@@ -72,7 +72,7 @@ export default function* root() {
   yield all([
     spawn(watchLocationChannel),
 
-    takeEvery('REDUX_SAGA_NETSTAT_CHANGE', reduxSagaNetstatChange),
+    takeLatest('REDUX_SAGA_NETSTAT_CHANGE', reduxSagaNetstatChange),
 
     takeLatest('APP_STATE.FOREGROUND', foregroundDeliveryActions),
 

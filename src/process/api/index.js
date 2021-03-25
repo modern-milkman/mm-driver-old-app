@@ -87,6 +87,11 @@ const interceptors = {
     return config;
   },
   responseSuccess: (response) => {
+    const { dispatch, getState } = store().store;
+    const { device } = getState();
+    if (device.network.status !== 0) {
+      dispatch(DeviceActions.updateNetworkProps({ status: 0 }));
+    }
     interceptors.getRequestTime(response);
     return response;
   },
@@ -95,16 +100,30 @@ const interceptors = {
     const { dispatch, getState } = store().store;
     const { user, device } = getState();
 
+    if (!error.response) {
+      error.response = {
+        statusText: error.message,
+        status: 'TIMEOUT'
+      };
+    }
+
     const bypassLogout =
       [0, 1].includes(device.network.status) &&
       device.requestQueues.offline.length === 0;
 
-    if (!blacklists.apiEndpointFailureTracking.includes(error.config.url)) {
-      dispatch(DeviceActions.updateNetworkProps({ status: 1 }));
+    if (
+      !blacklists.apiEndpointFailureTracking.includes(
+        `${error.config.baseURL}${error.config.url}`
+      ) &&
+      !blacklists.apiEndpointFailureTracking.includes(error.config.url)
+    ) {
+      if (device.network.status === 0 && error.response.status === 'TIMEOUT') {
+        dispatch(DeviceActions.updateNetworkProps({ status: 1 }));
+      }
       interceptors.getRequestTime(error);
     }
 
-    if (error?.response?.status === 401) {
+    if (error.response.status === 401) {
       if (originalRequest.url.includes('/Security/Refresh')) {
         if (!bypassLogout) {
           dispatch(ApplicationActions.logout());
@@ -244,13 +263,6 @@ const Api = {
   },
 
   catchError(payload, error) {
-    if (!error.response) {
-      error.response = {
-        statusText: error.message,
-        status: 'TIMEOUT'
-      };
-    }
-
     handleRequestsQueue(error, payload);
     trackInAmplitude(error);
   },
