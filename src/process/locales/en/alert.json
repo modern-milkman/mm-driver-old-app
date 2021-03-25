@@ -55,6 +55,12 @@
         "title": "Successfully pushed all your offline data!",
         "message": "All work data has been successfully pushed to the server. Tap to dismiss."
       }
+    },
+    "network": {
+      "online": {
+        "title": "Back online!",
+        "message": "Any work that you’ve done while offline is now being synced with the server."
+      }
     }
   }
 }

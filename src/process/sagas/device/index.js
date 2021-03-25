@@ -186,6 +186,14 @@ export function* updateNetworkProps() {
   const { offline } = yield select(requestQueuesSelector);
 
   if (status === 0 && offline.length > 0) {
+    yield put({
+      type: GrowlTypes.ALERT,
+      props: {
+        type: 'info',
+        title: I18n.t('alert:success.network.online.title'),
+        message: I18n.t('alert:success.network.online.message')
+      }
+    });
     yield put({ type: DeviceTypes.SYNC_OFFLINE });
   }
 }
