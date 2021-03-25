@@ -160,7 +160,9 @@ const Home = (props) => {
           height={Text.Caption.height + defaults.marginVertical / 4}
           marginVertical={defaults.marginVertical / 4}>
           <Text.Caption textAlign={'center'} color={colors.secondary}>
-            {`V: ${Config.APP_VERSION_NAME}`}
+            {`V: ${Config.APP_VERSION_NAME} ${
+              Config.ENVIRONMENT !== 'production' ? Config.ENVIRONMENT : ''
+            }`}
           </Text.Caption>
         </RowView>
       </ColumnView>
