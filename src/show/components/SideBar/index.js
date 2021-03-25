@@ -11,6 +11,7 @@ export default connect(
     availableNavApps: state.device?.availableNavApps,
     driverId: state.user.driverId,
     name: state.user.name,
+    network: state.device.network,
     requestQueues: state.device.requestQueues,
     sideBarOpen: state.application.sideBarOpen,
     source: state.device?.position || {

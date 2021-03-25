@@ -36,6 +36,7 @@ const SideBar = (props) => {
     availableNavApps,
     driverId,
     name,
+    network,
     updateProps,
     requestQueues,
     sideBarOpen,
@@ -146,20 +147,22 @@ const SideBar = (props) => {
                   />
                 )}
 
-                <ListItem
-                  customIcon={'gas'}
-                  title={I18n.t('screens:panel.gasStation')}
-                  rightIcon={'chevron-right'}
-                  onPress={navigateAndClose.bind(
-                    null,
-                    updateProps,
-                    navigateInSheet.bind(null, {
-                      availableNavApps,
-                      source,
-                      lookForGasStation: true
-                    })
-                  )}
-                />
+                {network.status !== 2 && (
+                  <ListItem
+                    customIcon={'gas'}
+                    title={I18n.t('screens:panel.gasStation')}
+                    rightIcon={'chevron-right'}
+                    onPress={navigateAndClose.bind(
+                      null,
+                      updateProps,
+                      navigateInSheet.bind(null, {
+                        availableNavApps,
+                        source,
+                        lookForGasStation: true
+                      })
+                    )}
+                  />
+                )}
 
                 {showOfflineLabel && (
                   <ListItem
@@ -176,7 +179,8 @@ const SideBar = (props) => {
                   />
                 )}
 
-                {appcenter &&
+                {network.status !== 2 &&
+                  appcenter &&
                   appcenter?.short_version &&
                   appcenter?.download_url &&
                   semverGt(
@@ -218,6 +222,7 @@ SideBar.propTypes = {
   availableNavApps: PropTypes.array,
   driverId: PropTypes.number,
   name: PropTypes.string,
+  network: PropTypes.object,
   requestQueues: PropTypes.object,
   sideBarOpen: PropTypes.bool,
   source: PropTypes.object,
