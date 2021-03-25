@@ -8,6 +8,7 @@ import Home from './view';
 export default connect(
   (state) => ({
     processing: state.application.processing,
+    network: state.device.network,
     ...state.transient
   }),
   {

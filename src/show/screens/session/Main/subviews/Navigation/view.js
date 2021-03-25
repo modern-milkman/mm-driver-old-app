@@ -123,7 +123,7 @@ const Navigation = (props) => {
             onPress={NavigationService.navigate.bind(null, {
               routeName: 'Reports'
             })}>
-            <Label text={I18n.t('offline')} />
+            <Label text={I18n.t('general:offline')} />
           </Pressable>
         )}
         {!showOfflineLabel &&

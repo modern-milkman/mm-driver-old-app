@@ -7,8 +7,8 @@ import { NavigationEvents } from 'react-navigation';
 import I18n from 'Locales/I18n';
 import { CarLogo } from 'Images';
 import { colors, defaults } from 'Theme';
-import { Button, Text } from 'Components';
 import Vibration from 'Services/vibration';
+import { Button, Label, Text } from 'Components';
 import { jiggleAnimation, mock, deviceFrame } from 'Helpers';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
@@ -67,6 +67,7 @@ const Home = (props) => {
     emailHasError,
     jiggleForm,
     login,
+    network,
     password,
     processing,
     updateApplicationProps,
@@ -87,7 +88,11 @@ const Home = (props) => {
   });
 
   const disabledLogin =
-    processing || emailHasError || email.length === 0 || password.length === 0;
+    processing ||
+    emailHasError ||
+    email.length === 0 ||
+    password.length === 0 ||
+    network.status === 2;
 
   const reset = () => {
     updateApplicationProps({ processing: false });
@@ -111,7 +116,12 @@ const Home = (props) => {
           animatedStyle={{ left: animatedValue }}
           justifyContent={'center'}
           alignItems={'stretch'}
-          height={textInputHeight('large') * 2 + Text.Button.height}
+          minHeight={
+            textInputHeight('large') * 2 +
+            Text.Button.height +
+            Label.height +
+            defaults.marginVertical * 2
+          }
           marginHorizontal={defaults.marginHorizontal}
           width={'auto'}>
           <TextInput
@@ -151,7 +161,13 @@ const Home = (props) => {
             processing={processing}
             disabled={disabledLogin}
           />
+          {[1, 2].includes(network.status) && (
+            <RowView marginTop={defaults.marginVertical / 2}>
+              <Label text={I18n.t('general:offline')} />
+            </RowView>
+          )}
         </ColumnView>
+
         {hasSmallHeight && renderLogo()}
         <RowView
           flex={hasSmallHeight ? 0 : 1}
@@ -182,8 +198,9 @@ Home.propTypes = {
   emailHasError: PropTypes.bool,
   emailErrorMessage: PropTypes.string,
   jiggleForm: PropTypes.bool,
-  password: PropTypes.string,
   login: PropTypes.func,
+  network: PropTypes.object,
+  password: PropTypes.string,
   processing: PropTypes.bool,
   updateApplicationProps: PropTypes.func,
   updateTransientProps: PropTypes.func

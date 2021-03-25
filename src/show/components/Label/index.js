@@ -32,4 +32,5 @@ Label.defaultProps = {
   text: null
 };
 
+Label.height = Text.Label.height;
 export default Label;
