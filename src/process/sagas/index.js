@@ -61,6 +61,7 @@ import {
   setMapMode,
   shareOfflineData,
   syncOffline,
+  updateDeviceProps,
   updateNetworkProps
 } from './device';
 
@@ -144,6 +145,7 @@ export default function* root() {
     takeLatest(DeviceTypes.SET_MAP_MODE, setMapMode),
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA, shareOfflineData),
     takeLatest(DeviceTypes.SYNC_OFFLINE, syncOffline),
+    takeLatest(DeviceTypes.UPDATE_PROPS, updateDeviceProps),
     takeLatest(DeviceTypes.UPDATE_NETWORK_PROPS, updateNetworkProps),
 
     takeEvery(GrowlTypes.ALERT, alert),

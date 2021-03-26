@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import I18n from 'Locales/I18n';
+import Alert from 'Services/alert';
 import Vibration from 'Services/vibration';
 import { colors, defaults, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
@@ -34,15 +35,36 @@ const onVibrateChange = (updateDeviceProps, vibrate) => {
   }
 };
 
+const performLogout = (logout) => {
+  Analytics.trackEvent(EVENTS.TAP_LOGOUT);
+  logout();
+};
+
 const toggleDeviceProp = (updateDeviceProps, prop, value) => {
   const updateProp = {};
   updateProp[prop] = value;
   updateDeviceProps({ ...updateProp });
 };
 
-const triggerLogout = (logout) => {
-  Analytics.trackEvent(EVENTS.TAP_LOGOUT);
-  logout();
+const triggerLogout = ({ logout, network }) => {
+  if (network.status === 0) {
+    performLogout(logout);
+  } else {
+    Alert({
+      title: I18n.t('alert:success.settings.offline.logout.title'),
+      message: I18n.t('alert:success.settings.offline.logout.message'),
+      buttons: [
+        {
+          text: I18n.t('general:cancel'),
+          style: 'cancel'
+        },
+        {
+          text: I18n.t('general:logout'),
+          onPress: performLogout.bind(null, logout)
+        }
+      ]
+    });
+  }
 };
 
 const onOptimization = (
@@ -66,6 +88,7 @@ const Settings = (props) => {
     logout,
     mapMarkerSize,
     manualRoutes,
+    network,
     optimizeStops,
     returnPosition,
     showDoneDeliveries,
@@ -326,7 +349,7 @@ const Settings = (props) => {
           marginVertical={defaults.marginVertical}>
           <Button.Error
             title={I18n.t('general:logout')}
-            onPress={triggerLogout.bind(null, logout)}
+            onPress={triggerLogout.bind(null, { logout, network })}
           />
         </RowView>
       </ColumnView>
@@ -344,6 +367,7 @@ Settings.propTypes = {
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
   manualRoutes: PropTypes.bool,
+  network: PropTypes.object,
   optimizeStops: PropTypes.func,
   returnPosition: PropTypes.object,
   showDoneDeliveries: PropTypes.bool,

@@ -181,6 +181,23 @@ export function* syncOffline({ status }) {
   }
 }
 
+export function* updateDeviceProps({ props }) {
+  const { status } = yield select(networkSelector);
+  if (
+    status !== 0 &&
+    (props.computeDirections || props.computeShortDirections)
+  ) {
+    yield put({
+      type: GrowlTypes.ALERT,
+      props: {
+        type: 'info',
+        title: I18n.t('alert:success.settings.offline.directions.title'),
+        message: I18n.t('alert:success.settings.offline.directions.message')
+      }
+    });
+  }
+}
+
 export function* updateNetworkProps() {
   const { status } = yield select(networkSelector);
   const { offline } = yield select(requestQueuesSelector);

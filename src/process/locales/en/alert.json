@@ -61,6 +61,18 @@
         "title": "Back online!",
         "message": "Any work that you’ve done while offline is now being synced with the server."
       }
+    },
+    "settings": {
+      "offline": {
+        "directions": {
+          "title": "Delivery directions unavailable!",
+          "message": "You’ve turned on delivery directions. The feature will automatically turn on whenever you come back online."
+        },
+        "logout": {
+          "title": "Proceed with caution",
+          "message": "Logging out while offline will clear all route data on the device and you will no longer be able to continue working until the device is back online."
+        }
+      }
     }
   }
 }
