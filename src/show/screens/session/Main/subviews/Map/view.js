@@ -98,7 +98,7 @@ const Map = (props) => {
   let mapIsInteracting = useRef(false);
   let mapRef = useRef(undefined);
   let mapIsAnimating = useRef(false);
-  let mapVisible = useRef(false);
+  let mapVisible = useRef(true);
 
   const initialCamera = {
     altitude: 1000,
