@@ -1,13 +1,15 @@
 import { connect } from 'react-redux';
 
-import { Creators as ApplicationActions } from 'Reducers/application';
+import {
+  Creators as ApplicationActions,
+  lastRoute
+} from 'Reducers/application';
 
 import CustomBackHandler from './view';
 
 export default connect(
   (state) => ({
-    lastRoute:
-      state.application.stackRoute[state.application.stackRoute.length - 1],
+    lastRoute: lastRoute(state),
     sideBarOpen: state.application.sideBarOpen
   }),
   {
