@@ -12,6 +12,7 @@ export default connect(
       buttonAccessibility: state.device.buttonAccessibility,
       mapMode: state.device?.mapMode,
       mapNoTrackingHeading: state.device?.mapNoTrackingHeading,
+      network: state.device.network,
       position: state.device?.position,
       processing: state.delivery.processing,
       returnPosition: state.device?.returnPosition,

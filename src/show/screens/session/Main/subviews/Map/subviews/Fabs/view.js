@@ -42,6 +42,7 @@ const Fabs = (props) => {
     mapMode,
     mapNoTrackingHeading,
     mapPadding,
+    network,
     position,
     processing,
     refreshDriverData,
@@ -226,7 +227,7 @@ const Fabs = (props) => {
           fabTop={fabTop}
           size={24}
           containerSize={fabContainerSize}
-          color={colors.primary}
+          color={network.status === 0 ? colors.primary : colors.inputDark}
           right={fabMargin}
           bottom={
             mapPadding.bottom +
@@ -240,6 +241,7 @@ const Fabs = (props) => {
             source,
             destination
           })}
+          disabled={network.status !== 0}
         />
       )}
       {status === DS.DEL && (
@@ -249,7 +251,7 @@ const Fabs = (props) => {
           fabTop={fabTop}
           size={24}
           containerSize={fabContainerSize}
-          color={colors.primary}
+          color={network.status === 0 ? colors.primary : colors.inputDark}
           left={fabMargin}
           bottom={
             mapPadding.bottom +
@@ -259,6 +261,7 @@ const Fabs = (props) => {
           }
           processing={processing}
           onPress={refreshDriverData}
+          disabled={network.status !== 0}
         />
       )}
     </>
@@ -283,6 +286,7 @@ Fabs.propTypes = {
   mapNoTrackingHeading: PropTypes.number,
   mapMode: PropTypes.string,
   mapPadding: PropTypes.object,
+  network: PropTypes.object,
   position: PropTypes.object,
   processing: PropTypes.bool,
   refreshDriverData: PropTypes.func,
@@ -305,6 +309,7 @@ const areEqual = (prevProps, nextProps) => {
     prevProps.position?.longitude !== nextProps.position?.longitude ||
     prevProps.mapMode !== nextProps.mapMode ||
     prevProps.mapNoTrackingHeading !== nextProps.mapNoTrackingHeading ||
+    prevProps.network.status !== nextProps.network.status ||
     prevProps.selectedStopId !== nextProps.selectedStopId ||
     prevProps.shouldPitchMap !== nextProps.shouldPitchMap ||
     prevProps.shouldTrackHeading !== nextProps.shouldTrackHeading ||
