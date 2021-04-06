@@ -27,6 +27,7 @@ export const triggerDriverAlert = ({
 }) => {
   Alert({
     title: mandatoryPrompts[promptIndex].title,
+    message: mandatoryPrompts[promptIndex].message,
     buttons: [
       {
         text: I18n.t('general:no'),
@@ -56,10 +57,12 @@ export const triggerDriverConfirmations = ({
 }) => {
   const mandatoryPrompts = [
     {
-      title: I18n.t('screens:checklist.driverPrompts.fit.title')
+      title: I18n.t('screens:checklist.driverPrompts.title'),
+      message: I18n.t('screens:checklist.driverPrompts.messages.fit')
     },
     {
-      title: I18n.t('screens:checklist.driverPrompts.license.title')
+      title: I18n.t('screens:checklist.driverPrompts.title'),
+      message: I18n.t('screens:checklist.driverPrompts.messages.license')
     }
   ];
   triggerDriverAlert({

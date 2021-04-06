@@ -322,7 +322,7 @@ export const getForDriverSuccess = (
           customerId: item.customerId,
           satisfactionStatus: item.satisfactionStatus || 0,
           description: I18n.t('screens:deliver.userID', {
-            userID: item.userId
+            userId: item.userId
           }),
           deliveryInstructions:
             deliveryInstructions && deliveryInstructions.length > 0
@@ -338,7 +338,7 @@ export const getForDriverSuccess = (
           status: 'completed',
           title,
           userId: item.userId,
-          searchHandle: title.toLowerCase() + item.customerId.toString(),
+          searchHandle: title.toLowerCase() + item.userId.toString(),
           claims: {
             acknowledgedList: [],
             unacknowledgedList: [],

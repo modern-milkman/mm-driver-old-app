@@ -37,31 +37,33 @@ class Growl extends React.Component {
     return (
       <DropdownAlert
         ref={(ref) => (this.dropdown = ref)}
-        tapToCloseEnabled
-        panResponderEnabled
-        translucent
-        zIndex={100}
         closeInterval={parseInt(Config.GROWL_AUTOHIDE)}
-        infoColor={colors.primary}
+        contentContainerStyle={style.contentContainerStyle}
+        defaultContainer={style.defaultContainer}
+        defaultTextContainer={style.defaultTextContainer}
         errorColor={colors.error}
-        titleStyle={StyleSheet.flatten([
-          style.titleStyle,
-          growl.type === 'error' && style.error
-        ])}
+        errorImageSrc={null}
+        imageStyle={style.logo}
+        inactiveStatusBarBackgroundColor={'transparent'}
+        infoColor={colors.primary}
+        infoImageSrc={null}
+        messageNumOfLines={5}
         messageStyle={StyleSheet.flatten([
           style.messageStyle,
           growl.type === 'error' && style.error
         ])}
-        defaultContainer={style.defaultContainer}
-        contentContainerStyle={style.contentContainerStyle}
-        defaultTextContainer={style.defaultTextContainer}
-        wrapperStyle={style.shadow}
-        imageStyle={style.logo}
-        infoImageSrc={null}
-        errorImageSrc={null}
-        inactiveStatusBarBackgroundColor={'transparent'}
         onTap={this.onTap}
+        panResponderEnabled
+        tapToCloseEnabled
+        titleNumOfLines={2}
+        titleStyle={StyleSheet.flatten([
+          style.titleStyle,
+          growl.type === 'error' && style.error
+        ])}
+        translucent
         updateStatusBar={false}
+        wrapperStyle={style.shadow}
+        zIndex={100}
       />
     );
   };

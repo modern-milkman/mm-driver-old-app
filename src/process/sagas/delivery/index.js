@@ -10,6 +10,7 @@ import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { base64ToHex, deliveryStates as DS } from 'Helpers';
+import { Types as TransientTypes } from 'Reducers/transient';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 import {
   checklist as checklistSelector,
@@ -68,6 +69,8 @@ export const driverReply = function* ({
     }),
     acknowledgedClaim
   });
+
+  yield put({ type: TransientTypes.RESET });
 };
 
 export const foregroundDeliveryActions = function* ({}) {

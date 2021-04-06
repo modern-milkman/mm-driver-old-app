@@ -22,11 +22,10 @@
   },
   "checklist": {
     "driverPrompts": {
-      "fit": {
-        "title": "I confirm I am in a fit and proper state to fulfil my shift"
-      },
-      "license": {
-        "title": "I confirm my license is currently in date and complies with company requirements"
+      "title": "Consent required",
+      "messages": {
+        "fit": "I confirm I am in a fit and proper state to fulfil my shift",
+        "license": "I confirm my license is currently in date and complies with company requirements"
       }
     },
     "title": "Checklist"

@@ -15,6 +15,7 @@ import {
   Types as DeviceTypes,
   Creators as DeviceCreators,
   network as networkSelector,
+  processors as processorsSelector,
   requestQueues as requestQueuesSelector
 } from 'Reducers/device';
 
@@ -201,8 +202,9 @@ export function* updateDeviceProps({ props }) {
 export function* updateNetworkProps() {
   const { status } = yield select(networkSelector);
   const { offline } = yield select(requestQueuesSelector);
+  const { syncData } = yield select(processorsSelector);
 
-  if (status === 0 && offline.length > 0) {
+  if (!syncData && status === 0 && offline.length > 0) {
     yield put({
       type: GrowlTypes.ALERT,
       props: {

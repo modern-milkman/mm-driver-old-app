@@ -24,6 +24,7 @@ const cameraAnimationOptions = {
 const regionChangeComplete = (
   {
     heading,
+    initialCamera,
     mapIsInteracting,
     mapNoTrackingHeading,
     mapRef,
@@ -39,6 +40,7 @@ const regionChangeComplete = (
 ) => {
   if (mapRef.current) {
     mapRef.current.getCamera().then((currentCamera) => {
+      initialCamera.current = currentCamera;
       updateDeviceProps({
         ...(!shouldTrackHeading && {
           mapNoTrackingHeading: currentCamera.heading
@@ -100,8 +102,7 @@ const Map = (props) => {
   let mapIsAnimating = useRef(false);
   let mapVisible = useRef(true);
 
-  const initialCamera = {
-    altitude: 1000,
+  let initialCamera = useRef({
     center: {
       latitude,
       longitude
@@ -109,7 +110,7 @@ const Map = (props) => {
     pitch: shouldPitchMap ? 90 : 0,
     zoom: mapZoom,
     heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading
-  };
+  });
 
   const animateCamera = useCallback(
     (currentCamera, newCameraProps) => {
@@ -173,7 +174,7 @@ const Map = (props) => {
         <>
           <MapView
             customMapStyle={mapStyle}
-            initialCamera={initialCamera}
+            initialCamera={initialCamera.current}
             mapPadding={mapPadding}
             onStartShouldSetResponder={triggerManualMove.bind(null, {
               mapIsInteracting,
@@ -182,6 +183,7 @@ const Map = (props) => {
             })}
             onRegionChangeComplete={regionChangeComplete.bind(null, {
               heading,
+              initialCamera,
               mapIsInteracting,
               mapNoTrackingHeading,
               mapRef,
