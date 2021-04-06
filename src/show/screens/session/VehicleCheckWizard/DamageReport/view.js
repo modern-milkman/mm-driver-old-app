@@ -43,6 +43,7 @@ const openPicker = (method, key, addImage) => {
     includeBase64: true
   }).then((img) => {
     addImage(key, img.data, img.mime);
+    ImagePicker.clean();
   });
 };
 

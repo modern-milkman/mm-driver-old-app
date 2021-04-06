@@ -53,6 +53,7 @@ const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
       image: `data:${img.mime};base64,${img.data}`,
       imageType: img.mime
     });
+    ImagePicker.clean();
   });
 };
 

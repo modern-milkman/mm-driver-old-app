@@ -38,7 +38,8 @@ const VechicleCheckWizardNavigator = createStackNavigator(
     defaultNavigationOptions: {
       headerShown: false,
       gestureEnabled: false
-    }
+    },
+    detachInactiveScreens: true
   }
 );
 
@@ -75,7 +76,8 @@ const MainNavigator = createStackNavigator(
     defaultNavigationOptions: {
       headerShown: false,
       gestureEnabled: false
-    }
+    },
+    detachInactiveScreens: true
   }
 );
 
@@ -113,7 +115,8 @@ const TopNavigator = createStackNavigator(
       }
     },
     initialRouteName: 'Home',
-    mode: 'modal'
+    mode: 'modal',
+    detachInactiveScreens: true
   }
 );
 

@@ -196,7 +196,6 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
       <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
         {selectedStop.customerAddressImage ? (
           <Image
-            requiresAuthentication
             source={{
               uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
             }}

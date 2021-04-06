@@ -7,8 +7,8 @@ import com.zoontek.rnbootsplash.RNBootSplash;
 public class MainActivity extends ReactActivity {
  @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    RNBootSplash.init(R.drawable.bootsplash, MainActivity.this); 
+    super.onCreate(null); // https://github.com/software-mansion/react-native-screens#android
+    RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);
   }
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule

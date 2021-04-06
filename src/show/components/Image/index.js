@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { View, Image as RNImage, ActivityIndicator } from 'react-native';
 
 import Api from 'Api';
