@@ -1,4 +1,3 @@
-import Config from 'react-native-config';
 import { createActions, createReducer } from 'reduxsauce';
 
 import I18n from 'Locales/I18n';
@@ -79,8 +78,6 @@ export const { Types, Creators } = createActions(
   },
   { prefix: 'delivery/' }
 );
-
-const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
 const initialVehicleChecks = {
   shiftStart: false,
@@ -223,10 +220,10 @@ export const getVehicleStockForDriverSuccess = (
         const formattedProduct = {
           description: item.measureDescription,
           disabled: true, // items in load van should not be tappable
-          image: `${productImageUri}${item.productId}`,
           key: item.productId,
           quantity: item.quantity,
-          title: item.productName
+          title: item.productName,
+          productId: item.productId
         };
 
         if (draft.productsOrder.includes(item.productId)) {
@@ -366,7 +363,6 @@ export const getForDriverSuccess = (
 
       draft.stops[key].orders[item.orderItemId] = {
         description: item.measureDescription,
-        image: `${productImageUri}${item.productId}`,
         key: item.orderItemId,
         miscelaneousTop: item.quantity,
         productId: item.productId,

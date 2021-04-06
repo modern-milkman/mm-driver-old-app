@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
 import { TouchableOpacity } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -56,8 +55,6 @@ const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
     });
   });
 };
-
-const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
 const renderReplyBody = ({ driverResponse, updateDriverResponse }) => {
   return (
@@ -191,6 +188,7 @@ const CustomerIssueModal = (props) => {
     },
     driverReply,
     driverResponse,
+    productImages,
     toggleReplyModal,
     updateDriverResponse
   } = props;
@@ -215,7 +213,7 @@ const CustomerIssueModal = (props) => {
         selectedClaimData?.claimItem.map((item) => {
           return {
             disabled: true,
-            image: `${productImageUri}${item.productId}`,
+            image: productImages[item.productId],
             title: item.productName
           };
         }) || []
@@ -351,6 +349,7 @@ CustomerIssueModal.propTypes = {
   claims: PropTypes.object,
   driverReply: PropTypes.func,
   driverResponse: PropTypes.object,
+  productImages: PropTypes.object,
   toggleReplyModal: PropTypes.func,
   updateDriverResponse: PropTypes.func
 };
@@ -359,6 +358,7 @@ CustomerIssueModal.defaultProps = {
   claims: {},
   driverReply: mock,
   driverResponse: {},
+  productImages: {},
   toggleReplyModal: mock,
   updateDriverResponse: mock
 };

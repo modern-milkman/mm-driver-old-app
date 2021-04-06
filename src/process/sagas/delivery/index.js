@@ -118,6 +118,32 @@ export const getDriverDataFailure = function* ({ status }) {
   }
 };
 
+export const getDriverReplyImage = function* ({
+  driverResponses,
+  claimIndex,
+  stopId
+}) {
+  for (const [
+    driverResponseIndex,
+    driverResponse
+  ] of driverResponses.entries()) {
+    if (driverResponse.hasImage) {
+      yield put({
+        type: Api.API_CALL,
+        actions: {
+          success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
+        },
+        promise: Api.repositories.delivery.getDriverResponseImage({
+          id: driverResponse.claimDriverResponseId
+        }),
+        claimIndex,
+        driverResponseIndex,
+        stopId
+      });
+    }
+  }
+};
+
 export const getForDriver = function* ({ isRefreshData = false }) {
   yield put({
     type: Api.API_CALL,
@@ -265,42 +291,6 @@ export const saveVehicleChecks = function* ({ saveType }) {
   NavigationService.navigate({ routeName: 'CheckIn' });
 };
 
-export const showMustComplyWithTerms = function* () {
-  yield put({
-    type: GrowlTypes.ALERT,
-    props: {
-      type: 'error',
-      title: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.title'),
-      message: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.message')
-    }
-  });
-};
-export const getDriverReplyImage = function* ({
-  driverResponses,
-  claimIndex,
-  stopId
-}) {
-  for (const [
-    driverResponseIndex,
-    driverResponse
-  ] of driverResponses.entries()) {
-    if (driverResponse.hasImage) {
-      yield put({
-        type: Api.API_CALL,
-        actions: {
-          success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
-        },
-        promise: Api.repositories.delivery.getDriverResponseImage({
-          id: driverResponse.claimDriverResponseId
-        }),
-        claimIndex,
-        driverResponseIndex,
-        stopId
-      });
-    }
-  }
-};
-
 export const setDeliveredOrRejected = function* (
   requestType,
   { id, outOfStockIds, selectedStopId, reasonId, reasonMessage }
@@ -411,8 +401,19 @@ export const setItemOutOfStock = function* ({ id }) {
   Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, { id });
 };
 
-export const setProductsOrder = function* () {
+export const setProductsOrder = function* ({ payload }) {
   yield put({ type: DeliveryTypes.GET_VEHICLE_CHECKS });
+
+  for (const i of payload) {
+    yield put({
+      type: Api.API_CALL,
+      actions: {
+        success: { type: DeviceTypes.SET_PRODUCT_IMAGE }
+      },
+      promise: Api.repositories.delivery.getProductImage(i),
+      id: i
+    });
+  }
 };
 
 export const setVehicleChecks = function* () {
@@ -420,6 +421,17 @@ export const setVehicleChecks = function* () {
   if (user_session) {
     yield put({ type: DeliveryTypes.GET_FOR_DRIVER });
   }
+};
+
+export const showMustComplyWithTerms = function* () {
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'error',
+      title: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.title'),
+      message: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.message')
+    }
+  });
 };
 
 export const startDelivering = function* () {

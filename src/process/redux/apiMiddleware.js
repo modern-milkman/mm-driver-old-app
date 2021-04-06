@@ -13,7 +13,7 @@ export default function apiMiddleware() {
     return promise
       .then((payload) => {
         if (success && success.type) {
-          return next({ ...rest, payload: payload.data, ...success });
+          return next({ ...rest, payload: payload?.data, ...success });
         }
       })
       .catch((error) => {

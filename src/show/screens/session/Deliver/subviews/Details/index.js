@@ -11,6 +11,7 @@ export default connect(
 
     return {
       isConnected: state.device.network.isConnected,
+      productImages: state.device?.productImages,
       selectedStop: selectedStop,
       selectedClaim: selectedStop?.claims.acknowledgedList.filter(
         (claim) => claim.claimId === selectedStop.claims.selectedClaimId

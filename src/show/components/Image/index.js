@@ -22,6 +22,15 @@ const Image = (props) => {
   const [ratio, setRatio] = useState(1);
 
   const imageSource = () => {
+    if (
+      source &&
+      source.uri &&
+      typeof source.uri === 'string' &&
+      source?.uri.includes('base64')
+    ) {
+      return { ...source };
+    }
+
     const headers = {
       Authorization: `Bearer ${Api.getToken()}`
     };
@@ -89,7 +98,8 @@ Image.propTypes = {
 
 Image.defaultProps = {
   requiresAuthentication: false,
-  width: null
+  width: null,
+  source: ''
 };
 
 export default Image;

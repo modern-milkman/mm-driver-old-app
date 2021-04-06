@@ -18,6 +18,7 @@ const LoadVan = (props) => {
     deliveredStock,
     itemCount,
     orderedStock,
+    productImages,
     readOnly,
     updateChecklistProps
   } = props;
@@ -31,7 +32,8 @@ const LoadVan = (props) => {
         ? `${stockItem.quantity - (deliveredStock[stockItem.key] || 0)} / ${
             stockItem.quantity
           }`
-        : stockItem.quantity
+        : stockItem.quantity,
+      image: productImages[stockItem.productId]
     };
   });
 
@@ -62,6 +64,7 @@ LoadVan.propTypes = {
   deliveredStock: PropTypes.object,
   itemCount: PropTypes.number,
   orderedStock: PropTypes.array,
+  productImages: PropTypes.object,
   readOnly: PropTypes.bool,
   updateChecklistProps: PropTypes.func
 };
@@ -70,6 +73,7 @@ LoadVan.defaultProps = {
   deliveredStock: {},
   itemCount: 0,
   orderedStock: [],
+  productImages: {},
   readOnly: false,
   updateChecklistProps: mock
 };

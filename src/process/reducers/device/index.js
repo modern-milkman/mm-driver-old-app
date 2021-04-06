@@ -14,8 +14,9 @@ export const { Types, Creators } = createActions(
     setLocation: ['position'],
     setLocationHeading: ['heading'],
     setMapMode: ['mode'],
-    syncOffline: null,
+    setProductImage: ['payload', 'id'],
     shareOfflineData: null,
+    syncOffline: null,
     updateNetworkProps: ['props'],
     updateProcessor: ['processor', 'value'],
     updateProps: ['props']
@@ -30,7 +31,8 @@ const initialState = {
   computeShortDirections: false,
   countDown: false,
   foregroundSize: 'large',
-  growl: true, // TODO add in Settings screen when growls will also have type info
+  growl: true, // TODO add in Settings screen when growls will also have type info,
+
   lowConnection: false,
   mapMarkerSize: sizes.marker.normal,
   mapMode: 'auto',
@@ -48,6 +50,7 @@ const initialState = {
   processors: {
     syncData: false
   },
+  productImages: {},
   requestQueues: {
     offline: [],
     failed: []
@@ -129,6 +132,12 @@ export const setMapMode = (state, action) =>
     draft.mapMode = action.mode;
   });
 
+export const setProductImage = (state, { payload, id }) =>
+  produce(state, (draft) => {
+    draft.productImages = { ...state.productImages };
+    draft.productImages[id] = payload;
+  });
+
 export const syncOffline = (state, { lastRequest, status }) =>
   produce(state, (draft) => {
     if (!lastRequest) {
@@ -160,6 +169,7 @@ export default createReducer(initialState, {
   [Types.SET_LOCATION]: setLocation,
   [Types.SET_LOCATION_HEADING]: setLocationHeading,
   [Types.SET_MAP_MODE]: setMapMode,
+  [Types.SET_PRODUCT_IMAGE]: setProductImage,
   [Types.SYNC_OFFLINE]: syncOffline,
   [Types.UPDATE_NETWORK_PROPS]: updateNetworkProps,
   [Types.UPDATE_PROCESSOR]: updateProcessor,

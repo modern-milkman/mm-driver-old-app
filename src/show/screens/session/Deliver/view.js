@@ -245,7 +245,8 @@ const Deliver = (props) => {
     selectedStop,
     setDelivered,
     toggleConfirmedItem,
-    toggleOutOfStock
+    toggleOutOfStock,
+    productImages
   } = props;
 
   if (!selectedStop) {
@@ -270,7 +271,8 @@ const Deliver = (props) => {
           ...(isOutOfStock && {
             rightIconColor: colors.error,
             miscelaneousColor: colors.error
-          })
+          }),
+          image: productImages[order.productId]
         };
       })
     : null;
@@ -325,7 +327,6 @@ const Deliver = (props) => {
               routeDescription
             })}
             miscelaneousColor={colors.Primarylight}
-            icon={null}
             description={I18n.t('screens:deliver.userID', {
               userId: selectedStop?.userId
             })}
@@ -465,6 +466,7 @@ const Deliver = (props) => {
 };
 
 Deliver.propTypes = {
+  productImages: PropTypes.object,
   allItemsDone: PropTypes.bool,
   confirmedItem: PropTypes.array,
   outOfStockIds: PropTypes.array,
@@ -479,6 +481,7 @@ Deliver.propTypes = {
 };
 
 Deliver.defaultProps = {
+  productImages: {},
   allItemsDone: false,
   confirmedItem: [],
   outOfStockIds: [],

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
 import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
@@ -9,8 +8,6 @@ import { defaults, colors, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, NavBar, Separator, Label, List, ListItem } from 'Components';
-
-const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
 const replyModal = (toggleReplyModal) => {
   toggleReplyModal(true);
@@ -24,6 +21,7 @@ const CustomerIssueDetails = (props) => {
   const {
     getDriverReplyImage,
     isConnected,
+    productImages,
     selectedClaim,
     selectedStop,
     toggleReplyModal
@@ -42,7 +40,7 @@ const CustomerIssueDetails = (props) => {
   const data = claimItem?.map((item) => {
     return {
       disabled: true,
-      image: productImageUri + item.productId,
+      image: productImages[item.productId],
       title: item.productName
     };
   });
@@ -184,6 +182,7 @@ const CustomerIssueDetails = (props) => {
 CustomerIssueDetails.propTypes = {
   getDriverReplyImage: PropTypes.func,
   isConnected: PropTypes.bool,
+  productImages: PropTypes.object,
   selectedClaim: PropTypes.object,
   selectedStop: PropTypes.object,
   toggleReplyModal: PropTypes.func
@@ -192,6 +191,7 @@ CustomerIssueDetails.propTypes = {
 CustomerIssueDetails.defaultProps = {
   getDriverReplyImage: mock,
   isConnected: false,
+  productImages: {},
   selectedClaim: {},
   selectedStop: {},
   toggleReplyModal: mock

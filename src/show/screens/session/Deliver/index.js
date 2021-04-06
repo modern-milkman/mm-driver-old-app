@@ -14,6 +14,7 @@ export default connect(
       outOfStockIds: state.delivery?.outOfStockIds,
       routeDescription: state.delivery?.stockWithData?.routeDescription,
       rejectReasons: state.delivery?.rejectReasons,
+      productImages: state.device?.productImages,
       ...state.transient
     };
   },

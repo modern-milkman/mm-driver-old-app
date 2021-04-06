@@ -1,4 +1,7 @@
 import Api from 'Api';
+import { Platform } from 'react-native';
+import Config from 'react-native-config';
+import ImgToBase64 from 'react-native-image-base64';
 
 export default {
   driverReply({ claimId, comment, image, imageType }) {
@@ -20,6 +23,13 @@ export default {
   },
   getForDriver() {
     return Api.get('/Delivery/GetForDriver');
+  },
+  getProductImage(id) {
+    return ImgToBase64.getBase64String(
+      `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/${id}`,
+      Api.getToken(),
+      Platform.select({ ios: 0.1, android: 10 }) //Comperss ratio; For more info: react-native-image-base64
+    );
   },
   getProductsOrder() {
     return Api.get('/Product/GetProductOrder');
