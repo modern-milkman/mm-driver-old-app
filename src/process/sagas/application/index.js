@@ -181,4 +181,9 @@ export const rehydratedAndMounted = function* () {
       RNBootSplash.hide();
     }
   }
+  DeviceInfo.getTotalMemory().then((totalMemory) => {
+    Analytics.trackEvent(EVENTS.TOTAL_MEMORY, {
+      totalMemory: totalMemory / (1024 * 1024)
+    });
+  });
 };
