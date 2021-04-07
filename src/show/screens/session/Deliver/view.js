@@ -110,7 +110,7 @@ const renderSkipModal = ({
   selectedStop,
   setModalVisible,
   setRejected,
-  reasonId = rejectReasons[0].id,
+  reasonId = rejectReasons[2].id,
   updateTransientProps
 }) => (
   <ColumnView
@@ -120,27 +120,21 @@ const renderSkipModal = ({
     <ColumnView
       alignItems={'flex-start'}
       backgroundColor={colors.neutral}
-      borderRadius={defaults.borderRadius}
-      overflow={'hidden'}>
-      <ColumnView
-        alignItems={'flex-start'}
-        paddingTop={defaults.marginVertical}
-        paddingHorizontal={defaults.marginHorizontal}>
-        <Text.Heading color={colors.secondary}>
-          {I18n.t('screens:deliver.modal.title')}
-        </Text.Heading>
-
-        <ColumnView>
-          <Picker
-            items={rejectReasons}
-            selected={reasonId}
-            onChange={handleChangeSkip.bind(
-              null,
-              updateTransientProps,
-              'reasonId'
-            )}
-          />
+      overflow={'hidden'}
+      borderRadius={defaults.borderRadius}>
+      <ColumnView paddingHorizontal={defaults.marginHorizontal}>
+        <Picker
+          items={rejectReasons}
+          selected={reasonId}
+          onChange={handleChangeSkip.bind(
+            null,
+            updateTransientProps,
+            'reasonId'
+          )}
+        />
+        <RowView paddingBottom={defaults.marginVertical}>
           <TextInput
+            disableErrors
             multiline
             value={reasonMessage}
             placeholder={I18n.t('screens:deliver.modal.inputPlaceholder')}
@@ -151,7 +145,7 @@ const renderSkipModal = ({
             )}
             ref={reasonMessageRef}
           />
-        </ColumnView>
+        </RowView>
       </ColumnView>
 
       <Separator color={colors.input} width={'100%'} />
@@ -234,8 +228,8 @@ const showModal = (type, setModalType, setModalVisible) => {
 
 const Deliver = (props) => {
   const [modalType, setModalType] = useState('skip');
-
   const [modalVisible, setModalVisible] = useState(false);
+
   const {
     allItemsDone,
     confirmedItem,

@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal as RNModal } from 'react-native';
-
-import SafeAreaView from 'Containers/SafeAreaView';
+import { Modal as RNModal, KeyboardAvoidingView } from 'react-native';
 
 import style from './style';
 
@@ -26,12 +24,12 @@ const Modal = (props) => {
       onDismiss={onDismiss}
       onRequestClose={onRequestClose}
       statusBarTranslucent={true}>
-      <SafeAreaView
-        keyboardSafe
-        style={style.sawrapper}
-        keyboardSafeStyle={[style.flex]}>
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        enabled
+        style={style.sawrapper}>
         {children}
-      </SafeAreaView>
+      </KeyboardAvoidingView>
     </RNModal>
   );
 };

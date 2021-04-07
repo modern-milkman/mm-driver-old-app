@@ -30,7 +30,6 @@ const style = StyleSheet.create({
     zIndex: 8,
     elevation: 8
   },
-  keyboardSafe: { height: '100%' },
   elevation7: { elevation: 7 }
 });
 

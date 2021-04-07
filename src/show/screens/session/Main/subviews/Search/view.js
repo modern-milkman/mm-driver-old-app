@@ -8,7 +8,6 @@ import List from 'Components/List';
 import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
 import { deliveryStates as DS, statusBarHeight, mock } from 'Helpers';
-import SafeKeyboardAreaView from 'Containers/SafeKeyboardAreaView';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
 
 import style from './style';
@@ -135,25 +134,23 @@ const Search = (props) => {
                 top: top + inputHeight
               }
             ]}>
-            <SafeKeyboardAreaView style={style.safeArea} scrollEnabled={false}>
-              <Animated.View
-                style={[
-                  {
-                    height: height.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ['0%', '100%']
-                    })
-                  },
-                  style.animatedList
-                ]}>
-                <List
-                  onPress={onPressAddress}
-                  data={[search]}
-                  hasSections
-                  renderListEmptyComponent={null}
-                />
-              </Animated.View>
-            </SafeKeyboardAreaView>
+            <Animated.View
+              style={[
+                {
+                  height: height.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ['0%', '100%']
+                  })
+                },
+                style.animatedList
+              ]}>
+              <List
+                onPress={onPressAddress}
+                data={[search]}
+                hasSections
+                renderListEmptyComponent={null}
+              />
+            </Animated.View>
           </View>
         )}
       </>
