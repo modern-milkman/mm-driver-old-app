@@ -100,13 +100,13 @@ export const login_success = function* ({ payload }) {
 };
 
 export const logout = function* () {
+  Analytics.trackEvent(EVENTS.LOGOUT); // 1st so that it goes into amplitude while we still have the driver data
   NavigationService.navigate({ routeName: defaultRoutes.public });
   InteractionManager.runAfterInteractions(() => {
     const { dispatch } = store().store;
     dispatch({ type: 'state/RESET' });
     Api.setToken();
   });
-  Analytics.trackEvent(EVENTS.LOGOUT);
 };
 
 export const onNavigate = function* (params) {

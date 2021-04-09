@@ -203,8 +203,9 @@ export function* updateNetworkProps() {
   const { status } = yield select(networkSelector);
   const { offline } = yield select(requestQueuesSelector);
   const { syncData } = yield select(processorsSelector);
+  const user_session = yield select(userSessionPresentSelector);
 
-  if (!syncData && status === 0 && offline.length > 0) {
+  if (user_session && !syncData && status === 0 && offline.length > 0) {
     yield put({
       type: GrowlTypes.ALERT,
       props: {
