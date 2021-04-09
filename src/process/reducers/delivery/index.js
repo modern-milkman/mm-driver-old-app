@@ -15,7 +15,8 @@ export const { Types, Creators } = createActions(
       'comment',
       'image',
       'imageType',
-      'acknowledgedClaim'
+      'acknowledgedClaim',
+      'index'
     ],
     foregroundDeliveryActions: null,
     getCustomerClaims: ['customerId', 'stopId'],
@@ -127,7 +128,7 @@ const deleteVanDamageImage = (state, { key, index }) =>
 
 const driverReply = (
   state,
-  { claimId, comment, image, imageType, acknowledgedClaim }
+  { claimId, comment, image, imageType, acknowledgedClaim, index }
 ) =>
   produce(state, (draft) => {
     const selectedStopId = state.selectedStopId;
@@ -172,6 +173,10 @@ const driverReply = (
         ].claims.selectedClaimId = unacknowledgedList.slice(1)[0].claimId;
       }
     } else {
+      draft.stops[selectedStopId].claims.acknowledgedList[
+        index
+      ].driverResponses.push(response);
+
       NavigationService.goBack();
     }
 

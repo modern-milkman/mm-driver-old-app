@@ -335,7 +335,8 @@ const CustomerIssueModal = (props) => {
                   driverResponse?.text,
                   driverResponse?.image,
                   driverResponse?.imageType,
-                  !showClaimModal
+                  !showClaimModal,
+                  selectedClaimData.index - 1
                 )}
               />
             )}
