@@ -85,7 +85,7 @@ export function* onNavigateSideEffects(navigateParams) {
 
   DeviceInfo.getUsedMemory().then((usedMemory) => {
     Analytics.trackEvent(EVENTS.USED_MEMORY, {
-      usedMemory: usedMemory / (1024 * 1024)
+      usedMemory: Math.floor(usedMemory / (1024 * 1024))
     });
   });
 }

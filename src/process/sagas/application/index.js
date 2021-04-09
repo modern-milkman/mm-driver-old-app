@@ -209,7 +209,7 @@ export const rehydratedAndMounted = function* () {
   }
   DeviceInfo.getTotalMemory().then((totalMemory) => {
     Analytics.trackEvent(EVENTS.TOTAL_MEMORY, {
-      totalMemory: totalMemory / (1024 * 1024)
+      totalMemory: Math.floor(totalMemory / (1024 * 1024))
     });
   });
 };
