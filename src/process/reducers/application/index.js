@@ -14,6 +14,7 @@ export const { Types, Creators } = createActions(
     mounted: null,
     navigate: null,
     navigateBack: null,
+    recoveringFromCrash: null,
     rehydrated: null,
     removeLastStackRoute: null,
     resetStackRoute: ['routeName'],

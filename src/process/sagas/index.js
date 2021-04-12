@@ -12,6 +12,7 @@ import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/act
 
 // SAGAS
 import {
+  recoveringFromCrash,
   dismissKeyboard,
   init,
   login_error,
@@ -86,6 +87,7 @@ export default function* root() {
     takeLatest(ApplicationTypes.MOUNTED, mounted),
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
+    takeLatest(ApplicationTypes.RECOVERING_FROM_CRASH, recoveringFromCrash),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
     takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
