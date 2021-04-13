@@ -12,7 +12,6 @@ import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/act
 
 // SAGAS
 import {
-  recoveringFromCrash,
   dismissKeyboard,
   init,
   login_error,
@@ -22,6 +21,7 @@ import {
   mounted,
   onNavigate,
   onNavigateBack,
+  recoveringFromCrash,
   rehydrated,
   sendCrashLog
 } from './application';

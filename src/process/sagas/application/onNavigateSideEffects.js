@@ -83,9 +83,12 @@ export function* onNavigateSideEffects(navigateParams) {
     });
   }
 
-  DeviceInfo.getUsedMemory().then((usedMemory) => {
-    Analytics.trackEvent(EVENTS.USED_MEMORY, {
-      usedMemory: Math.floor(usedMemory / (1024 * 1024))
-    });
-  });
+  Promise.all([DeviceInfo.getUsedMemory(), DeviceInfo.getMaxMemory()]).then(
+    (values) => {
+      Analytics.trackEvent(EVENTS.MEMORY, {
+        usedMemory: Math.floor(values[0] / (1024 * 1024)),
+        maxMemory: Math.floor(values[1] / (1024 * 1024))
+      });
+    }
+  );
 }
