@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "3.45.6",
+  "version": "3.45.7",
   "versionCode": "28",
   "private": true,
   "scripts": {
@@ -38,7 +38,7 @@
     "react-native-dropdownalert": "4.3.0",
     "react-native-elements": "3.2.0",
     "react-native-gesture-handler": "1.10.3",
-    "react-native-image-base64": "https://github.com/luminos-software/react-native-image-base64",
+    "react-native-image-base64": "https://github.com/luminos-software/react-native-image-base64#fabbe46e00a5bdffcbced5cc4f762fb7e48d3bcf",
     "react-native-image-crop-picker": "0.36.0",
     "react-native-inset-shadow": "1.0.3",
     "react-native-maps": "0.28.0",
