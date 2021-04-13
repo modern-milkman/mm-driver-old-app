@@ -1,3 +1,4 @@
+import Crashes from 'appcenter-crashes';
 import DeviceInfo from 'react-native-device-info';
 import RNBootSplash from 'react-native-bootsplash';
 import { call, delay, put, select } from 'redux-saga/effects';
@@ -91,6 +92,7 @@ export const init = function* () {
       promise: Api.repositories.appcenter.getLatest()
     });
   }
+  yield put({ type: ApplicationTypes.RECOVERING_FROM_CRASH });
   Analytics.trackEvent(EVENTS.APP_INIT);
 };
 
@@ -143,6 +145,22 @@ export const onNavigate = function* (params) {
 export const onNavigateBack = function* () {
   yield call(onNavigateSideEffects, { routeName: null });
   Analytics.trackEvent(EVENTS.NAVIGATE, { back: true });
+};
+
+export const recoveringFromCrash = async function () {
+  const didCrash = await Crashes.hasCrashedInLastSession();
+  if (didCrash) {
+    const info = await Crashes.lastSessionCrashReport();
+    const { dispatch, getState } = store().store;
+    const { device, user } = getState();
+    const payload = {
+      device,
+      user,
+      error: 'appcenter crash',
+      info
+    };
+    dispatch({ type: ApplicationTypes.SEND_CRASH_LOG, payload });
+  }
 };
 
 export const rehydrated = function* () {

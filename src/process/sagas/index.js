@@ -22,6 +22,7 @@ import {
   mounted,
   onNavigate,
   onNavigateBack,
+  recoveringFromCrash,
   rehydrated,
   sendCrashLog
 } from './application';
@@ -89,6 +90,7 @@ export default function* root() {
     takeLatest(ApplicationTypes.MOUNTED, mounted),
     takeLatest(ApplicationTypes.NAVIGATE_BACK, onNavigateBack),
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
+    takeLatest(ApplicationTypes.RECOVERING_FROM_CRASH, recoveringFromCrash),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
     takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
 
