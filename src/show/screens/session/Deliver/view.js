@@ -265,7 +265,8 @@ const Deliver = (props) => {
             rightIconColor: colors.error,
             miscelaneousColor: colors.error
           }),
-          image: productImages[order.productId]
+          image: productImages[order.productId],
+          customIcon: 'productPlaceholder'
         };
       })
     : null;
