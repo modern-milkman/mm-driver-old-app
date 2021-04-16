@@ -33,7 +33,8 @@ const LoadVan = (props) => {
             stockItem.quantity
           }`
         : stockItem.quantity,
-      image: productImages[stockItem.productId]
+      image: productImages[stockItem.productId],
+      customIcon: 'productPlaceholder'
     };
   });
 

@@ -215,6 +215,7 @@ const CustomerIssueModal = (props) => {
           return {
             disabled: true,
             image: productImages[item.productId],
+            customIcon: 'productPlaceholder',
             title: item.productName
           };
         }) || []

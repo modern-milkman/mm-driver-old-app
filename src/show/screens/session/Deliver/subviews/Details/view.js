@@ -39,6 +39,7 @@ const CustomerIssueDetails = (props) => {
 
   const data = claimItem?.map((item) => {
     return {
+      customIcon: 'productPlaceholder',
       disabled: true,
       image: productImages[item.productId],
       title: item.productName
