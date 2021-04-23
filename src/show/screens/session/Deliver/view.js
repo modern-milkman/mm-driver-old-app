@@ -220,6 +220,13 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
   </TouchableOpacity>
 );
 
+const showClaims = (toggleModal) => {
+  toggleModal('showClaimModal', true);
+  NavigationService.navigate({
+    routeName: 'CustomerIssueModal'
+  });
+};
+
 const showModal = (type, setModalType, setModalVisible) => {
   setModalType(type);
   setModalVisible(true);
@@ -231,7 +238,7 @@ const Deliver = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {
     allItemsDone,
-    claims: { list },
+    claims: { driverUnacknowledgedNr, list, showedUnacknowledgedNr },
     confirmedItem,
     outOfStock,
     processing,
@@ -240,6 +247,7 @@ const Deliver = (props) => {
     setDelivered,
     showClaimModal,
     toggleConfirmedItem,
+    toggleModal,
     toggleOutOfStock
   } = props;
 
@@ -248,7 +256,8 @@ const Deliver = (props) => {
         const isOutOfStock = outOfStock.includes(order.key);
         return {
           ...order,
-          disabled: selectedStop.status === 'completed',
+          disabled:
+            selectedStop.status === 'completed' || driverUnacknowledgedNr > 0,
           rightIcon: isOutOfStock
             ? 'alert'
             : confirmedItem.includes(order.key)
@@ -290,7 +299,11 @@ const Deliver = (props) => {
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
           title={I18n.t('general:details')}
-          rightCustomIcon={list?.length > 0 ? 'customerIssue' : null}
+          rightCustomIcon={
+            list?.length > 0 && driverUnacknowledgedNr === 0
+              ? 'customerIssue'
+              : null
+          }
           rightColor={colors.error}
           rightAction={NavigationService.navigate.bind(null, {
             routeName: 'CustomerIssueList'
@@ -416,32 +429,48 @@ const Deliver = (props) => {
             width={'auto'}
             marginHorizontal={defaults.marginHorizontal}
             marginTop={defaults.marginVertical / 2}>
-            <RowView>
-              <Button.Primary
-                title={I18n.t('general:done')}
-                onPress={navigateBack.bind(
-                  null,
-                  setDelivered.bind(
-                    null,
-                    selectedStop.orderID,
-                    selectedStop.key
-                  )
-                )}
-                disabled={!allItemsDone || processing}
-              />
-            </RowView>
-            <RowView marginVertical={defaults.marginVertical}>
-              <Button.Outline
-                title={I18n.t('general:skip')}
-                onPress={showModal.bind(
-                  null,
-                  'skip',
-                  setModalType,
-                  setModalVisible
-                )}
-                disabled={processing}
-              />
-            </RowView>
+            {driverUnacknowledgedNr > 0 && (
+              <RowView marginVertical={defaults.marginVertical}>
+                <Button.Secondary
+                  title={I18n.t('screens:deliver.viewClaims', {
+                    claimNo: driverUnacknowledgedNr - showedUnacknowledgedNr + 1
+                  })}
+                  onPress={showClaims.bind(null, toggleModal)}
+                />
+              </RowView>
+            )}
+            {driverUnacknowledgedNr === 0 && (
+              <>
+                <RowView>
+                  <Button.Primary
+                    title={I18n.t('general:done')}
+                    onPress={navigateBack.bind(
+                      null,
+                      setDelivered.bind(
+                        null,
+                        selectedStop.orderID,
+                        selectedStop.key
+                      )
+                    )}
+                    disabled={
+                      !allItemsDone || processing || driverUnacknowledgedNr
+                    }
+                  />
+                </RowView>
+                <RowView marginVertical={defaults.marginVertical}>
+                  <Button.Outline
+                    title={I18n.t('general:skip')}
+                    onPress={showModal.bind(
+                      null,
+                      'skip',
+                      setModalType,
+                      setModalVisible
+                    )}
+                    disabled={processing || driverUnacknowledgedNr}
+                  />
+                </RowView>
+              </>
+            )}
           </ColumnView>
         </Animated.View>
       )}
@@ -462,6 +491,7 @@ Deliver.propTypes = {
   setRejected: PropTypes.func,
   showClaimModal: PropTypes.bool,
   toggleConfirmedItem: PropTypes.func,
+  toggleModal: PropTypes.func,
   toggleOutOfStock: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
@@ -479,6 +509,7 @@ Deliver.defaultProps = {
   showClaimModal: false,
   setRejected: mock,
   toggleConfirmedItem: mock,
+  toggleModal: mock,
   toggleOutOfStock: mock,
   updateTransientProps: mock
 };

@@ -13,6 +13,6 @@ export default connect(
     };
   },
   {
-    toggleReplyModal: deliveryActions.toggleReplyModal
+    toggleModal: deliveryActions.toggleModal
   }
 )(CustomerIssueDetails);

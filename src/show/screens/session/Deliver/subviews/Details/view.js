@@ -11,8 +11,8 @@ import { Button, NavBar, Separator, Label, List, ListItem } from 'Components';
 
 const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
 
-const replyModal = (toggleReplyModal) => {
-  toggleReplyModal(true);
+const showReplyModal = (toggleModal) => {
+  toggleModal('showReplyModal', true);
 
   NavigationService.navigate({
     routeName: 'CustomerIssueModal'
@@ -20,7 +20,7 @@ const replyModal = (toggleReplyModal) => {
 };
 
 const CustomerIssueDetails = (props) => {
-  const { selectedClaim, toggleReplyModal } = props;
+  const { selectedClaim, toggleModal } = props;
 
   const {
     claimItem,
@@ -155,7 +155,7 @@ const CustomerIssueDetails = (props) => {
         marginVertical={defaults.marginVertical}>
         <Button.Secondary
           title={I18n.t('screens:deliver.customerIssue.modal.reply')}
-          onPress={replyModal.bind(null, toggleReplyModal)}
+          onPress={showReplyModal.bind(null, toggleModal)}
         />
       </RowView>
     </SafeAreaView>
@@ -164,12 +164,12 @@ const CustomerIssueDetails = (props) => {
 
 CustomerIssueDetails.propTypes = {
   selectedClaim: PropTypes.object,
-  toggleReplyModal: PropTypes.func
+  toggleModal: PropTypes.func
 };
 
 CustomerIssueDetails.defaultProps = {
   selectedClaim: {},
-  toggleReplyModal: mock
+  toggleModal: mock
 };
 
 export default CustomerIssueDetails;

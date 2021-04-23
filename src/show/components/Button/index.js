@@ -57,7 +57,8 @@ const Button = (props) => {
           style[type].backgroundStyle,
           disabled &&
             !processing && {
-              backgroundColor: style.disabled.backgroundColor
+              backgroundColor: style.disabled.backgroundColor,
+              borderWidth: style.disabled.borderWidth
             },
           { height: buttonAccessibility },
           noBorderRadius && { ...style.noBorderRadius },

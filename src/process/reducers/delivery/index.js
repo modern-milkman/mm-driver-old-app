@@ -71,7 +71,7 @@ export const { Types, Creators } = createActions(
     toggleCheckJson: ['key'],
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
-    toggleReplyModal: ['show'],
+    toggleModal: ['modal', 'show'],
     updateChecklistProps: ['props'],
     updateDirectionsPolyline: null,
     updateDriverResponse: ['data'],
@@ -175,6 +175,7 @@ const driverReplySuccess = (state, { payload, acknowledgedClaim }) =>
           driverUnacknowledgedList[0];
         draft.claims[selectedStopId].showedUnacknowledgedNr += 1;
       } else {
+        draft.claims[selectedStopId].driverUnacknowledgedNr = 0;
         draft.claims.showClaimModal = false;
         NavigationService.goBack();
       }
@@ -693,9 +694,9 @@ export const toggleOutOfStock = (state, { id }) =>
       Object.keys(state.stops[state.selectedStopId]?.orders).length;
   });
 
-export const toggleReplyModal = (state, { show }) =>
+export const toggleModal = (state, { modal, show }) =>
   produce(state, (draft) => {
-    draft.claims.showReplyModal = show;
+    draft.claims[modal] = show;
   });
 
 export const updateChecklistProps = (state, { props }) =>
@@ -766,7 +767,7 @@ export default createReducer(initialState, {
   [Types.TOGGLE_CHECK_JSON]: toggleCheckJson,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,
-  [Types.TOGGLE_REPLY_MODAL]: toggleReplyModal,
+  [Types.TOGGLE_MODAL]: toggleModal,
   [Types.UPDATE_CHECKLIST_PROPS]: updateChecklistProps,
   [Types.UPDATE_DRIVER_RESPONSE]: updateDriverResponse,
   [Types.UPDATE_PROPS]: updateProps,

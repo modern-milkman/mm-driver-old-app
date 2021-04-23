@@ -43,6 +43,7 @@
   "deliver": {
     "customerID": "Customer ID #{{customerId}}",
     "deliveryItems": "Delivery items",
+    "viewClaims": "View claims ({{claimNo}})",
     "routeDescription": "Route ID #{{routeDescription}}",
     "modal": {
       "inputPlaceholder": "Type your reason here",

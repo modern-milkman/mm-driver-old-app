@@ -63,7 +63,8 @@ export const style = {
     backgroundColor: colors.input,
     textStyle: {
       color: colors.white
-    }
+    },
+    borderWidth: 0
   },
 
   iconStyleContainer: {

@@ -26,6 +26,11 @@ import style from './style';
 
 const { width, height } = deviceFrame();
 
+const hideClaimsModal = (toggleModal) => {
+  toggleModal('showClaimModal', false);
+  NavigationService.goBack();
+};
+
 const openActionSheet = ({ driverResponse, updateDriverResponse }) => {
   actionSheet({
     [I18n.t('general:takePhoto')]: openPicker.bind(null, {
@@ -186,16 +191,16 @@ const CustomerIssueModal = (props) => {
     processing,
     showReplyModal,
     showClaimModal,
-    toggleReplyModal,
+    toggleModal,
     updateDriverResponse
   } = props;
 
   const {
-    finalEscalation,
     claimDateTime,
-    reason,
     claimItem,
-    customerComment
+    customerComment,
+    finalEscalation,
+    reason
   } = selectedClaim;
 
   const sectionData = [
@@ -214,7 +219,7 @@ const CustomerIssueModal = (props) => {
   return (
     <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
       <NavigationEvents
-        onDidBlur={toggleReplyModal.bind(null, !showReplyModal)}
+        onDidBlur={toggleModal.bind(null, 'showReplyModal', !showReplyModal)}
       />
 
       <ColumnView
@@ -290,42 +295,44 @@ const CustomerIssueModal = (props) => {
           <Separator color={colors.input} width={'100%'} />
           <RowView>
             <Button.Tertiary
-              title={I18n.t(
-                showReplyModal
-                  ? 'general:cancel'
-                  : 'screens:deliver.customerIssue.modal.reply'
-              )}
+              title={I18n.t(showReplyModal ? 'general:cancel' : 'general:hide')}
               width={'50%'}
               noBorderRadius
               onPress={
-                showClaimModal
-                  ? toggleReplyModal.bind(null, !showReplyModal)
-                  : NavigationService.goBack
+                showReplyModal
+                  ? toggleModal.bind(null, 'showReplyModal', !showReplyModal)
+                  : hideClaimsModal.bind(null, toggleModal)
               }
               disabled={processing}
             />
 
-            {showReplyModal && (
-              <Button.Primary
-                title={I18n.t('screens:deliver.customerIssue.modal.send')}
-                disabled={
-                  showReplyModal &&
-                  !driverResponse?.image &&
-                  !driverResponse?.text
-                }
-                width={showReplyModal ? '50%' : '100%'}
-                noBorderRadius
-                processing={processing}
-                onPress={driverReply.bind(
-                  null,
-                  selectedClaim.claimId,
-                  driverResponse?.text,
-                  driverResponse?.image,
-                  driverResponse?.imageType,
-                  !showClaimModal
-                )}
-              />
-            )}
+            <Button.Primary
+              title={I18n.t(
+                showReplyModal
+                  ? 'screens:deliver.customerIssue.modal.send'
+                  : 'screens:deliver.customerIssue.modal.reply'
+              )}
+              disabled={
+                showReplyModal &&
+                !driverResponse?.image &&
+                !driverResponse?.text
+              }
+              width={'50%'}
+              noBorderRadius
+              processing={processing}
+              onPress={
+                showReplyModal
+                  ? driverReply.bind(
+                      null,
+                      selectedClaim.claimId,
+                      driverResponse?.text,
+                      driverResponse?.image,
+                      driverResponse?.imageType,
+                      !showClaimModal
+                    )
+                  : toggleModal.bind(null, 'showReplyModal', !showReplyModal)
+              }
+            />
           </RowView>
         </ColumnView>
       </ColumnView>
@@ -339,7 +346,7 @@ CustomerIssueModal.propTypes = {
   processing: PropTypes.bool,
   showClaimModal: PropTypes.bool,
   showReplyModal: PropTypes.bool,
-  toggleReplyModal: PropTypes.func,
+  toggleModal: PropTypes.func,
   updateDriverResponse: PropTypes.func
 };
 
@@ -349,7 +356,7 @@ CustomerIssueModal.defaultProps = {
   processing: false,
   showClaimModal: false,
   showReplyModal: false,
-  toggleReplyModal: mock,
+  toggleModal: mock,
   updateDriverResponse: mock
 };
 
