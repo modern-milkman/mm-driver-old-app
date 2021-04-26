@@ -439,7 +439,7 @@ const Deliver = (props) => {
                 />
               </RowView>
             )}
-            {driverUnacknowledgedNr === 0 && (
+            {!driverUnacknowledgedNr && (
               <>
                 <RowView>
                   <Button.Primary
