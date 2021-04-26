@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { TouchableOpacity } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import I18n from 'Locales/I18n';
@@ -27,8 +26,10 @@ import style from './style';
 const { width, height } = deviceFrame();
 
 const hideClaimsModal = (toggleModal) => {
-  toggleModal('showClaimModal', false);
   NavigationService.goBack();
+  toggleModal('showClaimModal', false);
+  window.setTimeout(toggleModal.bind(null, 'showReplyModal', false), 250);
+  //prevents flicker when canceling from reply modal
 };
 
 const openActionSheet = ({ driverResponse, updateDriverResponse }) => {
@@ -218,10 +219,6 @@ const CustomerIssueModal = (props) => {
 
   return (
     <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
-      <NavigationEvents
-        onDidBlur={toggleModal.bind(null, 'showReplyModal', !showReplyModal)}
-      />
-
       <ColumnView
         backgroundColor={'transparent'}
         marginHorizontal={defaults.marginHorizontal}
@@ -298,11 +295,7 @@ const CustomerIssueModal = (props) => {
               title={I18n.t(showReplyModal ? 'general:cancel' : 'general:hide')}
               width={'50%'}
               noBorderRadius
-              onPress={
-                showReplyModal
-                  ? toggleModal.bind(null, 'showReplyModal', !showReplyModal)
-                  : hideClaimsModal.bind(null, toggleModal)
-              }
+              onPress={hideClaimsModal.bind(null, toggleModal)}
               disabled={processing}
             />
 
