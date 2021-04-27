@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { Animated, View } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
 import React, { useCallback, useEffect, useRef } from 'react';
 import MapView, {
   Marker as RNMMarker,
@@ -24,6 +23,7 @@ const cameraAnimationOptions = {
 const regionChangeComplete = (
   {
     heading,
+    initialCamera,
     mapIsInteracting,
     mapNoTrackingHeading,
     mapRef,
@@ -39,6 +39,7 @@ const regionChangeComplete = (
 ) => {
   if (mapRef.current) {
     mapRef.current.getCamera().then((currentCamera) => {
+      initialCamera.current = currentCamera;
       updateDeviceProps({
         ...(!shouldTrackHeading && {
           mapNoTrackingHeading: currentCamera.heading
@@ -98,10 +99,8 @@ const Map = (props) => {
   let mapIsInteracting = useRef(false);
   let mapRef = useRef(undefined);
   let mapIsAnimating = useRef(false);
-  let mapVisible = useRef(true);
 
-  const initialCamera = {
-    altitude: 1000,
+  let initialCamera = useRef({
     center: {
       latitude,
       longitude
@@ -109,7 +108,7 @@ const Map = (props) => {
     pitch: shouldPitchMap ? 90 : 0,
     zoom: mapZoom,
     heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading
-  };
+  });
 
   const animateCamera = useCallback(
     (currentCamera, newCameraProps) => {
@@ -158,71 +157,59 @@ const Map = (props) => {
     shouldTrackLocation
   ]);
 
-  const showMap = () => {
-    mapVisible.current = true;
-  };
-
-  const hideMap = () => {
-    mapVisible.current = false;
-  };
-
   return (
     <View style={[styles.map, { height: deviceHeight }]}>
-      <NavigationEvents onWillFocus={showMap} onDidBlur={hideMap} />
-      {mapVisible.current && (
-        <>
-          <MapView
-            customMapStyle={mapStyle}
-            initialCamera={initialCamera}
-            mapPadding={mapPadding}
-            onStartShouldSetResponder={triggerManualMove.bind(null, {
-              mapIsInteracting,
-              shouldTrackLocation,
-              updateDeviceProps
-            })}
-            onRegionChangeComplete={regionChangeComplete.bind(null, {
-              heading,
-              mapIsInteracting,
-              mapNoTrackingHeading,
-              mapRef,
-              mapZoom,
-              setMapMode,
-              shouldTrackHeading,
-              shouldTrackLocation,
-              showMapControlsOnMovement,
-              updateDeviceProps
-            })}
-            pitchEnabled={false}
-            provider={PROVIDER_GOOGLE}
-            ref={setMapRef.bind(null, mapRef)}
-            showsCompass={false}
-            showsMyLocationButton={false}
-            showsUserLocation={false}
-            style={[styles.map, { height }]}
-            zoomTapEnabled={false}>
-            {latitude && longitude && (
-              <RNMMarker
-                key={'current-location'}
-                coordinate={{
-                  latitude: latitude,
-                  longitude: longitude
-                }}
-                anchor={{ x: 0.5, y: 0.5 }}
-                tracksViewChanges={false}>
-                <CurrentLocation width={25} />
-              </RNMMarker>
-            )}
+      <MapView
+        customMapStyle={mapStyle}
+        initialCamera={initialCamera.current}
+        mapPadding={mapPadding}
+        onStartShouldSetResponder={triggerManualMove.bind(null, {
+          mapIsInteracting,
+          shouldTrackLocation,
+          updateDeviceProps
+        })}
+        onRegionChangeComplete={regionChangeComplete.bind(null, {
+          heading,
+          initialCamera,
+          mapIsInteracting,
+          mapNoTrackingHeading,
+          mapRef,
+          mapZoom,
+          setMapMode,
+          shouldTrackHeading,
+          shouldTrackLocation,
+          showMapControlsOnMovement,
+          updateDeviceProps
+        })}
+        pitchEnabled={false}
+        provider={PROVIDER_GOOGLE}
+        ref={setMapRef.bind(null, mapRef)}
+        showsCompass={false}
+        showsMyLocationButton={false}
+        showsUserLocation={false}
+        style={[styles.map, { height }]}
+        zoomTapEnabled={false}>
+        {latitude && longitude && (
+          <RNMMarker
+            key={'current-location'}
+            coordinate={{
+              latitude: latitude,
+              longitude: longitude
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}
+            tracksViewChanges={false}>
+            <CurrentLocation width={25} />
+          </RNMMarker>
+        )}
 
-            <Markers />
-            <DirectionsPolyline />
-          </MapView>
-          <Fabs
-            fabTop={fabTop}
-            mapPadding={mapPadding}
-            mapIsInteracting={mapIsInteracting}
-          />
-        </>
-      )}
+        <Markers />
+        <DirectionsPolyline />
+      </MapView>
+      <Fabs
+        fabTop={fabTop}
+        mapPadding={mapPadding}
+        mapIsInteracting={mapIsInteracting}
+      />
     </View>
   );
 };
