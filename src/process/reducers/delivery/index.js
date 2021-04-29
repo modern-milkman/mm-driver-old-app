@@ -70,7 +70,7 @@ export const { Types, Creators } = createActions(
     toggleCheckJson: ['key'],
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
-    toggleReplyModal: ['show'],
+    toggleModal: ['modal', 'show'],
     updateChecklistProps: ['props'],
     updateDirectionsPolyline: null,
     updateProps: ['props'],
@@ -633,9 +633,9 @@ export const toggleOutOfStock = (state, { id }) =>
       Object.keys(state.stops[state.selectedStopId]?.orders).length;
   });
 
-export const toggleReplyModal = (state, { show }) =>
+export const toggleModal = (state, { modal, show }) =>
   produce(state, (draft) => {
-    draft.stops[draft.selectedStopId].claims.showReplyModal = show;
+    draft.stops[draft.selectedStopId].claims[modal] = show;
   });
 
 export const updateChecklistProps = (state, { props }) =>
@@ -690,7 +690,7 @@ export default createReducer(initialState, {
   [Types.TOGGLE_CHECK_JSON]: toggleCheckJson,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,
-  [Types.TOGGLE_REPLY_MODAL]: toggleReplyModal,
+  [Types.TOGGLE_MODAL]: toggleModal,
   [Types.UPDATE_CHECKLIST_PROPS]: updateChecklistProps,
   [Types.UPDATE_PROPS]: updateProps,
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop

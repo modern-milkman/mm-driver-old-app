@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import I18n from 'Locales/I18n';
@@ -24,6 +23,13 @@ import {
 import style from './style';
 
 const { width, height } = deviceFrame();
+
+const hideClaimsModal = (toggleModal) => {
+  NavigationService.goBack();
+  toggleModal('showClaimModal', false);
+  window.setTimeout(toggleModal.bind(null, 'showReplyModal', false), 250);
+  //prevents flicker when canceling from reply modal
+};
 
 const openActionSheet = ({ driverResponse, updateDriverResponse }) => {
   actionSheet({
@@ -188,9 +194,9 @@ const CustomerIssueModal = (props) => {
       unacknowledgedListNr
     },
     driverReply,
+    toggleModal,
     driverResponse,
     productImages,
-    toggleReplyModal,
     updateDriverResponse
   } = props;
 
@@ -224,10 +230,6 @@ const CustomerIssueModal = (props) => {
 
   return (
     <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
-      <NavigationEvents
-        onDidBlur={toggleReplyModal.bind(null, !showReplyModal)}
-      />
-
       <ColumnView
         backgroundColor={'transparent'}
         marginHorizontal={defaults.marginHorizontal}
@@ -306,41 +308,39 @@ const CustomerIssueModal = (props) => {
           <Separator color={colors.input} width={'100%'} />
           <RowView>
             <Button.Tertiary
+              title={I18n.t(showReplyModal ? 'general:cancel' : 'general:hide')}
+              width={'50%'}
+              noBorderRadius
+              onPress={hideClaimsModal.bind(null, toggleModal)}
+            />
+
+            <Button.Primary
               title={I18n.t(
                 showReplyModal
-                  ? 'general:cancel'
+                  ? 'screens:deliver.customerIssue.modal.send'
                   : 'screens:deliver.customerIssue.modal.reply'
               )}
+              disabled={
+                showReplyModal &&
+                !driverResponse?.image &&
+                !driverResponse?.text
+              }
               width={'50%'}
               noBorderRadius
               onPress={
-                showClaimModal
-                  ? toggleReplyModal.bind(null, !showReplyModal)
-                  : NavigationService.goBack
+                showReplyModal
+                  ? driverReply.bind(
+                      null,
+                      selectedClaimData?.claimId,
+                      driverResponse?.text,
+                      driverResponse?.image,
+                      driverResponse?.imageType,
+                      !showClaimModal,
+                      selectedClaimData.index - 1
+                    )
+                  : toggleModal.bind(null, 'showReplyModal', !showReplyModal)
               }
             />
-
-            {showReplyModal && (
-              <Button.Primary
-                title={I18n.t('screens:deliver.customerIssue.modal.send')}
-                disabled={
-                  showReplyModal &&
-                  !driverResponse?.image &&
-                  !driverResponse?.text
-                }
-                width={showReplyModal ? '50%' : '100%'}
-                noBorderRadius
-                onPress={driverReply.bind(
-                  null,
-                  selectedClaimData?.claimId,
-                  driverResponse?.text,
-                  driverResponse?.image,
-                  driverResponse?.imageType,
-                  !showClaimModal,
-                  selectedClaimData.index - 1
-                )}
-              />
-            )}
           </RowView>
         </ColumnView>
       </ColumnView>
@@ -354,6 +354,7 @@ CustomerIssueModal.propTypes = {
   driverResponse: PropTypes.object,
   productImages: PropTypes.object,
   toggleReplyModal: PropTypes.func,
+  toggleModal: PropTypes.func,
   updateDriverResponse: PropTypes.func
 };
 
@@ -363,6 +364,7 @@ CustomerIssueModal.defaultProps = {
   driverResponse: {},
   productImages: {},
   toggleReplyModal: mock,
+  toggleModal: mock,
   updateDriverResponse: mock
 };
 

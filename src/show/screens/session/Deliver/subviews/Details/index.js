@@ -20,6 +20,6 @@ export default connect(
   },
   {
     getDriverReplyImage: deliveryActions.getDriverReplyImage,
-    toggleReplyModal: deliveryActions.toggleReplyModal
+    toggleModal: deliveryActions.toggleModal
   }
 )(CustomerIssueDetails);

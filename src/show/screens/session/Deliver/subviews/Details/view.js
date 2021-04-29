@@ -9,8 +9,8 @@ import NavigationService from 'Navigation/service';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, NavBar, Separator, Label, List, ListItem } from 'Components';
 
-const replyModal = (toggleReplyModal) => {
-  toggleReplyModal(true);
+const showReplyModal = (toggleModal) => {
+  toggleModal('showReplyModal', true);
 
   NavigationService.navigate({
     routeName: 'CustomerIssueModal'
@@ -24,7 +24,7 @@ const CustomerIssueDetails = (props) => {
     productImages,
     selectedClaim,
     selectedStop,
-    toggleReplyModal
+    toggleModal
   } = props;
 
   const {
@@ -173,7 +173,7 @@ const CustomerIssueDetails = (props) => {
         marginVertical={defaults.marginVertical}>
         <Button.Secondary
           title={I18n.t('screens:deliver.customerIssue.modal.reply')}
-          onPress={replyModal.bind(null, toggleReplyModal)}
+          onPress={showReplyModal.bind(null, toggleModal)}
         />
       </RowView>
     </SafeAreaView>
@@ -186,7 +186,7 @@ CustomerIssueDetails.propTypes = {
   productImages: PropTypes.object,
   selectedClaim: PropTypes.object,
   selectedStop: PropTypes.object,
-  toggleReplyModal: PropTypes.func
+  toggleModal: PropTypes.func
 };
 
 CustomerIssueDetails.defaultProps = {
@@ -195,7 +195,7 @@ CustomerIssueDetails.defaultProps = {
   productImages: {},
   selectedClaim: {},
   selectedStop: {},
-  toggleReplyModal: mock
+  toggleModal: mock
 };
 
 export default CustomerIssueDetails;

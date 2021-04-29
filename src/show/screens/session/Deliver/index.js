@@ -22,6 +22,7 @@ export default connect(
     setDelivered: deliveryActions.setDelivered,
     setRejected: deliveryActions.setRejected,
     toggleConfirmedItem: deliveryActions.toggleConfirmedItem,
+    toggleModal: deliveryActions.toggleModal,
     toggleOutOfStock: deliveryActions.toggleOutOfStock,
     updateTransientProps: transientActions.updateProps
   }

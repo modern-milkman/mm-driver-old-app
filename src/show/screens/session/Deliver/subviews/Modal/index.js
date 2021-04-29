@@ -17,7 +17,7 @@ export default connect(
   },
   {
     driverReply: deliveryActions.driverReply,
-    toggleReplyModal: deliveryActions.toggleReplyModal,
+    toggleModal: deliveryActions.toggleModal,
     updateDriverResponse: transientActions.updateProps
   }
 )(CustomerIssueModal);

@@ -221,6 +221,13 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
   </TouchableOpacity>
 );
 
+const showClaims = (toggleModal) => {
+  toggleModal('showClaimModal', true);
+  NavigationService.navigate({
+    routeName: 'CustomerIssueModal'
+  });
+};
+
 const showModal = (type, setModalType, setModalVisible) => {
   setModalType(type);
   setModalVisible(true);
@@ -234,12 +241,13 @@ const Deliver = (props) => {
     allItemsDone,
     confirmedItem,
     outOfStockIds,
+    productImages,
     routeDescription,
     selectedStop,
     setDelivered,
     toggleConfirmedItem,
-    toggleOutOfStock,
-    productImages
+    toggleModal,
+    toggleOutOfStock
   } = props;
 
   if (!selectedStop) {
@@ -247,7 +255,7 @@ const Deliver = (props) => {
   }
 
   const {
-    claims: { acknowledgedList, showClaimModal }
+    claims: { acknowledgedList, showClaimModal, unacknowledgedList }
   } = selectedStop;
 
   const optimizedStopOrders = selectedStop
@@ -255,7 +263,9 @@ const Deliver = (props) => {
         const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,
-          disabled: selectedStop.status === 'completed',
+          disabled:
+            selectedStop.status === 'completed' ||
+            unacknowledgedList.length > 0,
           rightIcon: isOutOfStock
             ? 'alert'
             : confirmedItem.includes(order.key)
@@ -426,32 +436,46 @@ const Deliver = (props) => {
             width={'auto'}
             marginHorizontal={defaults.marginHorizontal}
             marginTop={defaults.marginVertical / 2}>
-            <RowView>
-              <Button.Primary
-                title={I18n.t('general:done')}
-                onPress={navigateBack.bind(
-                  null,
-                  setDelivered.bind(
-                    null,
-                    selectedStop.orderID,
-                    selectedStop.key,
-                    outOfStockIds
-                  )
-                )}
-                disabled={!allItemsDone}
-              />
-            </RowView>
-            <RowView marginVertical={defaults.marginVertical}>
-              <Button.Outline
-                title={I18n.t('general:skip')}
-                onPress={showModal.bind(
-                  null,
-                  'skip',
-                  setModalType,
-                  setModalVisible
-                )}
-              />
-            </RowView>
+            {unacknowledgedList.length > 0 && (
+              <RowView marginVertical={defaults.marginVertical}>
+                <Button.Secondary
+                  title={I18n.t('screens:deliver.viewClaims', {
+                    claimNo: unacknowledgedList.length
+                  })}
+                  onPress={showClaims.bind(null, toggleModal)}
+                />
+              </RowView>
+            )}
+            {unacknowledgedList.length === 0 && (
+              <>
+                <RowView>
+                  <Button.Primary
+                    title={I18n.t('general:done')}
+                    onPress={navigateBack.bind(
+                      null,
+                      setDelivered.bind(
+                        null,
+                        selectedStop.orderID,
+                        selectedStop.key,
+                        outOfStockIds
+                      )
+                    )}
+                    disabled={!allItemsDone}
+                  />
+                </RowView>
+                <RowView marginVertical={defaults.marginVertical}>
+                  <Button.Outline
+                    title={I18n.t('general:skip')}
+                    onPress={showModal.bind(
+                      null,
+                      'skip',
+                      setModalType,
+                      setModalVisible
+                    )}
+                  />
+                </RowView>
+              </>
+            )}
           </ColumnView>
         </Animated.View>
       )}
@@ -470,6 +494,7 @@ Deliver.propTypes = {
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,
   toggleConfirmedItem: PropTypes.func,
+  toggleModal: PropTypes.func,
   toggleOutOfStock: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
@@ -485,6 +510,7 @@ Deliver.defaultProps = {
   setDelivered: mock,
   setRejected: mock,
   toggleConfirmedItem: mock,
+  toggleModal: mock,
   toggleOutOfStock: mock,
   updateTransientProps: mock
 };
