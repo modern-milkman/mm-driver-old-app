@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import Config from 'react-native-config';
 import { View, Image as RNImage, ActivityIndicator } from 'react-native';
 
 import Api from 'Api';
@@ -23,7 +24,8 @@ const Image = (props) => {
 
   const imageSource = () => {
     const headers = {
-      Authorization: `Bearer ${Api.getToken()}`
+      Authorization: `Bearer ${Api.getToken()}`,
+      'x-api-version': Config.X_API_VERSION
     };
 
     return source && source.uri
