@@ -75,19 +75,6 @@ export const driverReply = function* ({
   });
 };
 
-export const driverReplySuccess = function* ({ payload, acknowledgedClaim }) {
-  const selectedStopId = yield select(selectedStopIdSelector);
-
-  if (payload.hasImage) {
-    yield call(
-      getDriverReplySingleImage.bind(null, {
-        id: payload.claimDriverResponseId,
-        selectedStopId
-      })
-    );
-  }
-};
-
 export const foregroundDeliveryActions = function* ({}) {
   const status = yield select(statusSelector);
   const user_session = yield select(userSessionPresentSelector);
@@ -158,18 +145,6 @@ export const getDriverDataFailure = function* ({ status }) {
       }
     });
   }
-};
-
-export const getDriverReplySingleImage = function* ({ id, selectedStopId }) {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS }
-    },
-    promise: Api.repositories.delivery.getDriverResponseImage({ id }),
-    id,
-    selectedStopId
-  });
 };
 
 export const getForDriver = function* ({ isRefreshData = false }) {
@@ -335,30 +310,6 @@ export const showMustComplyWithTerms = function* () {
       message: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.message')
     }
   });
-};
-
-export const setCustomerClaims = function* ({ payload, selectedStopId }) {
-  for (const [claimIndex, claim] of payload.entries()) {
-    for (const [
-      driverResponseIndex,
-      driverResponse
-    ] of claim.driverResponses.entries()) {
-      if (driverResponse.hasImage) {
-        yield put({
-          type: Api.API_CALL,
-          actions: {
-            success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
-          },
-          promise: Api.repositories.delivery.getDriverResponseImage({
-            id: driverResponse.claimDriverResponseId
-          }),
-          claimIndex,
-          driverResponseIndex,
-          selectedStopId
-        });
-      }
-    }
-  }
 };
 
 export const setDelivered = function* ({ id, selectedStopId }) {
@@ -572,20 +523,6 @@ export const updateSelectedStop = function* ({ sID }) {
       type: DeliveryTypes.GET_CUSTOMER_CLAIMS,
       customerId: selectedStop.customerId,
       selectedStopId: sID
-    });
-  }
-
-  if (!selectedStop.customerAddressImage) {
-    yield put({
-      type: Api.API_CALL,
-      actions: {
-        success: { type: DeliveryTypes.SET_SELECTED_STOP_IMAGE }
-      },
-      promise: Api.repositories.delivery.getCustomerAddressImage({
-        customerId: selectedStop.customerId,
-        addressId: selectedStop.key
-      }),
-      props: { key: selectedStop.key }
     });
   }
 

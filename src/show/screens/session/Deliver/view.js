@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import Config from 'react-native-config';
 import { NavigationEvents } from 'react-navigation';
 import { Animated, TouchableOpacity } from 'react-native';
 
@@ -22,6 +23,8 @@ import {
 } from 'Components';
 
 import style from './style';
+
+const customerAddressImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Customer/CustomerImageFile/`;
 
 const reasonMessageRef = React.createRef();
 
@@ -186,11 +189,11 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
     onPress={setModalVisible.bind(null, false)}>
     {selectedStop && (
       <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
-        {selectedStop.customerAddressImage ? (
+        {selectedStop.hasCustomerImage ? (
           <Image
             requiresAuthentication
             source={{
-              uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
+              uri: `${customerAddressImageUri}${selectedStop.customerId}/${selectedStop.key}`
             }}
             style={style.image}
             width={width - defaults.marginHorizontal * 2}
@@ -358,7 +361,7 @@ const Deliver = (props) => {
           ]}>
           {selectedStop &&
             (selectedStop.deliveryInstructions ||
-              selectedStop.customerAddressImage) && (
+              selectedStop.hasCustomerImage) && (
               <>
                 <Separator />
                 <ListItem
@@ -369,12 +372,12 @@ const Deliver = (props) => {
                     setModalVisible
                   )}
                   image={
-                    selectedStop.customerAddressImage
-                      ? `data:image/png;base64,${selectedStop.customerAddressImage}`
+                    selectedStop.hasCustomerImage
+                      ? `${customerAddressImageUri}${selectedStop.customerId}/${selectedStop.key}`
                       : null
                   }
                   customIcon={
-                    selectedStop.customerAddressImage
+                    selectedStop.hasCustomerImage
                       ? null
                       : 'frontDeliveryPlaceholder'
                   }

@@ -29,7 +29,6 @@ import {
 
 import {
   driverReply,
-  driverReplySuccess,
   foregroundDeliveryActions,
   getCustomerClaims,
   getCustomerClaimsFailure,
@@ -46,7 +45,6 @@ import {
   saveVehicleChecks,
   saveVehicleChecksFailure,
   saveVehicleChecksSuccess,
-  setCustomerClaims,
   setDelivered,
   setDeliveredOrRejectedSuccess,
   setItemOutOfStock,
@@ -95,7 +93,6 @@ export default function* root() {
     takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
 
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
-    takeEvery(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
     takeEvery(
       DeliveryTypes.GET_CUSTOMER_CLAIMS_FAILURE,
@@ -134,7 +131,6 @@ export default function* root() {
       DeliveryTypes.SHOW_MUST_COMPLY_WITH_TERMS,
       showMustComplyWithTerms
     ),
-    takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, setCustomerClaims),
     takeEvery(DeliveryTypes.SET_DELIVERED, setDelivered),
     takeEvery(
       DeliveryTypes.SET_DELIVERED_OR_REJECTED_SUCCESS,

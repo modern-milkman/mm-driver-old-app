@@ -24,7 +24,6 @@ export const { Types, Creators } = createActions(
     getCustomerClaims: ['customerId', 'selectedStopId'],
     getCustomerClaimsFailure: ['customerId', 'selectedStopId'],
     getDriverDataFailure: null,
-    getDriverReplySingleImageSuccess: ['payload', 'id', 'selectedStopId'],
     getForDriver: ['isRefreshData'],
     getForDriverSuccess: ['payload', 'isRefreshData'],
     getProductsOrder: null,
@@ -62,7 +61,6 @@ export const { Types, Creators } = createActions(
     setRegistration: ['reg'],
     setRejected: ['id', 'reasonId', 'reasonMessage', 'selectedStopId'],
     setSelectedClaim: ['claim'],
-    setSelectedStopImage: ['payload', 'props'],
     setRejectDeliveryReasons: ['payload'],
     setVanDamageComment: ['key', 'comment'],
     setVanDamageImage: ['key', 'image', 'imageType'],
@@ -350,6 +348,7 @@ export const getForDriverSuccess = (
             deliveryInstructions && deliveryInstructions.length > 0
               ? deliveryInstructions
               : null,
+          hasCustomerImage: item.hasCustomerImage,
           icon: null,
           itemCount: 0,
           latitude,
@@ -391,33 +390,6 @@ export const getForDriverSuccess = (
 
       draft.stops[key].itemCount += item.quantity;
     }
-  });
-
-export const getDriverReplySingleImageSuccess = (
-  state,
-  { payload, id, selectedStopId }
-) =>
-  produce(state, (draft) => {
-    draft.claims[selectedStopId].list = draft.claims[selectedStopId].list.map(
-      (claim) => {
-        for (const driverResponses of claim.driverResponses) {
-          if (driverResponses.claimDriverResponseId === id) {
-            driverResponses.image = payload;
-          }
-        }
-
-        return claim;
-      }
-    );
-
-    draft.claims[selectedStopId].selectedClaim.driverResponses = draft.claims[
-      selectedStopId
-    ].selectedClaim.driverResponses.map((dr) => {
-      if (dr.claimDriverResponseId === id) {
-        dr.image = payload;
-      }
-      return dr;
-    });
   });
 
 export const getCustomerClaims = (state) =>
@@ -604,14 +576,6 @@ export const setRejectDeliveryReasons = (state, { payload }) =>
     draft.rejectReasons = payload;
   });
 
-export const setSelectedStopImage = (
-  state,
-  { payload: { base64Image }, props: { key } }
-) =>
-  produce(state, (draft) => {
-    draft.stops[key].customerAddressImage = base64Image;
-  });
-
 export const setVanDamageComment = (state, { key, comment }) =>
   produce(state, (draft) => {
     if (!draft.checklist.payload.vehicleCheckDamage[key]) {
@@ -718,10 +682,6 @@ export const updateDriverResponse = (state, { data }) =>
 export const updateSelectedStop = (state, { sID }) =>
   produce(state, (draft) => {
     resetSelectedStopInfo(draft);
-    if (draft.selectedStopId) {
-      delete draft.stops[draft.selectedStopId].customerAddressImage; // Deletes customer image
-    }
-
     draft.optimizedRoutes = false;
     draft.previousStopId = draft.selectedStopId;
     draft.processing = false;
@@ -736,7 +696,6 @@ export default createReducer(initialState, {
   [Types.DRIVER_REPLY_FAILURE]: claimFinishedProcessing,
   [Types.DRIVER_REPLY_SUCCESS]: driverReplySuccess,
   [Types.GET_CUSTOMER_CLAIMS]: getCustomerClaims,
-  [Types.GET_DRIVER_REPLY_SINGLE_IMAGE_SUCCESS]: getDriverReplySingleImageSuccess,
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
@@ -759,7 +718,6 @@ export default createReducer(initialState, {
   [Types.SET_REJECT_DELIVERY_REASONS]: setRejectDeliveryReasons,
   [Types.SET_REJECTED]: processingTrue,
   [Types.SET_SELECTED_CLAIM]: setSelectedClaim,
-  [Types.SET_SELECTED_STOP_IMAGE]: setSelectedStopImage,
   [Types.SET_VAN_DAMAGE_COMMENT]: setVanDamageComment,
   [Types.SET_VAN_DAMAGE_IMAGE]: setVanDamageImage,
   [Types.SET_VEHICLE_CHECKS]: setVehicleChecks,

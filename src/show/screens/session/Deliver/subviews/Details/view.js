@@ -10,6 +10,7 @@ import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, NavBar, Separator, Label, List, ListItem } from 'Components';
 
 const productImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/`;
+const driverReplyImageUri = `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Claim/DriverResponseImageFile/`;
 
 const showReplyModal = (toggleModal) => {
   toggleModal('showReplyModal', true);
@@ -64,8 +65,8 @@ const CustomerIssueDetails = (props) => {
         interpolation: { escapeValue: false }
       }),
       moreInfo: item.comment,
-      image: item.image
-        ? `data:${item.image.imageType};base64,${item.image.base64Image}`
+      image: item.hasImage
+        ? `${driverReplyImageUri}${item.claimDriverResponseId}`
         : null
     };
   });

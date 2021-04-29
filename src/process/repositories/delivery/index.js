@@ -9,14 +9,8 @@ export default {
       imageType
     });
   },
-  getCustomerAddressImage({ customerId, addressId }) {
-    return Api.get(`/Customer/CustomerImage/${customerId}/${addressId}`);
-  },
   getCustomerClaims({ customerId }) {
     return Api.get(`/Claim/GetDriverClaims/${customerId}`);
-  },
-  getDriverResponseImage({ id }) {
-    return Api.get(`/Claim/DriverResponseImage/${id}`);
   },
   getForDriver() {
     return Api.get('/Delivery/GetForDriver');
