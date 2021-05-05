@@ -98,6 +98,10 @@ const renderItemInterface = (
     rightIcon,
     rightIconColor = colors.primary,
     rightImage,
+    secondaryCustomRightIcon,
+    secondaryCustomRightIconProps,
+    secondaryRightImage,
+    secondaryRightIcon,
     title,
     titleColor = colors.secondary,
     titleExpands = false
@@ -173,6 +177,23 @@ const renderItemInterface = (
           </ColumnView>
         )}
         {rightComponent}
+
+        {(secondaryCustomRightIcon ||
+          secondaryRightImage ||
+          secondaryRightIcon) && (
+          <RowView
+            width={style.image.width}
+            justifyContent={'flex-end'}
+            marginRight={defaults.marginHorizontal / 4}>
+            {(secondaryCustomRightIcon ||
+              secondaryRightImage ||
+              secondaryRightIcon) &&
+              renderImageIcon(
+                secondaryCustomRightIcon,
+                secondaryCustomRightIconProps
+              )}
+          </RowView>
+        )}
         {(customRightIcon || rightImage || rightIcon || enforceLayout) && (
           <RowView width={style.image.width} justifyContent={'flex-end'}>
             {(customRightIcon || rightImage || rightIcon) &&
@@ -311,6 +332,10 @@ ListItem.propTypes = {
   rightIcon: PropTypes.string,
   rightIconColor: PropTypes.string,
   rightImage: PropTypes.string,
+  secondaryCustomRightIcon: PropTypes.any,
+  secondaryCustomRightIconProps: PropTypes.object,
+  secondaryRightImage: PropTypes.any,
+  secondaryRightIcon: PropTypes.any,
   title: PropTypes.string,
   titleColor: PropTypes.string,
   titleExpands: PropTypes.bool
@@ -340,6 +365,10 @@ ListItem.defaultProps = {
   rightIcon: null,
   rightIconColor: colors.primary,
   rightImage: null,
+  secondaryCustomRightIcon: null,
+  secondaryCustomRightIconProps: {},
+  secondaryRightImage: null,
+  secondaryRightIcon: null,
   title: null,
   titleColor: colors.secondary,
   titleExpands: false

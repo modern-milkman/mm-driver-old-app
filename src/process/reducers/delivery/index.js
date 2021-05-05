@@ -310,7 +310,13 @@ export const getForDriverSuccess = (
     // PREPARE RAW STOPS
     for (const item of draft.stockWithData.items) {
       const {
-        address: { addressId: key, latitude, longitude, deliveryInstructions }
+        address: {
+          addressId: key,
+          latitude,
+          longitude,
+          deliveryInstructions,
+          coolBox
+        }
       } = item;
 
       if (!draft.stops[key]) {
@@ -348,7 +354,8 @@ export const getForDriverSuccess = (
             acknowledgedList: [],
             unacknowledgedList: [],
             showClaimModal: false
-          }
+          },
+          coolBox
         };
       }
 

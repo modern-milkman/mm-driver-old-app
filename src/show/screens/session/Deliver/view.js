@@ -392,6 +392,10 @@ const Deliver = (props) => {
                   customRightIcon={'expand'}
                   title={selectedStop.deliveryInstructions}
                   titleExpands
+                  {...(selectedStop.coolBox && {
+                    secondaryCustomRightIcon: 'coolbox',
+                    secondaryCustomRightIconProps: { color: colors.secondary }
+                  })}
                 />
               </>
             )}
