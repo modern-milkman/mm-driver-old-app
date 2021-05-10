@@ -1,5 +1,7 @@
 import React from 'react';
+import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
+import Config from 'react-native-config';
 import { TouchableOpacity } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -194,9 +196,8 @@ const CustomerIssueModal = (props) => {
       unacknowledgedListNr
     },
     driverReply,
-    toggleModal,
     driverResponse,
-    productImages,
+    toggleModal,
     updateDriverResponse
   } = props;
 
@@ -220,7 +221,7 @@ const CustomerIssueModal = (props) => {
         selectedClaimData?.claimItem.map((item) => {
           return {
             disabled: true,
-            image: productImages[item.productId],
+            image: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${item.productId}`,
             customIcon: 'productPlaceholder',
             title: item.productName
           };
@@ -352,8 +353,6 @@ CustomerIssueModal.propTypes = {
   claims: PropTypes.object,
   driverReply: PropTypes.func,
   driverResponse: PropTypes.object,
-  productImages: PropTypes.object,
-  toggleReplyModal: PropTypes.func,
   toggleModal: PropTypes.func,
   updateDriverResponse: PropTypes.func
 };
@@ -362,8 +361,6 @@ CustomerIssueModal.defaultProps = {
   claims: {},
   driverReply: mock,
   driverResponse: {},
-  productImages: {},
-  toggleReplyModal: mock,
   toggleModal: mock,
   updateDriverResponse: mock
 };

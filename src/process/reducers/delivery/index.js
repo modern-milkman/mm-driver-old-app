@@ -43,12 +43,6 @@ export const { Types, Creators } = createActions(
     setDelivered: ['id', 'selectedStopId', 'outOfStockIds'],
     setDirectionsPolyline: ['payload'],
     showMustComplyWithTerms: null,
-    setDriverReplyImage: [
-      'payload',
-      'claimIndex',
-      'driverResponseIndex',
-      'stopId'
-    ],
     setItemOutOfStock: ['id'],
     setMileage: ['mileage'],
     setProductsOrder: ['payload'],
@@ -61,7 +55,6 @@ export const { Types, Creators } = createActions(
       'reasonMessage'
     ],
     setSelectedClaimId: ['claim'],
-    setSelectedStopImage: ['payload', 'props'],
     setRejectDeliveryReasons: ['payload'],
     setVanDamageComment: ['key', 'comment'],
     setVanDamageImage: ['key', 'image', 'imageType'],
@@ -339,6 +332,7 @@ export const getForDriverSuccess = (
             deliveryInstructions && deliveryInstructions.length > 0
               ? deliveryInstructions
               : null,
+          hasCustomerImage: item.hasCustomerImage,
           icon: null,
           itemCount: 0,
           latitude,
@@ -520,16 +514,6 @@ export const setDeliveredOrRejected = (state, { id, selectedStopId }) =>
     }
   });
 
-export const setDriverReplyImage = (
-  state,
-  { payload, claimIndex, driverResponseIndex, stopId }
-) =>
-  produce(state, (draft) => {
-    draft.stops[stopId].claims.acknowledgedList[claimIndex].driverResponses[
-      driverResponseIndex
-    ].image = payload;
-  });
-
 export const setMileage = (state, { mileage }) =>
   produce(state, (draft) => {
     draft.checklist.payload.currentMileage = mileage;
@@ -548,14 +532,6 @@ export const setProductsOrder = (state, { payload }) =>
 export const setRejectDeliveryReasons = (state, { payload }) =>
   produce(state, (draft) => {
     draft.rejectReasons = payload;
-  });
-
-export const setSelectedStopImage = (
-  state,
-  { payload: { base64Image }, props: { key } }
-) =>
-  produce(state, (draft) => {
-    draft.stops[key].customerAddressImage = base64Image;
   });
 
 export const setVanDamageComment = (state, { key, comment }) =>
@@ -658,9 +634,6 @@ export const setDirectionsPolyline = (state, { payload }) =>
 export const updateSelectedStop = (state, { sID, manualRoutes = true }) =>
   produce(state, (draft) => {
     resetSelectedStopInfo(draft);
-    if (draft.selectedStopId) {
-      delete draft.stops[draft.selectedStopId].customerAddressImage;
-    }
     draft.manualRoutes = manualRoutes;
     draft.previousStopId = draft.selectedStopId;
     draft.processing = false;
@@ -682,14 +655,12 @@ export default createReducer(initialState, {
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED]: setDeliveredOrRejected,
   [Types.SET_DIRECTIONS_POLYLINE]: setDirectionsPolyline,
-  [Types.SET_DRIVER_REPLY_IMAGE]: setDriverReplyImage,
   [Types.SET_MILEAGE]: setMileage,
   [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
   [Types.SET_REGISTRATION]: setRegistration,
   [Types.SET_REJECT_DELIVERY_REASONS]: setRejectDeliveryReasons,
   [Types.SET_REJECTED]: setDeliveredOrRejected,
   [Types.SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
-  [Types.SET_SELECTED_STOP_IMAGE]: setSelectedStopImage,
   [Types.SET_VAN_DAMAGE_COMMENT]: setVanDamageComment,
   [Types.SET_VAN_DAMAGE_IMAGE]: setVanDamageImage,
   [Types.SET_VEHICLE_CHECKS]: setVehicleChecks,

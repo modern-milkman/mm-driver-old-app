@@ -10,16 +10,12 @@ export default connect(
     const selectedStop = state.delivery?.stops[selectedStopId];
 
     return {
-      isConnected: state.device.network.isConnected,
-      productImages: state.device?.productImages,
-      selectedStop: selectedStop,
       selectedClaim: selectedStop?.claims.acknowledgedList.filter(
         (claim) => claim.claimId === selectedStop.claims.selectedClaimId
       )[0]
     };
   },
   {
-    getDriverReplyImage: deliveryActions.getDriverReplyImage,
     toggleModal: deliveryActions.toggleModal
   }
 )(CustomerIssueDetails);

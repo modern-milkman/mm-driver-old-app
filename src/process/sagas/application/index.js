@@ -66,6 +66,7 @@ export const init = function* () {
       promise: Api.repositories.appcenter.getLatest()
     });
   }
+  Api.repositories.filesystem.init();
   yield put({ type: ApplicationTypes.RECOVERING_FROM_CRASH });
   Analytics.trackEvent(EVENTS.APP_INIT);
 };
@@ -107,6 +108,7 @@ export const logout = function* () {
   InteractionManager.runAfterInteractions(() => {
     const { dispatch } = store().store;
     dispatch({ type: 'state/RESET' });
+    Api.repositories.filesystem.clear();
     Api.setToken();
   });
 };

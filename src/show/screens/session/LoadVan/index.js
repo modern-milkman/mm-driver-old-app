@@ -9,7 +9,6 @@ export default connect(
     itemCount: itemCount(state),
     deliveredStock: state.delivery?.deliveredStock,
     orderedStock: state.delivery?.orderedStock,
-    productImages: state.device?.productImages,
     readOnly: state.application.lastRouteParams?.readOnly
   }),
   { updateChecklistProps: deliveryActions.updateChecklistProps }

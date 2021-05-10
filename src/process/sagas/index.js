@@ -118,7 +118,7 @@ export default function* root() {
       DeliveryTypes.SHOW_MUST_COMPLY_WITH_TERMS,
       showMustComplyWithTerms
     ),
-    takeEvery(DeliveryTypes.GET_DRIVER_REPLY_IMAGE, getDriverReplyImage),
+    takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, getDriverReplyImage),
     takeEvery(
       DeliveryTypes.SET_DELIVERED,
       setDeliveredOrRejected.bind(null, 'delivered')

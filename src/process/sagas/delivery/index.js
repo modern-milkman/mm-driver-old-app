@@ -1,3 +1,4 @@
+import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
 import { call, delay, put, select } from 'redux-saga/effects';
 
@@ -121,28 +122,14 @@ export const getDriverDataFailure = function* ({ status }) {
   }
 };
 
-export const getDriverReplyImage = function* ({
-  driverResponses,
-  claimIndex,
-  stopId
-}) {
-  for (const [
-    driverResponseIndex,
-    driverResponse
-  ] of driverResponses.entries()) {
-    if (driverResponse.hasImage) {
-      yield put({
-        type: Api.API_CALL,
-        actions: {
-          success: { type: DeliveryTypes.SET_DRIVER_REPLY_IMAGE }
-        },
-        promise: Api.repositories.delivery.getDriverResponseImage({
-          id: driverResponse.claimDriverResponseId
-        }),
-        claimIndex,
-        driverResponseIndex,
-        stopId
-      });
+export const getDriverReplyImage = function* ({ payload }) {
+  for (let claims of payload) {
+    for (let driverResponse of claims.driverResponses) {
+      if (driverResponse.hasImage) {
+        Api.repositories.delivery.getDriverResponseImage(
+          driverResponse.claimDriverResponseId
+        );
+      }
     }
   }
 };
@@ -172,6 +159,13 @@ export const getForDriverSuccess = function* ({
         type: DeliveryTypes.GET_CUSTOMER_CLAIMS,
         customerId: stop.customerId,
         stopId: stop.key
+      });
+    }
+
+    if (stop.hasCustomerImage) {
+      Api.repositories.filesystem.downloadFile({
+        fromUrl: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Customer/CustomerImageFile/${stop.customerId}/${stop.key}`,
+        toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${stop.customerId}-${stop.key}`
       });
     }
   }
@@ -408,14 +402,7 @@ export const setProductsOrder = function* ({ payload }) {
   yield put({ type: DeliveryTypes.GET_VEHICLE_CHECKS });
 
   for (const i of payload) {
-    yield put({
-      type: Api.API_CALL,
-      actions: {
-        success: { type: DeviceTypes.SET_PRODUCT_IMAGE }
-      },
-      promise: Api.repositories.delivery.getProductImage(i),
-      id: i
-    });
+    Api.repositories.delivery.getProductImage(i);
   }
 };
 
@@ -523,20 +510,6 @@ export const updateSelectedStop = function* ({ sID }) {
   yield put({
     type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE
   });
-
-  if (!selectedStop.customerAddressImage) {
-    yield put({
-      type: Api.API_CALL,
-      actions: {
-        success: { type: DeliveryTypes.SET_SELECTED_STOP_IMAGE }
-      },
-      promise: Api.repositories.delivery.getCustomerAddressImage({
-        customerId: selectedStop.customerId,
-        addressId: selectedStop.key
-      }),
-      props: { key: selectedStop.key }
-    });
-  }
 
   Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, {
     selectedStop: {

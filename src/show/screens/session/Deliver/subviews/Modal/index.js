@@ -11,8 +11,7 @@ export default connect(
 
     return {
       driverResponse: { ...state.transient },
-      claims: state.delivery?.stops[selectedStopId].claims,
-      productImages: state.device?.productImages
+      claims: state.delivery?.stops[selectedStopId].claims
     };
   },
   {

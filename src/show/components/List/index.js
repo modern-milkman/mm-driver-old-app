@@ -19,48 +19,54 @@ const defaultRenderItemSeparator = () => <Separator marginLeft={20} />;
 const defaultSectionFooter = () => <Separator />;
 const widthReducer = 0.8;
 
-const renderImageIcon = (
-  customIcon,
-  customIconProps,
-  icon,
-  iconColor,
-  image
-) => {
+const renderCustomIcon = ({ customIcon, customIconProps }) => (
+  <CustomIcon
+    width={customIconProps?.width || style.image.width}
+    containerWidth={customIconProps?.containerWidth || style.image.width}
+    icon={customIcon}
+    iconColor={customIconProps?.color}
+    bgColor={customIconProps?.bgColor}
+    disabled
+  />
+);
+
+const renderIcon = ({ icon, iconColor }) => (
+  <Icon
+    name={icon}
+    color={iconColor}
+    size={style.image.width * widthReducer}
+    containerSize={style.image.width}
+    disabled
+  />
+);
+
+const renderImage = ({ customIcon, customIconProps, image }) => (
+  <Image
+    requiresAuthentication
+    style={style.image}
+    source={{
+      uri: image
+    }}
+    resizeMode={'contain'}
+    width={style.image.width}
+    {...(customIcon && {
+      renderFallback: renderCustomIcon.bind(null, {
+        customIcon,
+        customIconProps
+      })
+    })}
+  />
+);
+
+const renderMedia = (customIcon, customIconProps, icon, iconColor, image) => {
   if (image) {
-    return (
-      <Image
-        requiresAuthentication
-        style={style.image}
-        source={{
-          uri: image
-        }}
-        resizeMode={'contain'}
-        width={style.image.width}
-      />
-    );
+    return renderImage({ customIcon, customIconProps, image });
   }
   if (customIcon) {
-    return (
-      <CustomIcon
-        width={customIconProps?.width || style.image.width}
-        containerWidth={customIconProps?.containerWidth || style.image.width}
-        icon={customIcon}
-        iconColor={customIconProps?.color}
-        bgColor={customIconProps?.bgColor}
-        disabled
-      />
-    );
+    return renderCustomIcon({ customIcon, customIconProps });
   }
   if (icon) {
-    return (
-      <Icon
-        name={icon}
-        color={iconColor}
-        size={style.image.width * widthReducer}
-        containerSize={style.image.width}
-        disabled
-      />
-    );
+    return renderIcon({ icon, iconColor });
   }
 };
 
@@ -128,13 +134,7 @@ const renderItemInterface = (
             width={style.image.width + defaults.marginHorizontal / 2}
             justifyContent={'flex-start'}>
             {(customIcon || image || icon) &&
-              renderImageIcon(
-                customIcon,
-                customIconProps,
-                icon,
-                iconColor,
-                image
-              )}
+              renderMedia(customIcon, customIconProps, icon, iconColor, image)}
           </RowView>
         )}
 
@@ -188,7 +188,7 @@ const renderItemInterface = (
             {(secondaryCustomRightIcon ||
               secondaryRightImage ||
               secondaryRightIcon) &&
-              renderImageIcon(
+              renderMedia(
                 secondaryCustomRightIcon,
                 secondaryCustomRightIconProps
               )}
@@ -197,7 +197,7 @@ const renderItemInterface = (
         {(customRightIcon || rightImage || rightIcon || enforceLayout) && (
           <RowView width={style.image.width} justifyContent={'flex-end'}>
             {(customRightIcon || rightImage || rightIcon) &&
-              renderImageIcon(
+              renderMedia(
                 customRightIcon,
                 customRightIconProps,
                 rightIcon,

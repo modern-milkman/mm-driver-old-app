@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import RNFS from 'react-native-fs';
+import Config from 'react-native-config';
 
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
@@ -18,7 +20,6 @@ const LoadVan = (props) => {
     deliveredStock,
     itemCount,
     orderedStock,
-    productImages,
     readOnly,
     updateChecklistProps
   } = props;
@@ -33,7 +34,7 @@ const LoadVan = (props) => {
             stockItem.quantity
           }`
         : stockItem.quantity,
-      image: productImages[stockItem.productId],
+      image: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
       customIcon: 'productPlaceholder'
     };
   });
@@ -65,7 +66,6 @@ LoadVan.propTypes = {
   deliveredStock: PropTypes.object,
   itemCount: PropTypes.number,
   orderedStock: PropTypes.array,
-  productImages: PropTypes.object,
   readOnly: PropTypes.bool,
   updateChecklistProps: PropTypes.func
 };
@@ -74,7 +74,6 @@ LoadVan.defaultProps = {
   deliveredStock: {},
   itemCount: 0,
   orderedStock: [],
-  productImages: {},
   readOnly: false,
   updateChecklistProps: mock
 };

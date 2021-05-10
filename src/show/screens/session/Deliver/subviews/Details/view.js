@@ -1,6 +1,7 @@
 import React from 'react';
+import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
-import { NavigationEvents } from 'react-navigation';
+import Config from 'react-native-config';
 
 import I18n from 'Locales/I18n';
 import { formatDate, mock } from 'Helpers';
@@ -18,14 +19,7 @@ const showReplyModal = (toggleModal) => {
 };
 
 const CustomerIssueDetails = (props) => {
-  const {
-    getDriverReplyImage,
-    isConnected,
-    productImages,
-    selectedClaim,
-    selectedStop,
-    toggleModal
-  } = props;
+  const { selectedClaim, toggleModal } = props;
 
   const {
     claimItem,
@@ -41,7 +35,7 @@ const CustomerIssueDetails = (props) => {
     return {
       customIcon: 'productPlaceholder',
       disabled: true,
-      image: productImages[item.productId],
+      image: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${item.productId}`,
       title: item.productName
     };
   });
@@ -70,8 +64,8 @@ const CustomerIssueDetails = (props) => {
         interpolation: { escapeValue: false }
       }),
       moreInfo: item.comment,
-      image: item.image
-        ? `data:${item.image.imageType};base64,${item.image.base64Image}`
+      image: item.hasImage
+        ? `${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${item.claimDriverResponseId}`
         : null
     };
   });
@@ -120,18 +114,6 @@ const CustomerIssueDetails = (props) => {
 
   return (
     <SafeAreaView top bottom>
-      <NavigationEvents
-        onWillFocus={
-          isConnected &&
-          getDriverReplyImage.bind(
-            null,
-            driverResponses,
-            index - 1,
-            selectedStop?.key
-          )
-        }
-      />
-
       <NavBar
         leftIcon={'chevron-left'}
         leftIconAction={NavigationService.goBack}
@@ -181,20 +163,12 @@ const CustomerIssueDetails = (props) => {
 };
 
 CustomerIssueDetails.propTypes = {
-  getDriverReplyImage: PropTypes.func,
-  isConnected: PropTypes.bool,
-  productImages: PropTypes.object,
   selectedClaim: PropTypes.object,
-  selectedStop: PropTypes.object,
   toggleModal: PropTypes.func
 };
 
 CustomerIssueDetails.defaultProps = {
-  getDriverReplyImage: mock,
-  isConnected: false,
-  productImages: {},
   selectedClaim: {},
-  selectedStop: {},
   toggleModal: mock
 };
 

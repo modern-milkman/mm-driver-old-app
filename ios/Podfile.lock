@@ -411,8 +411,6 @@ PODS:
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.5.0)
     - React-Core
-  - react-native-image-base64 (0.1.4):
-    - React
   - react-native-maps (0.28.0):
     - React-Core
   - react-native-netinfo (6.0.0):
@@ -491,6 +489,8 @@ PODS:
     - React-Core
   - RNDeviceInfo (8.0.2):
     - React-Core
+  - RNFS (2.17.0):
+    - React
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNImageCropPicker (0.36.0):
@@ -568,7 +568,6 @@ DEPENDENCIES:
   - react-native-config (from `../node_modules/react-native-config`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-google-maps (from `../node_modules/react-native-maps`)
-  - react-native-image-base64 (from `../node_modules/react-native-image-base64`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-restart (from `../node_modules/react-native-restart`)
@@ -588,6 +587,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -682,8 +682,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
-  react-native-image-base64:
-    :path: "../node_modules/react-native-image-base64"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
@@ -722,6 +720,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-picker/picker"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
@@ -758,8 +758,8 @@ SPEC CHECKSUMS:
   FirebaseCore: d3a978a3cfa3240bf7e4ba7d137fdf5b22b628ec
   FirebaseCoreDiagnostics: 770ac5958e1372ce67959ae4b4f31d8e127c3ac1
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
-  FirebaseMLCommon: d218d75dd1c6c4e447f731ac22da56b88cb79431
-  FirebaseMLVision: 68dd092b4c52a7ac163ec0d4f541d5711fc9fec6
+  FirebaseMLCommon: f42d067ca7fed962e09f02ba94a24e06ee50d933
+  FirebaseMLVision: fd7cdd33d067c976c16fd521e7e92c26c980c947
   FirebaseMLVisionTextModel: e9f3cba0f31022ae9dd3d246aff9849075cacd98
   Flipper: be611d4b742d8c87fbae2ca5f44603a02539e365
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
@@ -797,7 +797,6 @@ SPEC CHECKSUMS:
   react-native-config: c98128a72bc2c3a1ca72caec0b021f0fa944aa29
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
   react-native-google-maps: 46dea4aa4acb7300beff508f64d9f8c84e9fb106
-  react-native-image-base64: 2ff9ac788639c87a91361ab6652cc95e871b1e54
   react-native-maps: 2d405b4e8cee0282e4c02bac434d81450dfea877
   react-native-netinfo: e849fc21ca2f4128a5726c801a82fc6f4a6db50d
   react-native-restart: 733a51ad137f15b0f8dc34c4082e55af7da00979
@@ -817,6 +816,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPicker: 6780c753e9e674065db90d9c965920516402579d
   RNDeviceInfo: a9601119924a67d2479d3facf04cec7b658f44ed
+  RNFS: 93d5b5535eb39d98e6b19009faa8fe717f7ea45d
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNImageCropPicker: e641bf83ac47324994cac139bde74635ec52c17c
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d

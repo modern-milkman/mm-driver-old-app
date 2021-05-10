@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
+import RNFS from 'react-native-fs';
 import React, { useState } from 'react';
+import Config from 'react-native-config';
 import { NavigationEvents } from 'react-navigation';
 import { Animated, TouchableOpacity } from 'react-native';
 
@@ -103,6 +105,16 @@ const rejectAndNavigateBack = (callback, setModalVisible) => {
   setTimeout(navigateBack.bind(null, callback), 250);
 };
 
+const renderFallbackCustomerImage = () => (
+  <RowView height={width - defaults.marginHorizontal * 2}>
+    <CustomIcon
+      width={width - defaults.marginHorizontal * 2}
+      icon={'frontDeliveryPlaceholder'}
+      disabled
+    />
+  </RowView>
+);
+
 const renderSkipModal = ({
   outOfStockIds,
   reasonMessage,
@@ -188,24 +200,15 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
     onPress={setModalVisible.bind(null, false)}>
     {selectedStop && (
       <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
-        {selectedStop.customerAddressImage ? (
-          <Image
-            source={{
-              uri: `data:image/png;base64,${selectedStop.customerAddressImage}`
-            }}
-            style={style.image}
-            width={width - defaults.marginHorizontal * 2}
-            maxHeight={height * 0.7}
-          />
-        ) : (
-          <RowView height={width - defaults.marginHorizontal * 2}>
-            <CustomIcon
-              width={width - defaults.marginHorizontal * 2}
-              icon={'frontDeliveryPlaceholder'}
-              disabled
-            />
-          </RowView>
-        )}
+        <Image
+          source={{
+            uri: `${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
+          }}
+          style={style.image}
+          width={width - defaults.marginHorizontal * 2}
+          maxHeight={height * 0.7}
+          renderFallback={renderFallbackCustomerImage}
+        />
         {selectedStop.deliveryInstructions && (
           <RowView
             height={'auto'}
@@ -241,7 +244,6 @@ const Deliver = (props) => {
     allItemsDone,
     confirmedItem,
     outOfStockIds,
-    productImages,
     routeDescription,
     selectedStop,
     setDelivered,
@@ -263,9 +265,11 @@ const Deliver = (props) => {
         const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,
+          customIcon: 'productPlaceholder',
           disabled:
             selectedStop.status === 'completed' ||
             unacknowledgedList.length > 0,
+          image: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${order.productId}`,
           rightIcon: isOutOfStock
             ? 'alert'
             : confirmedItem.includes(order.key)
@@ -274,9 +278,7 @@ const Deliver = (props) => {
           ...(isOutOfStock && {
             rightIconColor: colors.error,
             miscelaneousColor: colors.error
-          }),
-          image: productImages[order.productId],
-          customIcon: 'productPlaceholder'
+          })
         };
       })
     : null;
@@ -365,8 +367,8 @@ const Deliver = (props) => {
           ]}>
           {selectedStop &&
             (selectedStop.deliveryInstructions ||
-              selectedStop.coolBox ||
-              selectedStop.customerAddressImage) && (
+              selectedStop.hasCustomerImage ||
+              selectedStop.coolBox) && (
               <>
                 <Separator />
                 <ListItem
@@ -376,23 +378,15 @@ const Deliver = (props) => {
                     setModalType,
                     setModalVisible
                   )}
-                  image={
-                    selectedStop.customerAddressImage
-                      ? `data:image/png;base64,${selectedStop.customerAddressImage}`
-                      : null
-                  }
-                  customIcon={
-                    selectedStop.customerAddressImage
-                      ? null
-                      : 'frontDeliveryPlaceholder'
-                  }
+                  image={`${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`}
+                  customIcon={'frontDeliveryPlaceholder'}
                   customIconProps={{ color: colors.primary }}
                   customRightIconProps={{
                     color: colors.primary
                   }}
                   customRightIcon={
                     selectedStop.deliveryInstructions ||
-                    selectedStop.customerAddressImage
+                    selectedStop.hasCustomerImage
                       ? 'expand'
                       : null
                   }
@@ -494,7 +488,6 @@ const Deliver = (props) => {
 };
 
 Deliver.propTypes = {
-  productImages: PropTypes.object,
   allItemsDone: PropTypes.bool,
   confirmedItem: PropTypes.array,
   outOfStockIds: PropTypes.array,
@@ -510,7 +503,6 @@ Deliver.propTypes = {
 };
 
 Deliver.defaultProps = {
-  productImages: {},
   allItemsDone: false,
   confirmedItem: [],
   outOfStockIds: [],

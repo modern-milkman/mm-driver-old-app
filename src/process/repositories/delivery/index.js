@@ -1,7 +1,7 @@
-import Api from 'Api';
-import { Platform } from 'react-native';
+import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
-import ImgToBase64 from 'react-native-image-base64';
+
+import Api from 'Api';
 
 export default {
   driverReply({ claimId, comment, image, imageType }) {
@@ -12,24 +12,23 @@ export default {
       imageType
     });
   },
-  getCustomerAddressImage({ customerId, addressId }) {
-    return Api.get(`/Customer/CustomerImage/${customerId}/${addressId}`);
-  },
   getCustomerClaims({ customerId }) {
     return Api.get(`/Claim/GetDriverClaims/${customerId}`);
   },
-  getDriverResponseImage({ id }) {
-    return Api.get(`/Claim/DriverResponseImage/${id}`);
+  getDriverResponseImage(id) {
+    Api.repositories.filesystem.downloadFile({
+      fromUrl: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Claim/DriverResponseImageFile/${id}`,
+      toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${id}`
+    });
   },
   getForDriver() {
     return Api.get('/Delivery/GetForDriver');
   },
   getProductImage(id) {
-    return ImgToBase64.getBase64String(
-      `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/${id}`,
-      Api.getToken(),
-      Platform.select({ ios: 0.1, android: 10 }) //Comperss ratio; For more info: react-native-image-base64
-    );
+    Api.repositories.filesystem.downloadFile({
+      fromUrl: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Product/Image/${id}`,
+      toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${id}`
+    });
   },
   getProductsOrder() {
     return Api.get('/Product/GetProductOrder');
