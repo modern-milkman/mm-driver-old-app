@@ -365,6 +365,7 @@ const Deliver = (props) => {
           ]}>
           {selectedStop &&
             (selectedStop.deliveryInstructions ||
+              selectedStop.coolBox ||
               selectedStop.customerAddressImage) && (
               <>
                 <Separator />
@@ -389,7 +390,12 @@ const Deliver = (props) => {
                   customRightIconProps={{
                     color: colors.primary
                   }}
-                  customRightIcon={'expand'}
+                  customRightIcon={
+                    selectedStop.deliveryInstructions ||
+                    selectedStop.customerAddressImage
+                      ? 'expand'
+                      : null
+                  }
                   title={selectedStop.deliveryInstructions}
                   titleExpands
                   {...(selectedStop.coolBox && {
