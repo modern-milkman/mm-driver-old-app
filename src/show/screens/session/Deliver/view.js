@@ -202,7 +202,7 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
       <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
         <Image
           source={{
-            uri: `${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
+            uri: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
           }}
           style={style.image}
           width={width - defaults.marginHorizontal * 2}
@@ -269,7 +269,7 @@ const Deliver = (props) => {
           disabled:
             selectedStop.status === 'completed' ||
             unacknowledgedList.length > 0,
-          image: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${order.productId}`,
+          image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${order.productId}`,
           rightIcon: isOutOfStock
             ? 'alert'
             : confirmedItem.includes(order.key)
@@ -378,7 +378,7 @@ const Deliver = (props) => {
                     setModalType,
                     setModalVisible
                   )}
-                  image={`${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`}
+                  image={`file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`}
                   customIcon={'frontDeliveryPlaceholder'}
                   customIconProps={{ color: colors.primary }}
                   customRightIconProps={{

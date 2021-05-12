@@ -35,7 +35,7 @@ const CustomerIssueDetails = (props) => {
     return {
       customIcon: 'productPlaceholder',
       disabled: true,
-      image: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${item.productId}`,
+      image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${item.productId}`,
       title: item.productName
     };
   });
@@ -65,7 +65,7 @@ const CustomerIssueDetails = (props) => {
       }),
       moreInfo: item.comment,
       image: item.hasImage
-        ? `${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${item.claimDriverResponseId}`
+        ? `file://${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${item.claimDriverResponseId}`
         : null
     };
   });

@@ -34,7 +34,7 @@ const LoadVan = (props) => {
             stockItem.quantity
           }`
         : stockItem.quantity,
-      image: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
+      image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
       customIcon: 'productPlaceholder'
     };
   });

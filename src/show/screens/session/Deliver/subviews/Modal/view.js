@@ -221,7 +221,7 @@ const CustomerIssueModal = (props) => {
         selectedClaimData?.claimItem.map((item) => {
           return {
             disabled: true,
-            image: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${item.productId}`,
+            image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${item.productId}`,
             customIcon: 'productPlaceholder',
             title: item.productName
           };
