@@ -18,6 +18,7 @@ export const { Types, Creators } = createActions(
       'acknowledgedClaim',
       'index'
     ],
+    driverReplySuccess: ['payload', 'index', 'selectedStopId'],
     foregroundDeliveryActions: null,
     getCustomerClaims: ['customerId', 'stopId'],
     getDriverDataFailure: null,
@@ -129,14 +130,8 @@ const driverReply = (
       driverAcknowledged: true,
       claimId,
       comment,
-      hasImage: image && imageType,
-      responseDateTime: new Date(),
-      ...(image && {
-        image: {
-          base64Image: image.split('base64,')[1],
-          imageType
-        }
-      })
+      hasImage: image && imageType ? true : false,
+      responseDateTime: new Date()
     };
 
     if (!acknowledgedClaim) {
@@ -174,6 +169,16 @@ const driverReply = (
     }
 
     draft.stops[selectedStopId].claims.showReplyModal = false;
+  });
+
+const driverReplySuccess = (state, { payload, index, selectedStopId }) =>
+  produce(state, (draft) => {
+    const driverResponsesLength =
+      state.stops[selectedStopId].claims.acknowledgedList[index].driverResponses
+        .length;
+    draft.stops[selectedStopId].claims.acknowledgedList[index].driverResponses[
+      driverResponsesLength - 1
+    ] = payload;
   });
 
 const privateIncrementDeliveredStock = (draft, { productId, quantity }) => {
@@ -644,6 +649,7 @@ export const updateSelectedStop = (state, { sID, manualRoutes = true }) =>
 export default createReducer(initialState, {
   [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DRIVER_REPLY]: driverReply,
+  [Types.DRIVER_REPLY_SUCCESS]: driverReplySuccess,
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,

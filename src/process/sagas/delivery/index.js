@@ -48,8 +48,10 @@ export const driverReply = function* ({
   comment,
   image,
   imageType,
-  acknowledgedClaim
+  acknowledgedClaim,
+  index
 }) {
+  const sID = yield select(selectedStopIdSelector);
   let imageHex = null;
   if (image) {
     const splitImage = image.split(',');
@@ -68,10 +70,23 @@ export const driverReply = function* ({
       image: imageHex,
       imageType
     }),
-    acknowledgedClaim
+    actions: {
+      success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS }
+    },
+    index,
+    acknowledgedClaim,
+    selectedStopId: sID
   });
 
   yield put({ type: TransientTypes.RESET });
+};
+
+export const driverReplySuccess = function* ({ payload }) {
+  if (payload.hasImage) {
+    Api.repositories.delivery.getDriverResponseImage(
+      payload.claimDriverResponseId
+    );
+  }
 };
 
 export const foregroundDeliveryActions = function* ({}) {
