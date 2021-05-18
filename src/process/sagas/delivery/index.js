@@ -522,14 +522,16 @@ export const updateDirectionsPolyline = function* () {
 export const updateSelectedStop = function* ({ sID }) {
   const selectedStop = yield select(selectedStopSelector);
 
-  yield put({
-    type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE
-  });
+  if (sID) {
+    yield put({
+      type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE
+    });
 
-  Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, {
-    selectedStop: {
-      ...selectedStop,
-      orders: Object.keys(selectedStop.orders)
-    }
-  });
+    Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, {
+      selectedStop: {
+        ...selectedStop,
+        orders: Object.keys(selectedStop.orders)
+      }
+    });
+  }
 };

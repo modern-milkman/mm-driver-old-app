@@ -10,6 +10,7 @@ import { blacklists, deliveryStates as DS } from 'Helpers';
 import { Creators as TransientCreators } from 'Reducers/transient';
 import {
   checklist as checklistSelector,
+  status as statusSelector,
   Types as DeliveryTypes
 } from 'Reducers/delivery';
 import {
@@ -22,6 +23,7 @@ export function* onNavigateSideEffects(navigateParams) {
   const { routeName, params = { refresh: true, index: null } } = navigateParams;
   const lastRoute = yield select(lastRouteSelector);
   const checklist = yield select(checklistSelector);
+  const status = yield select(statusSelector);
 
   if (routeName && !blacklists.addToStackRoute.includes(routeName)) {
     yield put({ type: ApplicationTypes.ADD_TO_STACK_ROUTE, routeName, params });
@@ -34,9 +36,15 @@ export function* onNavigateSideEffects(navigateParams) {
     case null:
       // back navigation
       switch (lastRoute) {
-        case 'Settings': {
+        case 'Settings':
           yield put({ type: DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE });
-        }
+          break;
+
+        case 'Deliver':
+          if ([DS.SEC, DS.DELC].includes(status)) {
+            yield put({ type: DeliveryTypes.UPDATE_SELECTED_STOP, sID: null });
+          }
+          break;
       }
 
       yield put({ type: ApplicationTypes.DISMISS_KEYBOARD });

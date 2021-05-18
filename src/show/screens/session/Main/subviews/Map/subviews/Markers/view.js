@@ -16,9 +16,9 @@ const Markers = (props) => {
   } = props;
 
   const hasMarkers =
-    [DS.NCI, DS.LV, DS.DEL, DS.SSC].includes(status) &&
-    orderedStopsIds?.length > 0;
-  const disabled = status !== DS.DEL;
+    status !== DS.SC &&
+    (orderedStopsIds?.length > 0 || completedStopsIds?.length > 0);
+  const disabled = [DS.NCI, DS.LV, DS.SSC, DS.SC].includes(status);
 
   return (
     (hasMarkers && (

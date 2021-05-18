@@ -46,8 +46,6 @@ const mainForegroundAction = ({
 }) => {
   switch (status) {
     case DS.NCI:
-    case DS.DELC:
-    case DS.SEC:
       springForeground({
         animatedValues: [pullHandlePan.y, pullHandleMoveY],
         toValue: snapTopY,
@@ -59,6 +57,34 @@ const mainForegroundAction = ({
         top,
         updateDeviceProps
       });
+      break;
+    case DS.DELC:
+    case DS.SEC:
+      if (selectedStop) {
+        springForeground({
+          animatedValues: [pullHandlePan.y, pullHandleMoveY],
+          toValue: snapTopY,
+          snapMiddleY,
+          snapTopY,
+          pullHandleMoveY,
+          foregroundPaddingTop,
+          routeName: 'Deliver',
+          top,
+          updateDeviceProps
+        });
+      } else {
+        springForeground({
+          animatedValues: [pullHandlePan.y, pullHandleMoveY],
+          toValue: snapTopY,
+          snapMiddleY,
+          snapTopY,
+          pullHandleMoveY,
+          foregroundPaddingTop,
+          routeName: 'CheckIn',
+          top,
+          updateDeviceProps
+        });
+      }
       break;
     case DS.LV:
     case DS.SSC:

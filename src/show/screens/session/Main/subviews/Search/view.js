@@ -90,7 +90,7 @@ const Search = (props) => {
   }, [focused, height]);
 
   return (
-    status === DS.DEL && (
+    [DS.DEL, DS.DELC, DS.SEC].includes(status) && (
       <>
         <View
           style={[

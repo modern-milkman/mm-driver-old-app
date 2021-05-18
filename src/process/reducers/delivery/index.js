@@ -643,7 +643,9 @@ export const updateSelectedStop = (state, { sID, manualRoutes = true }) =>
     draft.previousStopId = draft.selectedStopId;
     draft.processing = false;
     draft.selectedStopId = sID;
-    draft.stops[sID].claims.showReplyModal = false;
+    if (sID) {
+      draft.stops[sID].claims.showReplyModal = false;
+    }
   });
 
 export default createReducer(initialState, {

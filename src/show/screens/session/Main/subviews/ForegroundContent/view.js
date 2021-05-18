@@ -133,7 +133,11 @@ const ForegroundContent = (props) => {
 
     case DS.DELC:
     case DS.SEC:
-      foregroundState = 'VEHICLE_CHECKS_END';
+      if (selectedStop) {
+        foregroundState = 'DELIVERING';
+      } else {
+        foregroundState = 'VEHICLE_CHECKS_END';
+      }
       break;
 
     case DS.SC:
