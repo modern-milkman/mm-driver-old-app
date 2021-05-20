@@ -9,7 +9,7 @@ export const { Types, Creators } = createActions(
     clearFailedRequests: null,
     lowConnectionUpdate: ['lowConnection'],
     pushRequest: ['queue', 'payload'],
-    requestUserLocationPermisions: null,
+    ensureMandatoryPermissions: ['routeName'],
     setLatestApp: ['payload'],
     setLocation: ['position'],
     setLocationHeading: ['heading'],
@@ -18,7 +18,8 @@ export const { Types, Creators } = createActions(
     syncOffline: null,
     updateNetworkProps: ['props'],
     updateProcessor: ['processor', 'value'],
-    updateProps: ['props']
+    updateProps: ['props'],
+    watchUserLocation: null
   },
   { prefix: 'device/' }
 );
@@ -41,6 +42,7 @@ const initialState = {
     isConnected: false,
     status: 0 //0-Online * 1-Soft Offline * 2-offline
   },
+  permissions: {},
   position: {
     heading: 0,
     latitude: parseFloat(Config.DEFAULT_LATITUDE),

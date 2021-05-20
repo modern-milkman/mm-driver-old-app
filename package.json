@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "3.48.0",
+  "version": "3.49.0",
   "versionCode": "31",
   "private": true,
   "scripts": {
@@ -42,6 +42,7 @@
     "react-native-image-crop-picker": "0.36.0",
     "react-native-inset-shadow": "1.0.3",
     "react-native-maps": "0.28.0",
+    "react-native-permissions": "3.0.3",
     "react-native-restart": "0.0.22",
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "2.18.1",

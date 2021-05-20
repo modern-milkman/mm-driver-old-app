@@ -5,7 +5,7 @@ import { getCurrentPosition, watchCurrentPosition } from 'redux-saga-location';
 
 import I18n from 'Locales/I18n';
 
-export function* requestLocationPermissionAndWatch() {
+export function* watchUserLocation() {
   let granted = false;
   const alreadyGranted = yield PermissionsAndroid.check(
     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION

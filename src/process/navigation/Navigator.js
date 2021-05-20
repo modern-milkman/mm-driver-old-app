@@ -15,6 +15,7 @@ import {
   LoadVan,
   LowConnectionModal,
   Main,
+  PermissionsMissing,
   Reports,
   RegistrationMileage,
   Settings,
@@ -102,7 +103,8 @@ const TopNavigator = createStackNavigator(
     Home,
     MainNavigator,
     Modals,
-    UpgradeApp
+    UpgradeApp,
+    PermissionsMissing
   },
   {
     defaultNavigationOptions: {

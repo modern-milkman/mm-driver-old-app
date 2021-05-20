@@ -1,12 +1,20 @@
 // DEVICE SAGAS BELOW
 // could be used for offline / online / set position
 import Share from 'react-native-share';
+import RNBootSplash from 'react-native-bootsplash';
 import { put, delay, select } from 'redux-saga/effects';
 import CompassHeading from 'react-native-compass-heading';
+import { InteractionManager, Platform } from 'react-native';
+import {
+  requestMultiple,
+  PERMISSIONS,
+  RESULTS
+} from 'react-native-permissions';
 
 import Api from 'Api';
 import store from 'Redux/store';
 import I18n from 'Locales/I18n';
+import NavigationService from 'Navigation/service';
 import { user as userSelector } from 'Reducers/user';
 import { Creators as GrowlCreators, Types as GrowlTypes } from 'Reducers/growl';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
@@ -19,7 +27,7 @@ import {
   requestQueues as requestQueuesSelector
 } from 'Reducers/device';
 
-export { requestLocationPermissionAndWatch } from './extras/requestLocationPermissionAndWatch';
+export { watchUserLocation } from './extras/watchUserLocation';
 
 export function* lowConnectionUpdate({ lowConnection }) {
   yield delay(5000);
@@ -181,6 +189,36 @@ export function* syncOffline({ status }) {
     });
   }
 }
+
+export const ensureMandatoryPermissions = function* ({ routeName }) {
+  const { dispatch } = store().store;
+  const mandatoryPermissions = Platform.select({
+    android: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION],
+    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]
+  });
+  requestMultiple(mandatoryPermissions).then((statuses) => {
+    dispatch(DeviceCreators.updateProps({ permissions: statuses }));
+    const statusesArray = Platform.select({
+      android: [statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]],
+      ios: [statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]]
+    });
+    if (
+      statusesArray.includes(RESULTS.DENIED) ||
+      statusesArray.includes(RESULTS.BLOCKED) ||
+      statusesArray.includes(RESULTS.LIMITED)
+    ) {
+      NavigationService.navigate({ routeName: 'PermissionsMissing' });
+    } else {
+      if (routeName) {
+        NavigationService.navigate({ routeName });
+      }
+      dispatch(DeviceCreators.watchUserLocation());
+    }
+    InteractionManager.runAfterInteractions(() => {
+      RNBootSplash.hide();
+    });
+  });
+};
 
 export function* updateDeviceProps({ props }) {
   const { status } = yield select(networkSelector);

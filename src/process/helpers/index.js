@@ -27,7 +27,12 @@ const blacklists = {
     '/Security/Logon',
     '/Security/Refresh'
   ],
-  addToStackRoute: ['CustomerIssueModal', 'LowConnectionModal'],
+  addToStackRoute: [
+    'CustomerIssueModal',
+    'LowConnectionModal',
+    'PermissionsMissing',
+    'UpgradeApp'
+  ],
   resetStackRoutes: ['CheckIn'],
   transientReset: ['RegistrationMileage']
 };

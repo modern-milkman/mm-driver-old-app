@@ -1,7 +1,7 @@
 import Crashes from 'appcenter-crashes';
 import DeviceInfo from 'react-native-device-info';
 import RNBootSplash from 'react-native-bootsplash';
-import { call, delay, put, select } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
@@ -40,8 +40,6 @@ export const dismissKeyboard = function () {
 };
 
 export const init = function* () {
-  yield put({ type: DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS });
-
   const availableNavApps = [];
   for (const appName of navigationAppList) {
     if (yield isAppInstalled(appName)) {
@@ -183,21 +181,19 @@ export const rehydratedAndMounted = function* () {
       RNBootSplash.hide();
     } else {
       yield call(Api.setToken, user.jwtToken, user.refreshToken);
-
-      NavigationService.navigate({ routeName: lastRoute });
-      yield delay(1000);
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
+      yield put({
+        type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
+        routeName: lastRoute
       });
     }
   } else {
     if (lastRoute !== defaultRoutes.public) {
-      NavigationService.navigate({ routeName: defaultRoutes.public });
-      yield delay(1000);
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
+      yield put({
+        type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
+        routeName: defaultRoutes.public
       });
     } else {
+      yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
       RNBootSplash.hide();
     }
   }

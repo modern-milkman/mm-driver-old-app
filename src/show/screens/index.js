@@ -1,5 +1,6 @@
 // PUBLIC
 import Home from './public/Home';
+import PermissionsMissing from './public/PermissionsMissing';
 import UpgradeApp from './public/UpgradeApp';
 
 // SESSION ONLY
@@ -29,6 +30,7 @@ export {
   LoadVan,
   LowConnectionModal,
   Main,
+  PermissionsMissing,
   RegistrationMileage,
   Reports,
   Settings,

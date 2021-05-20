@@ -36,7 +36,7 @@ const UpgradeApp = (props) => {
           </Text.Heading>
         </ColumnView>
         <ColumnView marginTop={24} width={'auto'} marginHorizontal={24}>
-          <Text.List color={colors.white} align={'center'}>
+          <Text.List color={colors.white} align={'left'}>
             {I18n.t('screens:upgradeApp.description')}
           </Text.List>
 

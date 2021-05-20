@@ -85,6 +85,7 @@ const renderItemInterface = (
     customRightIcon,
     customRightIconProps,
     description,
+    descriptionColor = colors.secondary,
     disabled = listDisabled || false,
     enforceLayout = false,
     icon,
@@ -149,7 +150,7 @@ const renderItemInterface = (
               {...(titleExpands && { numberOfLines: 2 })}>
               {title}
             </Text.List>
-            <Text.Caption color={colors.secondary}>{description}</Text.Caption>
+            <Text.Caption color={descriptionColor}>{description}</Text.Caption>
           </ColumnView>
         )}
 
@@ -348,6 +349,7 @@ ListItem.defaultProps = {
   customRightIcon: null,
   customRightIconProps: null,
   description: null,
+  descriptionColor: colors.secondary,
   enforceLayout: false,
   disabled: false,
   icon: null,

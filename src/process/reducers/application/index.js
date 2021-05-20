@@ -1,5 +1,7 @@
 import { createActions, createReducer } from 'reduxsauce';
 
+import { blacklists } from 'Helpers';
+
 import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
@@ -33,13 +35,12 @@ const initialState = {
   userSessionPresent: false
 };
 
-const blackListRoutes = ['UpgradeApp'];
 const resetStackDepthRoutes = [];
 
 export const addToStackRoute = (state = initialState, action) =>
   produce(state, (draft) => {
     const { routeName, params } = action;
-    if (!blackListRoutes.includes(routeName)) {
+    if (!blacklists.addToStackRoute.includes(routeName)) {
       if (draft.stackRoute[draft.stackRoute.length - 1] !== routeName) {
         if (resetStackDepthRoutes.includes(routeName)) {
           draft.stackRoute = [routeName];

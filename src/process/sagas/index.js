@@ -56,15 +56,16 @@ import {
 } from './delivery';
 
 import {
+  ensureMandatoryPermissions,
   lowConnectionUpdate,
   reduxSagaNetstatChange,
-  requestLocationPermissionAndWatch,
   setLocation,
   setMapMode,
   shareOfflineData,
   syncOffline,
   updateDeviceProps,
-  updateNetworkProps
+  updateNetworkProps,
+  watchUserLocation
 } from './device';
 
 import { alert } from './growl';
@@ -141,16 +142,17 @@ export default function* root() {
       updateDirectionsPolyline
     ),
 
-    takeLatest(DeviceTypes.LOW_CONNECTION_UPDATE, lowConnectionUpdate),
     takeLatest(
-      DeviceTypes.REQUEST_USER_LOCATION_PERMISIONS,
-      requestLocationPermissionAndWatch
+      DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
+      ensureMandatoryPermissions
     ),
+    takeLatest(DeviceTypes.LOW_CONNECTION_UPDATE, lowConnectionUpdate),
     takeLatest(DeviceTypes.SET_MAP_MODE, setMapMode),
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA, shareOfflineData),
     takeLatest(DeviceTypes.SYNC_OFFLINE, syncOffline),
     takeLatest(DeviceTypes.UPDATE_PROPS, updateDeviceProps),
     takeLatest(DeviceTypes.UPDATE_NETWORK_PROPS, updateNetworkProps),
+    takeLatest(DeviceTypes.WATCH_USER_LOCATION, watchUserLocation),
 
     takeEvery(GrowlTypes.ALERT, alert),
 

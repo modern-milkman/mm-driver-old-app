@@ -125,6 +125,17 @@
     "gasStation": "Find a nearby gas station",
     "loadedStock": "Loaded Stock"
   },
+  "permissionsMissing": {
+    "title": "Permissions missing",
+    "description": "Some of the mandatory permissions Driver app needs to work properly haven't been granted. Please see the details below.",
+    "instructions": {
+      "location": {
+        "ios": "Enable from device's Settings > Privacy > Location Services screen.",
+        "android": "Enable from device's Settings > Location > App permision > Driver screen."
+      },
+      "general": "Restarting the app may be required after all permissions are enabled."
+    }
+  },
   "registrationMileage": {
     "title": "Registration & Mileage",
     "registration": "Registration",
