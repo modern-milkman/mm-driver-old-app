@@ -21,7 +21,10 @@ const base64ToHex = (base64) => {
 };
 
 const blacklists = {
-  apiEndpointFailureTracking: [`${Config.FLEET_TRACKER_URL}/drivers`],
+  apiEndpointFailureTracking: [
+    `${Config.FLEET_TRACKER_URL}/drivers`,
+    '/Security/Logon'
+  ],
   apiEndpointOfflineTracking: [
     `${Config.FLEET_TRACKER_URL}/drivers`,
     '/Security/Logon',
