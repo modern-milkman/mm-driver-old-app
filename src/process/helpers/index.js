@@ -13,9 +13,9 @@ import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 
-const base64ToHex = (base64) => {
+const base64ToHex = base64 => {
   return [...Base64.atob(base64)]
-    .map((c) => c.charCodeAt(0).toString(16).padStart(2, 0))
+    .map(c => c.charCodeAt(0).toString(16).padStart(2, 0))
     .join('')
     .toUpperCase();
 };
@@ -40,9 +40,9 @@ const blacklists = {
   transientReset: ['RegistrationMileage']
 };
 
-const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 
-const customerSatisfactionColor = (satisfactionStatus) => {
+const customerSatisfactionColor = satisfactionStatus => {
   switch (satisfactionStatus) {
     case 1:
       return colors.success;
@@ -74,7 +74,7 @@ const deliveryStates = {
 
 const deviceFrame = () => Dimensions.get('window');
 
-const formatDate = (date) =>
+const formatDate = date =>
   date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
 const throttle = (func, wait = 100) => {
@@ -87,9 +87,9 @@ const throttle = (func, wait = 100) => {
   };
 };
 
-const isAppInstalled = async (appName) => {
+const isAppInstalled = async appName => {
   return await Linking.canOpenURL(appName + '://')
-    .then((installed) => {
+    .then(installed => {
       if (!installed) {
         return false;
       } else {
@@ -149,9 +149,9 @@ const openDriverUpdate = () => {
   });
 };
 
-const timeToHMArray = (time) => time.split(':').map((hm) => parseInt(hm));
+const timeToHMArray = time => time.split(':').map(hm => parseInt(hm));
 
-const triggerDriverUpdate = (url) => {
+const triggerDriverUpdate = url => {
   Linking.openURL(url).catch(() => {
     Alert({
       title: I18n.t('alert:cannotUpgrade.title'),
@@ -233,7 +233,7 @@ const ukTimeNow = (secondsFromMidnight = false) => {
   return secondsFromMidnight ? h * 60 * 60 + m * 60 : stringDate;
 };
 
-const usePrevious = (value) => {
+const usePrevious = value => {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;

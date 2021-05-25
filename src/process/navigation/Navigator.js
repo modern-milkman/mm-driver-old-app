@@ -37,7 +37,7 @@ const VechicleCheckWizardNavigator = createStackNavigator(
   {
     initialRouteName: 'RegistrationMileage',
     defaultNavigationOptions: {
-      headerShown: false,
+      headerShown: false, //might be a breaking change from react-native-screens 3.2.x as opposed to 2.18.1
       gestureEnabled: false
     }
   }
@@ -74,7 +74,7 @@ const MainNavigator = createStackNavigator(
   {
     initialRouteName: 'Main',
     defaultNavigationOptions: {
-      headerShown: false,
+      headerShown: false, //might be a breaking change from react-native-screens 3.2.x as opposed to 2.18.1
       gestureEnabled: false
     }
   }
@@ -108,7 +108,7 @@ const TopNavigator = createStackNavigator(
   },
   {
     defaultNavigationOptions: {
-      headerShown: false,
+      headerShown: false, //might be a breaking change from react-native-screens 3.2.x as opposed to 2.18.1
       gestureEnabled: false,
       cardStyle: {
         backgroundColor: 'transparent'

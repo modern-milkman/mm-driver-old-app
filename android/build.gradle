@@ -2,10 +2,11 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "28.0.2"
-        minSdkVersion = 23
+        buildToolsVersion = "29.0.3"
+        minSdkVersion = 21
         compileSdkVersion = 28
         targetSdkVersion = 28
+        ndkVersion = "20.1.5948944"
         playServicesVersion = "17.0.0"
     }
     repositories {
@@ -13,7 +14,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.5.4")
+        classpath("com.android.tools.build:gradle:4.1.0")
         classpath 'com.google.gms:google-services:4.3.4'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
