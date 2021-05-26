@@ -12,7 +12,7 @@ import {
 import Icon from 'Components/Icon';
 import Text from 'Components/Text';
 import { RowView } from 'Containers';
-import { colors, sizes } from 'Theme';
+import { sizes } from 'Theme';
 
 import Types from './Types';
 import { style } from './style';
@@ -101,7 +101,9 @@ const Button = props => {
             )}
           </RowView>
         )}
-        {processing && <ActivityIndicator color={colors.white} />}
+        {processing && (
+          <ActivityIndicator color={style[type].activityIndicatorColor} />
+        )}
       </TouchableOpacity>
     </View>
   );

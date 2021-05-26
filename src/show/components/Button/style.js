@@ -18,7 +18,8 @@ export const style = {
     },
     textStyle: {
       color: colors.white
-    }
+    },
+    activityIndicatorColor: colors.white
   },
   [Types.OUTLINE]: {
     backgroundStyle: {
@@ -28,7 +29,8 @@ export const style = {
     },
     textStyle: {
       color: colors.secondary
-    }
+    },
+    activityIndicatorColor: colors.primary
   },
   [Types.PRIMARY]: {
     backgroundStyle: {
@@ -36,7 +38,8 @@ export const style = {
     },
     textStyle: {
       color: colors.white
-    }
+    },
+    activityIndicatorColor: colors.white
   },
   [Types.SECONDARY]: {
     backgroundStyle: {
@@ -44,7 +47,8 @@ export const style = {
     },
     textStyle: {
       color: colors.white
-    }
+    },
+    activityIndicatorColor: colors.white
   },
   [Types.TERTIARY]: {
     backgroundStyle: {
@@ -52,7 +56,8 @@ export const style = {
     },
     textStyle: {
       color: colors.secondary
-    }
+    },
+    activityIndicatorColor: colors.primary
   },
 
   absolute: {

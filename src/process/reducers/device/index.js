@@ -30,6 +30,7 @@ const initialState = {
   computeDirections: false,
   computeShortDirections: false,
   countDown: false,
+  crashCount: 0,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info,
 
@@ -49,6 +50,7 @@ const initialState = {
     longitude: parseFloat(Config.DEFAULT_LONGITUDE)
   },
   processors: {
+    reloadingDevice: false,
     syncData: false
   },
   requestQueues: {

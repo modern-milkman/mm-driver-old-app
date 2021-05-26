@@ -19,6 +19,7 @@ export const { Types, Creators } = createActions(
     recoveringFromCrash: null,
     rehydrated: null,
     removeLastStackRoute: null,
+    resetAndReload: null,
     resetStackRoute: ['routeName'],
     sendCrashLog: ['payload'],
     updateProps: ['props']

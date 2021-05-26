@@ -1,7 +1,8 @@
 import Crashes from 'appcenter-crashes';
+import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
 import RNBootSplash from 'react-native-bootsplash';
-import { call, put, select } from 'redux-saga/effects';
+import { call, delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
@@ -18,7 +19,8 @@ import {
 } from 'Reducers/transient';
 import {
   Types as DeviceTypes,
-  device as deviceSelector
+  device as deviceSelector,
+  processors as processorsSelector
 } from 'Reducers/device';
 import {
   lastRoute as lastRouteSelector,
@@ -160,6 +162,19 @@ export const rehydrated = function* () {
   }
 };
 
+export const resetAndReload = function* () {
+  yield put({
+    type: ApplicationTypes.LOGOUT
+  });
+  yield put({
+    type: DeviceTypes.UPDATE_PROCESSOR,
+    processor: 'reloadingDevice',
+    value: true
+  });
+  yield delay(1000);
+  RNRestart.Restart();
+};
+
 export const sendCrashLog = function* ({ payload }) {
   yield put({
     type: Api.API_CALL,
@@ -175,6 +190,20 @@ export const rehydratedAndMounted = function* () {
   const lastRoute = yield select(lastRouteSelector);
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
+  const { reloadingDevice } = yield select(processorsSelector);
+
+  if (reloadingDevice) {
+    yield put({
+      type: DeviceTypes.UPDATE_PROPS,
+      props: { crashCount: 0 }
+    });
+    yield put({
+      type: DeviceTypes.UPDATE_PROCESSOR,
+      processor: 'reloadingDevice',
+      value: false
+    });
+  }
+
   if (user_session) {
     if (new Date(user.refreshExpiry) < new Date()) {
       yield call(logout);

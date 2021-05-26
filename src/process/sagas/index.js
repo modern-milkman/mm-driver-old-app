@@ -23,6 +23,7 @@ import {
   onNavigateBack,
   recoveringFromCrash,
   rehydrated,
+  resetAndReload,
   sendCrashLog
 } from './application';
 
@@ -91,6 +92,7 @@ export default function* root() {
     takeLatest(ApplicationTypes.NAVIGATE, onNavigate),
     takeLatest(ApplicationTypes.RECOVERING_FROM_CRASH, recoveringFromCrash),
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
+    takeLatest(ApplicationTypes.RESET_AND_RELOAD, resetAndReload),
     takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
     takeEvery(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
