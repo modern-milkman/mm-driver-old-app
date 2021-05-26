@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -21,6 +22,7 @@ const NavBar = ({
   rightIcon,
   rightCustomIcon,
   rightColor,
+  testID,
   title
 }) => {
   return (
@@ -28,7 +30,8 @@ const NavBar = ({
       justifyContent={'space-between'}
       height={defaults.topNavigation.height}
       alignItems={'center'}
-      paddingHorizontal={marginHorizontal}>
+      paddingHorizontal={marginHorizontal}
+      testID={testID}>
       {(LeftComponent && <LeftComponent />) || (
         <Icon
           name={leftIcon}
@@ -126,6 +129,7 @@ NavBar.propTypes = {
   rightAction: PropTypes.func,
   rightIcon: PropTypes.string,
   rightText: PropTypes.string,
+  testID: PropTypes.string,
   title: PropTypes.string
 };
 

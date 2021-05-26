@@ -1,11 +1,12 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
 
 import { colors } from 'Theme';
 
-const SafeAreaView = (props) => {
-  const { bottom, top } = props;
+const SafeAreaView = props => {
+  const { bottom, testID, top } = props;
   const defaultStyle = {
     backgroundColor: colors.neutral,
     flex: 1
@@ -21,7 +22,10 @@ const SafeAreaView = (props) => {
   }
 
   return (
-    <SafeAreaViewRN style={[defaultStyle, props.style]} edges={edges}>
+    <SafeAreaViewRN
+      style={[defaultStyle, props.style]}
+      edges={edges}
+      testID={testID}>
       {props.children}
     </SafeAreaViewRN>
   );
@@ -36,6 +40,7 @@ SafeAreaView.defaultProps = {
 
 SafeAreaView.propTypes = {
   bottom: PropTypes.bool,
+  testID: PropTypes.string,
   top: PropTypes.bool,
   style: PropTypes.any,
   children: PropTypes.node

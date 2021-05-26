@@ -1,3 +1,4 @@
+//testID supported
 import PropTypes from 'prop-types';
 import React, { forwardRef, useState } from 'react';
 import InsetShadow from 'react-native-inset-shadow';
@@ -57,6 +58,7 @@ const TextInput = forwardRef((props, ref) => {
     secureTextEntry,
     shadow,
     size,
+    testID,
     value
   } = props;
   const [focused, setFocus] = useState(
@@ -65,7 +67,7 @@ const TextInput = forwardRef((props, ref) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const height = inputHeight(size, disableErrors, multiline, multilineHeight);
-  const onFocusChangedInternalEvent = (focus) => {
+  const onFocusChangedInternalEvent = focus => {
     setFocus(focus);
     onFocusChanged(focus);
   };
@@ -103,7 +105,8 @@ const TextInput = forwardRef((props, ref) => {
             alignItems={multiline ? 'flex-end' : 'center'}
             marginLeft={!leftIcon ? sizes.defaultPadding : null}
             marginRight={!focused ? sizes.defaultPadding : null}
-            width={'auto'}>
+            width={'auto'}
+            testID={testID}>
             {leftIcon && (
               <CustomIcon icon={leftIcon} onPress={onLeftIconPress} />
             )}
@@ -182,6 +185,7 @@ TextInput.propTypes = {
   secureTextEntry: PropTypes.bool,
   shadow: PropTypes.bool,
   size: PropTypes.string,
+  testID: PropTypes.string,
   value: PropTypes.string
 };
 

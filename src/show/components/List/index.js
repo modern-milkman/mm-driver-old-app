@@ -1,3 +1,4 @@
+//testID supported by List ListItem
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, SectionList, TouchableOpacity } from 'react-native';
@@ -109,6 +110,7 @@ const renderItemInterface = (
     secondaryCustomRightIconProps,
     secondaryRightImage,
     secondaryRightIcon,
+    testID,
     title,
     titleColor = colors.secondary,
     titleExpands = false
@@ -125,7 +127,8 @@ const renderItemInterface = (
       disabled={disabled}
       onPress={computedOnPress}
       onLongPress={computedOnLongPress}
-      {...(key && { key })}>
+      {...(key && { key })}
+      testID={testID}>
       <RowView
         minHeight={sizes.list.height - defaults.marginVertical / 2}
         justifyContent={'space-between'}
@@ -229,7 +232,7 @@ const renderItemInterface = (
   );
 };
 
-const List = (props) => {
+const List = props => {
   const {
     data,
     disabled,
@@ -244,7 +247,8 @@ const List = (props) => {
     renderItemSeparator,
     renderSectionFooter,
     renderSectionHeader,
-    style: styleProps
+    style: styleProps,
+    testID
   } = props;
   const RenderComponent = hasSections ? SectionList : FlatList;
 
@@ -268,11 +272,12 @@ const List = (props) => {
       style={[style.renderWrapper, styleProps]}
       initialNumToRender={15}
       keyboardShouldPersistTaps={'handled'}
+      testID={testID}
     />
   );
 };
 
-const ListItem = (item) => renderItemInterface({}, { item });
+const ListItem = item => renderItemInterface({}, { item });
 
 const SectionHeader = ({ section }) =>
   (section && <ListHeader title={section.title} />) || null;
@@ -291,7 +296,8 @@ List.propTypes = {
   renderItemSeparator: PropTypes.func,
   renderSectionFooter: PropTypes.func,
   renderSectionHeader: PropTypes.func,
-  style: PropTypes.any
+  style: PropTypes.any,
+  testID: PropTypes.string
 };
 
 List.defaultProps = {
@@ -337,6 +343,7 @@ ListItem.propTypes = {
   secondaryCustomRightIconProps: PropTypes.object,
   secondaryRightImage: PropTypes.any,
   secondaryRightIcon: PropTypes.any,
+  testID: PropTypes.string,
   title: PropTypes.string,
   titleColor: PropTypes.string,
   titleExpands: PropTypes.bool

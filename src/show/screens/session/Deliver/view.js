@@ -89,7 +89,7 @@ const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
 };
 
-const navigateBack = (callback) => {
+const navigateBack = callback => {
   animateContent({
     contentTranslateYValue: 100,
     contentOpacityValue: 0,
@@ -224,7 +224,7 @@ const renderImageModal = ({ selectedStop, setModalVisible }) => (
   </TouchableOpacity>
 );
 
-const showClaims = (toggleModal) => {
+const showClaims = toggleModal => {
   toggleModal('showClaimModal', true);
   NavigationService.navigate({
     routeName: 'CustomerIssueModal'
@@ -236,7 +236,7 @@ const showModal = (type, setModalType, setModalVisible) => {
   setModalVisible(true);
 };
 
-const Deliver = (props) => {
+const Deliver = props => {
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -261,7 +261,7 @@ const Deliver = (props) => {
   } = selectedStop;
 
   const optimizedStopOrders = selectedStop
-    ? Object.values(selectedStop.orders).map((order) => {
+    ? Object.values(selectedStop.orders).map(order => {
         const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,

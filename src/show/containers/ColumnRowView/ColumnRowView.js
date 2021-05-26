@@ -1,3 +1,4 @@
+//testID supported
 /*
 justifyContent  - vertical alignment / primary axis
 alignItems      - horizontal alignment / secondary axis
@@ -8,38 +9,70 @@ import PropTypes from 'prop-types';
 import { ScrollView } from '@react-navigation/native';
 import { View, Animated } from 'react-native';
 
-const ColumnRowView = (props) => {
+const ColumnRowView = ({
+  alignItems,
+  animated,
+  animatedStyle,
+  backgroundColor,
+  borderRadius,
+  children,
+  flex,
+  flexDirection,
+  flexGrow,
+  height,
+  justifyContent,
+  marginBottom,
+  marginHorizontal,
+  marginLeft,
+  marginRight,
+  marginTop,
+  marginVertical,
+  maxHeight,
+  minHeight,
+  onLayout,
+  overflow,
+  paddingBottom,
+  paddingHorizontal,
+  paddingLeft,
+  paddingRight,
+  paddingTop,
+  paddingVertical,
+  scrollable,
+  testID,
+  width
+}) => {
   const composedStyles = {
-    backgroundColor: props.backgroundColor
+    backgroundColor: backgroundColor
   };
+
   const composeScrollableStyles = {
-    alignItems: props.alignItems,
-    borderRadius: props.borderRadius,
-    justifyContent: props.justifyContent,
-    flex: props.flex,
-    flexDirection: props.flexDirection,
-    flexGrow: props.flexGrow,
-    width: props.width,
-    height: props.height,
-    marginBottom: props.marginBottom || props.marginVertical || 0,
-    marginLeft: props.marginLeft || props.marginHorizontal || 0,
-    marginRight: props.marginRight || props.marginHorizontal || 0,
-    marginTop: props.marginTop || props.marginVertical || 0,
-    overflow: props.overflow,
-    paddingBottom: props.paddingBottom || props.paddingVertical || 0,
-    paddingLeft: props.paddingLeft || props.paddingHorizontal || 0,
-    paddingRight: props.paddingRight || props.paddingHorizontal || 0,
-    paddingTop: props.paddingTop || props.paddingVertical || 0,
+    alignItems: alignItems,
+    borderRadius: borderRadius,
+    justifyContent: justifyContent,
+    flex: flex,
+    flexDirection: flexDirection,
+    flexGrow: flexGrow,
+    width: width,
+    height: height,
+    marginBottom: marginBottom || marginVertical || 0,
+    marginLeft: marginLeft || marginHorizontal || 0,
+    marginRight: marginRight || marginHorizontal || 0,
+    marginTop: marginTop || marginVertical || 0,
+    overflow: overflow,
+    paddingBottom: paddingBottom || paddingVertical || 0,
+    paddingLeft: paddingLeft || paddingHorizontal || 0,
+    paddingRight: paddingRight || paddingHorizontal || 0,
+    paddingTop: paddingTop || paddingVertical || 0,
 
-    maxHeight: props.maxHeight,
-    minHeight: props.minHeight
+    maxHeight: maxHeight,
+    minHeight: minHeight
   };
 
-  const CRWiewComponent = props.animated
-    ? props.scrollable
+  const CRWiewComponent = animated
+    ? scrollable
       ? Animated.ScrollView
       : Animated.View
-    : props.scrollable
+    : scrollable
     ? ScrollView
     : View;
 
@@ -48,12 +81,13 @@ const ColumnRowView = (props) => {
       keyboardShouldPersistTaps={'handled'}
       style={[
         composedStyles,
-        !props.scrollable && composeScrollableStyles,
-        props.animated && { ...props.animatedStyle }
+        !scrollable && composeScrollableStyles,
+        animated && { ...animatedStyle }
       ]}
       contentContainerStyle={composeScrollableStyles}
-      onLayout={props.onLayout}>
-      {props.children}
+      onLayout={onLayout}
+      testID={testID}>
+      {children}
     </CRWiewComponent>
   );
 };
@@ -90,6 +124,7 @@ ColumnRowView.propTypes = {
   onLayout: PropTypes.func,
   overflow: PropTypes.string,
   scrollable: PropTypes.bool,
+  testID: PropTypes.string,
   width: PropTypes.oneOfType(PropTypes.number, PropTypes.string)
 };
 

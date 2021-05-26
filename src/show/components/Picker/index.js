@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Picker as PickerRN } from '@react-native-picker/picker';
@@ -11,21 +12,23 @@ const Picker = ({
   customItemStyle,
   items,
   onChange,
-  selected
+  selected,
+  testID
 }) => {
   return (
     <PickerRN
       selectedValue={selected}
       style={[style.pickerStyle, customStyle]}
       itemStyle={[customItemStyle]}
-      onValueChange={onChange}>
+      onValueChange={onChange}
+      testID={testID}>
       {renderItems(items)}
     </PickerRN>
   );
 };
 
-const renderItems = (items) => {
-  return items.map((item) => (
+const renderItems = items => {
+  return items.map(item => (
     <PickerRN.Item key={item} label={item.description} value={item.id} />
   ));
 };
@@ -35,7 +38,8 @@ Picker.propTypes = {
   customStyle: PropTypes.object,
   items: PropTypes.array,
   onChange: PropTypes.func,
-  selected: PropTypes.any
+  selected: PropTypes.any,
+  testID: PropTypes.string
 };
 
 Picker.defaultProps = {

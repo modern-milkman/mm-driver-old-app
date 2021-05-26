@@ -1,3 +1,4 @@
+//testID supported
 /*
 GUIDELINES
 iOS:      https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/typography/
@@ -14,17 +15,9 @@ import style from './style';
 
 const wrapTextComponent = (props, type) => <Text {...props} type={type} />;
 
-const Text = (props) => {
-  const {
-    align,
-    color,
-    flex,
-    lineHeight,
-    type,
-    weight,
-    children,
-    ...rest
-  } = props;
+const Text = props => {
+  const { align, color, flex, lineHeight, type, weight, children, ...rest } =
+    props;
   let humanoidMaterialStyles = null;
 
   return (
@@ -54,8 +47,8 @@ const Text = (props) => {
 };
 
 const exports = {};
-Object.values(Types).forEach((type) => {
-  exports[type] = (props) => wrapTextComponent(props, type);
+Object.values(Types).forEach(type => {
+  exports[type] = props => wrapTextComponent(props, type);
   exports[type].style = style[type].textStyle;
   exports[type].height = style[type].textStyle.lineHeight;
 });

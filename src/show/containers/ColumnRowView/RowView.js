@@ -1,9 +1,10 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import ColumnRowView from './ColumnRowView';
 
-const RowView = (props) => (
+const RowView = props => (
   <ColumnRowView {...props} flexDirection={'row'}>
     {props.children}
   </ColumnRowView>

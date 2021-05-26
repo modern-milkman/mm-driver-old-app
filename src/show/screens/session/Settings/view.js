@@ -35,7 +35,7 @@ const onVibrateChange = (updateDeviceProps, vibrate) => {
   }
 };
 
-const performLogout = (logout) => {
+const performLogout = logout => {
   Analytics.trackEvent(EVENTS.TAP_LOGOUT);
   logout();
 };
@@ -77,7 +77,7 @@ const onOptimization = (
   }
 };
 
-const Settings = (props) => {
+const Settings = props => {
   const {
     countDown,
     buttonAccessibility,

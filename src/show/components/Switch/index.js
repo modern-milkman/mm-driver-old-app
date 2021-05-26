@@ -1,11 +1,12 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform, Switch as RNSwitch } from 'react-native';
 
 import { colors } from 'Theme';
 
-const Switch = (props) => {
-  const { onValueChange, value } = props;
+const Switch = props => {
+  const { onValueChange, testID, value } = props;
   const trackColor = {
     false: Platform.select({
       android: colors.input
@@ -30,18 +31,20 @@ const Switch = (props) => {
       {...platformProps}
       onValueChange={onValueChange}
       value={value}
+      testID={testID}
     />
   );
 };
 
 Switch.defaultProps = {
-  value: false,
-  onValueChange: () => {}
+  onValueChange: () => {},
+  value: false
 };
 
 Switch.propTypes = {
-  value: PropTypes.bool,
-  onValueChange: PropTypes.func
+  onValueChange: PropTypes.func,
+  testID: PropTypes.string,
+  value: PropTypes.bool
 };
 
 export default Switch;

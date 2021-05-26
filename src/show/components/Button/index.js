@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -18,7 +19,7 @@ import { style } from './style';
 
 const wrapButtonComponent = (props, type) => <Button {...props} type={type} />;
 
-const Button = (props) => {
+const Button = props => {
   const {
     backgroundOpacity,
     buttonAccessibility,
@@ -29,6 +30,7 @@ const Button = (props) => {
     onPress,
     processing,
     rightIcon: RightIcon,
+    testID,
     textAlign,
     title,
     titleColor,
@@ -69,7 +71,8 @@ const Button = (props) => {
       <TouchableOpacity
         disabled={disabled}
         onPress={onPress}
-        style={style.touchableWrapper}>
+        style={style.touchableWrapper}
+        testID={testID}>
         {!processing && (
           <RowView>
             {LeftIcon && <View style={style.leftIcon}>{LeftIcon}</View>}
@@ -115,6 +118,7 @@ Button.propTypes = {
   onPress: PropTypes.func.isRequired,
   processing: PropTypes.bool,
   rightIcon: PropTypes.node,
+  testID: PropTypes.string,
   textAlign: PropTypes.string,
   title: PropTypes.string.isRequired,
   titleColor: PropTypes.object,
@@ -142,13 +146,13 @@ Button.defaultProps = {
 
 const exports = {};
 
-Object.values(Types).forEach((type) => {
+Object.values(Types).forEach(type => {
   exports[type] = connect(
-    (state) => ({
+    state => ({
       buttonAccessibility: state.device.buttonAccessibility
     }),
     {}
-  )((props) => wrapButtonComponent(props, type));
+  )(props => wrapButtonComponent(props, type));
 });
 
 export default exports;

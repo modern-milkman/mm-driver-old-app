@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -5,8 +6,8 @@ import Text from 'Components/Text';
 import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
 
-const Label = (props) => {
-  const { backgroundColor, color, text } = props;
+const Label = props => {
+  const { backgroundColor, color, testID, text } = props;
 
   return (
     <RowView
@@ -15,7 +16,9 @@ const Label = (props) => {
       paddingHorizontal={defaults.marginHorizontal / 4}
       borderRadius={defaults.borderRadius / 2}
       backgroundColor={backgroundColor}>
-      <Text.Label color={color}>{text}</Text.Label>
+      <Text.Label color={color} testID={testID}>
+        {text}
+      </Text.Label>
     </RowView>
   );
 };
@@ -23,6 +26,7 @@ const Label = (props) => {
 Label.propTypes = {
   backgroundColor: PropTypes.any,
   color: PropTypes.any,
+  testID: PropTypes.string,
   text: PropTypes.string
 };
 

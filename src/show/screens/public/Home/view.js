@@ -60,7 +60,7 @@ const updateTransient = (updateTransientProps, prop, value) => {
   updateTransientProps(update);
 };
 
-const Home = (props) => {
+const Home = props => {
   const {
     email,
     emailErrorMessage,

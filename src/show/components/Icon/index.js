@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -7,7 +8,7 @@ import { colors } from 'Theme';
 
 import defaultStyle from './style';
 
-const Icon = (props) => {
+const Icon = props => {
   const {
     circle,
     circleColor,
@@ -17,6 +18,7 @@ const Icon = (props) => {
     name,
     onLongPress,
     onPress,
+    testID,
     type,
     size,
     style
@@ -43,6 +45,7 @@ const Icon = (props) => {
         size={size}
         type={type}
         underlayColor={'transparent'}
+        testID={testID}
       />
     </View>
   );
@@ -59,6 +62,7 @@ Icon.propTypes = {
   name: PropTypes.string,
   size: PropTypes.number,
   style: PropTypes.any,
+  testID: PropTypes.string,
   type: PropTypes.string
 };
 

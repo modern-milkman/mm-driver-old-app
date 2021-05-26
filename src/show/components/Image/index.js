@@ -1,3 +1,4 @@
+//testID supported
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import React, { useEffect, useState } from 'react';
@@ -7,13 +8,14 @@ import Api from 'Api';
 
 import styles from './style';
 
-const Image = (props) => {
+const Image = props => {
   const {
     maxHeight,
     renderFallback,
     requiresAuthentication,
     source,
     style,
+    testID,
     width,
     ...otherProps
   } = props;
@@ -51,7 +53,7 @@ const Image = (props) => {
     (w, h) => {
       setRatio(w / h);
     },
-    (e) => {
+    e => {
       setRatio(1);
     }
   );
@@ -92,6 +94,7 @@ const Image = (props) => {
             style,
             width && { width: computedWidth, height: computedHeight }
           ]}
+          testID={testID}
         />
       )}
 
@@ -108,6 +111,7 @@ Image.propTypes = {
   renderFallback: PropTypes.func,
   source: PropTypes.any,
   style: PropTypes.any,
+  testID: PropTypes.string,
   width: PropTypes.number
 };
 

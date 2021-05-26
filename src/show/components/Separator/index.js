@@ -1,10 +1,11 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
 import { colors } from 'Theme';
 
-const Separator = (props) => {
+const Separator = props => {
   const {
     borderRadius,
     color,
@@ -12,6 +13,7 @@ const Separator = (props) => {
     marginHorizontal,
     marginLeft,
     marginRight,
+    testID,
     vertical,
     width
   } = props;
@@ -33,7 +35,7 @@ const Separator = (props) => {
     width: computedWidth
   };
 
-  return <View style={composeStyles} />;
+  return <View style={composeStyles} testID={testID} />;
 };
 
 Separator.propTypes = {
@@ -46,6 +48,7 @@ Separator.propTypes = {
   marginLeft: PropTypes.number,
   marginRight: PropTypes.number,
   vertical: PropTypes.bool,
+  testID: PropTypes.string,
   width: PropTypes.oneOfType(PropTypes.number, PropTypes.string)
 };
 

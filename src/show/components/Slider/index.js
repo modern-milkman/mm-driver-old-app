@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Slider as SliderRN } from '@miblanchard/react-native-slider';
@@ -8,8 +9,9 @@ import { colors } from 'Theme';
 
 import style from './style';
 
-const Slider = (props) => {
-  const { maximumValue, minimumValue, onSlidingComplete, step, value } = props;
+const Slider = props => {
+  const { maximumValue, minimumValue, onSlidingComplete, step, testID, value } =
+    props;
 
   return (
     <SliderRN
@@ -24,6 +26,7 @@ const Slider = (props) => {
       trackStyle={style.trackStyle}
       value={value}
       containerStyle={style.containerStyle}
+      testID={testID}
     />
   );
 };
@@ -40,6 +43,7 @@ Slider.defaultProps = {
 Slider.propTypes = {
   maximumValue: PropTypes.number,
   minimumValue: PropTypes.number,
+  testID: PropTypes.string,
   title: PropTypes.string,
   value: PropTypes.number,
   onSlidingComplete: PropTypes.func,

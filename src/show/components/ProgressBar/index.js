@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
@@ -8,11 +9,11 @@ import Separator from 'Components/Separator';
 
 import style from './style';
 
-const ProgressBar = (props) => {
-  const { height, progress, total } = props;
+const ProgressBar = props => {
+  const { height, progress, testID, total } = props;
 
   return (
-    <RowView flex={1}>
+    <RowView flex={1} testID={testID}>
       <View
         style={[
           style.progressWrapper,
@@ -38,6 +39,7 @@ const ProgressBar = (props) => {
 ProgressBar.propTypes = {
   height: PropTypes.number,
   progress: PropTypes.number,
+  testID: PropTypes.string,
   total: PropTypes.number
 };
 

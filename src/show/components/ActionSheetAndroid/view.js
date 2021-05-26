@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
@@ -12,7 +13,7 @@ import { ColumnView, Modal } from 'Containers';
 import style from './style';
 
 class ActionSheetAndroid extends React.Component {
-  actionAndDismiss = (optionName) => {
+  actionAndDismiss = optionName => {
     const { options } = this.props;
     options[optionName]();
     this.dismissSheet();
@@ -23,7 +24,7 @@ class ActionSheetAndroid extends React.Component {
   };
 
   render = () => {
-    const { visible, optionKeys, destructiveButtonIndex } = this.props;
+    const { destructiveButtonIndex, optionKeys, visible, testID } = this.props;
 
     const data = optionKeys.map((optK, idx) =>
       idx !== destructiveButtonIndex - 1
@@ -43,7 +44,8 @@ class ActionSheetAndroid extends React.Component {
           flex={1}
           justifyContent={'flex-end'}
           alignItems={'stretch'}
-          width={'auto'}>
+          width={'auto'}
+          testID={testID}>
           <TouchableOpacity
             onPress={this.dismissSheet}
             style={style.touchToExit}
@@ -76,6 +78,7 @@ ActionSheetAndroid.propTypes = {
   destructiveButtonIndex: PropTypes.number,
   options: PropTypes.object,
   optionKeys: PropTypes.array,
+  testID: PropTypes.string,
   updateProps: PropTypes.func.isRequired,
   visible: PropTypes.bool
 };

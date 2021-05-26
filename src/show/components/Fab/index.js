@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Animated } from 'react-native';
@@ -13,7 +14,7 @@ const rotationInterpolation = {
   extrapolate: 'clamp'
 };
 
-const Fab = (props) => {
+const Fab = props => {
   const {
     bottom,
     color,
@@ -29,6 +30,7 @@ const Fab = (props) => {
     rotate,
     right,
     size,
+    testID,
     top,
     type,
     zIndex
@@ -64,6 +66,7 @@ const Fab = (props) => {
           onPress={onPress}
           disabled={disabled}
           onLongPress={onLongPress}
+          testID={testID}
         />
       )}
     </Animated.View>
@@ -104,6 +107,7 @@ Fab.propTypes = {
   right: PropTypes.number,
   rotate: PropTypes.instanceOf(Animated.Value),
   size: PropTypes.number,
+  testID: PropTypes.string,
   top: PropTypes.number,
   type: PropTypes.string,
   zIndex: PropTypes.number

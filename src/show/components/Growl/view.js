@@ -1,3 +1,4 @@
+//testID supported
 import React from 'react';
 import store from 'Redux/store';
 import PropTypes from 'prop-types';
@@ -33,10 +34,10 @@ class Growl extends React.Component {
   };
 
   render = () => {
-    const { growl } = this.props;
+    const { growl, testID } = this.props;
     return (
       <DropdownAlert
-        ref={(ref) => (this.dropdown = ref)}
+        ref={ref => (this.dropdown = ref)}
         closeInterval={parseInt(Config.GROWL_AUTOHIDE)}
         contentContainerStyle={style.contentContainerStyle}
         defaultContainer={style.defaultContainer}
@@ -55,6 +56,7 @@ class Growl extends React.Component {
         onTap={this.onTap}
         panResponderEnabled
         tapToCloseEnabled
+        testID={testID}
         titleNumOfLines={2}
         titleStyle={StyleSheet.flatten([
           style.titleStyle,
@@ -71,6 +73,7 @@ class Growl extends React.Component {
 
 Growl.propTypes = {
   growl: PropTypes.object,
+  testID: PropTypes.string,
   updateProps: PropTypes.func.isRequired
 };
 
