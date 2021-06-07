@@ -122,7 +122,7 @@ const renderSkipModal = ({
   selectedStop,
   setModalVisible,
   setRejected,
-  reasonId = rejectReasons[2].id,
+  reasonType = rejectReasons[2].id,
   updateTransientProps
 }) => (
   <ColumnView
@@ -137,11 +137,11 @@ const renderSkipModal = ({
       <ColumnView paddingHorizontal={defaults.marginHorizontal}>
         <Picker
           items={rejectReasons}
-          selected={reasonId}
+          selected={reasonType}
           onChange={handleChangeSkip.bind(
             null,
             updateTransientProps,
-            'reasonId'
+            'reasonType'
           )}
         />
         <RowView paddingBottom={defaults.marginVertical}>
@@ -181,7 +181,7 @@ const renderSkipModal = ({
                 selectedStop.orderID,
                 selectedStop.key,
                 outOfStockIds,
-                reasonId,
+                reasonType,
                 reasonMessage
               ),
               setModalVisible

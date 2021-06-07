@@ -58,14 +58,14 @@ export default {
   },
   patchRejected({
     orderId,
-    reasonId,
+    reasonType,
     description,
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null
   }) {
     return Api.patch('/Delivery/SetRejected', {
       orderId,
-      reasonType: reasonId,
+      reasonType,
       description,
       deliveryLocationLatitude,
       deliveryLocationLongitude

@@ -57,7 +57,7 @@ export const driverReply = function* ({
     const splitImage = image.split(',');
     const base = splitImage[splitImage.length - 1];
     imageHex = [...Base64.atob(base)]
-      .map((c) => c.charCodeAt(0).toString(16).padStart(2, 0))
+      .map(c => c.charCodeAt(0).toString(16).padStart(2, 0))
       .join('')
       .toUpperCase();
   }
@@ -275,7 +275,7 @@ export const saveVehicleChecks = function* ({ saveType }) {
   const vehicleCheckDamage = Object.values(
     checklist.payload.vehicleCheckDamage
   ).map((damage, index) => {
-    const images = damage.vehicleCheckDamageImage.map((image) => ({
+    const images = damage.vehicleCheckDamageImage.map(image => ({
       imageType: image.imageType,
       image: base64ToHex(image.image)
     }));
@@ -305,7 +305,7 @@ export const saveVehicleChecks = function* ({ saveType }) {
 
 export const setDeliveredOrRejected = function* (
   requestType,
-  { id, outOfStockIds, selectedStopId, reasonId, reasonMessage }
+  { id, outOfStockIds, selectedStopId, reasonType, reasonMessage }
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
   const device = yield select(deviceSelector);
@@ -356,7 +356,7 @@ export const setDeliveredOrRejected = function* (
     promise: promise({
       ...promisePayload,
       ...(requestType === 'rejected' && {
-        reasonType: reasonId,
+        reasonType,
         description: reasonMessage
       })
     })
@@ -399,7 +399,7 @@ export const setDeliveredOrRejected = function* (
       : EVENTS.TAP_SKIP_DELIVERY,
     {
       id,
-      ...(requestType === 'rejected' && { reasonId, reasonMessage })
+      ...(requestType === 'rejected' && { reasonType, reasonMessage })
     }
   );
 };

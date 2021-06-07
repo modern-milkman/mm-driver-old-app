@@ -52,7 +52,7 @@ export const { Types, Creators } = createActions(
       'id',
       'selectedStopId',
       'outOfStockIds',
-      'reasonId',
+      'reasonType',
       'reasonMessage'
     ],
     setSelectedClaimId: ['claim'],
@@ -112,19 +112,18 @@ const initialState = {
 };
 
 const deleteVanDamageImage = (state, { key, index }) =>
-  produce(state, (draft) => {
-    draft.checklist.payload.vehicleCheckDamage[
-      key
-    ].vehicleCheckDamageImage = draft.checklist.payload.vehicleCheckDamage[
-      key
-    ].vehicleCheckDamageImage.filter((image, idx) => idx !== index);
+  produce(state, draft => {
+    draft.checklist.payload.vehicleCheckDamage[key].vehicleCheckDamageImage =
+      draft.checklist.payload.vehicleCheckDamage[
+        key
+      ].vehicleCheckDamageImage.filter((image, idx) => idx !== index);
   });
 
 const driverReply = (
   state,
   { claimId, comment, image, imageType, acknowledgedClaim, index }
 ) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     const selectedStopId = state.selectedStopId;
     const response = {
       driverAcknowledged: true,
@@ -137,9 +136,8 @@ const driverReply = (
     if (!acknowledgedClaim) {
       const unacknowledgedList =
         state.stops[selectedStopId].claims.unacknowledgedList;
-      draft.stops[
-        selectedStopId
-      ].claims.unacknowledgedList = unacknowledgedList.slice(1);
+      draft.stops[selectedStopId].claims.unacknowledgedList =
+        unacknowledgedList.slice(1);
 
       draft.stops[selectedStopId].claims.acknowledgedList.push({
         ...unacknowledgedList.slice(0, 1)[0],
@@ -156,9 +154,8 @@ const driverReply = (
         draft.stops[selectedStopId].claims.showClaimModal = false;
         NavigationService.goBack();
       } else {
-        draft.stops[
-          selectedStopId
-        ].claims.selectedClaimId = unacknowledgedList.slice(1)[0].claimId;
+        draft.stops[selectedStopId].claims.selectedClaimId =
+          unacknowledgedList.slice(1)[0].claimId;
       }
     } else {
       draft.stops[selectedStopId].claims.acknowledgedList[
@@ -172,7 +169,7 @@ const driverReply = (
   });
 
 const driverReplySuccess = (state, { payload, index, selectedStopId }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     const driverResponsesLength =
       state.stops[selectedStopId].claims.acknowledgedList[index].driverResponses
         .length;
@@ -188,12 +185,12 @@ const privateIncrementDeliveredStock = (draft, { productId, quantity }) => {
   draft.deliveredStock[productId] += quantity;
 };
 
-const processingTrue = (state) =>
-  produce(state, (draft) => {
+const processingTrue = state =>
+  produce(state, draft => {
     draft.processing = true;
   });
 
-const resetSelectedStopInfo = (draft) => {
+const resetSelectedStopInfo = draft => {
   draft.directionsPolyline = [];
   draft.allItemsDone = false;
   draft.confirmedItem = [];
@@ -211,7 +208,7 @@ export const getVehicleStockForDriverSuccess = (
   state,
   { deliveryDate, payload }
 ) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     const misplacedProducts = {};
 
     draft.itemCount = 0;
@@ -219,7 +216,7 @@ export const getVehicleStockForDriverSuccess = (
     draft.hasRoutes = payload.length > 0;
     draft.orderedStock = [];
     for (const route of payload) {
-      route.vehicleStockItems.forEach((item) => {
+      route.vehicleStockItems.forEach(item => {
         const formattedProduct = {
           description: item.measureDescription,
           disabled: true, // items in load van should not be tappable
@@ -249,7 +246,7 @@ export const getVehicleStockForDriverSuccess = (
         draft.itemCount += item.quantity;
       });
     }
-    draft.orderedStock = draft.orderedStock.filter((product) => product);
+    draft.orderedStock = draft.orderedStock.filter(product => product);
 
     if (Object.keys(misplacedProducts).length > 0) {
       for (const misplacedProductKey in misplacedProducts) {
@@ -263,7 +260,7 @@ export const getForDriverSuccess = (
   state,
   { payload, props: { isRefreshData = false } }
 ) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.stockWithData = payload;
     draft.stops = {};
     draft.orderedStopsIds = [];
@@ -388,12 +385,12 @@ export const getForDriverSuccess = (
   });
 
 export const incrementDeliveredStock = (state, { productId, quantity }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     privateIncrementDeliveredStock(draft, { productId, quantity });
   });
 
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     let dummyIndex = null;
     let returnPositionIndex = null;
     const stops = [];
@@ -443,7 +440,7 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
     }
 
     draft.orderedStopsIds = [];
-    optimizedRoute.map((i) => draft.orderedStopsIds.push(stops[i].key));
+    optimizedRoute.map(i => draft.orderedStopsIds.push(stops[i].key));
     draft.selectedStopId = draft.orderedStopsIds[0];
 
     draft.status = DS.DEL;
@@ -454,7 +451,7 @@ export const optimizeStops = (state, { currentLocation, returnPosition }) =>
 export const reset = () => initialState;
 
 export const resetChecklistPayload = (state, { resetType }) =>
-  produce(state, (draft) =>
+  produce(state, draft =>
     updateChecklistProps(state, {
       props: {
         payloadAltered: resetType ? true : false,
@@ -469,7 +466,7 @@ export const resetChecklistPayload = (state, { resetType }) =>
   );
 
 export const saveVehicleChecks = (state, { saveType }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.checklist[saveType] = true;
     if (saveType === 'shiftEndVanChecks') {
       draft.status = DS.SC;
@@ -477,11 +474,11 @@ export const saveVehicleChecks = (state, { saveType }) =>
   });
 
 export const setCustomerClaims = (state, { payload, stopId }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     const unacknowledgedList = [];
     const acknowledgedList = [];
 
-    payload.forEach((claim) => {
+    payload.forEach(claim => {
       if (claim.driverAcknowledged === false) {
         unacknowledgedList.push(claim);
         draft.stops[stopId].claims.showClaimModal = true;
@@ -502,7 +499,7 @@ export const setCustomerClaims = (state, { payload, stopId }) =>
   });
 
 export const setDeliveredOrRejected = (state, { id, selectedStopId }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     resetSelectedStopInfo(draft);
     draft.selectedStopId = null;
     draft.completedStopsIds.push(
@@ -520,27 +517,27 @@ export const setDeliveredOrRejected = (state, { id, selectedStopId }) =>
   });
 
 export const setMileage = (state, { mileage }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.checklist.payload.currentMileage = mileage;
   });
 
 export const setRegistration = (state, { reg }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.checklist.payload.vehicleRegistration = reg;
   });
 
 export const setProductsOrder = (state, { payload }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.productsOrder = payload;
   });
 
 export const setRejectDeliveryReasons = (state, { payload }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.rejectReasons = payload;
   });
 
 export const setVanDamageComment = (state, { key, comment }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     if (!draft.checklist.payload.vehicleCheckDamage[key]) {
       resetVanDamage(draft, key);
     }
@@ -549,7 +546,7 @@ export const setVanDamageComment = (state, { key, comment }) =>
   });
 
 export const setVanDamageImage = (state, { key, image, imageType }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     if (!draft.checklist.payload.vehicleCheckDamage[key]) {
       resetVanDamage(draft, key);
     }
@@ -563,24 +560,23 @@ export const setVanDamageImage = (state, { key, image, imageType }) =>
       imageType
     });
 
-    draft.checklist.payload.vehicleCheckDamage[
-      key
-    ].vehicleCheckDamageImage = images;
+    draft.checklist.payload.vehicleCheckDamage[key].vehicleCheckDamageImage =
+      images;
   });
 
 export const setSelectedClaimId = (state, { claimId }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     const selectedStopId = draft.selectedStopId;
     draft.stops[selectedStopId].claims.selectedClaimId = claimId;
   });
 
 export const setVehicleChecks = (state, { payload }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.checksJson = payload;
   });
 
-export const startDelivering = (state) =>
-  produce(state, (draft) => {
+export const startDelivering = state =>
+  produce(state, draft => {
     draft.status = DS.DEL;
     if (state.manualRoutes) {
       draft.processing = false;
@@ -590,13 +586,13 @@ export const startDelivering = (state) =>
   });
 
 export const toggleCheckJson = (state, { key }) =>
-  produce(state, (draft) => {
-    draft.checklist.payload.checksJson[key] = !draft.checklist.payload
-      .checksJson[key];
+  produce(state, draft => {
+    draft.checklist.payload.checksJson[key] =
+      !draft.checklist.payload.checksJson[key];
   });
 
 export const toggleConfirmedItem = (state, { id }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.confirmedItem = toggle(state.confirmedItem, id);
 
     const idx = state.outOfStockIds.indexOf(id);
@@ -610,7 +606,7 @@ export const toggleConfirmedItem = (state, { id }) =>
   });
 
 export const toggleOutOfStock = (state, { id }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.outOfStockIds = toggle(state.outOfStockIds, id);
     const idx = state.confirmedItem.indexOf(id);
     if (idx > -1) {
@@ -622,7 +618,7 @@ export const toggleOutOfStock = (state, { id }) =>
   });
 
 export const toggleModal = (state, { modal, show }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.stops[draft.selectedStopId].claims[modal] = show;
   });
 
@@ -632,12 +628,12 @@ export const updateChecklistProps = (state, { props }) =>
   });
 
 export const setDirectionsPolyline = (state, { payload }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.directionsPolyline = payload;
   });
 
 export const updateSelectedStop = (state, { sID, manualRoutes = true }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     resetSelectedStopInfo(draft);
     draft.manualRoutes = manualRoutes;
     draft.previousStopId = draft.selectedStopId;
@@ -682,17 +678,17 @@ export default createReducer(initialState, {
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
 });
 
-export const checklist = (state) => state.delivery?.checklist;
+export const checklist = state => state.delivery?.checklist;
 
-export const directionsPolyline = (state) => state.delivery?.directionsPolyline;
+export const directionsPolyline = state => state.delivery?.directionsPolyline;
 
-export const completedStopsIds = (state) => state.delivery?.completedStopsIds;
+export const completedStopsIds = state => state.delivery?.completedStopsIds;
 
-export const itemCount = (state) => state.delivery?.itemCount || 0;
+export const itemCount = state => state.delivery?.itemCount || 0;
 
-export const orderedStopsIds = (state) => state.delivery?.orderedStopsIds;
+export const orderedStopsIds = state => state.delivery?.orderedStopsIds;
 
-export const selectedStop = (state) => {
+export const selectedStop = state => {
   const todaysDelivery = state.delivery;
   return todaysDelivery &&
     todaysDelivery.stops &&
@@ -702,13 +698,13 @@ export const selectedStop = (state) => {
     : null;
 };
 
-export const selectedStopId = (state) => state.delivery?.selectedStopId;
+export const selectedStopId = state => state.delivery?.selectedStopId;
 
-export const status = (state) => state.delivery?.status;
+export const status = state => state.delivery?.status;
 
-export const stops = (state) => state.delivery?.stops;
+export const stops = state => state.delivery?.stops;
 
-export const stopCount = (state) =>
+export const stopCount = state =>
   Object.keys(state.delivery?.stops).length || 0;
 
-export const manualRoutes = (state) => state.delivery.manualRoutes;
+export const manualRoutes = state => state.delivery.manualRoutes;
