@@ -77,16 +77,6 @@ const deviceFrame = () => Dimensions.get('window');
 const formatDate = date =>
   date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
-const throttle = (func, wait = 100) => {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(this, args);
-    }, wait);
-  };
-};
-
 const isAppInstalled = async appName => {
   return await Linking.canOpenURL(appName + '://')
     .then(installed => {
@@ -149,35 +139,6 @@ const openDriverUpdate = () => {
   });
 };
 
-const timeToHMArray = time => time.split(':').map(hm => parseInt(hm));
-
-const triggerDriverUpdate = url => {
-  Linking.openURL(url).catch(() => {
-    Alert({
-      title: I18n.t('alert:cannotUpgrade.title'),
-      message: I18n.t('alert:cannotUpgrade.message'),
-      buttons: [
-        {
-          text: I18n.t('general:ok'),
-          style: 'cancel'
-        }
-      ]
-    });
-  });
-};
-
-const toggle = (collection, item) => {
-  const duplicate = [...collection];
-  var idx = duplicate.indexOf(item);
-  if (idx !== -1) {
-    duplicate.splice(idx, 1);
-  } else {
-    duplicate.push(item);
-  }
-
-  return duplicate;
-};
-
 const plateRecognition = (search, plates) => {
   let plateRecognized = '';
   const kCharMatched = 5;
@@ -221,6 +182,47 @@ const statusBarHeight = () => {
   return StatusBarManager.HEIGHT;
 };
 
+const throttle = (func, wait = 100) => {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
+};
+
+const timeoutResponseStatuses = ['TIMEOUT', 502, 503, 504, 507];
+
+const timeToHMArray = time => time.split(':').map(hm => parseInt(hm));
+
+const toggle = (collection, item) => {
+  const duplicate = [...collection];
+  var idx = duplicate.indexOf(item);
+  if (idx !== -1) {
+    duplicate.splice(idx, 1);
+  } else {
+    duplicate.push(item);
+  }
+
+  return duplicate;
+};
+
+const triggerDriverUpdate = url => {
+  Linking.openURL(url).catch(() => {
+    Alert({
+      title: I18n.t('alert:cannotUpgrade.title'),
+      message: I18n.t('alert:cannotUpgrade.message'),
+      buttons: [
+        {
+          text: I18n.t('general:ok'),
+          style: 'cancel'
+        }
+      ]
+    });
+  });
+};
+
 const ukTimeNow = (secondsFromMidnight = false) => {
   const date = new Date();
   const stringDate = date
@@ -259,6 +261,7 @@ export {
   randomKey,
   statusBarHeight,
   timeToHMArray,
+  timeoutResponseStatuses,
   toggle,
   triggerDriverUpdate,
   ukTimeNow,

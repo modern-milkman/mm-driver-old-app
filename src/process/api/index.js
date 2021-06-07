@@ -6,11 +6,11 @@ import Config from 'react-native-config';
 import store from 'Redux/store';
 import repositories from 'Repositories';
 import NavigationService from 'Navigation/service';
-import { blacklists, timeToHMArray } from 'Helpers';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
 import { Creators as DeviceActions } from 'Reducers/device';
 import { Creators as ApplicationActions } from 'Reducers/application';
+import { blacklists, timeoutResponseStatuses, timeToHMArray } from 'Helpers';
 
 let TOKEN = null;
 let REFRESH_TOKEN = null;
@@ -44,22 +44,26 @@ const handleRequestsQueue = (
   ) {
     const { dispatch, getState } = store().store;
     const { user } = getState();
+
     dispatch(
       DeviceActions.pushRequest(
-        error.response.status === 'TIMEOUT' ? 'offline' : 'failed',
+        timeoutResponseStatuses.includes(error.response.status)
+          ? 'offline'
+          : 'failed',
         {
           body,
           config,
           driverId: user.driverId,
           method: error.config.method,
-          path
+          path,
+          status: error.response.status
         }
       )
     );
   }
 };
 
-const trackInAmplitude = (error) => {
+const trackInAmplitude = error => {
   if (
     !blacklists.apiEndpointFailureTracking.includes(
       `${error.config.baseURL}${error.config.url}`
@@ -77,7 +81,7 @@ let refreshTokenLock = false;
 let refreshTimeout = null;
 
 const interceptors = {
-  config: (config) => {
+  config: config => {
     config.meta = config.meta || {};
     config.meta.requestStartedAt = new Date().getTime();
 
@@ -86,7 +90,7 @@ const interceptors = {
     }
     return config;
   },
-  responseSuccess: (response) => {
+  responseSuccess: response => {
     const { dispatch, getState } = store().store;
     const { device } = getState();
     if (device.network.status !== 0) {
@@ -95,7 +99,7 @@ const interceptors = {
     interceptors.getRequestTime(response);
     return response;
   },
-  responseError: async (error) => {
+  responseError: async error => {
     const originalRequest = error.config;
     const { dispatch, getState } = store().store;
     const { user, device } = getState();
@@ -117,7 +121,10 @@ const interceptors = {
       ) &&
       !blacklists.apiEndpointFailureTracking.includes(error.config.url)
     ) {
-      if (device.network.status === 0 && error.response.status === 'TIMEOUT') {
+      if (
+        device.network.status === 0 &&
+        timeoutResponseStatuses.includes(error.response.status)
+      ) {
         dispatch(DeviceActions.updateNetworkProps({ status: 1 }));
       }
       interceptors.getRequestTime(error);
@@ -137,7 +144,7 @@ const interceptors = {
           return Promise.reject(error);
         } else {
           if (refreshTokenLock) {
-            await new Promise((resolve) =>
+            await new Promise(resolve =>
               refreshTokenBus.once('unlocked', resolve)
             );
           } else if (Api.getToken() && Api.getRefreshToken()) {
@@ -178,7 +185,7 @@ const interceptors = {
 
     return Promise.reject(error);
   },
-  getRequestTime: (response) => {
+  getRequestTime: response => {
     const time = new Date().getTime() - response.config.meta.requestStartedAt;
     Api.executionTimingmeanRequestTime(time);
   }
