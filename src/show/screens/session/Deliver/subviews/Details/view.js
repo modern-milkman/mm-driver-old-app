@@ -10,7 +10,7 @@ import NavigationService from 'Navigation/service';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, NavBar, Separator, Label, List, ListItem } from 'Components';
 
-const showReplyModal = (toggleModal) => {
+const showReplyModal = toggleModal => {
   toggleModal('showReplyModal', true);
 
   NavigationService.navigate({
@@ -18,7 +18,7 @@ const showReplyModal = (toggleModal) => {
   });
 };
 
-const CustomerIssueDetails = (props) => {
+const CustomerIssueDetails = props => {
   const { selectedClaim, toggleModal } = props;
 
   const {
@@ -31,7 +31,7 @@ const CustomerIssueDetails = (props) => {
     reason
   } = selectedClaim;
 
-  const data = claimItem?.map((item) => {
+  const data = claimItem?.map(item => {
     return {
       customIcon: 'productPlaceholder',
       disabled: true,
@@ -65,7 +65,9 @@ const CustomerIssueDetails = (props) => {
       }),
       moreInfo: item.comment,
       image: item.hasImage
-        ? `file://${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${item.claimDriverResponseId}`
+        ? item.localImage
+          ? `file://${item.localImage}`
+          : `file://${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${item.claimDriverResponseId}`
         : null
     };
   });

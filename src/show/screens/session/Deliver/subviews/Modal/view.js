@@ -26,7 +26,7 @@ import style from './style';
 
 const { width, height } = deviceFrame();
 
-const hideClaimsModal = (toggleModal) => {
+const hideClaimsModal = toggleModal => {
   NavigationService.goBack();
   toggleModal('showClaimModal', false);
   window.setTimeout(toggleModal.bind(null, 'showReplyModal', false), 250);
@@ -52,16 +52,13 @@ const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
   ImagePicker[method]({
     width: 1000,
     height: 1000,
-    cropping: true,
-
-    includeBase64: true
-  }).then((img) => {
+    cropping: true
+  }).then(img => {
     updateDriverResponse({
       text: driverResponse?.text,
-      image: `data:${img.mime};base64,${img.data}`,
+      image: img.path,
       imageType: img.mime
     });
-    ImagePicker.clean();
   });
 };
 
@@ -184,7 +181,7 @@ const updateText = (updateDriverResponse, driverResponse, text) => {
   });
 };
 
-const CustomerIssueModal = (props) => {
+const CustomerIssueModal = props => {
   const {
     claims: {
       acknowledgedList,
@@ -204,13 +201,13 @@ const CustomerIssueModal = (props) => {
   let selectedClaimData;
   if (unacknowledgedList.length > 0) {
     selectedClaimData = unacknowledgedList.filter(
-      (claim) => claim.claimId === selectedClaimId
+      claim => claim.claimId === selectedClaimId
     )[0];
   }
 
   if (!selectedClaimData) {
     selectedClaimData = acknowledgedList.filter(
-      (claim) => claim.claimId === selectedClaimId
+      claim => claim.claimId === selectedClaimId
     )[0];
   }
 
@@ -218,7 +215,7 @@ const CustomerIssueModal = (props) => {
     {
       title: I18n.t('screens:deliver.customerIssue.modal.productsAffected'),
       data:
-        selectedClaimData?.claimItem.map((item) => {
+        selectedClaimData?.claimItem.map(item => {
           return {
             disabled: true,
             image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${item.productId}`,

@@ -4,7 +4,7 @@ import { call, delay, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
 import I18n from 'Locales/I18n';
-import { Base64 } from 'js-base64';
+import Repositories from 'Repositories';
 import { distance } from 'Services/salesman';
 import NavigationService from 'Navigation/service';
 import { Types as GrowlTypes } from 'Reducers/growl';
@@ -54,12 +54,9 @@ export const driverReply = function* ({
   const sID = yield select(selectedStopIdSelector);
   let imageHex = null;
   if (image) {
-    const splitImage = image.split(',');
-    const base = splitImage[splitImage.length - 1];
-    imageHex = [...Base64.atob(base)]
-      .map(c => c.charCodeAt(0).toString(16).padStart(2, 0))
-      .join('')
-      .toUpperCase();
+    let base64Image = yield Repositories.filesystem.readFile(image, 'base64');
+
+    imageHex = base64ToHex(base64Image);
   }
 
   yield put({
@@ -70,23 +67,12 @@ export const driverReply = function* ({
       image: imageHex,
       imageType
     }),
-    actions: {
-      success: { type: DeliveryTypes.DRIVER_REPLY_SUCCESS }
-    },
+    image,
     index,
     acknowledgedClaim,
     selectedStopId: sID
   });
-
   yield put({ type: TransientTypes.RESET });
-};
-
-export const driverReplySuccess = function* ({ payload }) {
-  if (payload.hasImage) {
-    Api.repositories.delivery.getDriverResponseImage(
-      payload.claimDriverResponseId
-    );
-  }
 };
 
 export const foregroundDeliveryActions = function* ({}) {
@@ -271,23 +257,31 @@ export const refreshDriverData = function* () {
 
 export const saveVehicleChecks = function* ({ saveType }) {
   const checklist = yield select(checklistSelector);
+  let vehicleCheckDamage = [];
 
-  const vehicleCheckDamage = Object.values(
+  for (let [index, damage] of Object.values(
     checklist.payload.vehicleCheckDamage
-  ).map((damage, index) => {
-    const images = damage.vehicleCheckDamageImage.map(image => ({
-      imageType: image.imageType,
-      image: base64ToHex(image.image)
-    }));
-
-    return {
+  ).entries()) {
+    vehicleCheckDamage.push({
       locationOfDamage: Object.keys(checklist.payload.vehicleCheckDamage)[
         index
       ],
       comments: damage.comments,
-      vehicleCheckDamageImage: images
-    };
-  });
+      vehicleCheckDamageImage: []
+    });
+
+    for (let image of damage.vehicleCheckDamageImage) {
+      let base64Image = yield Repositories.filesystem.readFile(
+        image.imagePath,
+        'base64'
+      );
+
+      vehicleCheckDamage[index].vehicleCheckDamageImage.push({
+        imageType: image.imageType,
+        image: base64ToHex(base64Image)
+      });
+    }
+  }
 
   yield put({
     type: Api.API_CALL,

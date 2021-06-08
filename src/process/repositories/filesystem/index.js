@@ -15,7 +15,7 @@ export default {
     }
   },
 
-  downloadFile: (params) => {
+  downloadFile: params => {
     // returns  { jobId, promise } obj if needed
     RNFS.downloadFile({
       ...params,
@@ -41,5 +41,9 @@ export default {
     }
 
     return true;
+  },
+
+  readFile: async (filepath, encoding) => {
+    return await RNFS.readFile(filepath, encoding);
   }
 };

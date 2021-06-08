@@ -18,7 +18,7 @@ export const { Types, Creators } = createActions(
       'acknowledgedClaim',
       'index'
     ],
-    driverReplySuccess: ['payload', 'index', 'selectedStopId'],
+
     foregroundDeliveryActions: null,
     getCustomerClaims: ['customerId', 'stopId'],
     getDriverDataFailure: null,
@@ -58,7 +58,7 @@ export const { Types, Creators } = createActions(
     setSelectedClaimId: ['claim'],
     setRejectDeliveryReasons: ['payload'],
     setVanDamageComment: ['key', 'comment'],
-    setVanDamageImage: ['key', 'image', 'imageType'],
+    setVanDamageImage: ['key', 'imagePath', 'imageType'],
     setVehicleChecks: ['payload'],
     startDelivering: [],
     toggleCheckJson: ['key'],
@@ -130,7 +130,8 @@ const driverReply = (
       claimId,
       comment,
       hasImage: image && imageType ? true : false,
-      responseDateTime: new Date()
+      responseDateTime: new Date(),
+      localImage: image
     };
 
     if (!acknowledgedClaim) {
@@ -166,16 +167,6 @@ const driverReply = (
     }
 
     draft.stops[selectedStopId].claims.showReplyModal = false;
-  });
-
-const driverReplySuccess = (state, { payload, index, selectedStopId }) =>
-  produce(state, draft => {
-    const driverResponsesLength =
-      state.stops[selectedStopId].claims.acknowledgedList[index].driverResponses
-        .length;
-    draft.stops[selectedStopId].claims.acknowledgedList[index].driverResponses[
-      driverResponsesLength - 1
-    ] = payload;
   });
 
 const privateIncrementDeliveredStock = (draft, { productId, quantity }) => {
@@ -545,7 +536,7 @@ export const setVanDamageComment = (state, { key, comment }) =>
     draft.checklist.payload.vehicleCheckDamage[key].comments = comment;
   });
 
-export const setVanDamageImage = (state, { key, image, imageType }) =>
+export const setVanDamageImage = (state, { key, imagePath, imageType }) =>
   produce(state, draft => {
     if (!draft.checklist.payload.vehicleCheckDamage[key]) {
       resetVanDamage(draft, key);
@@ -556,7 +547,7 @@ export const setVanDamageImage = (state, { key, image, imageType }) =>
     ];
 
     images.push({
-      image,
+      imagePath,
       imageType
     });
 
@@ -647,7 +638,6 @@ export const updateSelectedStop = (state, { sID, manualRoutes = true }) =>
 export default createReducer(initialState, {
   [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DRIVER_REPLY]: driverReply,
-  [Types.DRIVER_REPLY_SUCCESS]: driverReplySuccess,
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,

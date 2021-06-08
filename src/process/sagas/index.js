@@ -29,7 +29,6 @@ import {
 
 import {
   driverReply,
-  driverReplySuccess,
   foregroundDeliveryActions,
   getCustomerClaims,
   getDriverDataFailure,
@@ -95,7 +94,6 @@ export default function* root() {
     takeLatest(ApplicationTypes.RESET_AND_RELOAD, resetAndReload),
     takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
-    takeEvery(DeliveryTypes.DRIVER_REPLY_SUCCESS, driverReplySuccess),
 
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
     takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),

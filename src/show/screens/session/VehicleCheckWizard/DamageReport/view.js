@@ -41,9 +41,8 @@ const openPicker = (method, key, addImage) => {
     cropping: true,
 
     includeBase64: true
-  }).then((img) => {
-    addImage(key, img.data, img.mime);
-    ImagePicker.clean();
+  }).then(img => {
+    addImage(key, img.path, img.mime);
   });
 };
 
@@ -168,7 +167,7 @@ const renderSection = (
               onPress={deleteVanDamageImage.bind(null, key, index)}>
               <Image
                 source={{
-                  uri: `data:${image.imageType};base64,${image.image}`
+                  uri: image.imagePath
                 }}
                 style={{ borderRadius: defaults.borderRadius }}
                 width={sizes.list.image}
