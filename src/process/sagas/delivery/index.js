@@ -256,6 +256,7 @@ export const refreshDriverData = function* () {
 };
 
 export const saveVehicleChecks = function* ({ saveType }) {
+  NavigationService.navigate({ routeName: 'CheckIn' });
   const checklist = yield select(checklistSelector);
   let vehicleCheckDamage = [];
 
@@ -294,7 +295,6 @@ export const saveVehicleChecks = function* ({ saveType }) {
     })
   });
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
-  NavigationService.navigate({ routeName: 'CheckIn' });
 };
 
 export const setDeliveredOrRejected = function* (

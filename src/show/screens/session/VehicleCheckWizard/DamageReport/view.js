@@ -219,10 +219,11 @@ const renderSection = (
 
       <TextInput
         onChangeText={onTextChange.bind(null, setVanDamageComment, key)}
-        value={section?.comments}
+        maxLength={300}
         multiline
         multilineHeight={100}
         placeholder={I18n.t('input:placeholder.damageReport')}
+        value={section?.comments}
       />
     </ColumnView>
   );
