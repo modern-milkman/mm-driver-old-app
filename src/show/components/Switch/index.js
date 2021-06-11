@@ -3,10 +3,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform, Switch as RNSwitch } from 'react-native';
 
+import { mock } from 'Helpers';
 import { colors } from 'Theme';
 
 const Switch = props => {
-  const { onValueChange, testID, value } = props;
+  const { disabled, onValueChange, testID, value } = props;
   const trackColor = {
     false: Platform.select({
       android: colors.input
@@ -27,6 +28,7 @@ const Switch = props => {
 
   return (
     <RNSwitch
+      disabled={disabled}
       trackColor={trackColor}
       {...platformProps}
       onValueChange={onValueChange}
@@ -37,11 +39,13 @@ const Switch = props => {
 };
 
 Switch.defaultProps = {
-  onValueChange: () => {},
+  disabled: false,
+  onValueChange: mock,
   value: false
 };
 
 Switch.propTypes = {
+  disabled: PropTypes.bool,
   onValueChange: PropTypes.func,
   testID: PropTypes.string,
   value: PropTypes.bool

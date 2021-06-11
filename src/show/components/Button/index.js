@@ -32,6 +32,7 @@ const Button = props => {
     rightIcon: RightIcon,
     testID,
     textAlign,
+    textFlex,
     title,
     titleColor,
     type,
@@ -77,7 +78,7 @@ const Button = props => {
           <RowView>
             {LeftIcon && <View style={style.leftIcon}>{LeftIcon}</View>}
             <Text.Button
-              flex={1}
+              flex={textFlex}
               color={computedTitleColor}
               align={textAlign}
               weight={weight}
@@ -122,6 +123,7 @@ Button.propTypes = {
   rightIcon: PropTypes.node,
   testID: PropTypes.string,
   textAlign: PropTypes.string,
+  textFlex: PropTypes.number,
   title: PropTypes.string.isRequired,
   titleColor: PropTypes.object,
   type: PropTypes.string,
@@ -139,6 +141,7 @@ Button.defaultProps = {
   onPress: () => {},
   processing: false,
   rightIcon: null,
+  textFlex: 1,
   textAlign: 'center',
   title: '',
   type: Types.PRIMARY,

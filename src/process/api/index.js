@@ -8,7 +8,9 @@ import repositories from 'Repositories';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
+import EncryptedStorage from 'Services/encryptedStorage';
 import { Creators as DeviceActions } from 'Reducers/device';
+import * as LocalAuthentication from 'expo-local-authentication';
 import { Creators as ApplicationActions } from 'Reducers/application';
 import { blacklists, timeoutResponseStatuses, timeToHMArray } from 'Helpers';
 
@@ -76,9 +78,11 @@ const trackInAmplitude = error => {
   }
 };
 
-const refreshTokenBus = new EM();
-let refreshTokenLock = false;
-let refreshTimeout = null;
+const refreshSession = {
+  bus: new EM(),
+  lock: false,
+  timeout: null
+};
 
 const interceptors = {
   config: config => {
@@ -112,8 +116,9 @@ const interceptors = {
     }
 
     const bypassLogout =
-      [0, 1].includes(device.network.status) &&
-      device.requestQueues.offline.length === 0;
+      (device.network.status === 1 &&
+        device.requestQueues.offline.length > 0) ||
+      device.network.status === 2;
 
     if (
       !blacklists.apiEndpointFailureTracking.includes(
@@ -131,46 +136,116 @@ const interceptors = {
     }
 
     if (error.response.status === 401) {
-      if (originalRequest.url.includes('/Security/Refresh')) {
-        if (!bypassLogout) {
-          dispatch(ApplicationActions.logout());
-        }
+      if (
+        originalRequest.url.includes('/Security/Logon') ||
+        originalRequest.url.includes('/Security/Refresh')
+      ) {
         return Promise.reject(error);
       } else {
         if (new Date(user.refreshExpiry) < new Date()) {
-          if (!bypassLogout) {
-            dispatch(ApplicationActions.logout());
-          }
-          return Promise.reject(error);
-        } else {
-          if (refreshTokenLock) {
+          if (refreshSession.lock) {
             await new Promise(resolve =>
-              refreshTokenBus.once('unlocked', resolve)
+              refreshSession.bus.once('unlocked', resolve)
+            );
+          } else {
+            refreshSession.lock = true;
+
+            const { biometrics, rememberMe } = device;
+            if (biometrics.active && rememberMe) {
+              const credentials = await EncryptedStorage.get('userCredentials');
+              const biometricAuth =
+                await LocalAuthentication.authenticateAsync();
+              if (biometricAuth.success && credentials) {
+                const { email, password } = credentials;
+
+                refreshSession.timeout = setTimeout(() => {
+                  refreshSession.lock = false;
+                  refreshSession.bus.emit('unlocked');
+                }, parseInt(Config.API_TIMEOUT));
+
+                try {
+                  const refreshResponse = await repositories.user.login(
+                    email,
+                    password
+                  );
+                  clearTimeout(refreshSession.timeout);
+
+                  Api.setToken(
+                    refreshResponse.data.jwtToken,
+                    refreshResponse.data.refreshToken
+                  );
+
+                  dispatch(
+                    UserActions.updateProps({ ...refreshResponse.data })
+                  );
+                  refreshSession.lock = false;
+                  refreshSession.bus.emit('unlocked');
+                } catch (e) {
+                  clearTimeout(refreshSession.timeout);
+                  if (!bypassLogout) {
+                    dispatch(ApplicationActions.logout());
+                  }
+                  refreshSession.lock = false;
+                  refreshSession.bus.emit('unlocked');
+
+                  return Promise.reject(error);
+                }
+              } else {
+                refreshSession.lock = false;
+                if (!bypassLogout) {
+                  dispatch(ApplicationActions.logout());
+                }
+                return Promise.reject(error);
+              }
+            } else {
+              refreshSession.lock = false;
+              if (!bypassLogout) {
+                dispatch(ApplicationActions.logout());
+              }
+              return Promise.reject(error);
+            }
+          }
+
+          return api(originalRequest);
+        } else {
+          if (refreshSession.lock) {
+            await new Promise(resolve =>
+              refreshSession.bus.once('unlocked', resolve)
             );
           } else if (Api.getToken() && Api.getRefreshToken()) {
-            refreshTokenLock = true;
+            refreshSession.lock = true;
 
-            refreshTimeout = setTimeout(() => {
-              refreshTokenLock = false;
-              refreshTokenBus.emit('unlocked');
+            refreshSession.timeout = setTimeout(() => {
+              refreshSession.lock = false;
+              refreshSession.bus.emit('unlocked');
             }, parseInt(Config.API_TIMEOUT));
 
-            const refreshResponse = await repositories.user.refreshToken(
-              Api.getToken(),
-              Api.getRefreshToken()
-            );
+            try {
+              const refreshResponse = await repositories.user.refreshToken(
+                Api.getToken(),
+                Api.getRefreshToken()
+              );
 
-            clearTimeout(refreshTimeout);
+              clearTimeout(refreshSession.timeout);
 
-            Api.setToken(
-              refreshResponse.data.jwtToken,
-              refreshResponse.data.refreshToken
-            );
+              Api.setToken(
+                refreshResponse.data.jwtToken,
+                refreshResponse.data.refreshToken
+              );
 
-            dispatch(UserActions.updateProps({ ...refreshResponse.data }));
+              dispatch(UserActions.updateProps({ ...refreshResponse.data }));
 
-            refreshTokenLock = false;
-            refreshTokenBus.emit('unlocked');
+              refreshSession.lock = false;
+              refreshSession.bus.emit('unlocked');
+            } catch (e) {
+              clearTimeout(refreshSession.timeout);
+              if (!bypassLogout) {
+                dispatch(ApplicationActions.logout());
+              }
+              refreshSession.lock = false;
+              refreshSession.bus.emit('unlocked');
+              return Promise.reject(error);
+            }
           } else {
             if (!bypassLogout) {
               dispatch(ApplicationActions.logout());

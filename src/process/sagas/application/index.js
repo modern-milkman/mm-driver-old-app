@@ -3,6 +3,7 @@ import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
 import RNBootSplash from 'react-native-bootsplash';
 import { call, delay, put, select } from 'redux-saga/effects';
+import * as LocalAuthentication from 'expo-local-authentication';
 import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
@@ -10,6 +11,7 @@ import store from 'Redux/store';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { defaultRoutes, isAppInstalled } from 'Helpers';
+import EncryptedStorage from 'Services/encryptedStorage';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
 import { user as userSelector, Types as UserTypes } from 'Reducers/user';
 
@@ -19,6 +21,7 @@ import {
 } from 'Reducers/transient';
 import {
   Types as DeviceTypes,
+  biometrics as biometricsSelector,
   device as deviceSelector,
   processors as processorsSelector
 } from 'Reducers/device';
@@ -37,6 +40,46 @@ const navigationAppList = Platform.select({
 });
 
 // EXPORTED
+export const biometricDisable = function* () {
+  const biometrics = yield select(biometricsSelector);
+
+  EncryptedStorage.remove('userCredentials');
+  yield put({
+    type: DeviceTypes.UPDATE_PROPS,
+    props: {
+      rememberMe: false,
+      biometrics: {
+        ...biometrics,
+        active: false
+      }
+    }
+  });
+};
+
+export const biometricLogin = function* () {
+  const biometricAuth = yield LocalAuthentication.authenticateAsync();
+  if (biometricAuth.success) {
+    const biometrics = yield select(biometricsSelector);
+    yield put({
+      type: DeviceTypes.UPDATE_PROPS,
+      props: {
+        rememberMe: true,
+        biometrics: {
+          ...biometrics,
+          active: true
+        }
+      }
+    });
+    yield call(login, true);
+  } else {
+    yield put({
+      type: ApplicationTypes.LOGIN_ERROR,
+      status: 'BIOMETRIC_LOGIN_FAILURE',
+      data: null
+    });
+  }
+};
+
 export const dismissKeyboard = function () {
   Keyboard.dismiss();
 };
@@ -71,24 +114,44 @@ export const init = function* () {
   Analytics.trackEvent(EVENTS.APP_INIT);
 };
 
-export const login = function* () {
+export const login = function* (isBiometricLogin = false) {
   yield put({ type: ApplicationTypes.DISMISS_KEYBOARD });
+
+  const { rememberMe } = yield select(deviceSelector);
   const { email, password } = yield select(transientSelector);
+  if (rememberMe) {
+    EncryptedStorage.set('userCredentials', { email, password });
+  }
+
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: ApplicationTypes.LOGIN_SUCCESS },
       fail: { type: ApplicationTypes.LOGIN_ERROR }
     },
-    promise: Api.repositories.user.login(email, password)
+    promise: Api.repositories.user.login(email, password),
+    isBiometricLogin
   });
   Analytics.trackEvent(EVENTS.TAP_LOGIN);
 };
 
-export const login_error = function* ({ status, data }) {
+export const login_error = function* ({ status, data, isBiometricLogin }) {
   yield put({
     type: TransientTypes.UPDATE_PROPS,
-    props: { password: '', jiggleForm: true }
+    props: {
+      ...(status !== 'BIOMETRIC_LOGIN_FAILURE' && { password: '' }),
+      jiggleForm: true
+    }
+  });
+  const biometrics = yield select(biometricsSelector);
+  yield put({
+    type: DeviceTypes.UPDATE_PROPS,
+    props: {
+      biometrics: {
+        ...biometrics,
+        ...(isBiometricLogin && { active: false })
+      }
+    }
   });
   Analytics.trackEvent(EVENTS.LOGIN_ERROR, { status });
 };
@@ -111,6 +174,10 @@ export const logout = function* () {
     Api.repositories.filesystem.clear();
     Api.setToken();
   });
+};
+
+export const mounted = function* () {
+  yield call(rehydratedAndMounted);
 };
 
 export const onNavigate = function* (params) {
@@ -141,9 +208,9 @@ export const recoveringFromCrash = async function () {
 
 export const rehydrated = function* () {
   const device = yield select(deviceSelector);
-  const mounted = yield select(mountedSelector);
+  const deviceMounted = yield select(mountedSelector);
 
-  if (mounted) {
+  if (deviceMounted) {
     yield call(rehydratedAndMounted);
   }
 
@@ -160,30 +227,6 @@ export const rehydrated = function* () {
       deviceUniqueId
     });
   }
-};
-
-export const resetAndReload = function* () {
-  yield put({
-    type: ApplicationTypes.LOGOUT
-  });
-  yield put({
-    type: DeviceTypes.UPDATE_PROCESSOR,
-    processor: 'reloadingDevice',
-    value: true
-  });
-  yield delay(1000);
-  RNRestart.Restart();
-};
-
-export const sendCrashLog = function* ({ payload }) {
-  yield put({
-    type: Api.API_CALL,
-    promise: Api.repositories.crash.sendCrashLog(payload)
-  });
-};
-
-export const mounted = function* () {
-  yield call(rehydratedAndMounted);
 };
 
 export const rehydratedAndMounted = function* () {
@@ -206,8 +249,7 @@ export const rehydratedAndMounted = function* () {
 
   if (user_session) {
     if (new Date(user.refreshExpiry) < new Date()) {
-      yield call(logout);
-      RNBootSplash.hide();
+      yield call(verifyAutomatedLoginOrLogout);
     } else {
       yield call(Api.setToken, user.jwtToken, user.refreshToken);
       yield put({
@@ -223,12 +265,60 @@ export const rehydratedAndMounted = function* () {
       });
     } else {
       yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
-      RNBootSplash.hide();
     }
   }
-  DeviceInfo.getTotalMemory().then((totalMemory) => {
+  DeviceInfo.getTotalMemory().then(totalMemory => {
     Analytics.trackEvent(EVENTS.TOTAL_MEMORY, {
       totalMemory: Math.floor(totalMemory / (1024 * 1024))
     });
   });
+};
+
+export const resetAndReload = function* () {
+  yield put({
+    type: ApplicationTypes.LOGOUT
+  });
+  yield put({
+    type: DeviceTypes.UPDATE_PROCESSOR,
+    processor: 'reloadingDevice',
+    value: true
+  });
+  yield delay(1000);
+  RNRestart.Restart();
+};
+
+export const sendCrashLog = function* ({ payload }) {
+  yield put({
+    type: Api.API_CALL,
+    promise: Api.repositories.crash.sendCrashLog(payload)
+  });
+};
+
+export const verifyAutomatedLoginOrLogout = function* () {
+  const biometrics = yield select(biometricsSelector);
+  const { rememberMe } = yield select(deviceSelector);
+  if (biometrics.active && rememberMe) {
+    const credentials = yield EncryptedStorage.get('userCredentials');
+    if (credentials) {
+      yield put({
+        type: TransientTypes.UPDATE_PROPS,
+        props: {
+          ...credentials
+        }
+      });
+      InteractionManager.runAfterInteractions(() => {
+        RNBootSplash.hide();
+      });
+      yield call(biometricLogin);
+    } else {
+      InteractionManager.runAfterInteractions(() => {
+        RNBootSplash.hide();
+      });
+    }
+  } else {
+    yield call(logout);
+    InteractionManager.runAfterInteractions(() => {
+      RNBootSplash.hide();
+    });
+  }
 };

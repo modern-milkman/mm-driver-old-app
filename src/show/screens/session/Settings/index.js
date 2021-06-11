@@ -7,11 +7,12 @@ import { Creators as applicationActions } from 'Reducers/application';
 import Settings from './view';
 
 export default connect(
-  (state) => ({
-    countDown: state.device.countDown,
+  state => ({
+    biometrics: state.device.biometrics,
     buttonAccessibility: state.device.buttonAccessibility,
     computeDirections: state.device.computeDirections,
     computeShortDirections: state.device.computeShortDirections,
+    countDown: state.device.countDown,
     currentLocation: state.device.position,
     foregroundSize: state.device.foregroundSize,
     mapMarkerSize: state.device.mapMarkerSize,
@@ -23,6 +24,7 @@ export default connect(
     vibrate: state.device.vibrate
   }),
   {
+    biometricDisable: applicationActions.biometricDisable,
     logout: applicationActions.logout,
     optimizeStops: deliveryActions.optimizeStops,
     updateDeliveryProps: deliveryActions.updateProps,

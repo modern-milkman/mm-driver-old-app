@@ -5,6 +5,7 @@ import RNBootSplash from 'react-native-bootsplash';
 import { put, delay, select } from 'redux-saga/effects';
 import CompassHeading from 'react-native-compass-heading';
 import { InteractionManager, Platform } from 'react-native';
+import * as LocalAuthentication from 'expo-local-authentication';
 import {
   requestMultiple,
   PERMISSIONS,
@@ -22,6 +23,7 @@ import { userSessionPresent as userSessionPresentSelector } from 'Reducers/appli
 import {
   Types as DeviceTypes,
   Creators as DeviceCreators,
+  biometrics as biometricsSelector,
   network as networkSelector,
   processors as processorsSelector,
   requestQueues as requestQueuesSelector
@@ -54,7 +56,7 @@ export function* setLocation({ position }) {
 
   if (position?.coords?.speed < 2.5) {
     delete position.coords.heading;
-    CompassHeading.start(3, (heading) => {
+    CompassHeading.start(3, heading => {
       const { dispatch } = store().store;
       dispatch(DeviceCreators.setLocationHeading(heading));
     });
@@ -196,28 +198,51 @@ export const ensureMandatoryPermissions = function* ({ routeName }) {
     android: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION],
     ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]
   });
-  requestMultiple(mandatoryPermissions).then((statuses) => {
-    dispatch(DeviceCreators.updateProps({ permissions: statuses }));
-    const statusesArray = Platform.select({
-      android: [statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]],
-      ios: [statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]]
-    });
-    if (
-      statusesArray.includes(RESULTS.DENIED) ||
-      statusesArray.includes(RESULTS.BLOCKED) ||
-      statusesArray.includes(RESULTS.LIMITED)
-    ) {
-      NavigationService.navigate({ routeName: 'PermissionsMissing' });
-    } else {
-      if (routeName) {
-        NavigationService.navigate({ routeName });
+
+  const biometrics = yield select(biometricsSelector);
+  //https://docs.expo.io/versions/latest/sdk/local-authentication/
+  const enrolled = yield LocalAuthentication.isEnrolledAsync();
+  const supportedBiometrics =
+    yield LocalAuthentication.supportedAuthenticationTypesAsync();
+  yield put({
+    type: DeviceTypes.UPDATE_PROPS,
+    props: {
+      biometrics: {
+        supported: supportedBiometrics.length > 0,
+        enrolled,
+        active: biometrics.active
       }
-      dispatch(DeviceCreators.watchUserLocation());
     }
-    InteractionManager.runAfterInteractions(() => {
-      RNBootSplash.hide();
-    });
   });
+
+  requestMultiple(mandatoryPermissions)
+    .then(statuses => {
+      dispatch(DeviceCreators.updateProps({ permissions: statuses }));
+      const statusesArray = Platform.select({
+        android: [statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]],
+        ios: [statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]]
+      });
+      if (
+        statusesArray.includes(RESULTS.DENIED) ||
+        statusesArray.includes(RESULTS.BLOCKED) ||
+        statusesArray.includes(RESULTS.LIMITED)
+      ) {
+        NavigationService.navigate({ routeName: 'PermissionsMissing' });
+      } else {
+        if (routeName) {
+          NavigationService.navigate({ routeName });
+        }
+        dispatch(DeviceCreators.watchUserLocation());
+      }
+      InteractionManager.runAfterInteractions(() => {
+        RNBootSplash.hide();
+      });
+    })
+    .catch(() => {
+      InteractionManager.runAfterInteractions(() => {
+        RNBootSplash.hide();
+      });
+    });
 };
 
 export function* updateDeviceProps({ props }) {

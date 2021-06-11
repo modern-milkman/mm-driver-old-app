@@ -8,7 +8,8 @@ import I18n from 'Locales/I18n';
 import { CarLogo } from 'Images';
 import { colors, defaults } from 'Theme';
 import Vibration from 'Services/vibration';
-import { Button, Label, Text } from 'Components';
+import EncryptedStorage from 'Services/encryptedStorage';
+import { Button, Icon, Label, Switch, Text } from 'Components';
 import { jiggleAnimation, mock, deviceFrame } from 'Helpers';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
@@ -19,7 +20,8 @@ const logoSize = 100;
 const minimumKeyboardHeight = 300;
 const minimumRequiredHeight =
   textInputHeight('large') * 2 +
-  Text.Button.height +
+  Text.Button.height * 2 +
+  Text.Label.height +
   Text.Caption.height +
   logoSize +
   Text.Heading.height +
@@ -27,6 +29,17 @@ const minimumRequiredHeight =
   defaults.marginVertical * 2; // make things look spacious
 const focusPassword = () => {
   passwordReference?.current?.focus();
+};
+
+const checkRememberMe = async updateTransientProps => {
+  const credentials = await EncryptedStorage.get('userCredentials');
+  if (credentials) {
+    const { email, password } = credentials;
+    updateTransientProps({
+      password,
+      email
+    });
+  }
 };
 
 const focusEmail = () => {
@@ -37,6 +50,38 @@ const focusEmail = () => {
 
 let hasSmallHeight =
   deviceFrame().height - minimumKeyboardHeight < minimumRequiredHeight;
+
+const renderBiometrics = ({
+  biometrics,
+  biometricLogin,
+  processing,
+  disabledLogin
+}) => (
+  <>
+    <RowView marginVertical={defaults.marginVertical / 2}>
+      <Text.Label align={'center'} color={colors.inputDark}>
+        {I18n.t('general:or')}
+      </Text.Label>
+    </RowView>
+    <Button.Secondary
+      leftIcon={
+        <Icon
+          name={'fingerprint'}
+          color={colors.white}
+          size={40}
+          containerSize={40}
+        />
+      }
+      textFlex={0}
+      title={I18n.t(
+        `screens:home.biometrics.${biometrics.active ? 'login' : 'setup'}`
+      )}
+      onPress={biometricLogin}
+      processing={processing}
+      disabled={disabledLogin}
+    />
+  </>
+);
 
 const renderLogo = () => (
   <ColumnView
@@ -54,6 +99,45 @@ const renderLogo = () => (
   </ColumnView>
 );
 
+const renderRememberMe = ({
+  rememberMe,
+  updateDeviceProps,
+  updateTransientProps
+}) => (
+  <RowView
+    justifyContent={'space-between'}
+    width={'auto'}
+    marginVertical={defaults.marginVertical}>
+    <Text.List color={colors.inputDark}>
+      {I18n.t('screens:home.rememberMe')}
+    </Text.List>
+    <Switch
+      value={rememberMe}
+      onValueChange={updateRememberMe.bind(
+        null,
+        updateDeviceProps,
+        updateTransientProps
+      )}
+    />
+  </RowView>
+);
+
+const updateRememberMe = (
+  updateDeviceProps,
+  updateTransientProps,
+  rememberMe
+) => {
+  if (!rememberMe) {
+    updateTransientProps({
+      password: '',
+      email: ''
+    });
+    focusEmail();
+    EncryptedStorage.remove('userCredentials');
+  }
+  updateDeviceProps({ rememberMe });
+};
+
 const updateTransient = (updateTransientProps, prop, value) => {
   const update = {};
   update[`${prop}`] = value;
@@ -62,6 +146,8 @@ const updateTransient = (updateTransientProps, prop, value) => {
 
 const Home = props => {
   const {
+    biometrics,
+    biometricLogin,
     email,
     emailErrorMessage,
     emailHasError,
@@ -70,11 +156,16 @@ const Home = props => {
     network,
     password,
     processing,
+    rememberMe,
+    updateDeviceProps,
     updateApplicationProps,
     updateTransientProps
   } = props;
 
   const [animatedValue] = useState(new Animated.Value(0));
+  const [bioSandE, setbioSandE] = useState(
+    biometrics.supported && biometrics.enrolled && biometrics.active
+  );
 
   useEffect(() => {
     if (jiggleForm) {
@@ -107,8 +198,16 @@ const Home = props => {
         justifyContent={'space-between'}
         alignItems={'stretch'}
         backgroundColor={colors.neutral}
-        minHeight={minimumRequiredHeight}>
-        <NavigationEvents onDidFocus={focusEmail} onDidBlur={reset} />
+        minHeight={minimumRequiredHeight}
+        scrollable>
+        <NavigationEvents
+          onDidFocus={
+            rememberMe
+              ? checkRememberMe.bind(null, updateTransientProps)
+              : focusEmail
+          }
+          onDidBlur={reset}
+        />
         {!hasSmallHeight && renderLogo(true)}
         <ColumnView
           flex={hasSmallHeight ? 2 : 3}
@@ -124,43 +223,90 @@ const Home = props => {
           }
           marginHorizontal={defaults.marginHorizontal}
           width={'auto'}>
-          <TextInput
-            autoCapitalize={'none'}
-            error={emailHasError}
-            errorMessage={emailErrorMessage}
-            keyboardType={'email-address'}
-            onChangeText={updateTransient.bind(
-              null,
-              updateTransientProps,
-              'email'
-            )}
-            onSubmitEditing={focusPassword}
-            placeholder={I18n.t('input:placeholder.email')}
-            ref={emailReference}
-            returnKeyType={'next'}
-            value={email}
-          />
-          <TextInput
-            autoCapitalize={'none'}
-            keyboardType={'default'}
-            onChangeText={updateTransient.bind(
-              null,
-              updateTransientProps,
-              'password'
-            )}
-            onSubmitEditing={disabledLogin ? mock : login}
-            placeholder={I18n.t('input:placeholder.password')}
-            ref={passwordReference}
-            returnKeyType={'go'}
-            secureTextEntry
-            value={password}
-          />
-          <Button.Primary
-            title={I18n.t('general:login')}
-            onPress={login}
-            processing={processing}
-            disabled={disabledLogin}
-          />
+          {!bioSandE && (
+            <>
+              <TextInput
+                autoCapitalize={'none'}
+                error={emailHasError}
+                errorMessage={emailErrorMessage}
+                keyboardType={'email-address'}
+                onChangeText={updateTransient.bind(
+                  null,
+                  updateTransientProps,
+                  'email'
+                )}
+                onSubmitEditing={focusPassword}
+                placeholder={I18n.t('input:placeholder.email')}
+                ref={emailReference}
+                returnKeyType={'next'}
+                value={email}
+              />
+              <TextInput
+                autoCapitalize={'none'}
+                keyboardType={'default'}
+                onChangeText={updateTransient.bind(
+                  null,
+                  updateTransientProps,
+                  'password'
+                )}
+                onSubmitEditing={disabledLogin ? mock : login}
+                placeholder={I18n.t('input:placeholder.password')}
+                ref={passwordReference}
+                returnKeyType={'go'}
+                secureTextEntry
+                value={password}
+              />
+              <Button.Primary
+                title={I18n.t('general:login')}
+                onPress={login}
+                processing={processing}
+                disabled={disabledLogin}
+              />
+              {biometrics.supported && biometrics.enrolled
+                ? renderBiometrics({
+                    biometrics,
+                    biometricLogin,
+                    processing,
+                    disabledLogin
+                  })
+                : renderRememberMe({
+                    rememberMe,
+                    updateDeviceProps,
+                    updateTransientProps
+                  })}
+            </>
+          )}
+
+          {bioSandE && (
+            <>
+              <Button.Primary
+                leftIcon={
+                  <Icon
+                    name={'fingerprint'}
+                    color={colors.white}
+                    size={40}
+                    containerSize={40}
+                    disabled
+                  />
+                }
+                textFlex={0}
+                title={I18n.t('screens:home.biometrics.login')}
+                onPress={biometricLogin}
+                processing={processing}
+                disabled={!rememberMe}
+              />
+              <RowView marginVertical={defaults.marginVertical / 2}>
+                <Text.Label align={'center'} color={colors.inputDark}>
+                  {I18n.t('general:or')}
+                </Text.Label>
+              </RowView>
+              <Button.Secondary
+                title={I18n.t('screens:home.standard.login')}
+                onPress={setbioSandE.bind(null, !bioSandE)}
+              />
+            </>
+          )}
+
           {[1, 2].includes(network.status) && (
             <RowView marginTop={defaults.marginVertical / 2}>
               <Label text={I18n.t('general:offline')} />
@@ -168,7 +314,9 @@ const Home = props => {
           )}
         </ColumnView>
 
-        {hasSmallHeight && renderLogo()}
+        {hasSmallHeight &&
+          ((biometrics.supported && bioSandE) || !biometrics.supported) &&
+          renderLogo()}
         <RowView
           flex={hasSmallHeight ? 0 : 1}
           justifyContent={'center'}
@@ -194,6 +342,8 @@ Home.defaultProps = {
 };
 
 Home.propTypes = {
+  biometrics: PropTypes.object,
+  biometricLogin: PropTypes.func,
   email: PropTypes.string,
   emailHasError: PropTypes.bool,
   emailErrorMessage: PropTypes.string,
@@ -202,6 +352,8 @@ Home.propTypes = {
   network: PropTypes.object,
   password: PropTypes.string,
   processing: PropTypes.bool,
+  rememberMe: PropTypes.bool,
+  updateDeviceProps: PropTypes.func,
   updateApplicationProps: PropTypes.func,
   updateTransientProps: PropTypes.func
 };

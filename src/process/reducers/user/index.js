@@ -16,7 +16,7 @@ const initialState = {};
 export const reset = () => initialState;
 
 export const setDriver = (state, { payload }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft = { ...state, ...payload };
     return draft;
   });
@@ -26,5 +26,5 @@ export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps
 });
 
-export const name = (state) => state.user.name;
-export const user = (state) => state.user;
+export const name = state => state.user.name;
+export const user = state => state.user;

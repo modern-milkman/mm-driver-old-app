@@ -63,6 +63,14 @@
       }
     },
     "settings": {
+      "biometrics": {
+        "title": "Disable biometrics?",
+        "message": "By disabling biometric authentication you will need to login with your email and password in the future."
+      },
+      "logout": {
+        "title": "Why log out?",
+        "message": "There's no need to log out of the Driver app. Simply open the app later on to check on updated or new routes assigned to you."
+      },
       "offline": {
         "directions": {
           "title": "Delivery directions unavailable!",

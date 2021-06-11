@@ -12,6 +12,8 @@ import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/act
 
 // SAGAS
 import {
+  biometricLogin,
+  biometricDisable,
   dismissKeyboard,
   init,
   login_error,
@@ -24,7 +26,8 @@ import {
   recoveringFromCrash,
   rehydrated,
   resetAndReload,
-  sendCrashLog
+  sendCrashLog,
+  verifyAutomatedLoginOrLogout
 } from './application';
 
 import {
@@ -80,6 +83,8 @@ export default function* root() {
 
     takeLatest('APP_STATE.FOREGROUND', foregroundDeliveryActions),
 
+    takeLatest(ApplicationTypes.BIOMETRIC_DISABLE, biometricDisable),
+    takeLatest(ApplicationTypes.BIOMETRIC_LOGIN, biometricLogin),
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
     takeLatest(ApplicationTypes.INIT, init),
     takeLatest(ApplicationTypes.LOGIN, login),
@@ -93,6 +98,11 @@ export default function* root() {
     takeLatest(ApplicationTypes.REHYDRATED, rehydrated),
     takeLatest(ApplicationTypes.RESET_AND_RELOAD, resetAndReload),
     takeEvery(ApplicationTypes.SEND_CRASH_LOG, sendCrashLog),
+    takeLatest(
+      ApplicationTypes.VERIFY_AUTOMATED_LOGIN_OR_LOGOUT,
+      verifyAutomatedLoginOrLogout
+    ),
+
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
 
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),

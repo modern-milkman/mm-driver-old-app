@@ -18,6 +18,23 @@ import {
   Switch
 } from 'Components';
 
+const disableBiometrics = biometricDisable => {
+  Alert({
+    title: I18n.t('alert:success.settings.biometrics.title'),
+    message: I18n.t('alert:success.settings.biometrics.message'),
+    buttons: [
+      {
+        text: I18n.t('general:cancel'),
+        style: 'cancel'
+      },
+      {
+        text: I18n.t('general:disable'),
+        onPress: biometricDisable
+      }
+    ]
+  });
+};
+
 const onForegroundSizeChange = (updateDeviceProps, value) => {
   updateDeviceProps({ foregroundSize: value ? 'large' : 'small' });
 };
@@ -48,7 +65,20 @@ const toggleDeviceProp = (updateDeviceProps, prop, value) => {
 
 const triggerLogout = ({ logout, network }) => {
   if (network.status === 0) {
-    performLogout(logout);
+    Alert({
+      title: I18n.t('alert:success.settings.logout.title'),
+      message: I18n.t('alert:success.settings.logout.message'),
+      buttons: [
+        {
+          text: I18n.t('general:cancel'),
+          style: 'cancel'
+        },
+        {
+          text: I18n.t('general:logout'),
+          onPress: performLogout.bind(null, logout)
+        }
+      ]
+    });
   } else {
     Alert({
       title: I18n.t('alert:success.settings.offline.logout.title'),
@@ -79,10 +109,12 @@ const onOptimization = (
 
 const Settings = props => {
   const {
-    countDown,
+    biometrics,
+    biometricDisable,
     buttonAccessibility,
     computeDirections,
     computeShortDirections,
+    countDown,
     currentLocation,
     foregroundSize,
     logout,
@@ -340,6 +372,36 @@ const Settings = props => {
           </RowView>
 
           <Separator />
+
+          {biometrics.supported && (
+            <>
+              <ListHeader
+                title={I18n.t('screens:settings.sections.authentication')}
+              />
+
+              <RowView
+                marginHorizontal={defaults.marginHorizontal}
+                justifyContent={'space-between'}
+                marginVertical={defaults.marginVertical / 2}
+                width={'auto'}>
+                <ColumnView flex={1} alignItems={'flex-start'}>
+                  <Text.List color={colors.secondary}>
+                    {I18n.t('screens:home.biometrics.login')}
+                  </Text.List>
+                  <Text.Caption color={colors.secondary}>
+                    {I18n.t('screens:settings.switches.biometricsDisabled')}
+                  </Text.Caption>
+                </ColumnView>
+                <Switch
+                  value={biometrics.active}
+                  onValueChange={disableBiometrics.bind(null, biometricDisable)}
+                  disabled={!biometrics.active}
+                />
+              </RowView>
+
+              <Separator />
+            </>
+          )}
         </ColumnView>
         <RowView
           alignItems={'stretch'}
@@ -358,10 +420,12 @@ const Settings = props => {
 };
 
 Settings.propTypes = {
-  countDown: PropTypes.bool,
+  biometrics: PropTypes.object,
+  biometricDisable: PropTypes.func,
   buttonAccessibility: PropTypes.number,
   computeDirections: PropTypes.bool,
   computeShortDirections: PropTypes.bool,
+  countDown: PropTypes.bool,
   currentLocation: PropTypes.object,
   foregroundSize: PropTypes.string,
   logout: PropTypes.func,

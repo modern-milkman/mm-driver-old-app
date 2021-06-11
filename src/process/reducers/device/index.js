@@ -26,6 +26,11 @@ export const { Types, Creators } = createActions(
 
 const initialState = {
   appcenter: null,
+  biometrics: {
+    supported: false,
+    enrolled: false,
+    active: false
+  },
   buttonAccessibility: sizes.button.large,
   computeDirections: false,
   computeShortDirections: false,
@@ -68,23 +73,23 @@ const initialState = {
   vibrate: true
 };
 
-export const clearFailedRequests = (state) =>
-  produce(state, (draft) => {
+export const clearFailedRequests = state =>
+  produce(state, draft => {
     draft.requestQueues.failed = [];
   });
 
 export const pushRequest = (state, { queue, payload }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.requestQueues[queue].push({ datetime: Date.now(), ...payload });
   });
 
 export const setLatestApp = (state, action) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.appcenter = action.payload;
   });
 
 export const setLocation = (state, action) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     const { position } = action;
     if (
       position &&
@@ -99,7 +104,7 @@ export const setLocation = (state, action) =>
   });
 
 export const setLocationHeading = (state, action) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     const { heading } = action;
     if (draft.position) {
       draft.position.heading = heading;
@@ -107,7 +112,7 @@ export const setLocationHeading = (state, action) =>
   });
 
 export const updateNetworkProps = (state, { props }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     let data = { ...props };
 
     if (props.status) {
@@ -125,17 +130,17 @@ export const updateNetworkProps = (state, { props }) =>
   });
 
 export const updateProcessor = (state, { processor, value }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.processors[processor] = value;
   });
 
 export const setMapMode = (state, action) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.mapMode = action.mode;
   });
 
 export const syncOffline = (state, { lastRequest, status }) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     if (!lastRequest) {
       draft.requestQueues.syncHasErrors = false;
       draft.requestQueues.toSync = draft.requestQueues.offline.length;
@@ -171,7 +176,8 @@ export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps
 });
 
-export const device = (state) => state.device;
-export const network = (state) => state.device.network;
-export const requestQueues = (state) => state.device.requestQueues;
-export const processors = (state) => state.device.processors;
+export const biometrics = state => state.device.biometrics;
+export const device = state => state.device;
+export const network = state => state.device.network;
+export const requestQueues = state => state.device.requestQueues;
+export const processors = state => state.device.processors;
