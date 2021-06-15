@@ -160,7 +160,8 @@ export const login_success = function* ({ payload }) {
   yield call(Api.setToken, payload.jwtToken, payload.refreshToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
   yield put({ type: UserTypes.GET_DRIVER });
-  yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
+  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
+
   NavigationService.navigate({ routeName: defaultRoutes.session });
   Analytics.trackEvent(EVENTS.LOGIN_SUCCESSFUL);
 };

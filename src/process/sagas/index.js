@@ -33,6 +33,7 @@ import {
 import {
   driverReply,
   foregroundDeliveryActions,
+  getCannedContent,
   getCustomerClaims,
   getDriverDataFailure,
   getDriverReplyImage,
@@ -104,7 +105,11 @@ export default function* root() {
     ),
 
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
-
+    takeEvery(
+      DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS,
+      foregroundDeliveryActions
+    ),
+    takeLatest(DeliveryTypes.GET_CANNED_CONTENT, getCannedContent),
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
     takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),

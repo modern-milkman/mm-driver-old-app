@@ -20,6 +20,7 @@ export const { Types, Creators } = createActions(
     ],
 
     foregroundDeliveryActions: null,
+    getCannedContent: null,
     getCustomerClaims: ['customerId', 'stopId'],
     getDriverDataFailure: null,
     getDriverReplyImage: ['driverResponses', 'claimIndex', 'stopId'],
@@ -44,6 +45,7 @@ export const { Types, Creators } = createActions(
     setDelivered: ['id', 'selectedStopId', 'outOfStockIds'],
     setDirectionsPolyline: ['payload'],
     showMustComplyWithTerms: null,
+    setCannedContent: ['payload'],
     setItemOutOfStock: ['id'],
     setMileage: ['mileage'],
     setProductsOrder: ['payload'],
@@ -85,6 +87,7 @@ const initialVehicleChecks = {
 
 const initialState = {
   allItemsDone: false,
+  cannedContent: [],
   checklist: {
     deliveryComplete: false,
     loadedVan: false,
@@ -477,6 +480,11 @@ export const saveVehicleChecks = (state, { saveType }) =>
     }
   });
 
+export const setCannedContent = (state, { payload }) =>
+  produce(state, draft => {
+    draft.cannedContent = payload;
+  });
+
 export const setCustomerClaims = (state, { payload, stopId }) =>
   produce(state, draft => {
     const unacknowledgedList = [];
@@ -659,6 +667,7 @@ export default createReducer(initialState, {
   [Types.REDIRECT_SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
   [Types.RESET_CHECKLIST_PAYLOAD]: resetChecklistPayload,
   [Types.SAVE_VEHICLE_CHECKS]: saveVehicleChecks,
+  [Types.SET_CANNED_CONTENT]: setCannedContent,
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED]: setDeliveredOrRejected,
   [Types.SET_DIRECTIONS_POLYLINE]: setDirectionsPolyline,

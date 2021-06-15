@@ -12,6 +12,9 @@ export default {
       imageType
     });
   },
+  getCannedContent() {
+    return Api.get('/CannedContent/GetByContentType/2');
+  },
   getCustomerClaims({ customerId }) {
     return Api.get(`/Claim/GetDriverClaims/${customerId}`);
   },

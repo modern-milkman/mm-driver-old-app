@@ -16,6 +16,7 @@ import {
   Button,
   Text,
   TextInput,
+  Icon,
   Image,
   Label,
   List,
@@ -48,6 +49,24 @@ const openActionSheet = ({ driverResponse, updateDriverResponse }) => {
   });
 };
 
+const openCannedContent = ({
+  driverResponse,
+  updateDriverResponse,
+  cannedContent
+}) => {
+  const actions = {};
+
+  for (let cc of cannedContent) {
+    actions[cc.name] = updateDriverResponse.bind(null, {
+      text: cc.description,
+      image: driverResponse.path,
+      imageType: driverResponse.mime
+    });
+  }
+
+  actionSheet(actions);
+};
+
 const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
   ImagePicker[method]({
     width: 1000,
@@ -62,7 +81,11 @@ const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
   });
 };
 
-const renderReplyBody = ({ driverResponse, updateDriverResponse }) => {
+const renderReplyBody = ({
+  driverResponse,
+  updateDriverResponse,
+  cannedContent
+}) => {
   return (
     <ColumnView
       paddingTop={defaults.marginVertical}
@@ -121,6 +144,30 @@ const renderReplyBody = ({ driverResponse, updateDriverResponse }) => {
             })}
           />
         )}
+
+        <TouchableOpacity
+          onPress={openCannedContent.bind(null, {
+            driverResponse,
+            updateDriverResponse,
+            cannedContent
+          })}>
+          <RowView
+            marginLeft={defaults.marginVertical / 4}
+            justifyContent={'flex-start'}
+            width={sizes.list.image}
+            height={sizes.list.image}
+            backgroundColor={colors.secondary}
+            borderRadius={defaults.borderRadius}>
+            <Icon
+              name={'quickreply'}
+              type={'material'}
+              size={sizes.list.image / 2}
+              containerSize={44}
+              color={colors.input}
+              disabled
+            />
+          </RowView>
+        </TouchableOpacity>
       </RowView>
     </ColumnView>
   );
@@ -183,6 +230,7 @@ const updateText = (updateDriverResponse, driverResponse, text) => {
 
 const CustomerIssueModal = props => {
   const {
+    cannedContent,
     claims: {
       acknowledgedList,
       selectedClaimId,
@@ -296,7 +344,11 @@ const CustomerIssueModal = props => {
           <Separator color={colors.input} width={'100%'} />
 
           {showReplyModal
-            ? renderReplyBody({ driverResponse, updateDriverResponse })
+            ? renderReplyBody({
+                driverResponse,
+                updateDriverResponse,
+                cannedContent
+              })
             : renderCustomerIssueBody({
                 customerComment: selectedClaimData?.customerComment,
                 reason: selectedClaimData?.reason,
@@ -347,6 +399,7 @@ const CustomerIssueModal = props => {
 };
 
 CustomerIssueModal.propTypes = {
+  cannedContent: PropTypes.array,
   claims: PropTypes.object,
   driverReply: PropTypes.func,
   driverResponse: PropTypes.object,
@@ -355,6 +408,7 @@ CustomerIssueModal.propTypes = {
 };
 
 CustomerIssueModal.defaultProps = {
+  cannedContent: [],
   claims: {},
   driverReply: mock,
   driverResponse: {},

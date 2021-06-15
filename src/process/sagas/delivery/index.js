@@ -80,7 +80,19 @@ export const foregroundDeliveryActions = function* ({}) {
   const user_session = yield select(userSessionPresentSelector);
   if (status === DS.NCI && user_session) {
     yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
+    yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
+    yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
   }
+};
+
+export const getCannedContent = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_CANNED_CONTENT }
+    },
+    promise: Api.repositories.delivery.getCannedContent()
+  });
 };
 
 export const getCustomerClaims = function* ({ customerId, stopId }) {

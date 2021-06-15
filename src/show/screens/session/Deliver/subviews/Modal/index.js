@@ -6,12 +6,13 @@ import { Creators as transientActions } from 'Reducers/transient';
 import CustomerIssueModal from './view';
 
 export default connect(
-  (state) => {
+  state => {
     const selectedStopId = state.delivery?.selectedStopId;
 
     return {
-      driverResponse: { ...state.transient },
-      claims: state.delivery?.stops[selectedStopId].claims
+      cannedContent: state.delivery?.cannedContent,
+      claims: state.delivery?.stops[selectedStopId].claims,
+      driverResponse: { ...state.transient }
     };
   },
   {
