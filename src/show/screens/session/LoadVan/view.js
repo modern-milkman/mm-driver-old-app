@@ -17,6 +17,7 @@ const doneLoadedVan = (updateChecklistProps) => {
 
 const LoadVan = (props) => {
   const {
+    additionalItemCount,
     deliveredStock,
     itemCount,
     orderedStock,
@@ -27,17 +28,24 @@ const LoadVan = (props) => {
   let deliveredTotal = 0;
   const mappedStock = orderedStock.map((stockItem) => {
     deliveredTotal += deliveredStock[stockItem.key] || 0;
+    const combinedItemQuantity = stockItem.additionalQuantity
+      ? `${stockItem.quantity} (${stockItem.additionalQuantity})`
+      : stockItem.quantity;
     return {
       ...stockItem,
       miscelaneousTop: readOnly
-        ? `${stockItem.quantity - (deliveredStock[stockItem.key] || 0)} / ${
-            stockItem.quantity
-          }`
-        : stockItem.quantity,
+        ? `${
+            stockItem.quantity - (deliveredStock[stockItem.key] || 0)
+          } / ${combinedItemQuantity}`
+        : combinedItemQuantity,
       image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
       customIcon: 'productPlaceholder'
     };
   });
+
+  const combinedItemCount = additionalItemCount
+    ? `${itemCount} (${additionalItemCount})`
+    : itemCount;
 
   return (
     <SafeAreaView top bottom>
@@ -50,8 +58,8 @@ const LoadVan = (props) => {
           leftIconAction={NavigationService.goBack}
           title={`${
             readOnly
-              ? `${itemCount - deliveredTotal} / ${itemCount}`
-              : itemCount
+              ? `${itemCount - deliveredTotal} / ${combinedItemCount}`
+              : combinedItemCount
           } ${I18n.t('screens:loadVan.title')}`}
           rightText={readOnly ? null : I18n.t('screens:loadVan.done')}
           rightAction={doneLoadedVan.bind(null, updateChecklistProps)}
@@ -63,6 +71,7 @@ const LoadVan = (props) => {
 };
 
 LoadVan.propTypes = {
+  additionalItemCount: PropTypes.number,
   deliveredStock: PropTypes.object,
   itemCount: PropTypes.number,
   orderedStock: PropTypes.array,
@@ -71,6 +80,7 @@ LoadVan.propTypes = {
 };
 
 LoadVan.defaultProps = {
+  additionalItemCount: 0,
   deliveredStock: {},
   itemCount: 0,
   orderedStock: [],

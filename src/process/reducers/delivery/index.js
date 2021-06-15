@@ -203,12 +203,14 @@ export const getVehicleStockForDriverSuccess = (
     const misplacedProducts = {};
 
     draft.itemCount = 0;
+    draft.additionalItemCount = 0;
     draft.stock = payload;
     draft.hasRoutes = payload.length > 0;
     draft.orderedStock = [];
     for (const route of payload) {
       route.vehicleStockItems.forEach(item => {
         const formattedProduct = {
+          additionalQuantity: route.isAdditionalStock ? item.quantity : 0,
           description: item.measureDescription,
           disabled: true, // items in load van should not be tappable
           key: item.productId,
@@ -224,17 +226,28 @@ export const getVehicleStockForDriverSuccess = (
 
           if (draft.orderedStock[productSortedIndex]) {
             draft.orderedStock[productSortedIndex].quantity += item.quantity;
+            if (route.isAdditionalStock) {
+              draft.orderedStock[productSortedIndex].additionalQuantity +=
+                item.quantity;
+            }
           } else {
             draft.orderedStock[productSortedIndex] = formattedProduct;
           }
         } else {
           if (misplacedProducts[item.productId]) {
             misplacedProducts[item.productId].quantity += item.quantity;
+            if (route.isAdditionalStock) {
+              misplacedProducts[item.productId].additionalQuantity +=
+                item.quantity;
+            }
           } else {
             misplacedProducts[item.productId] = formattedProduct;
           }
         }
         draft.itemCount += item.quantity;
+        if (route.isAdditionalStock) {
+          draft.additionalItemCount += item.quantity;
+        }
       });
     }
     draft.orderedStock = draft.orderedStock.filter(product => product);
@@ -667,6 +680,8 @@ export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps,
   [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
 });
+
+export const additionalItemCount = state => state.delivery?.additionalItemCount;
 
 export const checklist = state => state.delivery?.checklist;
 
