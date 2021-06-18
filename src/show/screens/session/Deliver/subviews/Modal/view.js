@@ -54,6 +54,9 @@ const openCannedContent = ({
   updateDriverResponse,
   cannedContent
 }) => {
+  if (cannedContent.length <= 0) {
+    return;
+  }
   const actions = {};
 
   for (let cc of cannedContent) {
@@ -145,29 +148,31 @@ const renderReplyBody = ({
           />
         )}
 
-        <TouchableOpacity
-          onPress={openCannedContent.bind(null, {
-            driverResponse,
-            updateDriverResponse,
-            cannedContent
-          })}>
-          <RowView
-            marginLeft={defaults.marginVertical / 4}
-            justifyContent={'flex-start'}
-            width={sizes.list.image}
-            height={sizes.list.image}
-            backgroundColor={colors.secondary}
-            borderRadius={defaults.borderRadius}>
-            <Icon
-              name={'quickreply'}
-              type={'material'}
-              size={sizes.list.image / 2}
-              containerSize={44}
-              color={colors.input}
-              disabled
-            />
-          </RowView>
-        </TouchableOpacity>
+        {cannedContent.length > 0 && (
+          <TouchableOpacity
+            onPress={openCannedContent.bind(null, {
+              driverResponse,
+              updateDriverResponse,
+              cannedContent
+            })}>
+            <RowView
+              marginLeft={defaults.marginVertical / 4}
+              justifyContent={'flex-start'}
+              width={sizes.list.image}
+              height={sizes.list.image}
+              backgroundColor={colors.secondary}
+              borderRadius={defaults.borderRadius}>
+              <Icon
+                name={'quickreply'}
+                type={'material'}
+                size={sizes.list.image / 2}
+                containerSize={44}
+                color={colors.input}
+                disabled
+              />
+            </RowView>
+          </TouchableOpacity>
+        )}
       </RowView>
     </ColumnView>
   );
