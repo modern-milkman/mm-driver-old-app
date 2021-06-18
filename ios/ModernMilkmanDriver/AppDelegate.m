@@ -71,8 +71,9 @@ static void InitializeFlipper(UIApplication *application) {
   [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
 
-  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
   [FIRApp configure];
+  
+  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
   return YES;
 }
 
