@@ -42,6 +42,7 @@ const Image = props => {
     return source && source.uri
       ? {
           ...source,
+          cache: 'reload',
           headers: requiresAuthentication ? headers : {}
         }
       : null;
