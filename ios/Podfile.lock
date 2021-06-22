@@ -443,11 +443,11 @@ PODS:
     - React-Core
   - react-native-geolocation (2.0.2):
     - React
-  - react-native-google-maps (0.28.0):
+  - react-native-google-maps (0.29.0):
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.5.0)
     - React-Core
-  - react-native-maps (0.28.0):
+  - react-native-maps (0.29.0):
     - React-Core
   - react-native-netinfo (6.0.0):
     - React-Core
@@ -931,8 +931,8 @@ SPEC CHECKSUMS:
   react-native-config: c98128a72bc2c3a1ca72caec0b021f0fa944aa29
   react-native-encrypted-storage: e78d848ce0fb663c2ce306e37921d026809322e6
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
-  react-native-google-maps: 46dea4aa4acb7300beff508f64d9f8c84e9fb106
-  react-native-maps: 2d405b4e8cee0282e4c02bac434d81450dfea877
+  react-native-google-maps: 54a19be628292d79d0aaec5277e97f6b17c158dd
+  react-native-maps: e3dbe21292c4b611209e2ccf1b07db58568f66fc
   react-native-netinfo: e849fc21ca2f4128a5726c801a82fc6f4a6db50d
   react-native-restart: 733a51ad137f15b0f8dc34c4082e55af7da00979
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79

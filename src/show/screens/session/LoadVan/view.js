@@ -10,12 +10,12 @@ import { List, NavBar } from 'Components';
 import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView } from 'Containers';
 
-const doneLoadedVan = (updateChecklistProps) => {
+const doneLoadedVan = updateChecklistProps => {
   updateChecklistProps({ loadedVan: true });
   NavigationService.goBack();
 };
 
-const LoadVan = (props) => {
+const LoadVan = props => {
   const {
     additionalItemCount,
     deliveredStock,
@@ -26,7 +26,7 @@ const LoadVan = (props) => {
   } = props;
 
   let deliveredTotal = 0;
-  const mappedStock = orderedStock.map((stockItem) => {
+  const mappedStock = orderedStock.map(stockItem => {
     deliveredTotal += deliveredStock[stockItem.key] || 0;
     const combinedItemQuantity = stockItem.additionalQuantity
       ? `${stockItem.quantity} (${stockItem.additionalQuantity})`

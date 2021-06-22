@@ -9,7 +9,7 @@ import {
 import LoadVan from './view';
 
 export default connect(
-  (state) => ({
+  state => ({
     additionalItemCount: additionalItemCount(state),
     itemCount: itemCount(state),
     deliveredStock: state.delivery?.deliveredStock,
