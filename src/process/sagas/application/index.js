@@ -23,7 +23,8 @@ import {
   Types as DeviceTypes,
   biometrics as biometricsSelector,
   device as deviceSelector,
-  processors as processorsSelector
+  processors as processorsSelector,
+  position as positionSelector
 } from 'Reducers/device';
 import {
   lastRoute as lastRouteSelector,
@@ -85,6 +86,7 @@ export const dismissKeyboard = function () {
 };
 
 export const init = function* () {
+  const position = yield select(positionSelector);
   const availableNavApps = [];
   for (const appName of navigationAppList) {
     if (yield isAppInstalled(appName)) {
@@ -95,7 +97,13 @@ export const init = function* () {
   yield put({
     type: DeviceTypes.UPDATE_PROPS,
     props: {
-      availableNavApps
+      availableNavApps,
+      position: {
+        //FIXME Delete after next release
+        heading: 0,
+        latitude: position.latitude,
+        longitude: position.longitude
+      }
     }
   });
 
