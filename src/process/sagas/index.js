@@ -8,7 +8,10 @@ import { Types as GrowlTypes } from 'Reducers/growl';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
 import { watchLocationChannel } from 'redux-saga-location';
-import { REDUX_SAGA_LOCATION_ACTION_SET_POSITION } from 'redux-saga-location/actions';
+import {
+  REDUX_SAGA_LOCATION_ACTION_SET_ERROR,
+  REDUX_SAGA_LOCATION_ACTION_SET_POSITION
+} from 'redux-saga-location/actions';
 
 // SAGAS
 import {
@@ -61,6 +64,7 @@ import {
 
 import {
   ensureMandatoryPermissions,
+  locationError,
   lowConnectionUpdate,
   reduxSagaNetstatChange,
   setLocation,
@@ -173,6 +177,7 @@ export default function* root() {
 
     takeEvery(UserTypes.GET_DRIVER, getDriver),
 
+    takeLatest(REDUX_SAGA_LOCATION_ACTION_SET_ERROR, locationError),
     takeLatest(REDUX_SAGA_LOCATION_ACTION_SET_POSITION, setLocation)
   ]);
 }

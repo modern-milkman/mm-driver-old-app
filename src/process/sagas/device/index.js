@@ -17,6 +17,7 @@ import store from 'Redux/store';
 import I18n from 'Locales/I18n';
 import NavigationService from 'Navigation/service';
 import { user as userSelector } from 'Reducers/user';
+import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as GrowlCreators, Types as GrowlTypes } from 'Reducers/growl';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 
@@ -30,6 +31,12 @@ import {
 } from 'Reducers/device';
 
 export { watchUserLocation } from './extras/watchUserLocation';
+
+export function* locationError({ error }) {
+  Analytics.trackEvent(EVENTS.GEOLOCATION_ERROR, {
+    error
+  });
+}
 
 export function* lowConnectionUpdate({ lowConnection }) {
   yield delay(5000);
