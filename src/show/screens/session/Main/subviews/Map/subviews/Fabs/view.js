@@ -12,28 +12,28 @@ import { configuration, navigateInSheet } from 'Screens/session/Main/helpers';
 const fabContainerSize = 56;
 const fabMargin = 10;
 
-const changeReturnPosition = (props) => {
+const changeReturnPosition = props => {
   const { returnPosition, updateReturnPosition } = props;
   const actions = {};
-  actions[
-    `${I18n.t('screens:main.actions.setReturnPosition')}`
-  ] = updateReturnPosition.bind(null, false);
+  actions[`${I18n.t('screens:main.actions.setReturnPosition')}`] =
+    updateReturnPosition.bind(null, false);
   if (returnPosition) {
-    actions[
-      `${I18n.t('screens:main.actions.clearReturnPosition')}`
-    ] = updateReturnPosition.bind(null, true);
+    actions[`${I18n.t('screens:main.actions.clearReturnPosition')}`] =
+      updateReturnPosition.bind(null, true);
   }
   actionSheet(actions, { destructiveButtonIndex: 2 });
 };
 
-const toggleProp = (mapIsInteracting, setMapMode, callback) => {
-  setMapMode('manual');
+const toggleProp = ({ callback, mapIsInteracting, setMapMode }) => {
+  if (setMapMode) {
+    setMapMode('manual');
+  }
   mapIsInteracting.current = true;
   callback();
   mapIsInteracting.current = false;
 };
 
-const Fabs = (props) => {
+const Fabs = props => {
   const {
     availableNavApps,
     buttonAccessibility,
@@ -93,11 +93,6 @@ const Fabs = (props) => {
         inputRange: [0, 100],
         outputRange: [0, 1],
         extrapolate: 'clamp'
-      },
-      third: {
-        inputRange: [0, 100],
-        outputRange: [0, 1],
-        extrapolate: 'clamp'
       }
     },
     position: {
@@ -113,7 +108,10 @@ const Fabs = (props) => {
       },
       third: {
         inputRange: [0, 100],
-        outputRange: [fabMargin, fabMargin * 4 + fabContainerSize * 3],
+        outputRange: [
+          fabMargin * 2 + fabContainerSize,
+          fabMargin * 4 + fabContainerSize * 3
+        ],
         extrapolate: 'clamp'
       }
     }
@@ -142,31 +140,7 @@ const Fabs = (props) => {
           mapMode === 'manual' ? 'auto' : 'manual'
         )}
       />
-      <Fab
-        type={'material'}
-        iconName={shouldTrackLocation ? 'my-location' : 'location-searching'}
-        fabTop={fabTop}
-        size={24}
-        containerSize={fabContainerSize}
-        color={shouldTrackLocation ? colors.primary : colors.secondary}
-        right={right.interpolate(mapControlInterpolations.position.first)}
-        opacity={right.interpolate(mapControlInterpolations.opacity.first)}
-        bottom={
-          mapPadding.bottom +
-          configuration.foreground.defaultHeight +
-          buttonAccessibility +
-          defaults.paddingHorizontal
-        }
-        onPress={toggleProp.bind(
-          null,
-          mapIsInteracting,
-          setMapMode,
-          updateDeviceProps.bind(null, {
-            shouldTrackLocation: !shouldTrackLocation
-          })
-        )}
-        onLongPress={changeReturnPosition.bind(null, props)}
-      />
+
       <Fab
         type={'entypo'}
         iconName={'direction'}
@@ -179,22 +153,21 @@ const Fabs = (props) => {
             ? new Animated.Value(-50)
             : new Animated.Value(310 - mapNoTrackingHeading)
         }
-        right={right.interpolate(mapControlInterpolations.position.second)}
-        opacity={right.interpolate(mapControlInterpolations.opacity.second)}
+        right={right.interpolate(mapControlInterpolations.position.first)}
+        opacity={right.interpolate(mapControlInterpolations.opacity.first)}
         bottom={
           mapPadding.bottom +
           configuration.foreground.defaultHeight +
           buttonAccessibility +
           defaults.paddingHorizontal
         }
-        onPress={toggleProp.bind(
-          null,
-          mapIsInteracting,
-          setMapMode,
-          updateDeviceProps.bind(null, {
+        onPress={toggleProp.bind(null, {
+          callback: updateDeviceProps.bind(null, {
             shouldTrackHeading: !shouldTrackHeading
-          })
-        )}
+          }),
+          mapIsInteracting,
+          setMapMode
+        })}
       />
       <Fab
         type={'material'}
@@ -203,22 +176,43 @@ const Fabs = (props) => {
         size={24}
         containerSize={fabContainerSize}
         color={shouldPitchMap ? colors.primary : colors.secondary}
-        right={right.interpolate(mapControlInterpolations.position.third)}
-        opacity={right.interpolate(mapControlInterpolations.opacity.third)}
+        right={right.interpolate(mapControlInterpolations.position.second)}
+        opacity={right.interpolate(mapControlInterpolations.opacity.second)}
         bottom={
           mapPadding.bottom +
           configuration.foreground.defaultHeight +
           buttonAccessibility +
           defaults.paddingHorizontal
         }
-        onPress={toggleProp.bind(
-          null,
-          mapIsInteracting,
-          setMapMode,
-          updateDeviceProps.bind(null, {
+        onPress={toggleProp.bind(null, {
+          callback: updateDeviceProps.bind(null, {
             shouldPitchMap: !shouldPitchMap
-          })
-        )}
+          }),
+          mapIsInteracting,
+          setMapMode
+        })}
+      />
+      <Fab
+        type={'material'}
+        iconName={shouldTrackLocation ? 'my-location' : 'location-searching'}
+        fabTop={fabTop}
+        size={24}
+        containerSize={fabContainerSize}
+        color={shouldTrackLocation ? colors.primary : colors.secondary}
+        right={right.interpolate(mapControlInterpolations.position.third)}
+        bottom={
+          mapPadding.bottom +
+          configuration.foreground.defaultHeight +
+          buttonAccessibility +
+          defaults.paddingHorizontal
+        }
+        onPress={toggleProp.bind(null, {
+          callback: updateDeviceProps.bind(null, {
+            shouldTrackLocation: !shouldTrackLocation
+          }),
+          mapIsInteracting
+        })}
+        onLongPress={changeReturnPosition.bind(null, props)}
       />
       {destination && (
         <Fab
