@@ -72,6 +72,8 @@ const deliveryStates = {
   SC: 'Shift Completed'
 };
 
+const deliveredStatuses = ['completed', 'rejected'];
+
 const deviceFrame = () => Dimensions.get('window');
 
 const formatDate = date =>
@@ -248,6 +250,7 @@ export {
   blacklists,
   capitalize,
   customerSatisfactionColor,
+  deliveredStatuses,
   deliveryStates,
   deviceFrame,
   defaultRoutes,

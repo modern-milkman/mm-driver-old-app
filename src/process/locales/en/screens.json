@@ -74,6 +74,10 @@
         "dateTime": "{{date}} at {{time}}",
         "driverReplies": "Driver Replies"
       }
+    },
+    "status": {
+      "completed": "Delivered",
+      "rejected": "Skipped"
     }
   },
   "home": {

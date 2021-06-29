@@ -8,7 +8,7 @@ import { Animated, TouchableOpacity } from 'react-native';
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { colors, defaults } from 'Theme';
-import { deviceFrame, mock } from 'Helpers';
+import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import {
@@ -73,13 +73,9 @@ const animateContent = ({
 const contentTranslateY = [
   new Animated.Value(100),
   new Animated.Value(100),
-  new Animated.Value(100),
-  new Animated.Value(100),
   new Animated.Value(100)
 ];
 const contentOpacity = [
-  new Animated.Value(0),
-  new Animated.Value(0),
   new Animated.Value(0),
   new Animated.Value(0),
   new Animated.Value(0)
@@ -267,15 +263,16 @@ const Deliver = props => {
           ...order,
           customIcon: 'productPlaceholder',
           disabled:
-            selectedStop.status === 'completed' ||
+            deliveredStatuses.includes(selectedStop.status) ||
             unacknowledgedList.length > 0,
           image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${order.productId}`,
-          rightIcon: isOutOfStock
-            ? 'alert'
-            : confirmedItem.includes(order.key)
-            ? 'check'
-            : null,
-          ...(isOutOfStock && {
+          rightIcon:
+            isOutOfStock || order.status === 3
+              ? 'alert'
+              : confirmedItem.includes(order.key) || order.status === 2
+              ? 'check'
+              : null,
+          ...((isOutOfStock || order.status === 3) && {
             rightIconColor: colors.error,
             miscelaneousColor: colors.error
           })
@@ -319,6 +316,28 @@ const Deliver = props => {
             routeName: 'CustomerIssueList'
           })}
         />
+        {selectedStop && selectedStop.status !== 'pending' && (
+          <Animated.View
+            style={[
+              style.fullWidth,
+              {
+                transform: [{ translateY: contentTranslateY[0] }],
+                opacity: contentOpacity[0]
+              }
+            ]}>
+            <Separator />
+            <RowView
+              backgroundColor={
+                selectedStop.status === 'completed'
+                  ? colors.primary
+                  : colors.error
+              }>
+              <Text.Button>
+                {I18n.t(`screens:deliver.status.${selectedStop.status}`)}
+              </Text.Button>
+            </RowView>
+          </Animated.View>
+        )}
         <Animated.View
           style={[
             style.fullWidth,
@@ -343,8 +362,8 @@ const Deliver = props => {
           style={[
             style.fullWidth,
             {
-              transform: [{ translateY: contentTranslateY[1] }],
-              opacity: contentOpacity[1]
+              transform: [{ translateY: contentTranslateY[0] }],
+              opacity: contentOpacity[0]
             }
           ]}>
           <>
@@ -361,8 +380,8 @@ const Deliver = props => {
           style={[
             style.fullWidth,
             {
-              transform: [{ translateY: contentTranslateY[2] }],
-              opacity: contentOpacity[2]
+              transform: [{ translateY: contentTranslateY[0] }],
+              opacity: contentOpacity[0]
             }
           ]}>
           {selectedStop &&
@@ -405,8 +424,8 @@ const Deliver = props => {
             style.flex1,
             style.fullWidth,
             {
-              transform: [{ translateY: contentTranslateY[3] }],
-              opacity: contentOpacity[3]
+              transform: [{ translateY: contentTranslateY[1] }],
+              opacity: contentOpacity[1]
             }
           ]}>
           {optimizedStopOrders && (
@@ -432,8 +451,8 @@ const Deliver = props => {
           style={[
             style.fullWidth,
             {
-              transform: [{ translateY: contentTranslateY[4] }],
-              opacity: contentOpacity[4]
+              transform: [{ translateY: contentTranslateY[2] }],
+              opacity: contentOpacity[2]
             }
           ]}>
           <ColumnView

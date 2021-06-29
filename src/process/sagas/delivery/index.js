@@ -354,7 +354,11 @@ export const setDeliveredOrRejected = function* (
   }
 
   for (const i of outOfStockIds) {
-    yield put({ type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK, id: i });
+    yield put({
+      type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK,
+      id: i,
+      selectedStopId
+    });
   }
 
   yield put({
