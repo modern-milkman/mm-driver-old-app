@@ -1,6 +1,6 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "3.60.0",
+  "version": "3.61.0",
   "versionCode": "33",
   "private": true,
   "scripts": {
@@ -54,6 +54,7 @@
     "react-native-typography": "1.4.1",
     "react-native-unimodules": "0.12.0",
     "react-native-vector-icons": "8.1.0",
+    "react-native-webview": "11.6.4",
     "react-navigation": "4.4.4",
     "react-navigation-redux-helpers": "4.0.1",
     "react-navigation-stack": "2.10.4",

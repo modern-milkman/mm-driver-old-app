@@ -7,6 +7,7 @@ import {
   delivery,
   device,
   growl,
+  inappbrowser,
   transient,
   user
 } from 'Reducers';
@@ -26,6 +27,7 @@ const appReducers = persistCombineReducers(storeConfig, {
   delivery,
   device,
   growl,
+  inappbrowser,
   transient,
   user
 });
@@ -37,6 +39,7 @@ const rootReducer = (state, action) => {
       actionsheetandroid: undefined,
       application: undefined,
       delivery: undefined,
+      inappbrowser: undefined,
       transient: undefined,
       user: undefined
     };

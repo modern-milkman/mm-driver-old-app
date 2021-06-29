@@ -141,6 +141,10 @@ const openDriverUpdate = () => {
   });
 };
 
+const openURL = url => {
+  Linking.openURL(url);
+};
+
 const plateRecognition = (search, plates) => {
   let plateRecognized = '';
   const kCharMatched = 5;
@@ -260,6 +264,7 @@ export {
   jiggleAnimation,
   mock,
   openDriverUpdate,
+  openURL,
   plateRecognition,
   randomKey,
   statusBarHeight,

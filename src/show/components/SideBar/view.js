@@ -30,18 +30,19 @@ const navigateAndClose = (updateProps, callback) => {
   }
 };
 
-const SideBar = (props) => {
+const SideBar = props => {
   const {
     appcenter,
     availableNavApps,
     driverId,
     name,
     network,
-    updateProps,
     requestQueues,
     sideBarOpen,
     source,
-    status
+    status,
+    updateInAppBrowserProps,
+    updateProps
   } = props;
 
   const showOfflineLabel =
@@ -131,6 +132,20 @@ const SideBar = (props) => {
                 justifyContent={'flex-start'}
                 alignItems={'flex-start'}
                 marginVertical={defaults.marginVertical}>
+                <ListItem
+                  title={I18n.t('screens:panel.suggestions')}
+                  icon={'lightbulb-outline'}
+                  rightIcon={'chevron-right'}
+                  onPress={navigateAndClose.bind(
+                    null,
+                    updateProps,
+                    updateInAppBrowserProps.bind(null, {
+                      visible: true,
+                      url: Config.SUGGESTION_URL
+                    })
+                  )}
+                />
+
                 {status === DS.DEL && (
                   <ListItem
                     title={I18n.t('screens:checkIn.loadVan')}
@@ -227,6 +242,7 @@ SideBar.propTypes = {
   sideBarOpen: PropTypes.bool,
   source: PropTypes.object,
   status: PropTypes.string,
+  updateInAppBrowserProps: PropTypes.func,
   updateProps: PropTypes.func,
   userId: PropTypes.func
 };
