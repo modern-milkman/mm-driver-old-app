@@ -6,12 +6,12 @@ echo "Infusing version $version-$versionCode to environment files & ios project.
 
 sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.development
 sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.production
-sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.staging
+sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.test
 sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.uat
 
 sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.development
 sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.production
-sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.staging
+sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.test
 sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.uat
 
 # react-native-config is sloppy about config variables within info.plist in latest versions
