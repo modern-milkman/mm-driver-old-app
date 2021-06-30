@@ -9,6 +9,7 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
+    centerSelectedStop: ['sID'],
     deleteVanDamageImage: ['key', 'index'],
     driverReply: [
       'claimId',
@@ -88,6 +89,7 @@ const initialVehicleChecks = {
 const initialState = {
   allItemsDone: false,
   cannedContent: [],
+  centerSelectedStopLocation: null,
   checklist: {
     deliveryComplete: false,
     loadedVan: false,
@@ -233,6 +235,18 @@ const updateOrderItemsStatuses = (draft, selectedStopId, outOfStockIds) => {
     }
   });
 };
+
+export const centerSelectedStop = (state, { sID }) =>
+  produce(state, draft => {
+    if (sID) {
+      draft.centerSelectedStopLocation = {
+        latitude: draft.stops[sID].latitude,
+        longitude: draft.stops[sID].longitude
+      };
+    } else {
+      draft.centerSelectedStopLocation = null;
+    }
+  });
 
 export const getVehicleStockForDriverSuccess = (
   state,
@@ -700,6 +714,7 @@ export const updateSelectedStop = (state, { sID, manualRoutes = true }) =>
   });
 
 export default createReducer(initialState, {
+  [Types.CENTER_SELECTED_STOP]: centerSelectedStop,
   [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DRIVER_REPLY]: driverReply,
   [Types.GET_FOR_DRIVER]: processingTrue,

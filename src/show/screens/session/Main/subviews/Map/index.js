@@ -1,12 +1,14 @@
 import { connect } from 'react-redux';
 
 import { Creators as deviceActions } from 'Reducers/device';
+import { Creators as deliveryActions } from 'Reducers/delivery';
 
 import Map from './view';
 
 export default connect(
-  (state) => {
+  state => {
     return {
+      centerSelectedStopLocation: state.delivery?.centerSelectedStopLocation,
       mapNoTrackingHeading: state.device?.mapNoTrackingHeading,
       mapZoom: state.device?.mapZoom,
       position: state.device?.position,
@@ -17,6 +19,7 @@ export default connect(
     };
   },
   {
+    centerSelectedStop: deliveryActions.centerSelectedStop,
     setMapMode: deviceActions.setMapMode,
     updateDeviceProps: deviceActions.updateProps
   }

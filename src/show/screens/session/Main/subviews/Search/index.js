@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
 
+import { Creators as deviceActions } from 'Reducers/device';
 import { Creators as deliveryActions } from 'Reducers/delivery';
 import { Creators as transientActions } from 'Reducers/transient';
 
 import Search from './view';
 
 export default connect(
-  (state) => {
+  state => {
     return {
       searchValue: state.transient.searchValue,
       status: state.delivery?.status,
@@ -14,6 +15,8 @@ export default connect(
     };
   },
   {
+    centerSelectedStop: deliveryActions.centerSelectedStop,
+    updateDeviceProps: deviceActions.updateProps,
     updateSelectedStop: deliveryActions.updateSelectedStop,
     updateTransientProps: transientActions.updateProps
   }

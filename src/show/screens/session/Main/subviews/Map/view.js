@@ -38,7 +38,7 @@ const regionChangeComplete = (
   { isGesture }
 ) => {
   if (mapRef.current) {
-    mapRef.current.getCamera().then((currentCamera) => {
+    mapRef.current.getCamera().then(currentCamera => {
       initialCamera.current = currentCamera;
       updateDeviceProps({
         ...(!shouldTrackHeading && {
@@ -49,7 +49,7 @@ const regionChangeComplete = (
     });
     if (isGesture) {
       if (shouldTrackHeading) {
-        mapRef.current.getCamera().then((currentCamera) => {
+        mapRef.current.getCamera().then(currentCamera => {
           if (
             Math.abs(Math.abs(currentCamera.heading) - Math.abs(heading)) > 10
           ) {
@@ -80,8 +80,10 @@ const triggerManualMove = ({
   }
 };
 
-const Map = (props) => {
+const Map = props => {
   const {
+    centerSelectedStop,
+    centerSelectedStopLocation,
     fabTop,
     height,
     mapNoTrackingHeading,
@@ -131,7 +133,7 @@ const Map = (props) => {
 
   useEffect(() => {
     if (!mapIsInteracting.current) {
-      mapRef.current?.getCamera().then((currentCamera) => {
+      mapRef.current?.getCamera().then(currentCamera => {
         animateCamera(currentCamera, {
           ...(shouldTrackLocation && {
             center: {
@@ -139,13 +141,23 @@ const Map = (props) => {
               longitude
             }
           }),
+          ...(centerSelectedStopLocation && {
+            center: {
+              ...centerSelectedStopLocation
+            }
+          }),
           heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading,
           pitch: shouldPitchMap ? 90 : 0
         });
       });
     }
+    if (centerSelectedStopLocation) {
+      centerSelectedStop(null);
+    }
   }, [
     animateCamera,
+    centerSelectedStop,
+    centerSelectedStopLocation,
     heading,
     latitude,
     longitude,
@@ -163,6 +175,7 @@ const Map = (props) => {
         customMapStyle={mapStyle}
         initialCamera={initialCamera.current}
         mapPadding={mapPadding}
+        moveOnMarkerPress={false}
         onStartShouldSetResponder={triggerManualMove.bind(null, {
           mapIsInteracting,
           shouldTrackLocation,
@@ -230,6 +243,8 @@ Map.defaultProps = {
 };
 
 Map.propTypes = {
+  centerSelectedStop: PropTypes.func,
+  centerSelectedStopLocation: PropTypes.object,
   fabTop: PropTypes.instanceOf(Animated.Value),
   height: PropTypes.number,
   mapNoTrackingHeading: PropTypes.number,
