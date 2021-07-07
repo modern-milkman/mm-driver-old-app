@@ -10,8 +10,9 @@ import { List, NavBar } from 'Components';
 import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView } from 'Containers';
 
-const doneLoadedVan = updateChecklistProps => {
+const doneLoadedVan = (updateChecklistProps, updateDriverActivity) => {
   updateChecklistProps({ loadedVan: true });
+  updateDriverActivity();
   NavigationService.goBack();
 };
 
@@ -22,7 +23,8 @@ const LoadVan = props => {
     itemCount,
     orderedStock,
     readOnly,
-    updateChecklistProps
+    updateChecklistProps,
+    updateDriverActivity
   } = props;
 
   let deliveredTotal = 0;
@@ -62,7 +64,11 @@ const LoadVan = props => {
               : combinedItemCount
           } ${I18n.t('screens:loadVan.title')}`}
           rightText={readOnly ? null : I18n.t('screens:loadVan.done')}
-          rightAction={doneLoadedVan.bind(null, updateChecklistProps)}
+          rightAction={doneLoadedVan.bind(
+            null,
+            updateChecklistProps,
+            updateDriverActivity
+          )}
         />
         <List data={mappedStock} />
       </ColumnView>
@@ -76,7 +82,8 @@ LoadVan.propTypes = {
   itemCount: PropTypes.number,
   orderedStock: PropTypes.array,
   readOnly: PropTypes.bool,
-  updateChecklistProps: PropTypes.func
+  updateChecklistProps: PropTypes.func,
+  updateDriverActivity: PropTypes.func
 };
 
 LoadVan.defaultProps = {
@@ -85,7 +92,8 @@ LoadVan.defaultProps = {
   itemCount: 0,
   orderedStock: [],
   readOnly: false,
-  updateChecklistProps: mock
+  updateChecklistProps: mock,
+  updateDriverActivity: mock
 };
 
 export default LoadVan;

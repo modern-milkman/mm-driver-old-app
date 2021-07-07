@@ -486,6 +486,22 @@ export const updateReturnPosition = function* ({ clear }) {
   });
 };
 
+export const updateDriverActivity = function* () {
+  const user = yield select(userSelector);
+
+  for (const i of user.routes) {
+    yield put({
+      type: Api.API_CALL,
+      promise: Api.repositories.delivery.postDriverActivity({
+        driverId: user.driverId,
+        routeId: i.routeId,
+        createdDateTime: new Date(),
+        driverActivityType: 1
+      })
+    });
+  }
+};
+
 export const updateDirectionsPolyline = function* () {
   const device = yield select(deviceSelector);
   const selectedStop = yield select(selectedStopSelector);

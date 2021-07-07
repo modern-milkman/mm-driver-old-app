@@ -74,6 +74,11 @@ export default {
       deliveryLocationLongitude
     });
   },
+  postDriverActivity(payload) {
+    return Api.post('/Driver/DriverActivity', {
+      ...payload
+    });
+  },
   postVechicleChecks({ payload }) {
     return Api.post('/Driver/VehicleCheck', {
       ...payload

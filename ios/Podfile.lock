@@ -889,7 +889,7 @@ SPEC CHECKSUMS:
   EXLocalAuthentication: 4f625501ff104674734c3113fcb28e401f674ff2
   EXPermissions: 17d4846ad1880f6891c74ae58ca1acb43e47ed47
   FBLazyVector: 7b423f9e248eae65987838148c36eec1dbfe0b53
-  FBReactNativeSpec: 3edd4c38245d33f63b8c2a422a48f65aa69f8f1e
+  FBReactNativeSpec: 24aeca10d21a55d5782086af82d643934bc424ec
   Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
   FirebaseAnalytics: 3bb096873ee0d7fa4b6c70f5e9166b6da413cc7f
   FirebaseCore: d3a978a3cfa3240bf7e4ba7d137fdf5b22b628ec

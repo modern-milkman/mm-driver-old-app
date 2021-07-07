@@ -68,6 +68,7 @@ export const { Types, Creators } = createActions(
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
     toggleModal: ['modal', 'show'],
+    updateDriverActivity: null,
     updateChecklistProps: ['props'],
     updateDirectionsPolyline: null,
     updateProps: ['props'],
