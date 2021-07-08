@@ -181,4 +181,3 @@ export const device = state => state.device;
 export const network = state => state.device.network;
 export const requestQueues = state => state.device.requestQueues;
 export const processors = state => state.device.processors;
-export const position = state => state.device.position;
