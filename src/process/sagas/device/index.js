@@ -63,7 +63,7 @@ export function* setLocation({ position }) {
 
   if (position?.coords?.speed < 2.5) {
     delete position.coords.heading;
-    CompassHeading.start(3, heading => {
+    CompassHeading.start(3, ({ heading }) => {
       const { dispatch } = store().store;
       dispatch(DeviceCreators.setLocationHeading(heading));
     });

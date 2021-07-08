@@ -107,7 +107,7 @@ export const setLocationHeading = (state, action) =>
   produce(state, draft => {
     const { heading } = action;
     if (draft.position) {
-      draft.position.heading = heading.heading;
+      draft.position.heading = heading;
     }
   });
 
