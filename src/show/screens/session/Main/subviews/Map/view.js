@@ -132,7 +132,7 @@ const Map = props => {
   );
 
   useEffect(() => {
-    if (!mapIsInteracting.current) {
+    if (!mapIsInteracting.current || centerSelectedStopLocation) {
       mapRef.current?.getCamera().then(currentCamera => {
         animateCamera(currentCamera, {
           ...(shouldTrackLocation && {
