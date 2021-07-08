@@ -35,7 +35,7 @@ const LoadVan = props => {
       : stockItem.quantity;
     return {
       ...stockItem,
-      miscelaneousTop: readOnly
+      suffixTop: readOnly
         ? `${
             stockItem.quantity - (deliveredStock[stockItem.key] || 0)
           } / ${combinedItemQuantity}`

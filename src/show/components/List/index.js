@@ -71,6 +71,40 @@ const renderMedia = (customIcon, customIconProps, icon, iconColor, image) => {
   }
 };
 
+const renderPrefix = (PrefixTextComponent, prefix, prefixColor) => (
+  <ColumnView flex={1} justifyContent={'center'} alignItems={'flex-start'}>
+    <PrefixTextComponent
+      align={'left'}
+      color={prefixColor || colors.secondaryLight}>
+      {prefix}
+    </PrefixTextComponent>
+  </ColumnView>
+);
+
+const renderSuffix = (
+  SuffixTopTextComponent,
+  SuffixBottomTextComponent,
+  suffixTop,
+  suffixBottom,
+  suffixColor
+) => (
+  <ColumnView
+    flex={2}
+    justifyContent={'flex-end'}
+    alignItems={suffixTop && suffixBottom ? 'space-between' : 'center'}>
+    <SuffixTopTextComponent
+      align={'right'}
+      color={suffixColor || colors.secondaryLight}>
+      {suffixTop}
+    </SuffixTopTextComponent>
+    <SuffixBottomTextComponent
+      align={'right'}
+      color={suffixColor || colors.inputDark}>
+      {suffixBottom}
+    </SuffixBottomTextComponent>
+  </ColumnView>
+);
+
 const renderItemInterface = (
   {
     disabled: listDisabled,
@@ -94,14 +128,12 @@ const renderItemInterface = (
     image,
     key,
     listItemStyle,
-    miscelaneousBottom,
-    MiscelaneousBottomTextComponent = Text.Caption,
-    miscelaneousColor,
-    miscelaneousTop,
-    MiscelaneousTopTextComponent = Text.Button,
     moreInfo,
     onLongPress,
     onPress,
+    prefix,
+    prefixColor,
+    PrefixTextComponent = Text.Input,
     rightComponent = mock,
     rightIcon,
     rightIconColor = colors.primary,
@@ -110,6 +142,11 @@ const renderItemInterface = (
     secondaryCustomRightIconProps,
     secondaryRightImage,
     secondaryRightIcon,
+    suffixBottom,
+    SuffixBottomTextComponent = Text.Caption,
+    suffixColor,
+    suffixTop,
+    SuffixTopTextComponent = Text.Button,
     testID,
     title,
     titleColor = colors.secondary,
@@ -142,6 +179,8 @@ const renderItemInterface = (
           </RowView>
         )}
 
+        {prefix && renderPrefix(PrefixTextComponent, prefix, prefixColor)}
+
         {(title || description) && (
           <ColumnView
             flex={4}
@@ -157,29 +196,15 @@ const renderItemInterface = (
           </ColumnView>
         )}
 
-        {(miscelaneousTop || miscelaneousBottom) && (
-          <ColumnView
-            flex={2}
-            justifyContent={'flex-end'}
-            alignItems={
-              miscelaneousTop && miscelaneousBottom ? 'space-between' : 'center'
-            }>
-            <MiscelaneousTopTextComponent
-              align={'right'}
-              color={miscelaneousColor || colors.secondaryLight}
-              noMargin
-              noPadding>
-              {miscelaneousTop}
-            </MiscelaneousTopTextComponent>
-            <MiscelaneousBottomTextComponent
-              align={'right'}
-              color={miscelaneousColor || colors.inputDark}
-              noMargin
-              noPadding>
-              {miscelaneousBottom}
-            </MiscelaneousBottomTextComponent>
-          </ColumnView>
-        )}
+        {(suffixTop || suffixBottom) &&
+          renderSuffix(
+            SuffixTopTextComponent,
+            SuffixBottomTextComponent,
+            suffixTop,
+            suffixBottom,
+            suffixColor
+          )}
+
         {rightComponent}
 
         {(secondaryCustomRightIcon ||
@@ -330,8 +355,9 @@ ListItem.propTypes = {
   image: PropTypes.string,
   item: PropTypes.object,
   listItemStyle: PropTypes.object,
-  miscelaneousBottom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  miscelaneousTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  prefix: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  suffixBottom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  suffixTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   moreInfo: PropTypes.any,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
@@ -363,13 +389,11 @@ ListItem.defaultProps = {
   iconColor: colors.secondary,
   image: null,
   listItemStyle: {},
-  miscelaneousBottom: null,
-  MiscelaneousBottomTextComponent: Text.Caption,
-  miscelaneousTop: null,
-  MiscelaneousTopTextComponent: Text.Button,
   moreInfo: null,
   onLongPress: mock,
   onPress: mock,
+  prefix: null,
+  PrefixTextComponent: Text.Input,
   rightComponent: mock,
   rightIcon: null,
   rightIconColor: colors.primary,
@@ -378,6 +402,10 @@ ListItem.defaultProps = {
   secondaryCustomRightIconProps: {},
   secondaryRightImage: null,
   secondaryRightIcon: null,
+  suffixBottom: null,
+  SuffixBottomTextComponent: Text.Caption,
+  suffixTop: null,
+  SuffixTopTextComponent: Text.Button,
   title: null,
   titleColor: colors.secondary,
   titleExpands: false

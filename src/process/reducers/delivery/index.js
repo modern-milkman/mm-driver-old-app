@@ -439,7 +439,6 @@ export const getForDriverSuccess = (
         draft.stops[key].orders[item.orderItemId] = {
           description: item.measureDescription,
           key: item.orderItemId,
-          miscelaneousTop: item.quantity,
           productId: item.productId,
           quantity: item.quantity,
           status: item.delivery_stateID,

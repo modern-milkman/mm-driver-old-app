@@ -261,6 +261,8 @@ const Deliver = props => {
         const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,
+          prefix: order.quantity + ' X',
+          title: order.title,
           customIcon: 'productPlaceholder',
           disabled:
             deliveredStatuses.includes(selectedStop.status) ||
@@ -272,9 +274,10 @@ const Deliver = props => {
               : confirmedItem.includes(order.key) || order.status === 2
               ? 'check'
               : null,
+          enforceLayout: true,
           ...((isOutOfStock || order.status === 3) && {
             rightIconColor: colors.error,
-            miscelaneousColor: colors.error
+            suffixColor: colors.error
           })
         };
       })
@@ -348,10 +351,10 @@ const Deliver = props => {
           ]}>
           <Separator />
           <ListItem
-            miscelaneousBottom={I18n.t('screens:deliver.routeDescription', {
+            suffixBottom={I18n.t('screens:deliver.routeDescription', {
               routeDescription
             })}
-            miscelaneousColor={colors.Primarylight}
+            suffixColor={colors.Primarylight}
             description={I18n.t('screens:deliver.userID', {
               userId: selectedStop?.userId
             })}
