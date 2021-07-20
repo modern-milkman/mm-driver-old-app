@@ -2,12 +2,16 @@ import { connect } from 'react-redux';
 
 import { deliveryStates as DS } from 'Helpers';
 import { Creators as deviceActions } from 'Reducers/device';
-import { Creators as deliveryActions, selectedStop } from 'Reducers/delivery';
+import {
+  Creators as deliveryActions,
+  checklist,
+  selectedStop
+} from 'Reducers/delivery';
 
 import Main from './view';
 
 export default connect(
-  (state) => {
+  state => {
     const currentSelectedStop = selectedStop(state);
 
     return {
@@ -21,7 +25,7 @@ export default connect(
           state.delivery?.status
         ) &&
           state.delivery?.hasRoutes),
-      checklist: state.delivery?.checklist,
+      checklist: checklist(state),
       currentLocation: state.device.position,
       foregroundSize: state.device.foregroundSize,
       manualRoutes: state.delivery.manualRoutes,

@@ -11,7 +11,7 @@ import { Button, NavBar, Text, Separator } from 'Components';
 
 import style from './style';
 
-const renderButtonTitle = (foregroundState) => {
+const renderButtonTitle = foregroundState => {
   switch (foregroundState) {
     case 'MANUAL':
       return I18n.t('screens:main.useOptimizedRouting');
@@ -46,7 +46,7 @@ const renderHeading = (foregroundState, { routeDescription, selectedStop }) => {
   }
 };
 
-const renderLeftIcon = (onChevronUpPress) => (
+const renderLeftIcon = onChevronUpPress => (
   <CustomIcon
     width={sizes.list.image / 1.5}
     containerWidth={sizes.list.image}
@@ -82,7 +82,7 @@ const onLayout = (onTitleLayoutChange, e) => {
   onTitleLayoutChange(e.nativeEvent.layout.height);
 };
 
-const ForegroundContent = (props) => {
+const ForegroundContent = props => {
   const {
     buttonTitleColor,
     checklist,

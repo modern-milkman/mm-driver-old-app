@@ -330,7 +330,9 @@ const Api = {
         const { dispatch } = store().store;
         const [h, m] = timeToHMArray(headers['x-route-time']);
         dispatch(
-          DeviceActions.updateProps({ resetHourDay: h * 60 * 60 + m * 60 })
+          DeviceActions.updateProps({
+            resetHourDay: h * 60 * 60 + m * 60
+          })
         );
       }
     }

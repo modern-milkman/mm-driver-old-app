@@ -11,6 +11,7 @@ import {
   transient,
   user
 } from 'Reducers';
+import { initialState } from 'Reducers/delivery';
 
 import { storeConfig } from './config';
 
@@ -38,7 +39,10 @@ const rootReducer = (state, action) => {
       ...state,
       actionsheetandroid: undefined,
       application: undefined,
-      delivery: undefined,
+      delivery: {
+        ...initialState,
+        checklist: { ...state.delivery.checklist }
+      },
       inappbrowser: undefined,
       transient:
         {

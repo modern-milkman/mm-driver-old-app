@@ -114,7 +114,7 @@ export const init = function* () {
   Analytics.trackEvent(EVENTS.APP_INIT);
 };
 
-export const login = function* (isBiometricLogin = false) {
+export const login = function* ({ isBiometricLogin = false }) {
   yield put({ type: ApplicationTypes.DISMISS_KEYBOARD });
 
   const { rememberMe } = yield select(deviceSelector);
@@ -135,7 +135,14 @@ export const login = function* (isBiometricLogin = false) {
   Analytics.trackEvent(EVENTS.TAP_LOGIN);
 };
 
-export const login_error = function* ({ status, data, isBiometricLogin }) {
+export const login_completed = function* () {
+  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
+
+  NavigationService.navigate({ routeName: defaultRoutes.session });
+  Analytics.trackEvent(EVENTS.LOGIN_COMPLETED);
+};
+
+export const login_error = function* ({ status, isBiometricLogin }) {
   yield put({
     type: TransientTypes.UPDATE_PROPS,
     props: {
@@ -156,13 +163,11 @@ export const login_error = function* ({ status, data, isBiometricLogin }) {
   Analytics.trackEvent(EVENTS.LOGIN_ERROR, { status });
 };
 
-export const login_success = function* ({ payload }) {
+export const login_success = function* ({ payload, isBiometricLogin }) {
   yield call(Api.setToken, payload.jwtToken, payload.refreshToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
-  yield put({ type: UserTypes.GET_DRIVER });
-  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
 
-  NavigationService.navigate({ routeName: defaultRoutes.session });
+  yield put({ type: UserTypes.GET_DRIVER, isBiometricLogin });
   Analytics.trackEvent(EVENTS.LOGIN_SUCCESSFUL);
 };
 

@@ -75,7 +75,9 @@ export function* onNavigateSideEffects(navigateParams) {
       if (!checklist.payloadAltered) {
         yield put({
           type: DeliveryTypes.UPDATE_PROPS,
-          props: { status: checklist.shiftStartVanChecks ? DS.SEC : DS.SSC }
+          props: {
+            status: checklist.shiftStartVanChecks ? DS.SEC : DS.SSC
+          }
         });
         yield put({
           type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD,
@@ -93,7 +95,7 @@ export function* onNavigateSideEffects(navigateParams) {
 
   InteractionManager.runAfterInteractions(() => {
     Promise.all([DeviceInfo.getUsedMemory(), DeviceInfo.getMaxMemory()]).then(
-      (values) => {
+      values => {
         Analytics.trackEvent(EVENTS.MEMORY, {
           usedMemory: Math.floor(values[0] / (1024 * 1024)),
           maxMemory: Math.floor(values[1] / (1024 * 1024))

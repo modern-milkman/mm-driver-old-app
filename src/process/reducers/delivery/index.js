@@ -19,7 +19,6 @@ export const { Types, Creators } = createActions(
       'acknowledgedClaim',
       'index'
     ],
-
     foregroundDeliveryActions: null,
     getCannedContent: null,
     getCustomerClaims: ['customerId', 'stopId'],
@@ -37,6 +36,7 @@ export const { Types, Creators } = createActions(
     ],
     getRejectDeliveryReasons: null,
     incrementDeliveredStock: ['productId', 'quantity'],
+    initChecklist: null,
     optimizeStops: ['currentLocation', 'returnPosition'],
     redirectSetSelectedClaimId: ['claimId'],
     refreshDriverData: null,
@@ -87,18 +87,22 @@ const initialVehicleChecks = {
   vehicleCheckDamage: {}
 };
 
-const initialState = {
+export const initialChecklist = {
+  deliveryComplete: false,
+  loadedVan: false,
+  shiftEndVanChecks: false,
+  shiftStartVanChecks: false,
+  payload: {
+    ...initialVehicleChecks
+  },
+  payloadAltered: false
+};
+
+export const initialState = {
   allItemsDone: false,
   cannedContent: [],
   centerSelectedStopLocation: null,
-  checklist: {
-    deliveryComplete: false,
-    loadedVan: false,
-    shiftEndVanChecks: false,
-    shiftStartVanChecks: false,
-    payload: { ...initialVehicleChecks },
-    payloadAltered: false
-  },
+  checklist: {},
   completedStopsIds: [],
   confirmedItem: [],
   deliveredStock: {},
@@ -114,15 +118,19 @@ const initialState = {
   status: DS.NCI,
   stock: [],
   stockWithData: {},
-  stops: {}
+  stops: {},
+  userId: null
 };
 
 const deleteVanDamageImage = (state, { key, index }) =>
   produce(state, draft => {
-    draft.checklist.payload.vehicleCheckDamage[key].vehicleCheckDamageImage =
-      draft.checklist.payload.vehicleCheckDamage[
-        key
-      ].vehicleCheckDamageImage.filter((image, idx) => idx !== index);
+    draft.checklist[draft.userId].payload.vehicleCheckDamage[
+      key
+    ].vehicleCheckDamageImage = draft.checklist[
+      draft.userId
+    ].payload.vehicleCheckDamage[key].vehicleCheckDamageImage.filter(
+      (image, idx) => idx !== index
+    );
   });
 
 const driverReply = (
@@ -195,7 +203,7 @@ const resetSelectedStopInfo = draft => {
 };
 
 const resetVanDamage = (draft, key) => {
-  return (draft.checklist.payload.vehicleCheckDamage[key] = {
+  return (draft.checklist[draft.userId].payload.vehicleCheckDamage[key] = {
     vehicleCheckDamageImage: [],
     comments: ''
   });
@@ -223,7 +231,7 @@ const setDeliveredOrRejected = (
 
     if (draft.orderedStopsIds.length === 0) {
       draft.status = DS.DELC;
-      draft.checklist.deliveryComplete = true;
+      draft.checklist[draft.userId].deliveryComplete = true;
     }
   });
 
@@ -261,6 +269,7 @@ export const getVehicleStockForDriverSuccess = (
     draft.stock = payload;
     draft.hasRoutes = payload.length > 0;
     draft.orderedStock = [];
+
     for (const route of payload) {
       route.vehicleStockItems.forEach(item => {
         const formattedProduct = {
@@ -337,7 +346,7 @@ export const getForDriverSuccess = (
 
     let hasNonPendingOrders = false;
     let markedOrders = 0;
-    for (const item of draft.stockWithData.items) {
+    for (const item of payload.items) {
       if (item.delivery_stateID !== 1) {
         hasNonPendingOrders = true;
         markedOrders++;
@@ -345,23 +354,23 @@ export const getForDriverSuccess = (
     }
 
     if (!isRefreshData) {
-      if (markedOrders === draft.stockWithData.items.length) {
+      if (markedOrders === payload.items.length) {
         draft.status = DS.DELC;
-        draft.checklist.deliveryComplete = true;
-        draft.checklist.shiftStartVanChecks = true;
-        draft.checklist.loadedVan = true;
+        draft.checklist[state.userId].deliveryComplete = true;
+        draft.checklist[state.userId].shiftStartVanChecks = true;
+        draft.checklist[state.userId].loadedVan = true;
       } else if (hasNonPendingOrders) {
         draft.status = DS.DEL;
-        draft.checklist.shiftStartVanChecks = true;
-        draft.checklist.loadedVan = true;
+        draft.checklist[state.userId].shiftStartVanChecks = true;
+        draft.checklist[state.userId].loadedVan = true;
       }
-    } else if (markedOrders === draft.stockWithData.items.length) {
-      draft.checklist.deliveryComplete = true;
+    } else if (markedOrders === payload.items.length) {
+      draft.checklist[state.userId].deliveryComplete = true;
       draft.status = DS.DELC;
     }
 
     // PREPARE RAW STOPS
-    for (const item of draft.stockWithData.items) {
+    for (const item of payload.items) {
       const {
         address: {
           addressId: key,
@@ -460,6 +469,15 @@ export const incrementDeliveredStock = (state, { productId, quantity }) =>
     privateIncrementDeliveredStock(draft, { productId, quantity });
   });
 
+export const initChecklist = state =>
+  produce(state, draft => {
+    if (!draft?.checklist[draft?.userId] && draft?.userId) {
+      draft.checklist[draft.userId] = {
+        ...initialChecklist
+      };
+    }
+  });
+
 export const optimizeStops = (state, { currentLocation, returnPosition }) =>
   produce(state, draft => {
     let dummyIndex = null;
@@ -538,7 +556,7 @@ export const resetChecklistPayload = (state, { resetType }) =>
 
 export const saveVehicleChecks = (state, { saveType }) =>
   produce(state, draft => {
-    draft.checklist[saveType] = true;
+    draft.checklist[state.userId][saveType] = true;
     if (saveType === 'shiftEndVanChecks') {
       draft.status = DS.SC;
     }
@@ -584,12 +602,12 @@ export const setItemOutOfStock = (state, { id, selectedStopId }) =>
 
 export const setMileage = (state, { mileage }) =>
   produce(state, draft => {
-    draft.checklist.payload.currentMileage = mileage;
+    draft.checklist[draft.userId].payload.currentMileage = mileage;
   });
 
 export const setRegistration = (state, { reg }) =>
   produce(state, draft => {
-    draft.checklist.payload.vehicleRegistration = reg;
+    draft.checklist[draft.userId].payload.vehicleRegistration = reg;
   });
 
 export const setRejected = (state, params) =>
@@ -607,21 +625,23 @@ export const setRejectDeliveryReasons = (state, { payload }) =>
 
 export const setVanDamageComment = (state, { key, comment }) =>
   produce(state, draft => {
-    if (!draft.checklist.payload.vehicleCheckDamage[key]) {
+    if (!draft.checklist[draft.userId].payload.vehicleCheckDamage[key]) {
       resetVanDamage(draft, key);
     }
 
-    draft.checklist.payload.vehicleCheckDamage[key].comments = comment;
+    draft.checklist[draft.userId].payload.vehicleCheckDamage[key].comments =
+      comment;
   });
 
 export const setVanDamageImage = (state, { key, imagePath, imageType }) =>
   produce(state, draft => {
-    if (!draft.checklist.payload.vehicleCheckDamage[key]) {
+    if (!draft.checklist[draft.userId].payload.vehicleCheckDamage[key]) {
       resetVanDamage(draft, key);
     }
 
     const images = [
-      ...draft.checklist.payload.vehicleCheckDamage[key].vehicleCheckDamageImage
+      ...draft.checklist[draft.userId].payload.vehicleCheckDamage[key]
+        .vehicleCheckDamageImage
     ];
 
     images.push({
@@ -629,8 +649,9 @@ export const setVanDamageImage = (state, { key, imagePath, imageType }) =>
       imageType
     });
 
-    draft.checklist.payload.vehicleCheckDamage[key].vehicleCheckDamageImage =
-      images;
+    draft.checklist[draft.userId].payload.vehicleCheckDamage[
+      key
+    ].vehicleCheckDamageImage = images;
   });
 
 export const setSelectedClaimId = (state, { claimId }) =>
@@ -656,8 +677,8 @@ export const startDelivering = state =>
 
 export const toggleCheckJson = (state, { key }) =>
   produce(state, draft => {
-    draft.checklist.payload.checksJson[key] =
-      !draft.checklist.payload.checksJson[key];
+    draft.checklist[draft.userId].payload.checksJson[key] =
+      !draft.checklist[draft.userId].payload.checksJson[key];
   });
 
 export const toggleConfirmedItem = (state, { id }) =>
@@ -693,7 +714,12 @@ export const toggleModal = (state, { modal, show }) =>
 
 export const updateChecklistProps = (state, { props }) =>
   updateProps(state, {
-    props: { checklist: { ...state.checklist, ...props } }
+    props: {
+      checklist: {
+        ...state.checklist,
+        [state.userId]: { ...state.checklist[state.userId], ...props }
+      }
+    }
   });
 
 export const setDirectionsPolyline = (state, { payload }) =>
@@ -721,6 +747,7 @@ export default createReducer(initialState, {
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.INCREMENT_DELIVERED_STOCK]: incrementDeliveredStock,
+  [Types.INIT_CHECKLIST]: initChecklist,
   [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.REDIRECT_SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
   [Types.RESET_CHECKLIST_PAYLOAD]: resetChecklistPayload,
@@ -751,13 +778,16 @@ export default createReducer(initialState, {
 
 export const additionalItemCount = state => state.delivery?.additionalItemCount;
 
-export const checklist = state => state.delivery?.checklist;
+export const checklist = state =>
+  state.delivery?.checklist?.[state.delivery?.userId];
 
 export const directionsPolyline = state => state.delivery?.directionsPolyline;
 
 export const completedStopsIds = state => state.delivery?.completedStopsIds;
 
 export const itemCount = state => state.delivery?.itemCount || 0;
+
+export const manualRoutes = state => state.delivery.manualRoutes;
 
 export const orderedStopsIds = state => state.delivery?.orderedStopsIds;
 
@@ -779,5 +809,3 @@ export const stops = state => state.delivery?.stops;
 
 export const stopCount = state =>
   Object.keys(state.delivery?.stops).length || 0;
-
-export const manualRoutes = state => state.delivery.manualRoutes;

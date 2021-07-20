@@ -258,7 +258,7 @@ const Home = props => {
               />
               <Button.Primary
                 title={I18n.t('general:login')}
-                onPress={login}
+                onPress={login.bind(null, false)}
                 processing={processing}
                 disabled={disabledLogin}
               />

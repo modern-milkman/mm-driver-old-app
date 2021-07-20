@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 
-import { stopCount } from 'Reducers/delivery';
+import { checklist, stopCount } from 'Reducers/delivery';
 
 import ForegroundContent from './view';
 
-export default connect((state) => {
+export default connect(state => {
   const selectedStopId = state.delivery?.selectedStopId;
 
   return {
-    checklist: state.delivery?.checklist,
+    checklist: checklist(state),
     foregroundSize: state.device.foregroundSize,
     manualRoutes: state.delivery.manualRoutes,
     processing: state.delivery.processing,

@@ -19,6 +19,7 @@ import {
   biometricDisable,
   dismissKeyboard,
   init,
+  login_completed,
   login_error,
   login_success,
   login,
@@ -79,7 +80,7 @@ import {
 
 import { alert } from './growl';
 
-import { getDriver } from './user';
+import { getDriver, setDriver } from './user';
 
 export default function* root() {
   yield all([
@@ -178,6 +179,8 @@ export default function* root() {
     takeEvery(GrowlTypes.ALERT, alert),
 
     takeEvery(UserTypes.GET_DRIVER, getDriver),
+    takeEvery(UserTypes.SET_DRIVER, setDriver),
+    takeEvery(UserTypes.SET_DRIVER, login_completed),
 
     takeLatest(REDUX_SAGA_LOCATION_ACTION_SET_ERROR, locationError),
     takeLatest(REDUX_SAGA_LOCATION_ACTION_SET_POSITION, setLocation)
