@@ -201,7 +201,7 @@ const Home = props => {
         minHeight={minimumRequiredHeight}
         scrollable>
         <NavigationEvents
-          onDidFocus={
+          onWillFocus={
             rememberMe
               ? checkRememberMe.bind(null, updateTransientProps)
               : focusEmail

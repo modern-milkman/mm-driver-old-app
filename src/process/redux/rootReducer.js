@@ -40,7 +40,13 @@ const rootReducer = (state, action) => {
       application: undefined,
       delivery: undefined,
       inappbrowser: undefined,
-      transient: undefined,
+      transient:
+        {
+          ...(state.device.rememberMe && {
+            email: state.transient.email,
+            password: state.transient.password
+          })
+        } || undefined,
       user: undefined
     };
   }

@@ -37,7 +37,7 @@ const blacklists = {
     'UpgradeApp'
   ],
   resetStackRoutes: ['CheckIn'],
-  transientReset: ['RegistrationMileage']
+  transientReset: ['RegistrationMileage', 'Home']
 };
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
