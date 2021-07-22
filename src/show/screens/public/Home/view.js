@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
 import { Animated, Keyboard } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { NavigationEvents } from 'react-navigation';
@@ -10,9 +9,9 @@ import { colors, defaults } from 'Theme';
 import Vibration from 'Services/vibration';
 import EncryptedStorage from 'Services/encryptedStorage';
 import { Button, Icon, Label, Switch, Text } from 'Components';
-import { jiggleAnimation, mock, deviceFrame } from 'Helpers';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
+import { appVersionString, jiggleAnimation, mock, deviceFrame } from 'Helpers';
 
 const emailReference = React.createRef();
 const passwordReference = React.createRef();
@@ -324,9 +323,7 @@ const Home = props => {
           height={Text.Caption.height + defaults.marginVertical / 4}
           marginVertical={defaults.marginVertical / 4}>
           <Text.Caption textAlign={'center'} color={colors.secondary}>
-            {`V: ${Config.APP_VERSION_NAME} ${
-              Config.ENVIRONMENT !== 'production' ? Config.ENVIRONMENT : ''
-            }`}
+            {appVersionString()}
           </Text.Caption>
         </RowView>
       </ColumnView>

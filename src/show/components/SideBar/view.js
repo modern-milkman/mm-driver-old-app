@@ -13,6 +13,7 @@ import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
 import { navigateInSheet } from 'Screens/session/Main/helpers';
 import {
+  appVersionString,
   deviceFrame,
   deliveryStates as DS,
   triggerDriverUpdate
@@ -218,10 +219,9 @@ const SideBar = props => {
                 <RowView
                   justifyContent={'flex-start'}
                   marginHorizontal={defaults.marginHorizontal}>
-                  <Text.List
-                    color={
-                      colors.inputDark
-                    }>{`Version: ${Config.APP_VERSION_NAME}`}</Text.List>
+                  <Text.List color={colors.inputDark}>
+                    {appVersionString()}
+                  </Text.List>
                 </RowView>
               </ColumnView>
             </ColumnView>

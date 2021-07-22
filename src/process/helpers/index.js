@@ -13,6 +13,11 @@ import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 
+const appVersionString = () =>
+  Config.ENVIRONMENT !== 'production'
+    ? `V: ${Config.APP_VERSION_NAME}-${Config.APP_VERSION_CODE} ${Config.ENVIRONMENT}`
+    : `Version ${Config.APP_VERSION_NAME}`;
+
 const base64ToHex = base64 => {
   return [...Base64.atob(base64)]
     .map(c => c.charCodeAt(0).toString(16).padStart(2, 0))
@@ -252,6 +257,7 @@ const usePrevious = value => {
 };
 
 export {
+  appVersionString,
   base64ToHex,
   blacklists,
   capitalize,
