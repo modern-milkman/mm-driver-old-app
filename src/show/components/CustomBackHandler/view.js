@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
-import { BackHandler } from 'react-native';
-import { useCallback, useEffect } from 'react';
+import { useBackHandler } from '@react-native-community/hooks';
 
 import { defaultRoutes, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
 
 const CustomBackHandler = ({ lastRoute, sideBarOpen, updateProps }) => {
-  const backAction = useCallback(() => {
+  useBackHandler(() => {
     switch (lastRoute) {
       case 'Home':
         return false;
@@ -19,14 +18,7 @@ const CustomBackHandler = ({ lastRoute, sideBarOpen, updateProps }) => {
     }
     NavigationService.goBack();
     return true;
-  }, [lastRoute, sideBarOpen, updateProps]);
-
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', backAction);
-
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', backAction);
-  }, [backAction]);
+  });
 
   return null;
 };

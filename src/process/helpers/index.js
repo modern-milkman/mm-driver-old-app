@@ -195,16 +195,6 @@ const statusBarHeight = () => {
   return StatusBarManager.HEIGHT;
 };
 
-const throttle = (func, wait = 100) => {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(this, args);
-    }, wait);
-  };
-};
-
 const timeoutResponseStatuses = ['TIMEOUT', 502, 503, 504, 507];
 
 const timeToHMArray = time => time.split(':').map(hm => parseInt(hm));
@@ -267,7 +257,6 @@ export {
   deviceFrame,
   defaultRoutes,
   formatDate,
-  throttle,
   isAppInstalled,
   jiggleAnimation,
   mock,

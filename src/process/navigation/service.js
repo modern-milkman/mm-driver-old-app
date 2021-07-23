@@ -1,32 +1,39 @@
+import { InteractionManager } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
+
+import { blacklists } from 'Helpers';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
-import { blacklists, throttle } from 'Helpers';
-
-const config = {};
-
-const goBack = () => {
-  if (config.navigator) {
-    config.navigator.dispatch(NavigationActions.back({}));
-    config.storeDispatcher({
-      type: ApplicationTypes.NAVIGATE_BACK
-    });
-
-    config.storeDispatcher({
-      type: ApplicationTypes.REMOVE_LAST_STACK_ROUTE
-    });
-  }
+const config = {
+  goBackDisabled: false
 };
 
 const NavigationService = {
-  goBack: throttle(goBack, 200),
+  goBack: () => {
+    if (!config.goBackDisabled) {
+      config.goBackDisabled = true;
+      if (config.navigator) {
+        config.navigator.dispatch(NavigationActions.back({}));
+        config.storeDispatcher({
+          type: ApplicationTypes.NAVIGATE_BACK
+        });
+
+        config.storeDispatcher({
+          type: ApplicationTypes.REMOVE_LAST_STACK_ROUTE
+        });
+      }
+      InteractionManager.runAfterInteractions(() => {
+        config.goBackDisabled = false;
+      });
+    }
+  },
   setNavigator: (nav, storeDispatcher) => {
     if (nav && storeDispatcher) {
       config.navigator = nav;
       config.storeDispatcher = storeDispatcher;
     }
   },
-  navigate: (navigationParams) => {
+  navigate: navigationParams => {
     const { routeName, params, action = [], key = '' } = navigationParams;
     if (config.navigator && routeName) {
       if (blacklists.resetStackRoutes.includes(routeName)) {
