@@ -37,6 +37,7 @@ import {
 import {
   driverReply,
   foregroundDeliveryActions,
+  getBundleProducts,
   getCannedContent,
   getCustomerClaims,
   getDriverDataFailure,
@@ -115,6 +116,7 @@ export default function* root() {
       DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS,
       foregroundDeliveryActions
     ),
+    takeLatest(DeliveryTypes.GET_BUNDLE_PRODUCTS, getBundleProducts),
     takeLatest(DeliveryTypes.GET_CANNED_CONTENT, getCannedContent),
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
     takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),

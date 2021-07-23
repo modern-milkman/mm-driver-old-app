@@ -36,6 +36,9 @@ export default {
   getProductsOrder() {
     return Api.get('/Product/GetProductOrder');
   },
+  getAllBundleProducts() {
+    return Api.get('/Product/GetAllBundleProducts');
+  },
   getReasons() {
     return Api.get('/RejectReason');
   },

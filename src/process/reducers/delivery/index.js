@@ -20,6 +20,7 @@ export const { Types, Creators } = createActions(
       'index'
     ],
     foregroundDeliveryActions: null,
+    getBundleProducts: null,
     getCannedContent: null,
     getCustomerClaims: ['customerId', 'stopId'],
     getDriverDataFailure: null,
@@ -46,6 +47,7 @@ export const { Types, Creators } = createActions(
     setDelivered: ['id', 'selectedStopId', 'outOfStockIds'],
     setDirectionsPolyline: ['payload'],
     showMustComplyWithTerms: null,
+    setBundleProducts: ['payload'],
     setCannedContent: ['payload'],
     setItemOutOfStock: ['id', 'selectedStopId'],
     setMileage: ['mileage'],
@@ -100,6 +102,7 @@ export const initialChecklist = {
 
 export const initialState = {
   allItemsDone: false,
+  bundledProducts: {},
   cannedContent: [],
   centerSelectedStopLocation: null,
   checklist: {},
@@ -184,10 +187,21 @@ const driverReply = (
   });
 
 const privateIncrementDeliveredStock = (draft, { productId, quantity }) => {
-  if (!draft.deliveredStock[productId]) {
-    draft.deliveredStock[productId] = 0;
+  if (draft.bundledProducts[productId]) {
+    for (const [bundledProductId, bundledQuantity] of Object.entries(
+      draft.bundledProducts[productId]
+    )) {
+      if (!draft.deliveredStock[bundledProductId]) {
+        draft.deliveredStock[bundledProductId] = 0;
+      }
+      draft.deliveredStock[bundledProductId] += quantity * bundledQuantity;
+    }
+  } else {
+    if (!draft.deliveredStock[productId]) {
+      draft.deliveredStock[productId] = 0;
+    }
+    draft.deliveredStock[productId] += quantity;
   }
-  draft.deliveredStock[productId] += quantity;
 };
 
 const processingTrue = state =>
@@ -562,6 +576,18 @@ export const saveVehicleChecks = (state, { saveType }) =>
     }
   });
 
+export const setBundleProducts = (state, { payload }) =>
+  produce(state, draft => {
+    for (const bundledProduct of payload) {
+      draft.bundledProducts[bundledProduct.productId] = {};
+      for (const bundleProduct of bundledProduct.bundledProducts) {
+        draft.bundledProducts[bundledProduct.productId][
+          bundleProduct.productId
+        ] = bundleProduct.quantity;
+      }
+    }
+  });
+
 export const setCannedContent = (state, { payload }) =>
   produce(state, draft => {
     draft.cannedContent = payload;
@@ -752,6 +778,7 @@ export default createReducer(initialState, {
   [Types.REDIRECT_SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
   [Types.RESET_CHECKLIST_PAYLOAD]: resetChecklistPayload,
   [Types.SAVE_VEHICLE_CHECKS]: saveVehicleChecks,
+  [Types.SET_BUNDLE_PRODUCTS]: setBundleProducts,
   [Types.SET_CANNED_CONTENT]: setCannedContent,
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED]: setDelivered,

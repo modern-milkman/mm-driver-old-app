@@ -82,7 +82,18 @@ export const foregroundDeliveryActions = function* ({}) {
     yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
     yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
     yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
+    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
   }
+};
+
+export const getBundleProducts = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_BUNDLE_PRODUCTS }
+    },
+    promise: Api.repositories.delivery.getAllBundleProducts()
+  });
 };
 
 export const getCannedContent = function* () {
