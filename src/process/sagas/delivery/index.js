@@ -52,6 +52,8 @@ export const driverReply = function* ({
   index
 }) {
   const sID = yield select(selectedStopIdSelector);
+  const stops = yield select(stopsSelector);
+
   let imageHex = null;
   if (image) {
     let base64Image = yield Repositories.filesystem.readFile(image, 'base64');
@@ -73,6 +75,12 @@ export const driverReply = function* ({
     selectedStopId: sID
   });
   yield put({ type: TransientTypes.RESET });
+  if (
+    acknowledgedClaim ||
+    (!acknowledgedClaim && stops[sID].claims.unacknowledgedList.length === 0)
+  ) {
+    NavigationService.goBack();
+  }
 };
 
 export const foregroundDeliveryActions = function* ({}) {

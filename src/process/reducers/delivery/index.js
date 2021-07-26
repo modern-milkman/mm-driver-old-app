@@ -1,7 +1,6 @@
 import { createActions, createReducer } from 'reduxsauce';
 
 import I18n from 'Locales/I18n';
-import NavigationService from 'Navigation/service';
 import { toggle, deliveryStates as DS } from 'Helpers';
 import { Point, solve as salesman } from 'Services/salesman';
 
@@ -170,7 +169,6 @@ const driverReply = (
 
       if (draft.stops[selectedStopId].claims.unacknowledgedList.length === 0) {
         draft.stops[selectedStopId].claims.showClaimModal = false;
-        NavigationService.goBack();
       } else {
         draft.stops[selectedStopId].claims.selectedClaimId =
           unacknowledgedList.slice(1)[0].claimId;
@@ -179,8 +177,6 @@ const driverReply = (
       draft.stops[selectedStopId].claims.acknowledgedList[
         index
       ].driverResponses.push(response);
-
-      NavigationService.goBack();
     }
 
     draft.stops[selectedStopId].claims.showReplyModal = false;
