@@ -525,7 +525,7 @@ export const updateDirectionsPolyline = function* () {
   const device = yield select(deviceSelector);
   const selectedStop = yield select(selectedStopSelector);
 
-  if (device && device.position && selectedStop) {
+  if (device && device.position && device.computeDirections && selectedStop) {
     const originLatitude = device.position.latitude;
     const originLongitude = device.position.longitude;
     const destinationLatitude = selectedStop.latitude;
@@ -544,9 +544,8 @@ export const updateDirectionsPolyline = function* () {
     );
 
     if (
-      (distanceToStop > parseInt(Config.DIRECTIONS_THRESHOLD) ||
-        device?.computeShortDirections) &&
-      device?.computeDirections
+      distanceToStop > parseInt(Config.DIRECTIONS_THRESHOLD) ||
+      device.computeShortDirections
     ) {
       yield put({
         type: Api.API_CALL,
