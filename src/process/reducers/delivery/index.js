@@ -205,6 +205,17 @@ const processingTrue = state =>
     draft.processing = true;
   });
 
+const resetChecklistFlags = (checklist, deliveryDate) => {
+  if (checklist.deliveryDate !== deliveryDate) {
+    checklist.deliveryDate = deliveryDate;
+    checklist.deliveryComplete = false;
+    checklist.loadedVan = false;
+    checklist.payloadAltered = false;
+    checklist.shiftStartVanChecks = false;
+    checklist.shiftEndVanChecks = false;
+  }
+};
+
 const resetSelectedStopInfo = draft => {
   draft.directionsPolyline = [];
   draft.allItemsDone = false;
@@ -364,6 +375,10 @@ export const getForDriverSuccess = (
     }
 
     if (!isRefreshData) {
+      resetChecklistFlags(
+        draft.checklist[state.userId],
+        draft.stockWithData.deliveryDate
+      );
       if (markedOrders === payload.items.length) {
         draft.status = DS.DELC;
         draft.checklist[state.userId].deliveryComplete = true;
