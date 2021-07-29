@@ -18,7 +18,7 @@ const forFade = ({ current, closing }) => ({
   }
 });
 
-const navigateBack = (callback) => {
+const navigateBack = callback => {
   animateContent({
     contentTranslateYValue: 100,
     contentOpacityValue: 0,
@@ -123,7 +123,7 @@ const renderHelperMessage = ({ checklist, status }) => {
         color={colors.secondary}
         style={{ marginRight: defaults.marginHorizontal / 3 }}
       />
-      <Text.Caption align={'center'} color={colors.secondary} noMargin>
+      <Text.Caption align={'center'} color={colors.secondary}>
         {helperMessage}
       </Text.Caption>
     </RowView>
@@ -148,7 +148,7 @@ const renderTitle = ({ checklist, status }) => {
   }
 };
 
-const CheckIn = (props) => {
+const CheckIn = props => {
   const { checklist, status, itemCount, startDelivering, stopCount } = props;
 
   const deliverProductsDisabled =
@@ -164,7 +164,7 @@ const CheckIn = (props) => {
     {
       customIcon: 'vanCheck',
       disabled: checklist.shiftStartVanChecks,
-      miscelaneousBottom: null,
+      suffixBottom: null,
       onPress: NavigationService.navigate.bind(null, {
         routeName: 'RegistrationMileage'
       }),
@@ -174,7 +174,7 @@ const CheckIn = (props) => {
     {
       customIcon: 'cart',
       disabled: checklist.deliveryComplete,
-      miscelaneousBottom: I18n.t('screens:checkIn.itemsLeft', {
+      suffixBottom: I18n.t('screens:checkIn.itemsLeft', {
         items: checklist.loadedVan ? 0 : itemCount
       }),
       onPress: NavigationService.navigate.bind(null, {
@@ -187,7 +187,7 @@ const CheckIn = (props) => {
     {
       customIcon: 'deliver',
       disabled: deliverProductsDisabled,
-      miscelaneousBottom: I18n.t('screens:main.descriptions.deliveryActive', {
+      suffixBottom: I18n.t('screens:main.descriptions.deliveryActive', {
         stopCount
       }),
       onPress: navigateBack.bind(null, startDelivering),
@@ -213,15 +213,9 @@ const CheckIn = (props) => {
     }
   ];
 
-  const renderCheckinRow = (index) => {
-    const {
-      customIcon,
-      disabled,
-      miscelaneousBottom,
-      onPress,
-      rightIcon,
-      title
-    } = checkinRows[index];
+  const renderCheckinRow = index => {
+    const { customIcon, disabled, suffixBottom, onPress, rightIcon, title } =
+      checkinRows[index];
     return (
       <Animated.View
         style={[
@@ -235,8 +229,8 @@ const CheckIn = (props) => {
         <ListItem
           disabled={disabled}
           enforceLayout
-          miscelaneousBottom={miscelaneousBottom}
-          miscelaneousColor={colors.secondary}
+          suffixBottom={suffixBottom}
+          suffixColor={colors.secondary}
           onPress={onPress}
           customIcon={customIcon}
           rightIcon={rightIcon}

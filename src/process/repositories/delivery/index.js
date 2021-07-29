@@ -36,6 +36,9 @@ export default {
   getProductsOrder() {
     return Api.get('/Product/GetProductOrder');
   },
+  getAllBundleProducts() {
+    return Api.get('/Product/GetAllBundleProducts');
+  },
   getReasons() {
     return Api.get('/RejectReason');
   },
@@ -72,6 +75,11 @@ export default {
       description,
       deliveryLocationLatitude,
       deliveryLocationLongitude
+    });
+  },
+  postDriverActivity(payload) {
+    return Api.post('/Driver/DriverActivity', {
+      ...payload
     });
   },
   postVechicleChecks({ payload }) {

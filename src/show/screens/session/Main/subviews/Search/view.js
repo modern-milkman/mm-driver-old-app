@@ -18,17 +18,19 @@ const handleSearchFilter = (items, searchValue) => {
   if (items && items.length <= 0) {
     return [];
   }
-  return items.filter((item) =>
+  return items.filter(item =>
     item?.searchHandle?.includes(searchValue.toLowerCase())
   );
 };
 
-const Search = (props) => {
+const Search = props => {
   const {
+    centerSelectedStop,
     panY,
     searchValue,
     status,
     stops,
+    updateDeviceProps,
     updateSelectedStop,
     updateTransientProps
   } = props;
@@ -44,7 +46,7 @@ const Search = (props) => {
 
   let height = useRef(new Animated.Value(0)).current;
 
-  const handleChange = (val) => {
+  const handleChange = val => {
     updateTransientProps({ searchValue: val });
   };
 
@@ -54,7 +56,12 @@ const Search = (props) => {
     }
   };
 
-  const onPressAddress = (key) => {
+  const onPressAddress = key => {
+    updateDeviceProps({
+      shouldTrackHeading: false,
+      shouldTrackLocation: false
+    });
+    centerSelectedStop(key);
     updateSelectedStop(key);
     handleFocus(false, false);
   };
@@ -159,18 +166,22 @@ const Search = (props) => {
 };
 
 Search.propTypes = {
+  centerSelectedStop: PropTypes.func,
   panY: PropTypes.object,
   searchValue: PropTypes.string,
   status: PropTypes.string,
   stops: PropTypes.array,
+  updateDeviceProps: PropTypes.func,
   updateSelectedStop: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
 
 Search.defaultProps = {
+  centerSelectedStop: mock,
   panY: new Animated.Value(0),
   searchValue: '',
   stops: [],
+  updateDeviceProps: mock,
   updateSelectedStop: mock,
   updateTransientProps: mock
 };

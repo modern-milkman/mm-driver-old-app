@@ -8,7 +8,7 @@ import { formatDate, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import { List, ListHeader, NavBar, Text } from 'Components';
 
-const CustomerIssueList = (props) => {
+const CustomerIssueList = props => {
   const { claims, selectedStop, setSelectedClaimId } = props;
 
   const newList = {
@@ -22,25 +22,21 @@ const CustomerIssueList = (props) => {
   const listItems = [];
 
   if (claims?.acknowledgedList && claims?.acknowledgedList.length > 0) {
-    claims.acknowledgedList.forEach((item) => {
+    claims.acknowledgedList.forEach(item => {
       let date = formatDate(new Date(item.claimDateTime));
       const tempItem = {
         claimItem: item.claimItem,
         key: item.claimId,
         description: item.reason,
         date: date,
-        miscelaneousTop: I18n.t(
-          'screens:deliver.customerIssue.list.dateOrTime',
-          {
-            value: date,
-            interpolation: { escapeValue: false }
-          }
-        ),
-        MiscelaneousTopTextComponent: Text.Caption,
-        miscelaneousBottom: I18n.t(
-          'screens:deliver.customerIssue.list.nrReplies',
-          { nr: item.driverResponses.length }
-        ),
+        suffixTop: I18n.t('screens:deliver.customerIssue.list.dateOrTime', {
+          value: date,
+          interpolation: { escapeValue: false }
+        }),
+        SuffixTopTextComponent: Text.Caption,
+        suffixBottom: I18n.t('screens:deliver.customerIssue.list.nrReplies', {
+          nr: item.driverResponses.length
+        }),
         rightIcon: item.finalEscalation ? 'alert' : 'chevron-right',
         rightIconColor: item.finalEscalation ? colors.error : colors.primary,
         icon: null,
@@ -60,7 +56,7 @@ const CustomerIssueList = (props) => {
           hour12: true
         });
 
-        tempItem.miscelaneousTop = I18n.t(
+        tempItem.suffixTop = I18n.t(
           'screens:deliver.customerIssue.list.dateOrTime',
           { value: date }
         );

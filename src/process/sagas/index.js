@@ -19,6 +19,7 @@ import {
   biometricDisable,
   dismissKeyboard,
   init,
+  login_completed,
   login_error,
   login_success,
   login,
@@ -36,6 +37,7 @@ import {
 import {
   driverReply,
   foregroundDeliveryActions,
+  getBundleProducts,
   getCannedContent,
   getCustomerClaims,
   getDriverDataFailure,
@@ -56,6 +58,7 @@ import {
   setVehicleChecks,
   showMustComplyWithTerms,
   startDelivering,
+  updateDriverActivity,
   updateDirectionsPolyline,
   updateProps as updateDeliveryProps,
   updateReturnPosition,
@@ -78,7 +81,7 @@ import {
 
 import { alert } from './growl';
 
-import { getDriver } from './user';
+import { getDriver, setDriver } from './user';
 
 export default function* root() {
   yield all([
@@ -113,6 +116,7 @@ export default function* root() {
       DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS,
       foregroundDeliveryActions
     ),
+    takeLatest(DeliveryTypes.GET_BUNDLE_PRODUCTS, getBundleProducts),
     takeLatest(DeliveryTypes.GET_CANNED_CONTENT, getCannedContent),
     takeEvery(DeliveryTypes.GET_CUSTOMER_CLAIMS, getCustomerClaims),
     takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),
@@ -153,6 +157,7 @@ export default function* root() {
     ),
     takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, setVehicleChecks),
     takeEvery(DeliveryTypes.START_DELIVERING, startDelivering),
+    takeEvery(DeliveryTypes.UPDATE_DRIVER_ACTIVITY, updateDriverActivity),
     takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
     takeEvery(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
@@ -176,6 +181,8 @@ export default function* root() {
     takeEvery(GrowlTypes.ALERT, alert),
 
     takeEvery(UserTypes.GET_DRIVER, getDriver),
+    takeEvery(UserTypes.SET_DRIVER, setDriver),
+    takeEvery(UserTypes.SET_DRIVER, login_completed),
 
     takeLatest(REDUX_SAGA_LOCATION_ACTION_SET_ERROR, locationError),
     takeLatest(REDUX_SAGA_LOCATION_ACTION_SET_POSITION, setLocation)

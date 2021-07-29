@@ -52,6 +52,8 @@ export const driverReply = function* ({
   index
 }) {
   const sID = yield select(selectedStopIdSelector);
+  const stops = yield select(stopsSelector);
+
   let imageHex = null;
   if (image) {
     let base64Image = yield Repositories.filesystem.readFile(image, 'base64');
@@ -73,6 +75,12 @@ export const driverReply = function* ({
     selectedStopId: sID
   });
   yield put({ type: TransientTypes.RESET });
+  if (
+    acknowledgedClaim ||
+    (!acknowledgedClaim && stops[sID].claims.unacknowledgedList.length === 0)
+  ) {
+    NavigationService.goBack();
+  }
 };
 
 export const foregroundDeliveryActions = function* ({}) {
@@ -82,7 +90,18 @@ export const foregroundDeliveryActions = function* ({}) {
     yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
     yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
     yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
+    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
   }
+};
+
+export const getBundleProducts = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_BUNDLE_PRODUCTS }
+    },
+    promise: Api.repositories.delivery.getAllBundleProducts()
+  });
 };
 
 export const getCannedContent = function* () {
@@ -354,7 +373,11 @@ export const setDeliveredOrRejected = function* (
   }
 
   for (const i of outOfStockIds) {
-    yield put({ type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK, id: i });
+    yield put({
+      type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK,
+      id: i,
+      selectedStopId
+    });
   }
 
   yield put({
@@ -482,11 +505,27 @@ export const updateReturnPosition = function* ({ clear }) {
   });
 };
 
+export const updateDriverActivity = function* () {
+  const user = yield select(userSelector);
+
+  for (const i of user.routes) {
+    yield put({
+      type: Api.API_CALL,
+      promise: Api.repositories.delivery.postDriverActivity({
+        driverId: user.driverId,
+        routeId: i.routeId,
+        createdDateTime: new Date(),
+        driverActivityType: 1
+      })
+    });
+  }
+};
+
 export const updateDirectionsPolyline = function* () {
   const device = yield select(deviceSelector);
   const selectedStop = yield select(selectedStopSelector);
 
-  if (device && device.position && selectedStop) {
+  if (device && device.position && device.computeDirections && selectedStop) {
     const originLatitude = device.position.latitude;
     const originLongitude = device.position.longitude;
     const destinationLatitude = selectedStop.latitude;
@@ -505,9 +544,8 @@ export const updateDirectionsPolyline = function* () {
     );
 
     if (
-      (distanceToStop > parseInt(Config.DIRECTIONS_THRESHOLD) ||
-        device?.computeShortDirections) &&
-      device?.computeDirections
+      distanceToStop > parseInt(Config.DIRECTIONS_THRESHOLD) ||
+      device.computeShortDirections
     ) {
       yield put({
         type: Api.API_CALL,

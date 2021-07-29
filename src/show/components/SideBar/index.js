@@ -2,11 +2,12 @@ import { connect } from 'react-redux';
 import Config from 'react-native-config';
 
 import { Creators as applicationActions } from 'Reducers/application';
+import { Creators as inAppBrowserActions } from 'Reducers/inappbrowser';
 
 import SideBar from './view';
 
 export default connect(
-  (state) => ({
+  state => ({
     appcenter: state.device.appcenter,
     availableNavApps: state.device?.availableNavApps,
     driverId: state.user.driverId,
@@ -21,6 +22,7 @@ export default connect(
     status: state.delivery?.status
   }),
   {
-    updateProps: applicationActions.updateProps
+    updateProps: applicationActions.updateProps,
+    updateInAppBrowserProps: inAppBrowserActions.updateProps
   }
 )(SideBar);

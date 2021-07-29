@@ -5,6 +5,7 @@ import Fab from './Fab';
 import Growl from './Growl';
 import Icon from './Icon';
 import Image from './Image';
+import InAppBrowser from './InAppBrowser';
 import Label from './Label';
 import List, { ListHeader, ListItem } from './List';
 import NavBar from './NavBar';
@@ -25,6 +26,7 @@ export {
   Growl,
   Icon,
   Image,
+  InAppBrowser,
   Label,
   List,
   ListHeader,

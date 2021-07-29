@@ -74,6 +74,10 @@
         "dateTime": "{{date}} at {{time}}",
         "driverReplies": "Driver Replies"
       }
+    },
+    "status": {
+      "completed": "Delivered",
+      "rejected": "Skipped"
     }
   },
   "home": {
@@ -131,7 +135,8 @@
   "panel": {
     "driverID": "Driver ID #{{driverId}}",
     "gasStation": "Find a nearby gas station",
-    "loadedStock": "Loaded Stock"
+    "loadedStock": "Loaded Stock",
+    "suggestions": "Suggest a change"
   },
   "permissionsMissing": {
     "title": "Permissions missing",

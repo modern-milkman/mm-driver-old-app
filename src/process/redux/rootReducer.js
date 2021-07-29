@@ -7,9 +7,11 @@ import {
   delivery,
   device,
   growl,
+  inappbrowser,
   transient,
   user
 } from 'Reducers';
+import { initialState } from 'Reducers/delivery';
 
 import { storeConfig } from './config';
 
@@ -26,6 +28,7 @@ const appReducers = persistCombineReducers(storeConfig, {
   delivery,
   device,
   growl,
+  inappbrowser,
   transient,
   user
 });
@@ -36,8 +39,18 @@ const rootReducer = (state, action) => {
       ...state,
       actionsheetandroid: undefined,
       application: undefined,
-      delivery: undefined,
-      transient: undefined,
+      delivery: {
+        ...initialState,
+        checklist: { ...state.delivery.checklist }
+      },
+      inappbrowser: undefined,
+      transient:
+        {
+          ...(state.device.rememberMe && {
+            email: state.transient.email,
+            password: state.transient.password
+          })
+        } || undefined,
       user: undefined
     };
   }

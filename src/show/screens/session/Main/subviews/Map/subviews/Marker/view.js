@@ -15,7 +15,7 @@ const markerOnPress = ({ updateSelectedStop, id }) => {
   updateSelectedStop(id);
 };
 
-const Marker = (props) => {
+const Marker = props => {
   const {
     completedStopsIds,
     disabled,
@@ -66,7 +66,9 @@ const Marker = (props) => {
           longitude: selectedStop.longitude
         }}
         onPress={
-          disabled ? mock : markerOnPress.bind(null, { updateSelectedStop, id })
+          disabled || selectedStopId === id
+            ? mock
+            : markerOnPress.bind(null, { updateSelectedStop, id })
         }
         anchor={{ x: 0.5, y: 1 }}
         {...(completed && { zIndex: -1 })}

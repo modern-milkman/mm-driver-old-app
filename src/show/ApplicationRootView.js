@@ -8,6 +8,7 @@ import { Platform, StatusBar } from 'react-native';
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
 import { CarLogoFlatTire } from 'Images';
+import { appVersionString } from 'Helpers';
 import Navigator from 'Navigation/Navigator';
 import { ColumnView, FullView } from 'Containers';
 import NavigationService from 'Navigation/service';
@@ -22,6 +23,7 @@ import {
   Button,
   CustomBackHandler,
   Growl,
+  InAppBrowser,
   SideBar,
   Text
 } from 'Components';
@@ -76,6 +78,7 @@ class Root extends React.Component {
       <Growl />
       {Platform.OS === 'android' && <ActionSheetAndroid />}
       {Platform.OS === 'android' && <CustomBackHandler />}
+      <InAppBrowser />
       {/* content that should go on top of the app, full view, no safe area bounds */}
 
       <Navigator
@@ -151,7 +154,7 @@ class Root extends React.Component {
             />
           )}
           <Text.Caption textAlign={'center'} color={colors.white}>
-            {`V: ${Config.APP_VERSION_NAME}`}
+            {appVersionString()}
           </Text.Caption>
         </ColumnView>
       </FullView>

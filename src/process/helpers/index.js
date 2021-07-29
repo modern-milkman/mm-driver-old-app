@@ -13,6 +13,11 @@ import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 
+const appVersionString = () =>
+  Config.ENVIRONMENT !== 'production'
+    ? `V: ${Config.APP_VERSION_NAME}-${Config.APP_VERSION_CODE} ${Config.ENVIRONMENT}`
+    : `Version ${Config.APP_VERSION_NAME}`;
+
 const base64ToHex = base64 => {
   return [...Base64.atob(base64)]
     .map(c => c.charCodeAt(0).toString(16).padStart(2, 0))
@@ -37,17 +42,19 @@ const blacklists = {
     'UpgradeApp'
   ],
   resetStackRoutes: ['CheckIn'],
-  transientReset: ['RegistrationMileage']
+  transientReset: ['RegistrationMileage', 'Home']
 };
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 const customerSatisfactionColor = satisfactionStatus => {
+  // https://themodernmilkman.atlassian.net/wiki/spaces/VN/pages/1523679232/Customer+Issues#Map-pin-markers
+
   switch (satisfactionStatus) {
     case 1:
-      return colors.success;
-    case 2:
       return colors.primaryBright;
+    case 2:
+      return colors.success;
     case 3:
       return colors.warning;
     case 4:
@@ -71,6 +78,8 @@ const deliveryStates = {
   SEC: 'Shift End Checks',
   SC: 'Shift Completed'
 };
+
+const deliveredStatuses = ['completed', 'rejected'];
 
 const deviceFrame = () => Dimensions.get('window');
 
@@ -139,6 +148,10 @@ const openDriverUpdate = () => {
   });
 };
 
+const openURL = url => {
+  Linking.openURL(url);
+};
+
 const plateRecognition = (search, plates) => {
   let plateRecognized = '';
   const kCharMatched = 5;
@@ -180,16 +193,6 @@ const randomKey = () =>
 const statusBarHeight = () => {
   const { StatusBarManager } = NativeModules;
   return StatusBarManager.HEIGHT;
-};
-
-const throttle = (func, wait = 100) => {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(this, args);
-    }, wait);
-  };
 };
 
 const timeoutResponseStatuses = ['TIMEOUT', 502, 503, 504, 507];
@@ -244,19 +247,21 @@ const usePrevious = value => {
 };
 
 export {
+  appVersionString,
   base64ToHex,
   blacklists,
   capitalize,
   customerSatisfactionColor,
+  deliveredStatuses,
   deliveryStates,
   deviceFrame,
   defaultRoutes,
   formatDate,
-  throttle,
   isAppInstalled,
   jiggleAnimation,
   mock,
   openDriverUpdate,
+  openURL,
   plateRecognition,
   randomKey,
   statusBarHeight,
