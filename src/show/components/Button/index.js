@@ -1,5 +1,5 @@
 //testID supported
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -18,6 +18,16 @@ import Types from './Types';
 import { style } from './style';
 
 const wrapButtonComponent = (props, type) => <Button {...props} type={type} />;
+
+const onPressHandler = ({ internallyDisabled, onPress }) => {
+  if (!internallyDisabled.current) {
+    internallyDisabled.current = true;
+    onPress();
+    setTimeout(() => {
+      internallyDisabled.current = false;
+    }, 1000);
+  }
+};
 
 const Button = props => {
   const {
@@ -46,6 +56,8 @@ const Button = props => {
     ? titleColor
     : style[type].textStyle.color;
 
+  const internallyDisabled = useRef(false);
+
   return (
     <View
       style={[
@@ -71,7 +83,7 @@ const Button = props => {
 
       <TouchableOpacity
         disabled={disabled}
-        onPress={onPress}
+        onPress={onPressHandler.bind(null, { internallyDisabled, onPress })}
         style={style.touchableWrapper}
         testID={testID}>
         {!processing && (
