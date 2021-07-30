@@ -145,13 +145,13 @@ export default function* root() {
       showMustComplyWithTerms
     ),
     takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, getDriverReplyImage),
-    takeEvery(
+    takeLatest(
       DeliveryTypes.SET_DELIVERED,
       setDeliveredOrRejected.bind(null, 'delivered')
     ),
     takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
     takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
-    takeEvery(
+    takeLatest(
       DeliveryTypes.SET_REJECTED,
       setDeliveredOrRejected.bind(null, 'rejected')
     ),
