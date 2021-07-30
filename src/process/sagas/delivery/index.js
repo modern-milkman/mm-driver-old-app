@@ -92,6 +92,9 @@ export const foregroundDeliveryActions = function* ({}) {
     yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
     yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
   }
+  if (user_session) {
+    yield put({ type: DeliveryTypes.INIT_CHECKLIST });
+  }
 };
 
 export const getBundleProducts = function* () {
