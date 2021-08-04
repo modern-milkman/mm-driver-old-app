@@ -41,7 +41,8 @@ const rootReducer = (state, action) => {
       application: undefined,
       delivery: {
         ...initialState,
-        checklist: { ...state.delivery.checklist }
+        checklist: { ...state.delivery.checklist },
+        deliveryDate: state.delivery.deliveryDate
       },
       inappbrowser: undefined,
       transient:
