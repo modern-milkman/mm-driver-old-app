@@ -205,8 +205,7 @@ const processingTrue = state =>
     draft.processing = true;
   });
 
-const resetChecklistFlags = (checklist, deliveryDate) => {
-  checklist.deliveryDate = deliveryDate;
+const resetChecklistFlags = checklist => {
   checklist.deliveryComplete = false;
   checklist.loadedVan = false;
   checklist.payloadAltered = false;
