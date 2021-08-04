@@ -26,6 +26,7 @@ const handleSearchFilter = (items, searchValue) => {
 const Search = props => {
   const {
     centerSelectedStop,
+    completedStopsIds,
     panY,
     searchValue,
     status,
@@ -66,13 +67,21 @@ const Search = props => {
     handleFocus(false, false);
   };
 
-  const search = {
-    title: I18n.t('general:upNext'),
-    data: handleSearchFilter(stops, searchValue)
-  };
+  const dataSearched = handleSearchFilter(stops, searchValue);
+
+  const search = [
+    {
+      title: I18n.t('general:upNext'),
+      data: dataSearched.filter(item => !completedStopsIds.includes(item.key))
+    },
+    {
+      title: I18n.t('screens:deliver.status.completed'),
+      data: dataSearched.filter(item => completedStopsIds.includes(item.key))
+    }
+  ];
 
   if (searchValue.length > 0) {
-    if (search.data.length > 0) {
+    if (dataSearched.length > 0) {
       search.title = I18n.t('screens:main.search.results');
     } else {
       search.title = I18n.t('screens:main.search.noResults');
@@ -153,7 +162,7 @@ const Search = props => {
               ]}>
               <List
                 onPress={onPressAddress}
-                data={[search]}
+                data={search}
                 hasSections
                 renderListEmptyComponent={null}
               />
@@ -166,6 +175,7 @@ const Search = props => {
 };
 
 Search.propTypes = {
+  completedStopsIds: PropTypes.array,
   centerSelectedStop: PropTypes.func,
   panY: PropTypes.object,
   searchValue: PropTypes.string,
@@ -177,6 +187,7 @@ Search.propTypes = {
 };
 
 Search.defaultProps = {
+  completedStopsIds: [],
   centerSelectedStop: mock,
   panY: new Animated.Value(0),
   searchValue: '',

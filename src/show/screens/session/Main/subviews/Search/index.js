@@ -11,6 +11,7 @@ export default connect(
     return {
       searchValue: state.transient.searchValue,
       status: state.delivery?.status,
+      completedStopsIds: state.delivery?.completedStopsIds,
       stops: Object.values(state.delivery?.stops || {})
     };
   },
