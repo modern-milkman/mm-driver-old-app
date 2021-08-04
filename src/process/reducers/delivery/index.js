@@ -354,6 +354,10 @@ export const getForDriverSuccess = (
     draft.orderedStopsIds = [];
     draft.completedStopsIds = [];
     draft.deliveredStock = {};
+    resetChecklistFlags(
+      draft.checklist[state.userId],
+      draft.stockWithData.deliveryDate
+    );
 
     /*
     BE delivery_stateID values
@@ -375,10 +379,6 @@ export const getForDriverSuccess = (
     }
 
     if (!isRefreshData) {
-      resetChecklistFlags(
-        draft.checklist[state.userId],
-        draft.stockWithData.deliveryDate
-      );
       if (markedOrders === payload.items.length) {
         draft.status = DS.DELC;
         draft.checklist[state.userId].deliveryComplete = true;
