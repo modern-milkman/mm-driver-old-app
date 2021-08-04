@@ -109,7 +109,9 @@ const Marker = props => {
                   width: mapMarkerSize / 4,
                   height: mapMarkerSize / 4,
                   borderRadius: mapMarkerSize / 8,
-                  backgroundColor: customerSatisfactionColor
+                  backgroundColor: completed
+                    ? colors.input
+                    : customerSatisfactionColor
                 }
               ]}
             />
