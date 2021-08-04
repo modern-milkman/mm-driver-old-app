@@ -206,14 +206,12 @@ const processingTrue = state =>
   });
 
 const resetChecklistFlags = (checklist, deliveryDate) => {
-  if (checklist.deliveryDate !== deliveryDate) {
-    checklist.deliveryDate = deliveryDate;
-    checklist.deliveryComplete = false;
-    checklist.loadedVan = false;
-    checklist.payloadAltered = false;
-    checklist.shiftStartVanChecks = false;
-    checklist.shiftEndVanChecks = false;
-  }
+  checklist.deliveryDate = deliveryDate;
+  checklist.deliveryComplete = false;
+  checklist.loadedVan = false;
+  checklist.payloadAltered = false;
+  checklist.shiftStartVanChecks = false;
+  checklist.shiftEndVanChecks = false;
 };
 
 const resetSelectedStopInfo = draft => {
@@ -354,10 +352,12 @@ export const getForDriverSuccess = (
     draft.orderedStopsIds = [];
     draft.completedStopsIds = [];
     draft.deliveredStock = {};
-    resetChecklistFlags(
-      draft.checklist[state.userId],
-      draft.stockWithData.deliveryDate
-    );
+
+    if (draft.deliveryDate !== draft.stockWithData.deliveryDate) {
+      draft.deliveryDate = draft.stockWithData.deliveryDate;
+      draft.status = initialState.status;
+      resetChecklistFlags(draft.checklist[state.userId]);
+    }
 
     /*
     BE delivery_stateID values
