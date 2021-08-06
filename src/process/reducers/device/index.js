@@ -178,6 +178,7 @@ export default createReducer(initialState, {
 
 export const biometrics = state => state.device.biometrics;
 export const device = state => state.device;
+export const heading = state => state.device.position?.heading || 0;
 export const network = state => state.device.network;
 export const requestQueues = state => state.device.requestQueues;
 export const processors = state => state.device.processors;

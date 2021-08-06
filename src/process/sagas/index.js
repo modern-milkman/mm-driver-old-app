@@ -76,6 +76,7 @@ import {
   syncOffline,
   updateDeviceProps,
   updateNetworkProps,
+  watchCompassHeading,
   watchUserLocation
 } from './device';
 
@@ -86,6 +87,7 @@ import { getDriver, setDriver } from './user';
 export default function* root() {
   yield all([
     spawn(watchLocationChannel),
+    spawn(watchCompassHeading),
 
     takeLatest('REDUX_SAGA_NETSTAT_CHANGE', reduxSagaNetstatChange),
 

@@ -210,7 +210,7 @@ const Map = props => {
               longitude: longitude
             }}
             anchor={{ x: 0.5, y: 0.5 }}
-            tracksViewChanges={false}>
+            tracksViewChanges={true}>
             <CurrentLocation width={25} />
           </RNMMarker>
         )}

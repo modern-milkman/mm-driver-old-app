@@ -25,12 +25,66 @@ import {
   Types as DeviceTypes,
   Creators as DeviceCreators,
   biometrics as biometricsSelector,
+  heading as headingSelector,
   network as networkSelector,
   processors as processorsSelector,
   requestQueues as requestQueuesSelector
 } from 'Reducers/device';
 
 export { watchUserLocation } from './extras/watchUserLocation';
+
+export function* ensureMandatoryPermissions({ routeName }) {
+  const { dispatch } = store().store;
+  const mandatoryPermissions = Platform.select({
+    android: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION],
+    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]
+  });
+
+  const biometrics = yield select(biometricsSelector);
+  //https://docs.expo.io/versions/latest/sdk/local-authentication/
+  const enrolled = yield LocalAuthentication.isEnrolledAsync();
+  const supportedBiometrics =
+    yield LocalAuthentication.supportedAuthenticationTypesAsync();
+  yield put({
+    type: DeviceTypes.UPDATE_PROPS,
+    props: {
+      biometrics: {
+        supported: supportedBiometrics.length > 0,
+        enrolled,
+        active: biometrics.active
+      }
+    }
+  });
+
+  requestMultiple(mandatoryPermissions)
+    .then(statuses => {
+      dispatch(DeviceCreators.updateProps({ permissions: statuses }));
+      const statusesArray = Platform.select({
+        android: [statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]],
+        ios: [statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]]
+      });
+      if (
+        statusesArray.includes(RESULTS.DENIED) ||
+        statusesArray.includes(RESULTS.BLOCKED) ||
+        statusesArray.includes(RESULTS.LIMITED)
+      ) {
+        NavigationService.navigate({ routeName: 'PermissionsMissing' });
+      } else {
+        if (routeName) {
+          NavigationService.navigate({ routeName });
+        }
+        dispatch(DeviceCreators.watchUserLocation());
+      }
+      InteractionManager.runAfterInteractions(() => {
+        RNBootSplash.hide();
+      });
+    })
+    .catch(() => {
+      InteractionManager.runAfterInteractions(() => {
+        RNBootSplash.hide();
+      });
+    });
+}
 
 export function* locationError({ error }) {
   Analytics.trackEvent(EVENTS.GEOLOCATION_ERROR, {
@@ -60,15 +114,10 @@ export function* reduxSagaNetstatChange({ netStatProps }) {
 export function* setLocation({ position }) {
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
+  const heading = yield select(headingSelector);
 
   if (position?.coords?.speed < 2.5) {
-    delete position.coords.heading;
-    CompassHeading.start(3, ({ heading }) => {
-      const { dispatch } = store().store;
-      dispatch(DeviceCreators.setLocationHeading(heading));
-    });
-  } else {
-    CompassHeading.stop();
+    position.coords.heading = heading;
   }
 
   yield put({ type: DeviceTypes.SET_LOCATION, position: position.coords });
@@ -199,59 +248,6 @@ export function* syncOffline({ status }) {
   }
 }
 
-export const ensureMandatoryPermissions = function* ({ routeName }) {
-  const { dispatch } = store().store;
-  const mandatoryPermissions = Platform.select({
-    android: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION],
-    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]
-  });
-
-  const biometrics = yield select(biometricsSelector);
-  //https://docs.expo.io/versions/latest/sdk/local-authentication/
-  const enrolled = yield LocalAuthentication.isEnrolledAsync();
-  const supportedBiometrics =
-    yield LocalAuthentication.supportedAuthenticationTypesAsync();
-  yield put({
-    type: DeviceTypes.UPDATE_PROPS,
-    props: {
-      biometrics: {
-        supported: supportedBiometrics.length > 0,
-        enrolled,
-        active: biometrics.active
-      }
-    }
-  });
-
-  requestMultiple(mandatoryPermissions)
-    .then(statuses => {
-      dispatch(DeviceCreators.updateProps({ permissions: statuses }));
-      const statusesArray = Platform.select({
-        android: [statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]],
-        ios: [statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]]
-      });
-      if (
-        statusesArray.includes(RESULTS.DENIED) ||
-        statusesArray.includes(RESULTS.BLOCKED) ||
-        statusesArray.includes(RESULTS.LIMITED)
-      ) {
-        NavigationService.navigate({ routeName: 'PermissionsMissing' });
-      } else {
-        if (routeName) {
-          NavigationService.navigate({ routeName });
-        }
-        dispatch(DeviceCreators.watchUserLocation());
-      }
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
-      });
-    })
-    .catch(() => {
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
-      });
-    });
-};
-
 export function* updateDeviceProps({ props }) {
   const { status } = yield select(networkSelector);
   if (
@@ -286,4 +282,17 @@ export function* updateNetworkProps() {
     });
     yield put({ type: DeviceTypes.SYNC_OFFLINE });
   }
+}
+
+export function* watchCompassHeading() {
+  CompassHeading.start(3, ({ heading }) => {
+    const { dispatch, getState } = store().store;
+    const {
+      device: { position }
+    } = getState();
+
+    if (position?.speed < 2.5) {
+      dispatch(DeviceCreators.setLocationHeading(heading));
+    }
+  });
 }
