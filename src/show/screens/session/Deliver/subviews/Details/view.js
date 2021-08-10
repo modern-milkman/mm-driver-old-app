@@ -1,14 +1,15 @@
-import React from 'react';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import Config from 'react-native-config';
 
 import I18n from 'Locales/I18n';
 import { formatDate, mock } from 'Helpers';
+import { renderImageTextModal } from 'Renders';
 import { defaults, colors, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
-import { ColumnView, RowView, SafeAreaView } from 'Containers';
-import { Button, NavBar, Separator, Label, List, ListItem } from 'Components';
+import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
+import { Button, Label, List, ListItem, NavBar, Separator } from 'Components';
 
 const showReplyModal = toggleModal => {
   toggleModal('showReplyModal', true);
@@ -18,8 +19,24 @@ const showReplyModal = toggleModal => {
   });
 };
 
+const toggleReplyDetailsModal = (
+  {
+    driverReplyData,
+    setReplyDetailsModal,
+    setReplyDetailsModalVisible,
+    visible
+  },
+  index
+) => {
+  setReplyDetailsModal(visible ? driverReplyData[index] : {});
+  setReplyDetailsModalVisible(visible);
+};
+
 const CustomerIssueDetails = props => {
   const { selectedClaim, toggleModal } = props;
+  const [replyDetailsModal, setReplyDetailsModal] = useState({});
+  const [replyDetailsModalVisible, setReplyDetailsModalVisible] =
+    useState(false);
 
   const {
     claimItem,
@@ -50,7 +67,7 @@ const CustomerIssueDetails = props => {
     });
 
     return {
-      disabled: true,
+      disabled: !item.hasImage,
       customIcon: 'customerIssue',
       customIconProps: {
         width: sizes.list.image
@@ -68,7 +85,8 @@ const CustomerIssueDetails = props => {
         ? item.localImage
           ? `file://${item.localImage}`
           : `file://${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${item.claimDriverResponseId}`
-        : null
+        : null,
+      key: idx
     };
   });
 
@@ -124,6 +142,23 @@ const CustomerIssueDetails = props => {
         })}
       />
 
+      <Modal
+        visible={replyDetailsModalVisible}
+        transparent={true}
+        animationType={'fade'}>
+        {renderImageTextModal({
+          imageSource: {
+            uri: replyDetailsModal.image
+          },
+          onPress: toggleReplyDetailsModal.bind(null, {
+            setReplyDetailsModal,
+            setReplyDetailsModalVisible,
+            visible: false
+          }),
+          text: replyDetailsModal.moreInfo
+        })}
+      </Modal>
+
       <ColumnView flex={1} justifyContent={'flex-start'}>
         <Separator color={colors.input} width={'100%'} />
 
@@ -147,7 +182,16 @@ const CustomerIssueDetails = props => {
 
         {listData.length > 0 && (
           <ColumnView flex={1}>
-            <List data={listData} hasSections />
+            <List
+              data={listData}
+              hasSections
+              onPress={toggleReplyDetailsModal.bind(null, {
+                driverReplyData,
+                setReplyDetailsModal,
+                setReplyDetailsModalVisible,
+                visible: true
+              })}
+            />
           </ColumnView>
         )}
       </ColumnView>
