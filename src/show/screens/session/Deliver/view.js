@@ -3,17 +3,16 @@ import RNFS from 'react-native-fs';
 import React, { useState } from 'react';
 import Config from 'react-native-config';
 import { NavigationEvents } from 'react-navigation';
-import { Animated, TouchableOpacity } from 'react-native';
+import { Animated } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { colors, defaults } from 'Theme';
-import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import NavigationService from 'Navigation/service';
+import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import {
   Button,
-  Image,
   List,
   ListItem,
   NavBar,
@@ -22,6 +21,8 @@ import {
   Text,
   TextInput
 } from 'Components';
+
+import { renderImageTextModal } from 'Renders';
 
 import style from './style';
 
@@ -33,7 +34,7 @@ const forFade = ({ current, closing }) => ({
   }
 });
 
-const { width, height } = deviceFrame();
+const { width } = deviceFrame();
 
 const animateContent = ({
   contentTranslateYValue,
@@ -190,36 +191,6 @@ const renderSkipModal = ({
   </ColumnView>
 );
 
-const renderImageModal = ({ selectedStop, setModalVisible }) => (
-  <TouchableOpacity
-    style={style.fullView}
-    onPress={setModalVisible.bind(null, false)}>
-    {selectedStop && (
-      <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
-        <Image
-          source={{
-            uri: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
-          }}
-          style={style.image}
-          width={width - defaults.marginHorizontal * 2}
-          maxHeight={height * 0.7}
-          renderFallback={renderFallbackCustomerImage}
-        />
-        {selectedStop.deliveryInstructions && (
-          <RowView
-            height={'auto'}
-            alignItems={'flex-start'}
-            marginVertical={defaults.marginVertical}
-            width={'auto'}
-            marginHorizontal={defaults.marginHorizontal}>
-            <Text.List>{selectedStop.deliveryInstructions}</Text.List>
-          </RowView>
-        )}
-      </ColumnView>
-    )}
-  </TouchableOpacity>
-);
-
 const showClaims = toggleModal => {
   toggleModal('showClaimModal', true);
   NavigationService.navigate({
@@ -300,7 +271,14 @@ const Deliver = props => {
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
         {modalType === 'skip' && renderSkipModal({ ...props, setModalVisible })}
         {modalType === 'image' &&
-          renderImageModal({ ...props, setModalVisible })}
+          renderImageTextModal({
+            imageSource: {
+              uri: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
+            },
+            onPress: setModalVisible,
+            renderFallback: renderFallbackCustomerImage,
+            text: selectedStop.deliveryInstructions
+          })}
       </Modal>
 
       <ColumnView
