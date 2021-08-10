@@ -49,13 +49,11 @@ const blacklists = {
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 const customerSatisfactionColor = satisfactionStatus => {
-  // https://themodernmilkman.atlassian.net/wiki/spaces/VN/pages/1523679232/Customer+Issues#Map-pin-markers
-
   switch (satisfactionStatus) {
     case 1:
-      return colors.primaryBright;
-    case 2:
       return colors.success;
+    case 2:
+      return colors.primaryBright;
     case 3:
       return colors.warning;
     case 4:
