@@ -61,26 +61,28 @@ export function* setLocation({ position }) {
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
 
-  if (position?.coords?.speed < 2.5) {
-    delete position.coords.heading;
-    CompassHeading.start(3, ({ heading }) => {
-      const { dispatch } = store().store;
-      dispatch(DeviceCreators.setLocationHeading(heading));
-    });
-  } else {
-    CompassHeading.stop();
-  }
+  if (position?.coords?.latitude !== 0 || position?.coords?.longitude !== 0) {
+    if (position?.coords?.speed < 2.5) {
+      delete position.coords.heading;
+      CompassHeading.start(3, ({ heading }) => {
+        const { dispatch } = store().store;
+        dispatch(DeviceCreators.setLocationHeading(heading));
+      });
+    } else {
+      CompassHeading.stop();
+    }
 
-  yield put({ type: DeviceTypes.SET_LOCATION, position: position.coords });
+    yield put({ type: DeviceTypes.SET_LOCATION, position: position.coords });
 
-  if (user_session && user.driverId) {
-    yield put({
-      type: Api.API_CALL,
-      promise: Api.repositories.fleet.drivers({
-        id: `${user.driverId}`,
-        location: position.coords
-      })
-    });
+    if (user_session && user.driverId) {
+      yield put({
+        type: Api.API_CALL,
+        promise: Api.repositories.fleet.drivers({
+          id: `${user.driverId}`,
+          location: position.coords
+        })
+      });
+    }
   }
 }
 
