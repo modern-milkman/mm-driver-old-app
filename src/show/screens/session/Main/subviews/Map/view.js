@@ -175,6 +175,7 @@ const Map = props => {
         customMapStyle={mapStyle}
         initialCamera={initialCamera.current}
         mapPadding={mapPadding}
+        minZoomLevel={parseInt(Config.MIN_MAP_ZOOM_LEVEL)}
         moveOnMarkerPress={false}
         onStartShouldSetResponder={triggerManualMove.bind(null, {
           mapIsInteracting,
@@ -200,8 +201,7 @@ const Map = props => {
         showsCompass={false}
         showsMyLocationButton={false}
         showsUserLocation={false}
-        style={[styles.map, { height }]}
-        zoomTapEnabled={false}>
+        style={[styles.map, { height }]}>
         {latitude && longitude && (
           <RNMMarker
             key={'current-location'}

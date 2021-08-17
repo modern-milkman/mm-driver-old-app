@@ -116,20 +116,22 @@ export function* setLocation({ position }) {
   const user_session = yield select(userSessionPresentSelector);
   const heading = yield select(headingSelector);
 
-  if (position?.coords?.speed < 2.5) {
-    position.coords.heading = heading;
-  }
+  if (position?.coords?.latitude !== 0 || position?.coords?.longitude !== 0) {
+    if (position?.coords?.speed < 2.5) {
+      position.coords.heading = heading;
+    }
 
-  yield put({ type: DeviceTypes.SET_LOCATION, position: position.coords });
+    yield put({ type: DeviceTypes.SET_LOCATION, position: position.coords });
 
-  if (user_session && user.driverId) {
-    yield put({
-      type: Api.API_CALL,
-      promise: Api.repositories.fleet.drivers({
-        id: `${user.driverId}`,
-        location: position.coords
-      })
-    });
+    if (user_session && user.driverId) {
+      yield put({
+        type: Api.API_CALL,
+        promise: Api.repositories.fleet.drivers({
+          id: `${user.driverId}`,
+          location: position.coords
+        })
+      });
+    }
   }
 }
 
