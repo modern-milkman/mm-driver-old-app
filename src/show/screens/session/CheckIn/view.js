@@ -169,7 +169,8 @@ const CheckIn = props => {
         routeName: 'RegistrationMileage'
       }),
       rightIcon: checklist.shiftStartVanChecks ? 'check' : 'chevron-right',
-      title: I18n.t('screens:checkIn.checkVan')
+      title: I18n.t('screens:checkIn.checkVan'),
+      testID: 'checkIn-checkVan-listItem'
     },
     {
       customIcon: 'cart',
@@ -182,7 +183,8 @@ const CheckIn = props => {
         params: { readOnly: checklist.loadedVan }
       }),
       rightIcon: checklist.loadedVan ? 'check' : 'chevron-right',
-      title: I18n.t('screens:checkIn.loadVan')
+      title: I18n.t('screens:checkIn.loadVan'),
+      testID: 'checkIn-loadVan-listItem'
     },
     {
       customIcon: 'deliver',
@@ -196,7 +198,8 @@ const CheckIn = props => {
         : deliverProductsDisabled
         ? null
         : 'chevron-right',
-      title: I18n.t('screens:checkIn.deliverProducts')
+      title: I18n.t('screens:checkIn.deliverProducts'),
+      testID: 'checkIn-deliverProducts-listItem'
     },
     {
       customIcon: 'vanCheck',
@@ -209,13 +212,21 @@ const CheckIn = props => {
         : checklist.shiftEndVanChecks
         ? 'check'
         : 'chevron-right',
-      title: I18n.t('screens:checkIn.checkVan')
+      title: I18n.t('screens:checkIn.checkVan'),
+      testID: 'checkIn-checkVanEnd-listItem'
     }
   ];
 
   const renderCheckinRow = index => {
-    const { customIcon, disabled, suffixBottom, onPress, rightIcon, title } =
-      checkinRows[index];
+    const {
+      customIcon,
+      disabled,
+      suffixBottom,
+      onPress,
+      rightIcon,
+      title,
+      testID
+    } = checkinRows[index];
     return (
       <Animated.View
         style={[
@@ -235,6 +246,7 @@ const CheckIn = props => {
           customIcon={customIcon}
           rightIcon={rightIcon}
           title={title}
+          testID={testID}
         />
         {index === checkinRows.length - 1 && <Separator />}
       </Animated.View>
@@ -257,6 +269,7 @@ const CheckIn = props => {
           leftIcon={'chevron-down'}
           leftIconAction={navigateBack.bind(null, null)}
           title={renderTitle({ checklist, status })}
+          testID={'checkIn-navbar'}
         />
         <ColumnView flex={1} justifyContent={'space-between'}>
           <ColumnView flex={1} justifyContent={'flex-start'}>

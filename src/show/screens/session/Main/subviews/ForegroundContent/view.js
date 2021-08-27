@@ -248,6 +248,7 @@ const ForegroundContent = props => {
                 foregroundState
               )}
               onPress={onButtonPress}
+              testID={'foregroundContent-main-btn'}
             />
           </RowView>
         </ColumnView>
