@@ -134,6 +134,19 @@ const Map = props => {
   useEffect(() => {
     if (!mapIsInteracting.current || centerSelectedStopLocation) {
       mapRef.current?.getCamera().then(currentCamera => {
+        //Reposition map if on the middle of nowhere
+        if (
+          currentCamera.center.longitude === 0 &&
+          currentCamera.center.latitude === 0
+        ) {
+          animateCamera(currentCamera, {
+            center: {
+              latitude,
+              longitude
+            }
+          });
+        }
+
         animateCamera(currentCamera, {
           ...(shouldTrackLocation && {
             center: {
