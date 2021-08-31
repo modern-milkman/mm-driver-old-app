@@ -12,7 +12,7 @@ import { colors, defaults } from 'Theme';
 import style from './style';
 
 const markerOnPress = ({ updateSelectedStop, id }) => {
-  updateSelectedStop(id);
+  updateSelectedStop(id, false);
 };
 
 const Marker = props => {
@@ -156,6 +156,7 @@ Marker.propTypes = {
 
 const areEqual = (prevProps, nextProps) => {
   return !(
+    prevProps.disabled !== nextProps.disabled ||
     prevProps.completed !== nextProps.completed ||
     prevProps.mapMarkerSize !== nextProps.mapMarkerSize ||
     nextProps.selectedStopId === nextProps.id ||

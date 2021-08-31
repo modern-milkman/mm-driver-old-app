@@ -2,27 +2,13 @@ import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 
-import I18n from 'Locales/I18n';
 import { Fab } from 'Components';
 import { colors, defaults } from 'Theme';
 import { deliveryStates as DS } from 'Helpers';
-import actionSheet from 'Services/actionSheet';
 import { configuration, navigateInSheet } from 'Screens/session/Main/helpers';
 
 const fabContainerSize = 56;
 const fabMargin = 10;
-
-const changeReturnPosition = props => {
-  const { returnPosition, updateReturnPosition } = props;
-  const actions = {};
-  actions[`${I18n.t('screens:main.actions.setReturnPosition')}`] =
-    updateReturnPosition.bind(null, false);
-  if (returnPosition) {
-    actions[`${I18n.t('screens:main.actions.clearReturnPosition')}`] =
-      updateReturnPosition.bind(null, true);
-  }
-  actionSheet(actions, { destructiveButtonIndex: 2 });
-};
 
 const toggleProp = ({ callback, mapIsInteracting, setMapMode }) => {
   if (setMapMode) {
@@ -45,7 +31,7 @@ const Fabs = props => {
     network,
     position,
     processing,
-    refreshDriverData,
+    getForDriver,
     selectedStopId,
     setMapMode,
     shouldPitchMap,
@@ -212,7 +198,6 @@ const Fabs = props => {
           }),
           mapIsInteracting
         })}
-        onLongPress={changeReturnPosition.bind(null, props)}
       />
       {destination && (
         <Fab
@@ -254,7 +239,7 @@ const Fabs = props => {
             defaults.paddingHorizontal
           }
           processing={processing}
-          onPress={refreshDriverData}
+          onPress={getForDriver}
           disabled={network.status !== 0}
         />
       )}
@@ -268,8 +253,7 @@ Fabs.defaultProps = {
   mapMode: 'auto',
   shouldPitchMap: false,
   shouldTrackHeading: false,
-  shouldTrackLocation: false,
-  returnPosition: null
+  shouldTrackLocation: false
 };
 
 Fabs.propTypes = {
@@ -283,8 +267,7 @@ Fabs.propTypes = {
   network: PropTypes.object,
   position: PropTypes.object,
   processing: PropTypes.bool,
-  refreshDriverData: PropTypes.func,
-  returnPosition: PropTypes.object,
+  getForDriver: PropTypes.func,
   selectedStopId: PropTypes.number,
   setMapMode: PropTypes.func,
   shouldPitchMap: PropTypes.bool,
@@ -292,8 +275,7 @@ Fabs.propTypes = {
   shouldTrackLocation: PropTypes.bool,
   status: PropTypes.string,
   stops: PropTypes.object,
-  updateDeviceProps: PropTypes.func,
-  updateReturnPosition: PropTypes.func
+  updateDeviceProps: PropTypes.func
 };
 
 const areEqual = (prevProps, nextProps) => {
@@ -307,9 +289,7 @@ const areEqual = (prevProps, nextProps) => {
     prevProps.selectedStopId !== nextProps.selectedStopId ||
     prevProps.shouldPitchMap !== nextProps.shouldPitchMap ||
     prevProps.shouldTrackHeading !== nextProps.shouldTrackHeading ||
-    prevProps.shouldTrackLocation !== nextProps.shouldTrackLocation ||
-    prevProps.returnPosition?.latitude !== nextProps.returnPosition?.latitude ||
-    prevProps.returnPosition?.longitude !== nextProps.returnPosition?.longitude
+    prevProps.shouldTrackLocation !== nextProps.shouldTrackLocation
   );
 };
 

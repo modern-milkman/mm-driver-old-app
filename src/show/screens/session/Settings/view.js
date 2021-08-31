@@ -98,12 +98,12 @@ const triggerLogout = ({ logout, network }) => {
 };
 
 const onOptimization = (
-  { updateDeliveryProps, optimizeStops, currentLocation, returnPosition },
-  manualRoutes
+  { continueDelivering, updateDeliveryProps },
+  optimisedRouting
 ) => {
-  updateDeliveryProps({ manualRoutes });
-  if (!manualRoutes) {
-    optimizeStops({ currentLocation, returnPosition });
+  updateDeliveryProps({ optimisedRouting });
+  if (optimisedRouting) {
+    continueDelivering();
   }
 };
 
@@ -114,15 +114,14 @@ const Settings = props => {
     buttonAccessibility,
     computeDirections,
     computeShortDirections,
+    continueDelivering,
     countDown,
-    currentLocation,
     foregroundSize,
+    isOptimised,
     logout,
     mapMarkerSize,
-    manualRoutes,
+    optimisedRouting,
     network,
-    optimizeStops,
-    returnPosition,
     showDoneDeliveries,
     showMapControlsOnMovement,
     updateDeliveryProps,
@@ -148,6 +147,38 @@ const Settings = props => {
           justifyContent={'flex-start'}
           alignItems={'stretch'}
           width={'auto'}>
+          <ListHeader title={I18n.t('screens:settings.sections.routing')} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.optimisedRouting')}
+              </Text.List>
+              {!isOptimised && (
+                <Text.Caption color={colors.secondary}>
+                  {I18n.t(
+                    'screens:settings.switches.optimisedRoutingUnavailable'
+                  )}
+                </Text.Caption>
+              )}
+            </ColumnView>
+
+            <Switch
+              disabled={!isOptimised}
+              value={optimisedRouting}
+              onValueChange={onOptimization.bind(null, {
+                continueDelivering,
+                updateDeliveryProps
+              })}
+            />
+          </RowView>
+
+          <Separator />
+
           <ListHeader title={I18n.t('screens:settings.sections.map')} />
 
           <RowView
@@ -305,29 +336,6 @@ const Settings = props => {
 
           <Separator />
 
-          <ListHeader title={I18n.t('screens:settings.sections.routing')} />
-
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.manualRouting')}
-            </Text.List>
-            <Switch
-              value={manualRoutes}
-              onValueChange={onOptimization.bind(null, {
-                optimizeStops,
-                currentLocation,
-                returnPosition,
-                updateDeliveryProps
-              })}
-            />
-          </RowView>
-
-          <Separator />
-
           <ListHeader title={I18n.t('screens:settings.sections.device')} />
 
           <ColumnView
@@ -425,15 +433,15 @@ Settings.propTypes = {
   buttonAccessibility: PropTypes.number,
   computeDirections: PropTypes.bool,
   computeShortDirections: PropTypes.bool,
+  continueDelivering: PropTypes.func,
   countDown: PropTypes.bool,
   currentLocation: PropTypes.object,
   foregroundSize: PropTypes.string,
+  isOptimised: PropTypes.bool,
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
-  manualRoutes: PropTypes.bool,
+  optimisedRouting: PropTypes.bool,
   network: PropTypes.object,
-  optimizeStops: PropTypes.func,
-  returnPosition: PropTypes.object,
   showDoneDeliveries: PropTypes.bool,
   showMapControlsOnMovement: PropTypes.bool,
   updateDeliveryProps: PropTypes.func,

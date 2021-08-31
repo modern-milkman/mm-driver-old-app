@@ -5,7 +5,7 @@ import { deliveryStates as DS } from 'Helpers';
 
 import { Marker } from '../';
 
-const Markers = (props) => {
+const Markers = props => {
   const {
     completedStopsIds,
     mapMarkerSize,
@@ -23,7 +23,7 @@ const Markers = (props) => {
   return (
     (hasMarkers && (
       <>
-        {orderedStopsIds?.map((sID) => (
+        {orderedStopsIds?.map(sID => (
           <Marker
             key={`${sID}-${mapMarkerSize}-${disabled}`}
             id={sID}
@@ -31,7 +31,7 @@ const Markers = (props) => {
           />
         ))}
         {showDoneDeliveries &&
-          completedStopsIds?.map((sID) => (
+          completedStopsIds?.map(sID => (
             <Marker
               key={`${sID}-${mapMarkerSize}-${disabled}`}
               id={sID}

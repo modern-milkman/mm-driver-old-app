@@ -29,34 +29,39 @@ const { height, width } = deviceFrame();
 
 const mainForegroundAction = ({
   checklist,
+  continueDelivering,
   currentLocation,
   foregroundPaddingTop,
-  manualRoutes,
-  optimizeStops,
+  optimisedRouting,
   pullHandleMoveY,
   pullHandlePan,
-  returnPosition,
   selectedStop,
   snapMiddleY,
   snapTopY,
-  startDelivering,
   status,
   top,
   updateDeviceProps
 }) => {
   switch (status) {
     case DS.NCI:
-      springForeground({
-        animatedValues: [pullHandlePan.y, pullHandleMoveY],
-        toValue: snapTopY,
-        snapMiddleY,
-        snapTopY,
-        pullHandleMoveY,
-        foregroundPaddingTop,
-        routeName: 'CheckIn',
-        top,
-        updateDeviceProps
-      });
+    case DS.LV:
+    case DS.SSC:
+      if (checklist.loadedVan && checklist.shiftStartVanChecks) {
+        continueDelivering();
+      } else {
+        springForeground({
+          animatedValues: [pullHandlePan.y, pullHandleMoveY],
+          toValue: snapTopY,
+          snapMiddleY,
+          snapTopY,
+          pullHandleMoveY,
+          foregroundPaddingTop,
+          routeName: 'CheckIn',
+          top,
+          updateDeviceProps
+        });
+      }
+
       break;
     case DS.DELC:
     case DS.SEC:
@@ -86,25 +91,6 @@ const mainForegroundAction = ({
         });
       }
       break;
-    case DS.LV:
-    case DS.SSC:
-      if (checklist.loadedVan && checklist.shiftStartVanChecks) {
-        startDelivering();
-      } else {
-        springForeground({
-          animatedValues: [pullHandlePan.y, pullHandleMoveY],
-          toValue: snapTopY,
-          snapMiddleY,
-          snapTopY,
-          pullHandleMoveY,
-          foregroundPaddingTop,
-          routeName: 'CheckIn',
-          top,
-          updateDeviceProps
-        });
-      }
-
-      break;
     case DS.DEL:
       if (selectedStop) {
         springForeground({
@@ -118,8 +104,8 @@ const mainForegroundAction = ({
           top,
           updateDeviceProps
         });
-      } else if (manualRoutes) {
-        optimizeStops({ returnPosition, currentLocation });
+      } else if (!optimisedRouting) {
+        continueDelivering();
       }
       break;
   }
@@ -175,22 +161,20 @@ const springForeground = ({
   }
 };
 
-const triggerNavigation = (routeName) => {
+const triggerNavigation = routeName => {
   NavigationService.navigate({ routeName });
 };
 
-const Main = (props) => {
+const Main = props => {
   const {
     buttonAccessibility,
     canPanForeground,
     checklist,
+    continueDelivering,
     currentLocation,
     foregroundSize,
-    manualRoutes,
-    optimizeStops,
-    returnPosition,
+    optimisedRouting,
     selectedStop,
-    startDelivering,
     status,
     updateDeviceProps
   } = props;
@@ -541,17 +525,15 @@ const Main = (props) => {
           onTitleLayoutChange={setForegroundTitleHeight}
           onButtonPress={mainForegroundAction.bind(null, {
             checklist,
+            continueDelivering,
             currentLocation,
             foregroundPaddingTop,
-            manualRoutes,
-            optimizeStops,
+            optimisedRouting,
             pullHandleMoveY,
             pullHandlePan,
-            returnPosition,
             selectedStop,
             snapMiddleY,
             snapTopY,
-            startDelivering,
             status,
             top,
             updateDeviceProps
@@ -580,13 +562,11 @@ Main.propTypes = {
   buttonAccessibility: PropTypes.number,
   canPanForeground: PropTypes.bool,
   checklist: PropTypes.object,
+  continueDelivering: PropTypes.func,
   currentLocation: PropTypes.object,
   foregroundSize: PropTypes.string,
-  manualRoutes: PropTypes.bool,
-  optimizeStops: PropTypes.func,
-  returnPosition: PropTypes.object,
+  optimisedRouting: PropTypes.bool,
   selectedStop: PropTypes.any,
-  startDelivering: PropTypes.func,
   status: PropTypes.string,
   updateDeviceProps: PropTypes.func
 };

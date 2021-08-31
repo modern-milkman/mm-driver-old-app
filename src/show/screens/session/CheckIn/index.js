@@ -17,6 +17,6 @@ export default connect(
     stopCount: stopCount(state)
   }),
   {
-    startDelivering: deliveryActions.startDelivering
+    continueDelivering: deliveryActions.continueDelivering
   }
 )(Main);

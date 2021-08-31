@@ -40,7 +40,7 @@
     "title": "Damage Report"
   },
   "deliver": {
-    "userID": "User ID #{{userId}}",
+    "userId": "User ID #{{userId}}",
     "deliveryItems": "Delivery items",
     "viewClaims": "View claims ({{claimNo}})",
     "routeDescription": "Route ID #{{routeDescription}}",
@@ -98,9 +98,7 @@
   "main": {
     "activeDeliveryFor": "{{itemCount}} items",
     "actions": {
-      "clearReturnPosition": "Clear current return position",
-      "openIn": "Open in {{appName}}",
-      "setReturnPosition": "Set current return position"
+      "openIn": "Open in {{appName}}"
     },
     "descriptions": {
       "comeBackLater": "Come back later",
@@ -197,7 +195,8 @@
       "deliveriesRemaining": "Deliveries Remaining",
       "deliveriesCountDown": "Enable to show as count down",
       "foreground": "Large foreground",
-      "manualRouting": "Use manual routing",
+      "optimisedRoutingUnavailable": "Unavailable for current route at this time",
+      "optimisedRouting": "Use optimised routing",
       "computeDirections": "Compute delivery directions",
       "computeShortDirections": "Compute delivery directions within 500m",
       "showDoneDeliveries": "Show done deliveries",

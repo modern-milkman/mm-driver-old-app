@@ -1,22 +1,21 @@
 import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
-import { call, delay, put, select } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 
 import Api from 'Api';
 import I18n from 'Locales/I18n';
 import Repositories from 'Repositories';
-import { distance } from 'Services/salesman';
 import NavigationService from 'Navigation/service';
 import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
-import { base64ToHex, deliveryStates as DS } from 'Helpers';
+import { base64ToHex, deliveryStates as DS, distance } from 'Helpers';
 import { Types as TransientTypes } from 'Reducers/transient';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
 import {
   checklist as checklistSelector,
   completedStopsIds as completedStopsIdsSelector,
-  manualRoutes as manualRoutesSelector,
+  optimisedRouting as optimisedRoutingSelector,
   orderedStopsIds as orderedStopsIdsSelector,
   selectedStop as selectedStopSelector,
   selectedStopId as selectedStopIdSelector,
@@ -43,6 +42,25 @@ const updateTrackerData = function* ({ status }) {
 };
 
 // EXPORTED
+// TODO delay
+export const continueDelivering = function* () {
+  const orderedStopsIds = yield select(orderedStopsIdsSelector);
+  const status = yield select(statusSelector);
+
+  if (orderedStopsIds.length > 0) {
+    //yield delay(750); // TODO - when starting route from checkin
+    // delay required because lots of animations + transitions + navigation + processing result in sluggish interface dropping frames.
+    // slight delay here makes everything smooth
+    yield put({
+      type: DeliveryTypes.UPDATE_SELECTED_STOP,
+      sID: orderedStopsIds[0]
+    });
+    Analytics.trackEvent(EVENTS.CONTINUE_DELIVERING);
+  }
+
+  yield call(updateTrackerData, { status });
+};
+
 export const driverReply = function* ({
   claimId,
   comment,
@@ -152,7 +170,7 @@ export const getDriverDataFailure = function* ({ status }) {
         ...(status !== DS.DEL && {
           interval: -1,
           payload: {
-            action: DeliveryTypes.REFRESH_DRIVER_DATA
+            action: DeliveryTypes.GET_FOR_DRIVER
           }
         })
       }
@@ -172,23 +190,21 @@ export const getDriverReplyImage = function* ({ payload }) {
   }
 };
 
-export const getForDriver = function* ({ isRefreshData = false }) {
+export const getForDriver = function* () {
+  const status = yield select(statusSelector);
   yield put({
     type: Api.API_CALL,
     actions: {
       success: { type: DeliveryTypes.GET_FOR_DRIVER_SUCCESS },
       fail: { type: DeliveryTypes.GET_DRIVER_DATA_FAILURE }
     },
-    promise: Api.repositories.delivery.getForDriver(),
-    props: { isRefreshData }
+    promise: Api.repositories.delivery.getForDriver()
   });
-  Analytics.trackEvent(EVENTS.GET_FOR_DRIVER);
+
+  Analytics.trackEvent(EVENTS.GET_FOR_DRIVER, { status });
 };
 
-export const getForDriverSuccess = function* ({
-  payload,
-  props: { isRefreshData }
-}) {
+export const getForDriverSuccess = function* ({ payload }) {
   const stops = yield select(stopsSelector);
 
   for (const stop of Object.values(stops)) {
@@ -200,7 +216,7 @@ export const getForDriverSuccess = function* ({
       });
     }
 
-    if (stop.hasCustomerImage) {
+    if (stop.hasImage) {
       Api.repositories.filesystem.downloadFile({
         fromUrl: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Customer/CustomerImageFile/${stop.customerId}/${stop.key}`,
         toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${stop.customerId}-${stop.key}`
@@ -215,8 +231,7 @@ export const getForDriverSuccess = function* ({
       fail: { type: DeliveryTypes.GET_DRIVER_DATA_FAILURE }
     },
     promise: Api.repositories.delivery.getVehicleStockForDriver(),
-    deliveryDate: payload.deliveryDate,
-    props: { isRefreshData }
+    deliveryDate: payload.deliveryDate
   });
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, {
     payload
@@ -259,15 +274,14 @@ export const getVehicleChecks = function* () {
   });
 };
 
-export const getVehicleStockForDriverSuccess = function* ({
-  payload,
-  props: { isRefreshData }
-}) {
+export const getVehicleStockForDriverSuccess = function* ({ payload }) {
   const checklist = yield select(checklistSelector);
   const status = yield select(statusSelector);
-  if (!isRefreshData && !checklist.deliveryComplete && status === DS.DEL) {
+  const optimisedRouting = yield select(optimisedRoutingSelector);
+  // TODO
+  if (optimisedRouting && !checklist.deliveryComplete && status === DS.DEL) {
     yield put({
-      type: DeliveryTypes.START_DELIVERING
+      type: DeliveryTypes.CONTINUE_DELIVERING
     });
   }
   Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, {
@@ -275,21 +289,8 @@ export const getVehicleStockForDriverSuccess = function* ({
   });
 };
 
-export const optimizeStops = function* () {
-  const sID = yield select(selectedStopIdSelector);
-  yield call(updateSelectedStop, { sID });
-  Analytics.trackEvent(EVENTS.OPTIMIZE_STOPS);
-};
-
 export const redirectSetSelectedClaimId = function* () {
   NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
-};
-
-export const refreshDriverData = function* () {
-  const status = yield select(statusSelector);
-
-  yield put({ type: DeliveryTypes.GET_FOR_DRIVER, isRefreshData: true });
-  Analytics.trackEvent(EVENTS.REFRESH_DRIVER_DATA, { status });
 };
 
 export const saveVehicleChecks = function* ({ saveType }) {
@@ -334,13 +335,14 @@ export const saveVehicleChecks = function* ({ saveType }) {
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
 };
 
+//TODO
 export const setDeliveredOrRejected = function* (
   requestType,
   { id, outOfStockIds, selectedStopId, reasonType, reasonMessage }
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
   const device = yield select(deviceSelector);
-  const manualRoutes = yield select(manualRoutesSelector);
+  const optimisedRouting = yield select(optimisedRoutingSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
   const status = yield select(statusSelector);
   const stops = yield select(stopsSelector);
@@ -360,29 +362,16 @@ export const setDeliveredOrRejected = function* (
       ? Api.repositories.delivery.patchDelivered
       : Api.repositories.delivery.patchRejected;
 
-  if (deliveriesLeft > 0 && !manualRoutes) {
+  if (optimisedRouting) {
     yield put({
-      type: DeliveryTypes.UPDATE_SELECTED_STOP,
-      sID: orderedStopsIds[0],
-      manualRoutes
-    });
-  }
-
-  const selectedStopOrders = stops[selectedStopId].orders;
-  for (const key in selectedStopOrders) {
-    const order = selectedStopOrders[key];
-    yield put({
-      type: DeliveryTypes.INCREMENT_DELIVERED_STOCK,
-      productId: order.productId,
-      quantity: order.quantity
+      type: DeliveryTypes.CONTINUE_DELIVERING
     });
   }
 
   for (const i of outOfStockIds) {
     yield put({
       type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK,
-      id: i,
-      selectedStopId
+      id: i
     });
   }
 
@@ -474,41 +463,11 @@ export const showMustComplyWithTerms = function* () {
   });
 };
 
-export const startDelivering = function* () {
-  const device = yield select(deviceSelector);
-  const manualRoutes = yield select(manualRoutesSelector);
-  const status = yield select(statusSelector);
-
-  if (!manualRoutes) {
-    yield delay(750); // delay required because lots of animations + transitions + navigation + processing result in sluggish interface dropping frames. slight delay here makes everything smooth
-
-    yield put({
-      type: DeliveryTypes.OPTIMIZE_STOPS,
-      currentLocation: device.position,
-      returnPosition: device.returnPosition
-    });
-  }
-  yield call(updateTrackerData, { status });
-  Analytics.trackEvent(EVENTS.START_DELIVERING);
-};
-
 export const updateProps = function* ({ props: { status } }) {
   const user = yield select(userSelector);
   if (user && status) {
     yield call(updateTrackerData, { status });
   }
-};
-
-export const updateReturnPosition = function* ({ clear }) {
-  const device = yield select(deviceSelector);
-  let returnPosition = device?.position || null;
-  if (clear) {
-    returnPosition = null;
-  }
-  yield put({
-    type: DeviceTypes.UPDATE_PROPS,
-    props: { returnPosition }
-  });
 };
 
 export const updateDriverActivity = function* () {
@@ -580,7 +539,7 @@ export const updateSelectedStop = function* ({ sID }) {
     Analytics.trackEvent(EVENTS.UPDATE_SELECTED_STOP, {
       selectedStop: {
         ...selectedStop,
-        orders: Object.keys(selectedStop.orders)
+        orderItems: Object.keys(selectedStop.orderItems)
       }
     });
   }

@@ -6,7 +6,7 @@ import { Creators as deliveryActions } from 'Reducers/delivery';
 import Markers from './view';
 
 export default connect(
-  (state) => {
+  state => {
     return {
       availableNavApps: state.device?.availableNavApps,
       buttonAccessibility: state.device.buttonAccessibility,
@@ -15,7 +15,6 @@ export default connect(
       network: state.device.network,
       position: state.device?.position,
       processing: state.delivery.processing,
-      returnPosition: state.device?.returnPosition,
       selectedStopId: state.delivery?.selectedStopId,
       shouldPitchMap: state.device?.shouldPitchMap,
       shouldTrackHeading: state.device?.shouldTrackHeading,
@@ -25,9 +24,8 @@ export default connect(
     };
   },
   {
-    refreshDriverData: deliveryActions.refreshDriverData,
+    getForDriver: deliveryActions.getForDriver,
     setMapMode: deviceActions.setMapMode,
-    updateDeviceProps: deviceActions.updateProps,
-    updateReturnPosition: deliveryActions.updateReturnPosition
+    updateDeviceProps: deviceActions.updateProps
   }
 )(Markers);

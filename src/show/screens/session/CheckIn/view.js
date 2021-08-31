@@ -149,7 +149,7 @@ const renderTitle = ({ checklist, status }) => {
 };
 
 const CheckIn = props => {
-  const { checklist, status, itemCount, startDelivering, stopCount } = props;
+  const { checklist, itemCount, continueDelivering, status, stopCount } = props;
 
   const deliverProductsDisabled =
     checklist.shiftStartVanChecks === false ||
@@ -192,7 +192,7 @@ const CheckIn = props => {
       suffixBottom: I18n.t('screens:main.descriptions.deliveryActive', {
         stopCount
       }),
-      onPress: navigateBack.bind(null, startDelivering),
+      onPress: navigateBack.bind(null, continueDelivering),
       rightIcon: checklist.deliveryComplete
         ? 'check'
         : deliverProductsDisabled
@@ -295,7 +295,7 @@ const CheckIn = props => {
                 }
                 onPress={navigateBack.bind(
                   null,
-                  status !== DS.SC ? startDelivering : null
+                  status !== DS.SC ? continueDelivering : null
                 )}
               />
               {renderHelperMessage({ checklist, status })}
@@ -310,7 +310,7 @@ const CheckIn = props => {
 CheckIn.propTypes = {
   checklist: PropTypes.object,
   itemCount: PropTypes.number,
-  startDelivering: PropTypes.func,
+  continueDelivering: PropTypes.func,
   status: PropTypes.string,
   stopCount: PropTypes.number
 };

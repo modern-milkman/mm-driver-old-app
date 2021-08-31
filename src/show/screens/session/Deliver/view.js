@@ -175,7 +175,7 @@ const renderSkipModal = ({
               null,
               setRejected.bind(
                 null,
-                selectedStop.orderID,
+                selectedStop.orderId,
                 selectedStop.key,
                 outOfStockIds,
                 reasonType,
@@ -228,7 +228,7 @@ const Deliver = props => {
   } = selectedStop;
 
   const optimizedStopOrders = selectedStop
-    ? Object.values(selectedStop.orders).map(order => {
+    ? Object.values(selectedStop.orderItems).map(order => {
         const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,
@@ -333,7 +333,7 @@ const Deliver = props => {
               routeDescription
             })}
             suffixColor={colors.Primarylight}
-            description={I18n.t('screens:deliver.userID', {
+            description={I18n.t('screens:deliver.userId', {
               userId: selectedStop?.userId
             })}
             disabled
@@ -367,8 +367,8 @@ const Deliver = props => {
           ]}>
           {selectedStop &&
             (selectedStop.deliveryInstructions ||
-              selectedStop.hasCustomerImage ||
-              selectedStop.coolBox) && (
+              selectedStop.hasImage ||
+              selectedStop.hasCoolBox) && (
               <>
                 <Separator />
                 <ListItem
@@ -385,14 +385,13 @@ const Deliver = props => {
                     color: colors.primary
                   }}
                   customRightIcon={
-                    selectedStop.deliveryInstructions ||
-                    selectedStop.hasCustomerImage
+                    selectedStop.deliveryInstructions || selectedStop.hasImage
                       ? 'expand'
                       : null
                   }
                   title={selectedStop.deliveryInstructions}
                   titleExpands
-                  {...(selectedStop.coolBox && {
+                  {...(selectedStop.hasCoolBox && {
                     secondaryCustomRightIcon: 'coolbox',
                     secondaryCustomRightIconProps: { color: colors.secondary }
                   })}
@@ -459,7 +458,7 @@ const Deliver = props => {
                       null,
                       setDelivered.bind(
                         null,
-                        selectedStop.orderID,
+                        selectedStop.orderId,
                         selectedStop.key,
                         outOfStockIds
                       )

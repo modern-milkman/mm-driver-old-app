@@ -63,7 +63,6 @@ const initialState = {
     failed: []
   },
   resetHourDay: parseInt(Config.RESET_HOUR_DAY),
-  returnPosition: null,
   shouldPitchMap: false,
   shouldTrackHeading: false,
   shouldTrackLocation: false,
