@@ -25,7 +25,9 @@ export default {
     });
   },
   getForDriver() {
-    return Api.get('/Delivery/GetForDriver');
+    return Api.get(
+      'https://services.themodernmilkman.co.uk/delivery/v1/api/Delivery/GetForDriver'
+    );
   },
   getProductImage(id) {
     Api.repositories.filesystem.downloadFile({

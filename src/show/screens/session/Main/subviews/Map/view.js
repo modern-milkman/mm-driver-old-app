@@ -82,8 +82,8 @@ const triggerManualMove = ({
 
 const Map = props => {
   const {
-    centerSelectedStop,
-    centerSelectedStopLocation,
+    centerMapLocation,
+    clearCenterMapLocation,
     fabTop,
     height,
     mapNoTrackingHeading,
@@ -132,8 +132,21 @@ const Map = props => {
   );
 
   useEffect(() => {
-    if (!mapIsInteracting.current || centerSelectedStopLocation) {
+    if (!mapIsInteracting.current || centerMapLocation) {
       mapRef.current?.getCamera().then(currentCamera => {
+        //Reposition map if on the middle of nowhere
+        if (
+          currentCamera.center.longitude === 0 &&
+          currentCamera.center.latitude === 0
+        ) {
+          animateCamera(currentCamera, {
+            center: {
+              latitude,
+              longitude
+            }
+          });
+        }
+
         animateCamera(currentCamera, {
           ...(shouldTrackLocation && {
             center: {
@@ -141,9 +154,9 @@ const Map = props => {
               longitude
             }
           }),
-          ...(centerSelectedStopLocation && {
+          ...(centerMapLocation && {
             center: {
-              ...centerSelectedStopLocation
+              ...centerMapLocation
             }
           }),
           heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading,
@@ -151,13 +164,13 @@ const Map = props => {
         });
       });
     }
-    if (centerSelectedStopLocation) {
-      centerSelectedStop(null);
+    if (centerMapLocation) {
+      clearCenterMapLocation();
     }
   }, [
     animateCamera,
-    centerSelectedStop,
-    centerSelectedStopLocation,
+    centerMapLocation,
+    clearCenterMapLocation,
     heading,
     latitude,
     longitude,
@@ -243,8 +256,8 @@ Map.defaultProps = {
 };
 
 Map.propTypes = {
-  centerSelectedStop: PropTypes.func,
-  centerSelectedStopLocation: PropTypes.object,
+  centerMapLocation: PropTypes.object,
+  clearCenterMapLocation: PropTypes.func,
   fabTop: PropTypes.instanceOf(Animated.Value),
   height: PropTypes.number,
   mapNoTrackingHeading: PropTypes.number,

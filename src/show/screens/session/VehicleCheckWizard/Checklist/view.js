@@ -25,7 +25,7 @@ const Checklist = ({
   toggleCheckJson
 }) => {
   const { checksJson } = payload;
-  const skip = !Object.values(checksJson).some((item) => item);
+  const skip = !Object.values(checksJson).some(item => item);
   const mainActionTitle = skip
     ? I18n.t('general:skip')
     : payload.shiftStart
@@ -33,7 +33,12 @@ const Checklist = ({
     : I18n.t('general:done');
   const data = [];
   for (const [key, value] of Object.entries(checksJson)) {
-    data.push({ key, rightIcon: value ? 'check' : null, title: key });
+    data.push({
+      key,
+      rightIcon: value ? 'check' : null,
+      title: key,
+      testID: `checkList-${key}-listItem`
+    });
   }
   return (
     <SafeAreaView top bottom>
@@ -52,6 +57,7 @@ const Checklist = ({
             showMustComplyWithTerms
           })}
           rightText={payload.shiftStart && !processing ? mainActionTitle : null}
+          testID={'checkList-navbar'}
         />
         {renderProgressBar(3, payload)}
         <ColumnView flex={1} justifyContent={'space-between'}>
@@ -69,6 +75,7 @@ const Checklist = ({
                 saveVehicleChecks,
                 showMustComplyWithTerms
               })}
+              testID={'checkList-mainNext-btn'}
             />
           </RowView>
         </ColumnView>

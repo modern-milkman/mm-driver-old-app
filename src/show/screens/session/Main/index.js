@@ -19,8 +19,8 @@ export default connect(
       canPanForeground:
         (state.delivery?.hasRoutes &&
           state.delivery?.status !== DS.DELC &&
-          !state.delivery.manualRoutes) ||
-        (state.delivery.manualRoutes && currentSelectedStop) ||
+          state.delivery.optimisedRouting) ||
+        (!state.delivery.optimisedRouting && currentSelectedStop) ||
         ([DS.NCI, DS.LV, DS.SSC, DS.DELC, DS.SEC].includes(
           state.delivery?.status
         ) &&
@@ -28,15 +28,13 @@ export default connect(
       checklist: checklist(state),
       currentLocation: state.device.position,
       foregroundSize: state.device.foregroundSize,
-      manualRoutes: state.delivery.manualRoutes,
-      returnPosition: state.device.returnPosition,
+      optimisedRouting: state.delivery.optimisedRouting,
       selectedStop: currentSelectedStop,
       status: state.delivery?.status
     };
   },
   {
-    optimizeStops: deliveryActions.optimizeStops,
-    startDelivering: deliveryActions.startDelivering,
+    continueDelivering: deliveryActions.continueDelivering,
     updateDeviceProps: deviceActions.updateProps
   }
 )(Main);

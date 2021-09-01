@@ -239,6 +239,7 @@ const Home = props => {
                 ref={emailReference}
                 returnKeyType={'next'}
                 value={email}
+                testID={'home-email-input'}
               />
               <TextInput
                 autoCapitalize={'none'}
@@ -254,12 +255,14 @@ const Home = props => {
                 returnKeyType={'go'}
                 secureTextEntry
                 value={password}
+                testID={'home-password-input'}
               />
               <Button.Primary
                 title={I18n.t('general:login')}
                 onPress={login.bind(null, false)}
                 processing={processing}
                 disabled={disabledLogin}
+                testID={'home-login-btn'}
               />
               {biometrics.supported && biometrics.enrolled
                 ? renderBiometrics({

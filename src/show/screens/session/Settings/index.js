@@ -15,10 +15,10 @@ export default connect(
     countDown: state.device.countDown,
     currentLocation: state.device.position,
     foregroundSize: state.device.foregroundSize,
+    isOptimised: state.delivery?.stockWithData?.isOptimised || false,
     mapMarkerSize: state.device.mapMarkerSize,
-    manualRoutes: state.delivery.manualRoutes,
+    optimisedRouting: state.delivery?.optimisedRouting,
     network: state.device.network,
-    returnPosition: state.device.returnPosition,
     showDoneDeliveries: state.device.showDoneDeliveries,
     showMapControlsOnMovement: state.device.showMapControlsOnMovement,
     vibrate: state.device.vibrate
@@ -26,7 +26,7 @@ export default connect(
   {
     biometricDisable: applicationActions.biometricDisable,
     logout: applicationActions.logout,
-    optimizeStops: deliveryActions.optimizeStops,
+    continueDelivering: deliveryActions.continueDelivering,
     updateDeliveryProps: deliveryActions.updateProps,
     updateDeviceProps: deviceActions.updateProps
   }

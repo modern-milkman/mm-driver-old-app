@@ -8,7 +8,7 @@ import Map from './view';
 export default connect(
   state => {
     return {
-      centerSelectedStopLocation: state.delivery?.centerSelectedStopLocation,
+      centerMapLocation: state.delivery?.centerMapLocation,
       mapNoTrackingHeading: state.device?.mapNoTrackingHeading,
       mapZoom: state.device?.mapZoom,
       position: state.device?.position,
@@ -19,7 +19,7 @@ export default connect(
     };
   },
   {
-    centerSelectedStop: deliveryActions.centerSelectedStop,
+    clearCenterMapLocation: deliveryActions.clearCenterMapLocation,
     setMapMode: deviceActions.setMapMode,
     updateDeviceProps: deviceActions.updateProps
   }

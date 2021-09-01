@@ -25,7 +25,6 @@ const handleSearchFilter = (items, searchValue) => {
 
 const Search = props => {
   const {
-    centerSelectedStop,
     completedStopsIds,
     panY,
     searchValue,
@@ -62,8 +61,7 @@ const Search = props => {
       shouldTrackHeading: false,
       shouldTrackLocation: false
     });
-    centerSelectedStop(key);
-    updateSelectedStop(key);
+    updateSelectedStop(key, false);
     handleFocus(false, false);
   };
 
@@ -176,7 +174,6 @@ const Search = props => {
 
 Search.propTypes = {
   completedStopsIds: PropTypes.array,
-  centerSelectedStop: PropTypes.func,
   panY: PropTypes.object,
   searchValue: PropTypes.string,
   status: PropTypes.string,
@@ -188,7 +185,6 @@ Search.propTypes = {
 
 Search.defaultProps = {
   completedStopsIds: [],
-  centerSelectedStop: mock,
   panY: new Animated.Value(0),
   searchValue: '',
   stops: [],

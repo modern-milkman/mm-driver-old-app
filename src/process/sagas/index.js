@@ -48,20 +48,17 @@ import {
   getRejectDeliveryReasons,
   getVehicleChecks,
   getVehicleStockForDriverSuccess,
-  optimizeStops,
   redirectSetSelectedClaimId,
-  refreshDriverData,
   saveVehicleChecks,
   setDeliveredOrRejected,
   setItemOutOfStock,
   setProductsOrder,
   setVehicleChecks,
   showMustComplyWithTerms,
-  startDelivering,
+  continueDelivering,
   updateDriverActivity,
   updateDirectionsPolyline,
   updateProps as updateDeliveryProps,
-  updateReturnPosition,
   updateSelectedStop
 } from './delivery';
 
@@ -134,13 +131,11 @@ export default function* root() {
       DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
       getVehicleStockForDriverSuccess
     ),
-    takeLatest(DeliveryTypes.OPTIMIZE_STOPS, optimizeStops),
     takeLatest(
       DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM_ID,
       redirectSetSelectedClaimId
     ),
     takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getProductsOrder),
-    takeLatest(DeliveryTypes.REFRESH_DRIVER_DATA, refreshDriverData),
     takeLatest(DeliveryTypes.SAVE_VEHICLE_CHECKS, saveVehicleChecks),
     takeLatest(
       DeliveryTypes.SHOW_MUST_COMPLY_WITH_TERMS,
@@ -158,10 +153,9 @@ export default function* root() {
       setDeliveredOrRejected.bind(null, 'rejected')
     ),
     takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, setVehicleChecks),
-    takeEvery(DeliveryTypes.START_DELIVERING, startDelivering),
+    takeEvery(DeliveryTypes.CONTINUE_DELIVERING, continueDelivering),
     takeEvery(DeliveryTypes.UPDATE_DRIVER_ACTIVITY, updateDriverActivity),
     takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
-    takeEvery(DeliveryTypes.UPDATE_RETURN_POSITION, updateReturnPosition),
     takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
     takeEvery(
       DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE,

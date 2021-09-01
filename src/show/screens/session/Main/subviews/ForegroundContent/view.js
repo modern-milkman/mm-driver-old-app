@@ -96,7 +96,7 @@ const ForegroundContent = props => {
     foregroundSize,
     onButtonPress,
     onChevronUpPress,
-    manualRoutes,
+    optimisedRouting,
     processing,
     resetHourDay,
     status,
@@ -126,7 +126,7 @@ const ForegroundContent = props => {
     case DS.DEL:
       if (selectedStop) {
         foregroundState = 'DELIVERING';
-      } else if (manualRoutes) {
+      } else if (!optimisedRouting) {
         foregroundState = 'MANUAL';
       }
       break;
@@ -248,6 +248,7 @@ const ForegroundContent = props => {
                 foregroundState
               )}
               onPress={onButtonPress}
+              testID={'foregroundContent-main-btn'}
             />
           </RowView>
         </ColumnView>
@@ -270,7 +271,7 @@ ForegroundContent.propTypes = {
   onButtonPress: PropTypes.func,
   onChevronUpPress: PropTypes.func,
   onTitleLayoutChange: PropTypes.func,
-  manualRoutes: PropTypes.bool,
+  optimisedRouting: PropTypes.bool,
   processing: PropTypes.bool,
   resetHourDay: PropTypes.number,
   routeDescription: PropTypes.string,

@@ -2,13 +2,13 @@ import { createActions, createReducer } from 'reduxsauce';
 
 import I18n from 'Locales/I18n';
 import { toggle, deliveryStates as DS } from 'Helpers';
-import { Point, solve as salesman } from 'Services/salesman';
 
 import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
-    centerSelectedStop: ['sID'],
+    clearCenterMapLocation: null,
+    continueDelivering: null,
     deleteVanDamageImage: ['key', 'index'],
     driverReply: [
       'claimId',
@@ -24,31 +24,23 @@ export const { Types, Creators } = createActions(
     getCustomerClaims: ['customerId', 'stopId'],
     getDriverDataFailure: null,
     getDriverReplyImage: ['driverResponses', 'claimIndex', 'stopId'],
-    getForDriver: ['isRefreshData'],
-    getForDriverSuccess: ['payload', 'isRefreshData'],
+    getForDriver: null,
+    getForDriverSuccess: ['payload'],
     getProductsOrder: null,
     getVehicleChecks: null,
     getVehicleStockForDriver: null,
-    getVehicleStockForDriverSuccess: [
-      'payload',
-      'deliveryDate',
-      'isRefreshData'
-    ],
+    getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
     getRejectDeliveryReasons: null,
-    incrementDeliveredStock: ['productId', 'quantity'],
     initChecklist: null,
-    optimizeStops: ['currentLocation', 'returnPosition'],
     redirectSetSelectedClaimId: ['claimId'],
-    refreshDriverData: null,
     resetChecklistPayload: ['resetType'],
     saveVehicleChecks: ['saveType'],
     setCustomerClaims: ['payload', 'stopId'],
     setDelivered: ['id', 'selectedStopId', 'outOfStockIds'],
     setDirectionsPolyline: ['payload'],
-    showMustComplyWithTerms: null,
     setBundleProducts: ['payload'],
     setCannedContent: ['payload'],
-    setItemOutOfStock: ['id', 'selectedStopId'],
+    setItemOutOfStock: ['id'],
     setMileage: ['mileage'],
     setProductsOrder: ['payload'],
     setRegistration: ['reg'],
@@ -64,7 +56,7 @@ export const { Types, Creators } = createActions(
     setVanDamageComment: ['key', 'comment'],
     setVanDamageImage: ['key', 'imagePath', 'imageType'],
     setVehicleChecks: ['payload'],
-    startDelivering: [],
+    showMustComplyWithTerms: null,
     toggleCheckJson: ['key'],
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
@@ -73,8 +65,7 @@ export const { Types, Creators } = createActions(
     updateChecklistProps: ['props'],
     updateDirectionsPolyline: null,
     updateProps: ['props'],
-    updateReturnPosition: ['clear'],
-    updateSelectedStop: ['sID', 'manualRoutes']
+    updateSelectedStop: ['sID', 'optimisedRouting']
   },
   { prefix: 'delivery/' }
 );
@@ -103,14 +94,14 @@ export const initialState = {
   allItemsDone: false,
   bundledProducts: {},
   cannedContent: [],
-  centerSelectedStopLocation: null,
+  centerMapLocation: null,
   checklist: {},
   completedStopsIds: [],
   confirmedItem: [],
   deliveredStock: {},
   directionsPolyline: [],
   hasRoutes: false,
-  manualRoutes: true,
+  optimisedRouting: true,
   orderedStock: [],
   orderedStopsIds: [],
   outOfStockIds: [],
@@ -182,7 +173,7 @@ const driverReply = (
     draft.stops[selectedStopId].claims.showReplyModal = false;
   });
 
-const privateIncrementDeliveredStock = (draft, { productId, quantity }) => {
+const incrementDeliveredStock = (draft, { productId, quantity }) => {
   if (draft.bundledProducts[productId]) {
     for (const [bundledProductId, bundledQuantity] of Object.entries(
       draft.bundledProducts[productId]
@@ -233,45 +224,42 @@ const setDeliveredOrRejected = (
   { outOfStockIds, selectedStopId }
 ) =>
   produce(state, draft => {
-    resetSelectedStopInfo(draft);
-    draft.selectedStopId = null;
-    draft.completedStopsIds.push(
-      ...draft.orderedStopsIds.splice(
-        draft.orderedStopsIds.indexOf(selectedStopId),
-        1
-      )
-    );
-    draft.stops[selectedStopId].status =
-      requestType === 'delivered' ? 'completed' : 'rejected';
-    if (requestType === 'delivered') {
-      updateOrderItemsStatuses(draft, selectedStopId, outOfStockIds);
-    }
+    const selectedStopIndex = draft.orderedStopsIds.indexOf(selectedStopId);
+    if (selectedStopIndex >= 0) {
+      resetSelectedStopInfo(draft);
+      draft.selectedStopId = null;
+      draft.completedStopsIds.push(
+        ...draft.orderedStopsIds.splice(selectedStopIndex, 1)
+      );
+      draft.stops[selectedStopId].status =
+        requestType === 'delivered' ? 'completed' : 'rejected';
 
-    if (draft.orderedStopsIds.length === 0) {
+      for (const orderItem of Object.values(
+        draft.stops[selectedStopId].orderItems
+      )) {
+        incrementDeliveredStock(draft, orderItem);
+        if (outOfStockIds.includes(orderItem.key)) {
+          orderItem.status = 3;
+        } else {
+          orderItem.status = requestType === 'delivered' ? 2 : 4;
+        }
+      }
+    }
+  });
+
+export const clearCenterMapLocation = state =>
+  produce(state, draft => {
+    draft.centerMapLocation = null;
+  });
+
+export const continueDelivering = state =>
+  produce(state, draft => {
+    if (draft.orderedStopsIds.length > 0) {
+      draft.processing = true;
+      draft.status = DS.DEL;
+    } else if (draft.orderedStopsIds.length === 0) {
       draft.status = DS.DELC;
       draft.checklist[draft.userId].deliveryComplete = true;
-    }
-  });
-
-const updateOrderItemsStatuses = (draft, selectedStopId, outOfStockIds) => {
-  Object.keys(draft.stops[selectedStopId].orders).map(key => {
-    if (outOfStockIds.includes(key)) {
-      draft.stops[selectedStopId].orders[key].status = 3;
-    } else {
-      draft.stops[selectedStopId].orders[key].status = 2;
-    }
-  });
-};
-
-export const centerSelectedStop = (state, { sID }) =>
-  produce(state, draft => {
-    if (sID) {
-      draft.centerSelectedStopLocation = {
-        latitude: draft.stops[sID].latitude,
-        longitude: draft.stops[sID].longitude
-      };
-    } else {
-      draft.centerSelectedStopLocation = null;
     }
   });
 
@@ -341,25 +329,25 @@ export const getVehicleStockForDriverSuccess = (
     draft.processing = false;
   });
 
-export const getForDriverSuccess = (
-  state,
-  { payload, props: { isRefreshData = false } }
-) =>
+export const getForDriverSuccess = (state, { payload }) =>
   produce(state, draft => {
     draft.stockWithData = payload;
-    draft.stops = {};
-    draft.orderedStopsIds = [];
-    draft.completedStopsIds = [];
-    draft.deliveredStock = {};
+    let hasNonPendingOrders = false;
+    let markedOrders = 0;
 
     if (draft.deliveryDate !== draft.stockWithData.deliveryDate) {
       draft.deliveryDate = draft.stockWithData.deliveryDate;
+      draft.optimisedRouting = draft.stockWithData.isOptimised;
       draft.status = initialState.status;
+      draft.stops = {};
+      draft.orderedStopsIds = [];
+      draft.completedStopsIds = [];
+      draft.deliveredStock = {};
       resetChecklistFlags(draft.checklist[state.userId]);
     }
 
     /*
-    BE delivery_stateID values
+    BE deliveryState values for orderItems
     Pending = 1,
     Delivered = 2,
     OutOfStock = 3,
@@ -368,129 +356,126 @@ export const getForDriverSuccess = (
     RejectedRefunded = 6
     */
 
-    let hasNonPendingOrders = false;
-    let markedOrders = 0;
-    for (const item of payload.items) {
-      if (item.delivery_stateID !== 1) {
-        hasNonPendingOrders = true;
-        markedOrders++;
-      }
-    }
-
-    if (!isRefreshData) {
-      if (markedOrders === payload.items.length) {
-        draft.status = DS.DELC;
-        draft.checklist[state.userId].deliveryComplete = true;
-        draft.checklist[state.userId].shiftStartVanChecks = true;
-        draft.checklist[state.userId].loadedVan = true;
-      } else if (hasNonPendingOrders) {
-        draft.status = DS.DEL;
-        draft.checklist[state.userId].shiftStartVanChecks = true;
-        draft.checklist[state.userId].loadedVan = true;
-      }
-    } else if (markedOrders === payload.items.length) {
-      draft.checklist[state.userId].deliveryComplete = true;
-      draft.status = DS.DELC;
-    }
-
     // PREPARE RAW STOPS
-    for (const item of payload.items) {
-      const {
-        address: {
-          addressId: key,
-          latitude,
-          longitude,
-          deliveryInstructions,
-          coolBox
-        }
-      } = item;
+    for (const { address, orderItems } of payload.items) {
+      const computedAddress =
+        (address.nameOrNumber ? `${address.nameOrNumber}` : '') +
+        (address.line1 ? ` ${address.line1}` : '') +
+        (address.postcodeOutward ? `, ${address.postcodeOutward}` : '') +
+        (address.postcodeInward ? `${address.postcodeInward}` : '');
+      const deliveryInstructions =
+        address?.deliveryInstructions?.length > 0
+          ? address.deliveryInstructions
+          : null;
+      const satisfactionStatus = address.satisfactionStatus || 0;
 
-      if (!draft.stops[key]) {
-        const title =
-          (item.address.name_number ? `${item.address.name_number}` : '') +
-          (item.address.line1 ? ` ${item.address.line1}` : '') +
-          (item.address.postcodeOutward
-            ? `, ${item.address.postcodeOutward}`
-            : '') +
-          (item.address.postcodeInward ? `${item.address.postcodeInward}` : '');
-
-        draft.stops[key] = {
-          key,
-          customerId: item.customerId,
-          satisfactionStatus: item.satisfactionStatus || 0,
-          description: I18n.t('screens:deliver.userID', {
-            userId: item.userId
-          }),
-          deliveryInstructions:
-            deliveryInstructions && deliveryInstructions.length > 0
-              ? deliveryInstructions
-              : null,
-          hasCustomerImage: item.hasCustomerImage,
-          icon: null,
-          itemCount: 0,
-          latitude,
-          longitude,
-          orderID: item.orderID,
-          orders: {},
-          phoneNumber: item.phoneNumber,
-          status: 'completed',
-          title,
-          userId: item.userId,
-          searchHandle: title.toLowerCase() + item.userId.toString(),
+      // create stop if it doesn't exist
+      if (!draft.stops[address.addressId]) {
+        // stop doesn't exist, create it
+        // info cannot change during delivery night
+        draft.stops[address.addressId] = {
+          ...address,
           claims: {
             acknowledgedList: [],
             unacknowledgedList: [],
             showClaimModal: false
           },
-          coolBox
+          deliveryInstructions,
+          description: I18n.t('screens:deliver.userId', {
+            userId: address.userId
+          }),
+          key: address.addressId, // TODO can this be removed?
+          icon: null, // TODO can this be removed?
+          itemCount: 0,
+          orderItems: {},
+          satisfactionStatus,
+          searchHandle:
+            computedAddress.toLowerCase() + address.userId.toString(),
+          status: 'pending',
+          title: computedAddress
         };
       }
 
-      if (draft.stops[key].status !== 'rejected') {
-        if ([4, 6].includes(item.delivery_stateID)) {
-          draft.stops[key].status = 'rejected';
+      // check order items and update
+      for (const {
+        deliveryState: status,
+        measureDescription: description,
+        orderItemId: key,
+        productId,
+        productName: title,
+        quantity
+      } of orderItems) {
+        // create new order items if they do not exist already
+        if (!draft.stops[address.addressId].orderItems[key]) {
+          draft.stops[address.addressId].orderItems[key] = {
+            description,
+            key,
+            productId,
+            quantity,
+            status,
+            title
+          };
+          draft.stops[
+            address.addressId
+          ].searchHandle += ` ${title.toLowerCase()}`;
+          draft.stops[address.addressId].itemCount += quantity;
         }
-      }
-      if (draft.stops[key].status !== 'pending') {
-        if (item.delivery_stateID === 1) {
-          draft.stops[key].status = 'pending';
+        // update order items and main stop status
+        // if state pending and server state differs, update from server
+        // otherwise keep local values
+        if (
+          draft.stops[address.addressId].orderItems[key].status === 1 &&
+          draft.stops[address.addressId].orderItems[key].status !== status
+        ) {
+          draft.stops[address.addressId].orderItems[key].status = status;
+          incrementDeliveredStock(
+            draft,
+            draft.stops[address.addressId].orderItems[key]
+          );
+        }
+
+        if (draft.stops[address.addressId].status !== 'rejected') {
+          switch (status) {
+            case 4:
+            case 6:
+              draft.stops[address.addressId].status = 'rejected';
+              break;
+            case 2:
+            case 3:
+            case 5:
+              draft.stops[address.addressId].status = 'completed';
+              break;
+          }
         }
       }
 
-      if (item.delivery_stateID === 1) {
-        if (!draft.orderedStopsIds.includes(key)) {
-          draft.orderedStopsIds.push(key);
-        }
-      } else {
-        privateIncrementDeliveredStock(draft, item);
-        if (!draft.completedStopsIds.includes(key)) {
-          draft.completedStopsIds.push(key);
-        }
+      switch (draft.stops[address.addressId].status) {
+        case 'pending':
+          if (!draft.orderedStopsIds.includes(address.addressId)) {
+            draft.orderedStopsIds.push(address.addressId);
+          }
+          break;
+        case 'rejected':
+        case 'completed':
+          hasNonPendingOrders = true;
+          markedOrders++;
+          if (!draft.completedStopsIds.includes(address.addressId)) {
+            draft.completedStopsIds.push(address.addressId);
+          }
+          break;
       }
-
-      if (!draft.stops[key].orders[item.orderItemId]) {
-        draft.stops[key].orders[item.orderItemId] = {
-          description: item.measureDescription,
-          key: item.orderItemId,
-          productId: item.productId,
-          quantity: item.quantity,
-          status: item.delivery_stateID,
-          title: item.productName
-        };
-      } else if (draft.stops[key].orders[item.orderItemId].status === 1) {
-        draft.stops[key].orders[item.orderItemId].status =
-          item.delivery_stateID;
-      }
-
-      draft.stops[key].searchHandle += ` ${item.productName.toLowerCase()}`;
-
-      draft.stops[key].itemCount += item.quantity;
     }
-  });
 
-export const incrementDeliveredStock = (state, { productId, quantity }) =>
-  produce(state, draft => {
-    privateIncrementDeliveredStock(draft, { productId, quantity });
+    if (markedOrders === payload.itemCount) {
+      draft.status = DS.DELC;
+      draft.checklist[state.userId].deliveryComplete = true;
+      draft.checklist[state.userId].shiftStartVanChecks = true;
+      draft.checklist[state.userId].loadedVan = true;
+    } else if (hasNonPendingOrders) {
+      draft.status = DS.DEL;
+      draft.checklist[state.userId].shiftStartVanChecks = true;
+      draft.checklist[state.userId].loadedVan = true;
+    }
   });
 
 export const initChecklist = state =>
@@ -500,65 +485,6 @@ export const initChecklist = state =>
         ...initialChecklist
       };
     }
-  });
-
-export const optimizeStops = (state, { currentLocation, returnPosition }) =>
-  produce(state, draft => {
-    let dummyIndex = null;
-    let returnPositionIndex = null;
-    const stops = [];
-
-    if (currentLocation) {
-      stops.push(
-        new Point(
-          currentLocation.latitude,
-          currentLocation.longitude,
-          'CURRENT_LOCATION'
-        )
-      );
-    }
-
-    for (const key of draft.orderedStopsIds) {
-      const item = draft.stops[key];
-      stops.push(new Point(item?.latitude, item?.longitude, key));
-    }
-    if (returnPosition) {
-      stops.push(
-        new Point(
-          returnPosition.latitude,
-          returnPosition.longitude,
-          'RETURN_LOCATION'
-        )
-      );
-      returnPositionIndex = stops.length - 1;
-    }
-    const hasDummy = stops.length > 2;
-
-    if (hasDummy) {
-      stops.push(new Point(0, 0)); //dummy TSP point
-      dummyIndex = stops.length - 1;
-    }
-    const optimizedRoute = salesman(stops, hasDummy);
-
-    if (currentLocation) {
-      optimizedRoute.splice(0, 1);
-    }
-
-    if (hasDummy) {
-      optimizedRoute.splice(optimizedRoute.indexOf(dummyIndex), 1);
-    }
-
-    if (returnPosition) {
-      optimizedRoute.splice(optimizedRoute.indexOf(returnPositionIndex), 1);
-    }
-
-    draft.orderedStopsIds = [];
-    optimizedRoute.map(i => draft.orderedStopsIds.push(stops[i].key));
-    draft.selectedStopId = draft.orderedStopsIds[0];
-
-    draft.status = DS.DEL;
-    draft.manualRoutes = false;
-    draft.processing = false;
   });
 
 export const reset = () => initialState;
@@ -631,11 +557,6 @@ export const setCustomerClaims = (state, { payload, stopId }) =>
 export const setDelivered = (state, params) =>
   setDeliveredOrRejected(state, 'delivered', params);
 
-export const setItemOutOfStock = (state, { id, selectedStopId }) =>
-  produce(state, draft => {
-    draft.stops[selectedStopId].orders[id].status = 3;
-  });
-
 export const setMileage = (state, { mileage }) =>
   produce(state, draft => {
     draft.checklist[draft.userId].payload.currentMileage = mileage;
@@ -701,22 +622,13 @@ export const setVehicleChecks = (state, { payload }) =>
     draft.checksJson = payload;
   });
 
-export const startDelivering = state =>
-  produce(state, draft => {
-    draft.status = DS.DEL;
-    if (state.manualRoutes) {
-      draft.processing = false;
-    } else {
-      draft.processing = true;
-    }
-  });
-
 export const toggleCheckJson = (state, { key }) =>
   produce(state, draft => {
     draft.checklist[draft.userId].payload.checksJson[key] =
       !draft.checklist[draft.userId].payload.checksJson[key];
   });
 
+// TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
 export const toggleConfirmedItem = (state, { id }) =>
   produce(state, draft => {
     draft.confirmedItem = toggle(state.confirmedItem, id);
@@ -728,9 +640,10 @@ export const toggleConfirmedItem = (state, { id }) =>
     // TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
     draft.allItemsDone =
       draft.confirmedItem.length + draft.outOfStockIds.length ===
-      Object.keys(state.stops[state.selectedStopId]?.orders).length;
+      Object.keys(state.stops[state.selectedStopId]?.orderItems).length;
   });
 
+// TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
 export const toggleOutOfStock = (state, { id }) =>
   produce(state, draft => {
     draft.outOfStockIds = toggle(state.outOfStockIds, id);
@@ -740,7 +653,7 @@ export const toggleOutOfStock = (state, { id }) =>
     }
     draft.allItemsDone =
       draft.confirmedItem.length + draft.outOfStockIds.length ===
-      Object.keys(state.stops[state.selectedStopId]?.orders).length;
+      Object.keys(state.stops[state.selectedStopId]?.orderItems).length;
   });
 
 export const toggleModal = (state, { modal, show }) =>
@@ -763,28 +676,31 @@ export const setDirectionsPolyline = (state, { payload }) =>
     draft.directionsPolyline = payload;
   });
 
-export const updateSelectedStop = (state, { sID, manualRoutes = true }) =>
+export const updateSelectedStop = (state, { sID, optimisedRouting = true }) =>
   produce(state, draft => {
     resetSelectedStopInfo(draft);
-    draft.manualRoutes = manualRoutes;
+    draft.optimisedRouting = optimisedRouting;
     draft.previousStopId = draft.selectedStopId;
     draft.processing = false;
     draft.selectedStopId = sID;
     if (sID) {
       draft.stops[sID].claims.showReplyModal = false;
+      draft.centerMapLocation = {
+        latitude: draft.stops[sID].latitude,
+        longitude: draft.stops[sID].longitude
+      };
     }
   });
 
 export default createReducer(initialState, {
-  [Types.CENTER_SELECTED_STOP]: centerSelectedStop,
+  [Types.CLEAR_CENTER_MAP_LOCATION]: clearCenterMapLocation,
+  [Types.CONTINUE_DELIVERING]: continueDelivering,
   [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DRIVER_REPLY]: driverReply,
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
-  [Types.INCREMENT_DELIVERED_STOCK]: incrementDeliveredStock,
   [Types.INIT_CHECKLIST]: initChecklist,
-  [Types.OPTIMIZE_STOPS]: optimizeStops,
   [Types.REDIRECT_SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
   [Types.RESET_CHECKLIST_PAYLOAD]: resetChecklistPayload,
   [Types.SAVE_VEHICLE_CHECKS]: saveVehicleChecks,
@@ -793,7 +709,6 @@ export default createReducer(initialState, {
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED]: setDelivered,
   [Types.SET_DIRECTIONS_POLYLINE]: setDirectionsPolyline,
-  [Types.SET_ITEM_OUT_OF_STOCK]: setItemOutOfStock,
   [Types.SET_MILEAGE]: setMileage,
   [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
   [Types.SET_REGISTRATION]: setRegistration,
@@ -803,7 +718,6 @@ export default createReducer(initialState, {
   [Types.SET_VAN_DAMAGE_COMMENT]: setVanDamageComment,
   [Types.SET_VAN_DAMAGE_IMAGE]: setVanDamageImage,
   [Types.SET_VEHICLE_CHECKS]: setVehicleChecks,
-  [Types.START_DELIVERING]: startDelivering,
   [Types.TOGGLE_CHECK_JSON]: toggleCheckJson,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,
@@ -824,7 +738,7 @@ export const completedStopsIds = state => state.delivery?.completedStopsIds;
 
 export const itemCount = state => state.delivery?.itemCount || 0;
 
-export const manualRoutes = state => state.delivery.manualRoutes;
+export const optimisedRouting = state => state.delivery.optimisedRouting;
 
 export const orderedStopsIds = state => state.delivery?.orderedStopsIds;
 
