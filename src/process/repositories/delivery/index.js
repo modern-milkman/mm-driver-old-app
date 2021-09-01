@@ -26,7 +26,7 @@ export default {
   },
   getForDriver() {
     return Api.get(
-      'https://services.themodernmilkman.co.uk/delivery/v1/api/Delivery/GetForDriver'
+      `${Config.SERVER_SERVICE_URL}/delivery/v1/api/Delivery/GetForDriver`
     );
   },
   getProductImage(id) {
