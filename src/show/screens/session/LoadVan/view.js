@@ -41,7 +41,8 @@ const LoadVan = props => {
           } / ${combinedItemQuantity}`
         : combinedItemQuantity,
       image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
-      customIcon: 'productPlaceholder'
+      customIcon: 'productPlaceholder',
+      testID: `loadVan-product-${stockItem.productId}`
     };
   });
 
@@ -69,6 +70,7 @@ const LoadVan = props => {
             updateChecklistProps,
             updateDriverActivity
           )}
+          testID={'loadVan-navbar'}
         />
         <List data={mappedStock} />
       </ColumnView>

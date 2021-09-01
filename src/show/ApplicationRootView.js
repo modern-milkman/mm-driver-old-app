@@ -79,6 +79,7 @@ class Root extends React.Component {
       {Platform.OS === 'android' && <ActionSheetAndroid />}
       {Platform.OS === 'android' && <CustomBackHandler />}
       <InAppBrowser />
+
       {/* content that should go on top of the app, full view, no safe area bounds */}
 
       <Navigator

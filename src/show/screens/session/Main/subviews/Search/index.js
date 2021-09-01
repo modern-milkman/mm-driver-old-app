@@ -16,7 +16,6 @@ export default connect(
     };
   },
   {
-    centerSelectedStop: deliveryActions.centerSelectedStop,
     updateDeviceProps: deviceActions.updateProps,
     updateSelectedStop: deliveryActions.updateSelectedStop,
     updateTransientProps: transientActions.updateProps

@@ -78,6 +78,7 @@ const DamageReport = ({
             routeName: 'Checklist'
           })}
           rightText={mainActionTitle}
+          testID={'damageReport-navbar'}
         />
         {renderProgressBar(2, payload)}
         <ColumnView
@@ -112,6 +113,7 @@ const DamageReport = ({
               onPress={NavigationService.navigate.bind(null, {
                 routeName: 'Checklist'
               })}
+              testID={'damageReport-mainNext-btn'}
             />
           </RowView>
         </ColumnView>
@@ -145,6 +147,7 @@ const renderSection = (
 
       <RowView
         justifyContent={'flex-start'}
+        testID={'damageReport-imageRow-' + key}
         marginVertical={defaults.marginVertical / 2}>
         {(!section || section.vehicleCheckDamageImage.length < 3) && (
           <CustomIcon
@@ -224,6 +227,7 @@ const renderSection = (
         multilineHeight={100}
         placeholder={I18n.t('input:placeholder.damageReport')}
         value={section?.comments}
+        testID={`damageReport-issues${key}-textInput`}
       />
     </ColumnView>
   );

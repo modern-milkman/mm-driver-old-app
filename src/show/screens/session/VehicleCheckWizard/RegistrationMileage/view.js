@@ -47,10 +47,8 @@ const RegistrationMileage = ({
   setRegistration,
   updateTransientProps
 }) => {
-  const {
-    currentMileage: payloadCurrentMileage,
-    vehicleRegistration
-  } = payload;
+  const { currentMileage: payloadCurrentMileage, vehicleRegistration } =
+    payload;
   const camera = useRef();
   const [plateImage, setPlateImage] = useState('');
 
@@ -59,7 +57,7 @@ const RegistrationMileage = ({
     currentMileage?.length === 0 ||
     vehicleRegistration?.length === 0;
 
-  const setNrPlateAndStop = async (plate) => {
+  const setNrPlateAndStop = async plate => {
     const data = await camera.current.takePictureAsync({
       quality: 1
     });
@@ -68,7 +66,7 @@ const RegistrationMileage = ({
     setRegistration(plate);
   };
 
-  const smartUKFilter = async (blocks) => {
+  const smartUKFilter = async blocks => {
     if (blocks.textBlocks.length === 0) {
       return;
     }
@@ -112,6 +110,7 @@ const RegistrationMileage = ({
                 })
           }
           {...(disabled && { rightColor: colors.inputDark })}
+          testID={'checkVan-navbar'}
         />
         {renderProgressBar(1, payload)}
 
@@ -173,6 +172,7 @@ const RegistrationMileage = ({
               value={vehicleRegistration}
               disableErrors
               returnKeyType={'next'}
+              testID={'checkVan-registration-input'}
             />
           </RowView>
 
@@ -204,6 +204,7 @@ const RegistrationMileage = ({
               value={currentMileage}
               ref={mileageReference}
               returnKeyType={'next'}
+              testID={'checkVan-mileage-input'}
             />
           </RowView>
         </ColumnView>
@@ -218,6 +219,7 @@ const RegistrationMileage = ({
             })}
             title={I18n.t('general:next')}
             disabled={disabled}
+            testID={'checkVan-next-btn'}
           />
         </RowView>
       </ColumnView>

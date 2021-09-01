@@ -322,6 +322,7 @@ export const verifyAutomatedLoginOrLogout = function* () {
       });
     }
   } else {
+    Analytics.trackEvent(EVENTS.AUTOMATED_LOG_OUT);
     yield call(logout);
     InteractionManager.runAfterInteractions(() => {
       RNBootSplash.hide();
