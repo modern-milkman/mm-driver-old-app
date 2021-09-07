@@ -357,6 +357,7 @@ export const getForDriverSuccess = (state, { payload }) =>
     */
 
     // PREPARE RAW STOPS
+    const serverAddressIds = [];
     for (const { address, orderItems } of payload.items) {
       const computedAddress =
         (address.nameOrNumber ? `${address.nameOrNumber}` : '') +
@@ -368,6 +369,7 @@ export const getForDriverSuccess = (state, { payload }) =>
           ? address.deliveryInstructions
           : null;
       const satisfactionStatus = address.satisfactionStatus || 0;
+      serverAddressIds.push(parseInt(address.addressId));
 
       // create stop if it doesn't exist
       if (!draft.stops[address.addressId]) {
@@ -457,13 +459,27 @@ export const getForDriverSuccess = (state, { payload }) =>
           break;
         case 'rejected':
         case 'completed':
-          hasNonPendingOrders = true;
           markedOrders++;
           if (!draft.completedStopsIds.includes(address.addressId)) {
             draft.completedStopsIds.push(address.addressId);
           }
           break;
       }
+    }
+
+    // remove stops no longer on route
+    let stopsToRemove = Object.keys(draft.stops).filter(
+      key => !serverAddressIds.includes(parseInt(key))
+    );
+    for (const key of stopsToRemove) {
+      if (['rejected', 'completed'].includes(draft.stops[key].status)) {
+        markedOrders--;
+      }
+      delete draft.stops[key];
+    }
+
+    if (markedOrders > 0) {
+      hasNonPendingOrders = true;
     }
 
     if (markedOrders === payload.itemCount) {
