@@ -475,6 +475,14 @@ export const getForDriverSuccess = (state, { payload }) =>
       if (['rejected', 'completed'].includes(draft.stops[key].status)) {
         markedOrders--;
       }
+      const orderedStopIndex = draft.orderedStopsIds.indexOf(parseInt(key));
+      if (orderedStopIndex >= 0) {
+        draft.orderedStopsIds.splice(orderedStopIndex, 1);
+      }
+      const completedStopIndex = draft.completedStopsIds.indexOf(parseInt(key));
+      if (completedStopIndex >= 0) {
+        draft.completedStopsIds.splice(orderedStopIndex, 1);
+      }
       delete draft.stops[key];
     }
 
