@@ -368,7 +368,6 @@ export const getForDriverSuccess = (state, { payload }) =>
         address?.deliveryInstructions?.length > 0
           ? address.deliveryInstructions
           : null;
-      const satisfactionStatus = address.satisfactionStatus || 0;
       serverAddressIds.push(parseInt(address.addressId));
 
       // create stop if it doesn't exist
@@ -390,13 +389,14 @@ export const getForDriverSuccess = (state, { payload }) =>
           icon: null, // TODO can this be removed?
           itemCount: 0,
           orderItems: {},
-          satisfactionStatus,
           searchHandle:
             computedAddress.toLowerCase() + address.userId.toString(),
           status: 'pending',
           title: computedAddress
         };
       }
+      draft.stops[address.addressId].satisfactionStatus =
+        address.satisfactionStatus || 0;
 
       // check order items and update
       for (const {
