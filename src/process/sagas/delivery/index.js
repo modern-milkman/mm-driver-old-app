@@ -102,6 +102,10 @@ export const driverReply = function* ({
 };
 
 export const foregroundDeliveryActions = function* ({}) {
+  // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
+  // rejectReasons -> productsOrder -> vehicleChecks -> getForDriver -> getVehicleStockForDriver |
+  // cannedContent |
+  // bundleProducts |
   const status = yield select(statusSelector);
   const user_session = yield select(userSessionPresentSelector);
 
@@ -109,7 +113,6 @@ export const foregroundDeliveryActions = function* ({}) {
   // yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
 
   if (status === DS.NCI && user_session) {
-    yield put({ type: DeliveryTypes.GET_PRODUCTS_ORDER });
     yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
     yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
     yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });

@@ -723,6 +723,7 @@ export default createReducer(initialState, {
   [Types.DRIVER_REPLY]: driverReply,
   [Types.GET_FOR_DRIVER]: processingTrue,
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
+  [Types.GET_REJECT_DELIVERY_REASONS]: processingTrue,
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.INIT_CHECKLIST]: initChecklist,
   [Types.REDIRECT_SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
