@@ -33,15 +33,9 @@ const blacklists = {
   apiEndpointOfflineTracking: [
     `${Config.FLEET_TRACKER_URL}/drivers`,
     '/Security/Logon',
-    '/Security/Refresh',
-    '/Driver/DriverActivity' // TODO remove once BE v1.13.0 is out
+    '/Security/Refresh'
   ],
-  addToStackRoute: [
-    'CustomerIssueModal',
-    'LowConnectionModal',
-    'PermissionsMissing',
-    'UpgradeApp'
-  ],
+  addToStackRoute: ['PermissionsMissing', 'UpgradeApp'],
   resetStackRoutes: ['CheckIn'],
   transientReset: ['RegistrationMileage', 'Home']
 };
