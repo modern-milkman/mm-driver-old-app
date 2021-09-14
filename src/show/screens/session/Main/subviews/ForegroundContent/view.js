@@ -204,7 +204,7 @@ const ForegroundContent = props => {
                   ['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
                     foregroundState
                   ) ||
-                  (!optimisedRouting && !isOptimised && !selectedStop)
+                  (!isOptimised && !selectedStop)
                 }>
                 <Animated.View
                   style={{
@@ -252,7 +252,7 @@ const ForegroundContent = props => {
                 ['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
                   foregroundState
                 ) ||
-                (!optimisedRouting && !isOptimised && !selectedStop)
+                (!isOptimised && !selectedStop)
               }
               onPress={onButtonPress}
               testID={'foregroundContent-main-btn'}
