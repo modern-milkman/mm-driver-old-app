@@ -94,7 +94,6 @@ const ForegroundContent = props => {
     foregroundTitleColor,
     foregroundTitleTop,
     foregroundSize,
-    isOptimised,
     onButtonPress,
     onChevronUpPress,
     optimisedRouting,
@@ -200,12 +199,9 @@ const ForegroundContent = props => {
               <Pressable
                 onPress={onButtonPress}
                 style={style.pressableContainer}
-                disabled={
-                  ['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
-                    foregroundState
-                  ) ||
-                  (!isOptimised && !selectedStop)
-                }>
+                disabled={['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
+                  foregroundState
+                )}>
                 <Animated.View
                   style={{
                     opacity: foregroundDetailsIconsOpacity
@@ -248,12 +244,9 @@ const ForegroundContent = props => {
               backgroundOpacity={foregroundDetailsTopOpacity}
               titleColor={buttonTitleColor}
               title={renderButtonTitle(foregroundState, props)}
-              disabled={
-                ['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
-                  foregroundState
-                ) ||
-                (!isOptimised && !selectedStop)
-              }
+              disabled={['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
+                foregroundState
+              )}
               onPress={onButtonPress}
               testID={'foregroundContent-main-btn'}
             />
@@ -275,7 +268,7 @@ ForegroundContent.propTypes = {
   foregroundTitleColor: PropTypes.instanceOf(Animated.Value),
   foregroundTitleTop: PropTypes.instanceOf(Animated.Value),
   foregroundSize: PropTypes.string,
-  isOptimised: PropTypes.bool,
+
   onButtonPress: PropTypes.func,
   onChevronUpPress: PropTypes.func,
   onTitleLayoutChange: PropTypes.func,
