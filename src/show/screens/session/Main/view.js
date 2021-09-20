@@ -39,6 +39,7 @@ const mainForegroundAction = ({
   snapMiddleY,
   snapTopY,
   status,
+  startDelivering,
   top,
   updateDeviceProps
 }) => {
@@ -47,7 +48,11 @@ const mainForegroundAction = ({
     case DS.LV:
     case DS.SSC:
       if (checklist.loadedVan && checklist.shiftStartVanChecks) {
-        continueDelivering();
+        if (optimisedRouting) {
+          continueDelivering();
+        } else {
+          startDelivering();
+        }
       } else {
         springForeground({
           animatedValues: [pullHandlePan.y, pullHandleMoveY],
@@ -104,7 +109,7 @@ const mainForegroundAction = ({
           top,
           updateDeviceProps
         });
-      } else if (!optimisedRouting) {
+      } else if (optimisedRouting) {
         continueDelivering();
       }
       break;
@@ -176,6 +181,7 @@ const Main = props => {
     optimisedRouting,
     selectedStop,
     status,
+    startDelivering,
     updateDeviceProps
   } = props;
 
@@ -535,6 +541,7 @@ const Main = props => {
             snapMiddleY,
             snapTopY,
             status,
+            startDelivering,
             top,
             updateDeviceProps
           })}
@@ -568,6 +575,7 @@ Main.propTypes = {
   optimisedRouting: PropTypes.bool,
   selectedStop: PropTypes.any,
   status: PropTypes.string,
+  startDelivering: PropTypes.func,
   updateDeviceProps: PropTypes.func
 };
 

@@ -12,11 +12,13 @@ import Main from './view';
 export default connect(
   state => ({
     itemCount: itemCount(state),
+    optimisedRouting: state.delivery?.optimisedRouting,
     status: state.delivery?.status,
     checklist: checklist(state),
     stopCount: stopCount(state)
   }),
   {
-    continueDelivering: deliveryActions.continueDelivering
+    continueDelivering: deliveryActions.continueDelivering,
+    startDelivering: deliveryActions.startDelivering
   }
 )(Main);

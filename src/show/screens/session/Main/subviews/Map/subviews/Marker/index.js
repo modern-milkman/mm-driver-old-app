@@ -5,7 +5,7 @@ import { Creators as deliveryActions } from 'Reducers/delivery';
 import Marker from './view';
 
 export default connect(
-  (state) => {
+  state => {
     return {
       completedStopsIds: state.delivery?.completedStopsIds,
       mapMarkerSize: state.device.mapMarkerSize,
@@ -15,6 +15,7 @@ export default connect(
     };
   },
   {
+    updateProps: deliveryActions.updateProps,
     updateSelectedStop: deliveryActions.updateSelectedStop
   }
 )(Marker);

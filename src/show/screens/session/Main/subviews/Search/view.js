@@ -31,6 +31,7 @@ const Search = props => {
     status,
     stops,
     updateDeviceProps,
+    updateProps,
     updateSelectedStop,
     updateTransientProps
   } = props;
@@ -61,7 +62,8 @@ const Search = props => {
       shouldTrackHeading: false,
       shouldTrackLocation: false
     });
-    updateSelectedStop(key, false);
+    updateProps({ optimisedRouting: false });
+    updateSelectedStop(key);
     handleFocus(false, false);
   };
 
@@ -179,6 +181,7 @@ Search.propTypes = {
   status: PropTypes.string,
   stops: PropTypes.array,
   updateDeviceProps: PropTypes.func,
+  updateProps: PropTypes.func,
   updateSelectedStop: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
@@ -189,6 +192,7 @@ Search.defaultProps = {
   searchValue: '',
   stops: [],
   updateDeviceProps: mock,
+  updateProps: mock,
   updateSelectedStop: mock,
   updateTransientProps: mock
 };

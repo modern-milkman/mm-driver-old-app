@@ -56,6 +56,7 @@ export const { Types, Creators } = createActions(
     setVanDamageComment: ['key', 'comment'],
     setVanDamageImage: ['key', 'imagePath', 'imageType'],
     setVehicleChecks: ['payload'],
+    startDelivering: null,
     showMustComplyWithTerms: null,
     toggleCheckJson: ['key'],
     toggleConfirmedItem: ['id'],
@@ -65,7 +66,7 @@ export const { Types, Creators } = createActions(
     updateChecklistProps: ['props'],
     updateDirectionsPolyline: null,
     updateProps: ['props'],
-    updateSelectedStop: ['sID', 'optimisedRouting']
+    updateSelectedStop: ['sID']
   },
   { prefix: 'delivery/' }
 );
@@ -244,23 +245,17 @@ const setDeliveredOrRejected = (
           orderItem.status = requestType === 'delivered' ? 2 : 4;
         }
       }
+
+      if (draft.orderedStopsIds.length === 0) {
+        draft.status = DS.DELC;
+        draft.checklist[draft.userId].deliveryComplete = true;
+      }
     }
   });
 
 export const clearCenterMapLocation = state =>
   produce(state, draft => {
     draft.centerMapLocation = null;
-  });
-
-export const continueDelivering = state =>
-  produce(state, draft => {
-    if (draft.orderedStopsIds.length > 0) {
-      draft.processing = true;
-      draft.status = DS.DEL;
-    } else if (draft.orderedStopsIds.length === 0) {
-      draft.status = DS.DELC;
-      draft.checklist[draft.userId].deliveryComplete = true;
-    }
   });
 
 export const getVehicleStockForDriverSuccess = (
@@ -337,7 +332,6 @@ export const getForDriverSuccess = (state, { payload }) =>
 
     if (draft.deliveryDate !== draft.stockWithData.deliveryDate) {
       draft.deliveryDate = draft.stockWithData.deliveryDate;
-      draft.optimisedRouting = draft.stockWithData.isOptimised;
       draft.status = initialState.status;
       draft.stops = {};
       draft.orderedStopsIds = [];
@@ -345,6 +339,8 @@ export const getForDriverSuccess = (state, { payload }) =>
       draft.deliveredStock = {};
       resetChecklistFlags(draft.checklist[state.userId]);
     }
+
+    draft.optimisedRouting = draft.stockWithData.isOptimised;
 
     /*
     BE deliveryState values for orderItems
@@ -646,6 +642,13 @@ export const setVehicleChecks = (state, { payload }) =>
     draft.checksJson = payload;
   });
 
+export const startDelivering = state =>
+  produce(state, draft => {
+    if (draft.status !== DS.DEL && draft.orderedStopsIds.length > 0) {
+      draft.status = DS.DEL;
+    }
+  });
+
 export const toggleCheckJson = (state, { key }) =>
   produce(state, draft => {
     draft.checklist[draft.userId].payload.checksJson[key] =
@@ -700,10 +703,9 @@ export const setDirectionsPolyline = (state, { payload }) =>
     draft.directionsPolyline = payload;
   });
 
-export const updateSelectedStop = (state, { sID, optimisedRouting = true }) =>
+export const updateSelectedStop = (state, { sID }) =>
   produce(state, draft => {
     resetSelectedStopInfo(draft);
-    draft.optimisedRouting = optimisedRouting;
     draft.previousStopId = draft.selectedStopId;
     draft.processing = false;
     draft.selectedStopId = sID;
@@ -718,7 +720,7 @@ export const updateSelectedStop = (state, { sID, optimisedRouting = true }) =>
 
 export default createReducer(initialState, {
   [Types.CLEAR_CENTER_MAP_LOCATION]: clearCenterMapLocation,
-  [Types.CONTINUE_DELIVERING]: continueDelivering,
+  [Types.CONTINUE_DELIVERING]: startDelivering,
   [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DRIVER_REPLY]: driverReply,
   [Types.GET_FOR_DRIVER]: processingTrue,
@@ -743,6 +745,7 @@ export default createReducer(initialState, {
   [Types.SET_VAN_DAMAGE_COMMENT]: setVanDamageComment,
   [Types.SET_VAN_DAMAGE_IMAGE]: setVanDamageImage,
   [Types.SET_VEHICLE_CHECKS]: setVehicleChecks,
+  [Types.START_DELIVERING]: startDelivering,
   [Types.TOGGLE_CHECK_JSON]: toggleCheckJson,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,

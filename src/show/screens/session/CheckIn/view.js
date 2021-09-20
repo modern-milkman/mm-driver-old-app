@@ -149,7 +149,15 @@ const renderTitle = ({ checklist, status }) => {
 };
 
 const CheckIn = props => {
-  const { checklist, itemCount, continueDelivering, status, stopCount } = props;
+  const {
+    checklist,
+    continueDelivering,
+    itemCount,
+    optimisedRouting,
+    status,
+    startDelivering,
+    stopCount
+  } = props;
 
   const deliverProductsDisabled =
     checklist.shiftStartVanChecks === false ||
@@ -192,7 +200,10 @@ const CheckIn = props => {
       suffixBottom: I18n.t('screens:main.descriptions.deliveryActive', {
         stopCount
       }),
-      onPress: navigateBack.bind(null, continueDelivering),
+      onPress: navigateBack.bind(
+        null,
+        optimisedRouting ? continueDelivering : startDelivering
+      ),
       rightIcon: checklist.deliveryComplete
         ? 'check'
         : deliverProductsDisabled
@@ -295,7 +306,11 @@ const CheckIn = props => {
                 }
                 onPress={navigateBack.bind(
                   null,
-                  status !== DS.SC ? continueDelivering : null
+                  status !== DS.SC
+                    ? optimisedRouting
+                      ? continueDelivering
+                      : startDelivering
+                    : null
                 )}
               />
               {renderHelperMessage({ checklist, status })}
@@ -311,12 +326,15 @@ CheckIn.propTypes = {
   checklist: PropTypes.object,
   itemCount: PropTypes.number,
   continueDelivering: PropTypes.func,
+  optimisedRouting: PropTypes.bool,
   status: PropTypes.string,
+  startDelivering: PropTypes.func,
   stopCount: PropTypes.number
 };
 
 CheckIn.defaultProps = {
   itemCount: 0,
+  optimisedRouting: false,
   status: DS.NCI,
   stopCount: 0
 };

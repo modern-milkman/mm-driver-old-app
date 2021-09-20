@@ -13,28 +13,27 @@ import Main from './view';
 export default connect(
   state => {
     const currentSelectedStop = selectedStop(state);
+    const currentChecklist = checklist(state);
 
     return {
       buttonAccessibility: state.device.buttonAccessibility,
       canPanForeground:
         (state.delivery?.hasRoutes &&
-          state.delivery?.status !== DS.DELC &&
-          state.delivery.optimisedRouting) ||
-        (!state.delivery.optimisedRouting && currentSelectedStop) ||
-        ([DS.NCI, DS.LV, DS.SSC, DS.DELC, DS.SEC].includes(
-          state.delivery?.status
-        ) &&
-          state.delivery?.hasRoutes),
-      checklist: checklist(state),
+          [DS.NCI, DS.LV, DS.SSC, DS.SEC].includes(state.delivery?.status)) ||
+        (state.delivery?.status === DS.DEL && currentSelectedStop) ||
+        (state.delivery?.status === DS.DELC &&
+          !currentChecklist.shiftEndVanChecks),
+      checklist: currentChecklist,
       currentLocation: state.device.position,
       foregroundSize: state.device.foregroundSize,
-      optimisedRouting: state.delivery.optimisedRouting,
+      optimisedRouting: state.delivery?.optimisedRouting,
       selectedStop: currentSelectedStop,
       status: state.delivery?.status
     };
   },
   {
     continueDelivering: deliveryActions.continueDelivering,
+    startDelivering: deliveryActions.startDelivering,
     updateDeviceProps: deviceActions.updateProps
   }
 )(Main);

@@ -282,7 +282,6 @@ export const getVehicleStockForDriverSuccess = function* ({ payload }) {
   const checklist = yield select(checklistSelector);
   const status = yield select(statusSelector);
   const optimisedRouting = yield select(optimisedRoutingSelector);
-  // TODO
   if (optimisedRouting && !checklist.deliveryComplete && status === DS.DEL) {
     yield put({
       type: DeliveryTypes.CONTINUE_DELIVERING
@@ -339,7 +338,6 @@ export const saveVehicleChecks = function* ({ saveType }) {
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
 };
 
-//TODO
 export const setDeliveredOrRejected = function* (
   requestType,
   { id, outOfStockIds, selectedStopId, reasonType, reasonMessage }

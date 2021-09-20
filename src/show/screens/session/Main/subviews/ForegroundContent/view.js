@@ -94,9 +94,9 @@ const ForegroundContent = props => {
     foregroundTitleColor,
     foregroundTitleTop,
     foregroundSize,
+    isOptimised,
     onButtonPress,
     onChevronUpPress,
-    optimisedRouting,
     processing,
     resetHourDay,
     status,
@@ -106,6 +106,7 @@ const ForegroundContent = props => {
   } = props;
 
   let foregroundState = 'COME_BACK_LATER';
+  let mainActionDisabled = true;
 
   switch (status) {
     case DS.NCI:
@@ -118,16 +119,22 @@ const ForegroundContent = props => {
         }
       } else if (checklist.loadedVan && checklist.shiftStartVanChecks) {
         foregroundState = 'START_ROUTE';
+        mainActionDisabled = false;
       } else {
         foregroundState = 'CHECKIN';
+        mainActionDisabled = false;
       }
       break;
 
     case DS.DEL:
       if (selectedStop) {
         foregroundState = 'DELIVERING';
-      } else if (!optimisedRouting) {
+        mainActionDisabled = false;
+      } else {
         foregroundState = 'MANUAL';
+        if (isOptimised) {
+          mainActionDisabled = false;
+        }
       }
       break;
 
@@ -135,8 +142,14 @@ const ForegroundContent = props => {
     case DS.SEC:
       if (selectedStop) {
         foregroundState = 'DELIVERING';
+        mainActionDisabled = false;
       } else {
-        foregroundState = 'VEHICLE_CHECKS_END';
+        if (checklist.shiftEndVanChecks) {
+          foregroundState = 'COME_BACK_LATER';
+        } else {
+          foregroundState = 'VEHICLE_CHECKS_END';
+          mainActionDisabled = false;
+        }
       }
       break;
 
@@ -199,9 +212,7 @@ const ForegroundContent = props => {
               <Pressable
                 onPress={onButtonPress}
                 style={style.pressableContainer}
-                disabled={['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
-                  foregroundState
-                )}>
+                disabled={mainActionDisabled}>
                 <Animated.View
                   style={{
                     opacity: foregroundDetailsIconsOpacity
@@ -244,9 +255,7 @@ const ForegroundContent = props => {
               backgroundOpacity={foregroundDetailsTopOpacity}
               titleColor={buttonTitleColor}
               title={renderButtonTitle(foregroundState, props)}
-              disabled={['COME_BACK_LATER', 'NO_DELIVERIES'].includes(
-                foregroundState
-              )}
+              disabled={mainActionDisabled}
               onPress={onButtonPress}
               testID={'foregroundContent-main-btn'}
             />
@@ -268,11 +277,10 @@ ForegroundContent.propTypes = {
   foregroundTitleColor: PropTypes.instanceOf(Animated.Value),
   foregroundTitleTop: PropTypes.instanceOf(Animated.Value),
   foregroundSize: PropTypes.string,
-
+  isOptimised: PropTypes.bool,
   onButtonPress: PropTypes.func,
   onChevronUpPress: PropTypes.func,
   onTitleLayoutChange: PropTypes.func,
-  optimisedRouting: PropTypes.bool,
   processing: PropTypes.bool,
   resetHourDay: PropTypes.number,
   routeDescription: PropTypes.string,

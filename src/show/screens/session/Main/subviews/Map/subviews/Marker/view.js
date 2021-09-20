@@ -11,8 +11,9 @@ import { colors, defaults } from 'Theme';
 
 import style from './style';
 
-const markerOnPress = ({ updateSelectedStop, id }) => {
-  updateSelectedStop(id, false);
+const markerOnPress = ({ updateProps, updateSelectedStop, id }) => {
+  updateProps({ optimisedRouting: false });
+  updateSelectedStop(id);
 };
 
 const Marker = props => {
@@ -24,6 +25,7 @@ const Marker = props => {
     previousStopId,
     stops,
     selectedStopId,
+    updateProps,
     updateSelectedStop
   } = props;
   const selectedStop = stops[id] || null;
@@ -68,7 +70,7 @@ const Marker = props => {
         onPress={
           disabled || selectedStopId === id
             ? mock
-            : markerOnPress.bind(null, { updateSelectedStop, id })
+            : markerOnPress.bind(null, { updateProps, updateSelectedStop, id })
         }
         anchor={{ x: 0.5, y: 1 }}
         {...(completed && { zIndex: -1 })}
@@ -151,6 +153,7 @@ Marker.propTypes = {
   previousStopId: PropTypes.number,
   stops: PropTypes.object,
   selectedStopId: PropTypes.number,
+  updateProps: PropTypes.func,
   updateSelectedStop: PropTypes.func
 };
 

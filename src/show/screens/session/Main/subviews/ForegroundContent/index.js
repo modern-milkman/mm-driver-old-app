@@ -10,7 +10,7 @@ export default connect(state => {
   return {
     checklist: checklist(state),
     foregroundSize: state.device.foregroundSize,
-    optimisedRouting: state.delivery.optimisedRouting,
+    isOptimised: state.delivery?.stockWithData?.isOptimised || false,
     processing: state.delivery.processing,
     resetHourDay: state.device.resetHourDay,
     routeDescription: state.delivery?.stockWithData?.routeDescription || null,
