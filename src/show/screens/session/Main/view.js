@@ -109,7 +109,9 @@ const mainForegroundAction = ({
           top,
           updateDeviceProps
         });
-      } else if (optimisedRouting) {
+      } else {
+        // this action is available only when the route is optimised
+        // foreground content disables the button otherwise
         continueDelivering();
       }
       break;
