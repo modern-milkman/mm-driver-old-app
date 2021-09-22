@@ -80,6 +80,16 @@
       "rejected": "Skipped"
     }
   },
+  "emptiesCollected": {
+    "title": "Empties Collected",
+    "elements": {
+      "Milk": "Milk Bottles",
+      "Miniml": "Miniml Bottles",
+      "Pop": "Pop Bottles",
+      "Tea": "Tea Bottles",
+      "Water": "Watter Bottles"
+    }
+  },
   "home": {
     "driver": "Driver",
     "rememberMe": "Remember me",

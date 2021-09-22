@@ -14,7 +14,7 @@ export const renderProgressBar = (current, payload) => (
     <ProgressBar
       height={4}
       progress={current}
-      total={payload.shiftStart ? 4 : 3}
+      total={payload.shiftStart ? 5 : 3}
     />
   </ColumnView>
 );

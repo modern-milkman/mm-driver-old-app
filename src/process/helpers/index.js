@@ -37,7 +37,7 @@ const blacklists = {
   ],
   addToStackRoute: ['PermissionsMissing', 'UpgradeApp'],
   resetStackRoutes: ['CheckIn'],
-  transientReset: ['RegistrationMileage', 'Home']
+  transientReset: ['EmptiesCollected', 'Home', 'RegistrationMileage']
 };
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);

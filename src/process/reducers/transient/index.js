@@ -14,22 +14,27 @@ export const { Types, Creators } = createActions(
 
 const initialState = {};
 
-export const reset = (state) =>
+export const reset = state =>
   produce(state, () => {
     return initialState;
   });
 
 export const updateProps = (state, { props }) => {
-  return produce(state, (draft) => {
+  return produce(state, draft => {
     for (const [prop, value] of Object.entries(props)) {
       draft[prop] = value;
       if (validations[prop]) {
-        if (validations[prop].isValid(value)) {
-          draft[`${prop}HasError`] = false;
-          draft[`${prop}ErrorMessage`] = '';
-        } else {
-          draft[`${prop}HasError`] = true;
-          draft[`${prop}ErrorMessage`] = validations[prop].message;
+        for (const validation of validations[prop]) {
+          if (validation) {
+            if (validation.isValid(value)) {
+              draft[`${prop}HasError`] = false;
+              draft[`${prop}ErrorMessage`] = '';
+            } else {
+              draft[`${prop}HasError`] = true;
+              draft[`${prop}ErrorMessage`] = validation.message;
+              break;
+            }
+          }
         }
       }
     }
@@ -41,4 +46,4 @@ export default createReducer(initialState, {
   [Types.RESET]: reset
 });
 
-export const transient = (state) => ({ ...state.transient });
+export const transient = state => ({ ...state.transient });

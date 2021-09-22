@@ -44,6 +44,9 @@ export default {
   getReasons() {
     return Api.get('/RejectReason');
   },
+  getReturnTypes() {
+    return Api.get('/ReturnType');
+  },
   getVehicleChecks() {
     return Api.get('/Driver/VehicleCheck');
   },

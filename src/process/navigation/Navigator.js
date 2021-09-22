@@ -10,6 +10,7 @@ import {
   CustomerIssueList,
   CustomerIssueModal,
   DamageReport,
+  EmptiesCollected,
   Deliver,
   Home,
   LoadVan,
@@ -24,14 +25,17 @@ import {
 
 const VechicleCheckWizardNavigator = createStackNavigator(
   {
-    Checklist: {
-      screen: Checklist
+    RegistrationMileage: {
+      screen: RegistrationMileage
+    },
+    EmptiesCollected: {
+      screen: EmptiesCollected
     },
     DamageReport: {
       screen: DamageReport
     },
-    RegistrationMileage: {
-      screen: RegistrationMileage
+    Checklist: {
+      screen: Checklist
     }
   },
   {

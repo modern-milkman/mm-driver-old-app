@@ -26,16 +26,14 @@ const UKregex = RegExp(
   '(^[A-Z]{2}[0-9]{2}s?[A-Z]{3}$)|(^[A-Z][0-9]{1,3}[A-Z]{3}$)|(^[A-Z]{3}[0-9]{1,3}[A-Z]$)|(^[0-9]{1,4}[A-Z]{1,2}$)|(^[0-9]{1,3}[A-Z]{1,3}$)|(^[A-Z]{1,2}[0-9]{1,4}$)|(^[A-Z]{1,3}[0-9]{1,3}$)|(^[A-Z]{1,3}[0-9]{1,4}$)|(^[0-9]{3}[DX]{1}[0-9]{3}$)'
 );
 
-const updateCurrentMileage = (
-  updateTransientProps,
-  setMileage,
-  prop,
+const updateReducerAndTransient = (
+  { updateTransientProps, reducerMethod, prop },
   value
 ) => {
   const update = {};
   update[`${prop}`] = value;
   updateTransientProps(update);
-  setMileage(value);
+  reducerMethod(value);
 };
 
 const RegistrationMileage = ({
@@ -45,17 +43,22 @@ const RegistrationMileage = ({
   payload,
   setMileage,
   setRegistration,
-  updateTransientProps
+  updateTransientProps,
+  vehicleRegistration,
+  vehicleRegistrationErrorMessage,
+  vehicleRegistrationHasError
 }) => {
-  const { currentMileage: payloadCurrentMileage, vehicleRegistration } =
-    payload;
+  const {
+    currentMileage: payloadCurrentMileage,
+    vehicleRegistration: payloadVehicleRegistration
+  } = payload;
   const camera = useRef();
   const [plateImage, setPlateImage] = useState('');
+  const nextRouteName = payload.shiftStart
+    ? 'EmptiesCollected'
+    : 'DamageReport';
 
-  const disabled =
-    currentMileageHasError ||
-    currentMileage?.length === 0 ||
-    vehicleRegistration?.length === 0;
+  const disabled = currentMileageHasError || vehicleRegistrationHasError;
 
   const setNrPlateAndStop = async plate => {
     const data = await camera.current.takePictureAsync({
@@ -89,7 +92,8 @@ const RegistrationMileage = ({
     <SafeAreaView top bottom>
       <NavigationEvents
         onWillFocus={updateTransientProps.bind(null, {
-          currentMileage: payloadCurrentMileage
+          currentMileage: payloadCurrentMileage,
+          vehicleRegistration: payloadVehicleRegistration
         })}
       />
       <ColumnView
@@ -106,7 +110,7 @@ const RegistrationMileage = ({
             disabled
               ? mock
               : NavigationService.navigate.bind(null, {
-                  routeName: 'DamageReport'
+                  routeName: nextRouteName
                 })
           }
           {...(disabled && { rightColor: colors.inputDark })}
@@ -166,11 +170,16 @@ const RegistrationMileage = ({
             marginVertical={defaults.marginVertical / 2}>
             <TextInput
               autoCapitalize={'none'}
-              onChangeText={setRegistration.bind(null)}
+              error={vehicleRegistrationHasError}
+              errorMessage={vehicleRegistrationErrorMessage}
+              onChangeText={updateReducerAndTransient.bind(null, {
+                updateTransientProps,
+                reducerMethod: setRegistration,
+                prop: 'vehicleRegistration'
+              })}
               onSubmitEditing={focusMileage}
               placeholder={I18n.t('input:placeholder.registration')}
               value={vehicleRegistration}
-              disableErrors
               returnKeyType={'next'}
               testID={'checkVan-registration-input'}
             />
@@ -187,17 +196,16 @@ const RegistrationMileage = ({
               error={currentMileageHasError}
               errorMessage={currentMileageErrorMessage}
               autoCapitalize={'none'}
-              onChangeText={updateCurrentMileage.bind(
-                null,
+              onChangeText={updateReducerAndTransient.bind(null, {
                 updateTransientProps,
-                setMileage,
-                'currentMileage'
-              )}
+                reducerMethod: setMileage,
+                prop: 'currentMileage'
+              })}
               onSubmitEditing={
                 disabled
                   ? mock
                   : NavigationService.navigate.bind(null, {
-                      routeName: 'DamageReport'
+                      routeName: nextRouteName
                     })
               }
               placeholder={I18n.t('input:placeholder.mileage')}
@@ -215,7 +223,7 @@ const RegistrationMileage = ({
           marginBottom={defaults.marginVertical}>
           <Button.Primary
             onPress={NavigationService.navigate.bind(null, {
-              routeName: 'DamageReport'
+              routeName: nextRouteName
             })}
             title={I18n.t('general:next')}
             disabled={disabled}
@@ -234,7 +242,10 @@ RegistrationMileage.propTypes = {
   payload: PropTypes.object,
   setMileage: PropTypes.func,
   setRegistration: PropTypes.func,
-  updateTransientProps: PropTypes.func
+  updateTransientProps: PropTypes.func,
+  vehicleRegistration: PropTypes.string,
+  vehicleRegistrationErrorMessage: PropTypes.string,
+  vehicleRegistrationHasError: PropTypes.bool
 };
 
 export default RegistrationMileage;

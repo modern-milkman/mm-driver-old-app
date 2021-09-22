@@ -10,6 +10,7 @@ import CustomerIssueDetails from './session/Deliver/subviews/Details';
 import CustomerIssueList from './session/Deliver/subviews/List';
 import CustomerIssueModal from './session/Deliver/subviews/Modal';
 import DamageReport from './session/VehicleCheckWizard/DamageReport';
+import EmptiesCollected from './session/VehicleCheckWizard/EmptiesCollected';
 import Deliver from './session/Deliver';
 import LoadVan from './session/LoadVan';
 import LowConnectionModal from './session/Main/subviews/Navigation/LowConnectionModal';
@@ -25,6 +26,7 @@ export {
   CustomerIssueList,
   CustomerIssueModal,
   DamageReport,
+  EmptiesCollected,
   Deliver,
   Home,
   LoadVan,

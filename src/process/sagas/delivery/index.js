@@ -103,7 +103,7 @@ export const driverReply = function* ({
 
 export const foregroundDeliveryActions = function* ({}) {
   // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
-  // rejectReasons -> productsOrder -> vehicleChecks -> getForDriver -> getVehicleStockForDriver |
+  // rejectReasons -> productsOrder -> vehicleChecks -> returnTypes -> getForDriver -> getVehicleStockForDriver |
   // cannedContent |
   // bundleProducts |
   const status = yield select(statusSelector);
@@ -266,6 +266,18 @@ export const getRejectDeliveryReasons = function* () {
   });
 };
 
+export const getReturnTypes = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_RETURN_TYPES },
+      fail: { type: DeliveryTypes.UPDATE_PROPS }
+    },
+    promise: Api.repositories.delivery.getReturnTypes(),
+    props: { processing: false }
+  });
+};
+
 export const getVehicleChecks = function* () {
   yield put({
     type: Api.API_CALL,
@@ -300,14 +312,13 @@ export const saveVehicleChecks = function* ({ saveType }) {
   NavigationService.navigate({ routeName: 'CheckIn' });
   const checklist = yield select(checklistSelector);
   let vehicleCheckDamage = [];
+  const payload = { ...checklist.payload };
 
   for (let [index, damage] of Object.values(
-    checklist.payload.vehicleCheckDamage
+    payload.vehicleCheckDamage
   ).entries()) {
     vehicleCheckDamage.push({
-      locationOfDamage: Object.keys(checklist.payload.vehicleCheckDamage)[
-        index
-      ],
+      locationOfDamage: Object.keys(payload.vehicleCheckDamage)[index],
       comments: damage.comments,
       vehicleCheckDamageImage: []
     });
@@ -325,13 +336,20 @@ export const saveVehicleChecks = function* ({ saveType }) {
     }
   }
 
+  const returns = [];
+  for (const { id, value } of Object.values(payload.emptiesCollected)) {
+    returns.push({ returnTypeId: id, quantity: parseInt(value) });
+  }
+  delete payload.emptiesCollected;
+
   yield put({
     type: Api.API_CALL,
     promise: Api.repositories.delivery.postVechicleChecks({
       payload: {
-        ...checklist.payload,
+        ...payload,
+        returns,
         vehicleCheckDamage,
-        currentMileage: parseInt(checklist.payload.currentMileage)
+        currentMileage: parseInt(payload.currentMileage)
       }
     })
   });
@@ -447,7 +465,7 @@ export const setProductsOrder = function* ({ payload }) {
   }
 };
 
-export const setVehicleChecks = function* () {
+export const setReturnTypes = function* () {
   const user_session = yield select(userSessionPresentSelector);
   if (user_session) {
     yield put({ type: DeliveryTypes.GET_FOR_DRIVER });

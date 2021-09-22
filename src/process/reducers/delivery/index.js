@@ -31,12 +31,15 @@ export const { Types, Creators } = createActions(
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
     getRejectDeliveryReasons: null,
+    getReturnTypes: null,
+    incrementDeliveredStock: ['productId', 'quantity'],
     initChecklist: null,
     redirectSetSelectedClaimId: ['claimId'],
     resetChecklistPayload: ['resetType'],
     saveVehicleChecks: ['saveType'],
     setCustomerClaims: ['payload', 'stopId'],
     setDelivered: ['id', 'selectedStopId', 'outOfStockIds'],
+    setEmpty: ['prop', 'value'],
     setDirectionsPolyline: ['payload'],
     setBundleProducts: ['payload'],
     setCannedContent: ['payload'],
@@ -53,6 +56,7 @@ export const { Types, Creators } = createActions(
     ],
     setSelectedClaimId: ['claim'],
     setRejectDeliveryReasons: ['payload'],
+    setReturnTypes: ['payload'],
     setVanDamageComment: ['key', 'comment'],
     setVanDamageImage: ['key', 'imagePath', 'imageType'],
     setVehicleChecks: ['payload'],
@@ -72,12 +76,13 @@ export const { Types, Creators } = createActions(
 );
 
 const initialVehicleChecks = {
-  shiftStart: false,
-  shiftEnd: false,
-  vehicleRegistration: '',
-  currentMileage: '',
   checksJson: '',
-  vehicleCheckDamage: {}
+  currentMileage: '',
+  emptiesCollected: {},
+  shiftEnd: false,
+  shiftStart: false,
+  vehicleCheckDamage: {},
+  vehicleRegistration: ''
 };
 
 export const initialChecklist = {
@@ -518,7 +523,8 @@ export const resetChecklistPayload = (state, { resetType }) =>
           ...initialVehicleChecks,
           ...(resetType === 'shiftEnd' && { shiftEnd: true }),
           ...(resetType === 'shiftStart' && { shiftStart: true }),
-          checksJson: { ...draft.checksJson }
+          checksJson: { ...draft.checksJson },
+          emptiesCollected: { ...draft.emptiesCollected }
         }
       }
     })
@@ -577,6 +583,14 @@ export const setCustomerClaims = (state, { payload, stopId }) =>
 export const setDelivered = (state, params) =>
   setDeliveredOrRejected(state, 'delivered', params);
 
+export const setEmpty = (state, { prop, value }) =>
+  produce(state, draft => {
+    draft.checklist[draft.userId].payload.emptiesCollected[prop] = {
+      ...draft.checklist[draft.userId].payload.emptiesCollected[prop],
+      value
+    };
+  });
+
 export const setMileage = (state, { mileage }) =>
   produce(state, draft => {
     draft.checklist[draft.userId].payload.currentMileage = mileage;
@@ -598,6 +612,17 @@ export const setProductsOrder = (state, { payload }) =>
 export const setRejectDeliveryReasons = (state, { payload }) =>
   produce(state, draft => {
     draft.rejectReasons = payload;
+  });
+
+export const setReturnTypes = (state, { payload }) =>
+  produce(state, draft => {
+    draft.emptiesCollected = {};
+    for (const { id, description } of payload) {
+      draft.emptiesCollected[id] = {
+        id,
+        description
+      };
+    }
   });
 
 export const setVanDamageComment = (state, { key, comment }) =>
@@ -736,11 +761,13 @@ export default createReducer(initialState, {
   [Types.SET_CUSTOMER_CLAIMS]: setCustomerClaims,
   [Types.SET_DELIVERED]: setDelivered,
   [Types.SET_DIRECTIONS_POLYLINE]: setDirectionsPolyline,
+  [Types.SET_EMPTY]: setEmpty,
   [Types.SET_MILEAGE]: setMileage,
   [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
   [Types.SET_REGISTRATION]: setRegistration,
   [Types.SET_REJECT_DELIVERY_REASONS]: setRejectDeliveryReasons,
   [Types.SET_REJECTED]: setRejected,
+  [Types.SET_RETURN_TYPES]: setReturnTypes,
   [Types.SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
   [Types.SET_VAN_DAMAGE_COMMENT]: setVanDamageComment,
   [Types.SET_VAN_DAMAGE_IMAGE]: setVanDamageImage,

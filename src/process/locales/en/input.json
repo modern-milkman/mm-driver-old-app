@@ -3,8 +3,9 @@
     "customerIssueModal": "Reason",
     "damageReport": "Enter any known issues here",
     "email": "Email",
+    "mileage": "Input current mileage (ODO)",
+    "number": "Input a number. Can be 0",
     "password": "Password",
-    "registration": "Input registration (BD51 SMR)",
-    "mileage": "Input current mileage (ODO)"
+    "registration": "Input registration (BD51 SMR)"
   }
 }

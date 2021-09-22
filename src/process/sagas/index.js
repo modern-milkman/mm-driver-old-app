@@ -35,6 +35,7 @@ import {
 } from './application';
 
 import {
+  continueDelivering,
   driverReply,
   foregroundDeliveryActions,
   getBundleProducts,
@@ -46,6 +47,7 @@ import {
   getForDriverSuccess,
   getProductsOrder,
   getRejectDeliveryReasons,
+  getReturnTypes,
   getVehicleChecks,
   getVehicleStockForDriverSuccess,
   redirectSetSelectedClaimId,
@@ -53,9 +55,8 @@ import {
   setDeliveredOrRejected,
   setItemOutOfStock,
   setProductsOrder,
-  setVehicleChecks,
+  setReturnTypes,
   showMustComplyWithTerms,
-  continueDelivering,
   updateDriverActivity,
   updateDirectionsPolyline,
   updateProps as updateDeliveryProps,
@@ -110,6 +111,7 @@ export default function* root() {
       verifyAutomatedLoginOrLogout
     ),
 
+    takeEvery(DeliveryTypes.CONTINUE_DELIVERING, continueDelivering),
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
     takeEvery(
       DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS,
@@ -152,8 +154,8 @@ export default function* root() {
       DeliveryTypes.SET_REJECTED,
       setDeliveredOrRejected.bind(null, 'rejected')
     ),
-    takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, setVehicleChecks),
-    takeEvery(DeliveryTypes.CONTINUE_DELIVERING, continueDelivering),
+    takeEvery(DeliveryTypes.SET_RETURN_TYPES, setReturnTypes),
+    takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, getReturnTypes),
     takeEvery(DeliveryTypes.UPDATE_DRIVER_ACTIVITY, updateDriverActivity),
     takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
     takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
