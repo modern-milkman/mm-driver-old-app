@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Animated, Pressable } from 'react-native';
 
@@ -7,9 +7,20 @@ import { CustomIcon } from 'Images';
 import { colors, defaults, sizes } from 'Theme';
 import { ColumnView, RowView } from 'Containers';
 import { deliveryStates as DS, ukTimeNow } from 'Helpers';
-import { Button, NavBar, Text, Separator } from 'Components';
+import { Button, NavBar, Text, Separator, ProgressBar } from 'Components';
+import translationStrings from 'Locales/en';
 
 import style from './style';
+
+const loaderKeys = Object.keys(
+  translationStrings.screens.main.foreground.loaderText
+);
+const LOADER_MAX_PROGRESS = 100;
+const loaderConfig = {
+  loaderText: loaderKeys,
+  steps: loaderKeys.length + 1,
+  stepSize: LOADER_MAX_PROGRESS / (loaderKeys.length + 1)
+};
 
 const renderButtonTitle = foregroundState => {
   switch (foregroundState) {
@@ -95,6 +106,7 @@ const ForegroundContent = props => {
     foregroundTitleTop,
     foregroundSize,
     isOptimised,
+    loaderInfo,
     onButtonPress,
     onChevronUpPress,
     processing,
@@ -106,6 +118,24 @@ const ForegroundContent = props => {
   } = props;
 
   let foregroundState = 'COME_BACK_LATER';
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (loaderInfo && processing && progress <= LOADER_MAX_PROGRESS) {
+      let steper;
+      setTimeout(() => {
+        const steperReset =
+          (loaderConfig.loaderText.indexOf(loaderInfo) + 1) *
+          loaderConfig.stepSize;
+        if (progress < steperReset) {
+          steper = steperReset - progress;
+        } else {
+          steper = 0.01;
+        }
+        setProgress(progress + steper);
+      }, 1);
+    }
+  }, [loaderInfo, progress, processing]);
   let mainActionDisabled = true;
 
   switch (status) {
@@ -172,6 +202,23 @@ const ForegroundContent = props => {
               color={foregroundSize === 'large' ? colors.primary : colors.white}
             />
           </RowView>
+          {loaderInfo && (
+            <>
+              <Text.Caption color={colors.secondaryLight} align={'center'}>
+                {I18n.t(`screens:main.foreground.loaderText.${loaderInfo}`)}
+              </Text.Caption>
+
+              <RowView
+                marginTop={defaults.paddingHorizontal}
+                paddingHorizontal={defaults.paddingHorizontal}>
+                <ProgressBar
+                  height={8}
+                  progress={progress}
+                  total={LOADER_MAX_PROGRESS}
+                />
+              </RowView>
+            </>
+          )}
         </ColumnView>
       ) : (
         <ColumnView marginTop={defaults.paddingHorizontal}>
@@ -278,6 +325,7 @@ ForegroundContent.propTypes = {
   foregroundTitleTop: PropTypes.instanceOf(Animated.Value),
   foregroundSize: PropTypes.string,
   isOptimised: PropTypes.bool,
+  loaderInfo: PropTypes.string,
   onButtonPress: PropTypes.func,
   onChevronUpPress: PropTypes.func,
   onTitleLayoutChange: PropTypes.func,

@@ -11,6 +11,7 @@ export default connect(state => {
     checklist: checklist(state),
     foregroundSize: state.device.foregroundSize,
     isOptimised: state.delivery?.stockWithData?.isOptimised || false,
+    loaderInfo: state.delivery.loaderInfo,
     processing: state.delivery.processing,
     resetHourDay: state.device.resetHourDay,
     routeDescription: state.delivery?.stockWithData?.routeDescription || null,

@@ -100,6 +100,7 @@ export const initialState = {
   allItemsDone: false,
   bundledProducts: {},
   cannedContent: [],
+  loaderInfo: null,
   centerMapLocation: null,
   checklist: {},
   completedStopsIds: [],
@@ -179,6 +180,12 @@ const driverReply = (
     draft.stops[selectedStopId].claims.showReplyModal = false;
   });
 
+const getForDriver = state =>
+  produce(state, draft => {
+    draft.processing = true;
+    draft.loaderInfo = 'getForDriver';
+  });
+
 const incrementDeliveredStock = (draft, { productId, quantity }) => {
   if (draft.bundledProducts[productId]) {
     for (const [bundledProductId, bundledQuantity] of Object.entries(
@@ -196,11 +203,6 @@ const incrementDeliveredStock = (draft, { productId, quantity }) => {
     draft.deliveredStock[productId] += quantity;
   }
 };
-
-const processingTrue = state =>
-  produce(state, draft => {
-    draft.processing = true;
-  });
 
 const resetChecklistFlags = checklist => {
   checklist.deliveryComplete = false;
@@ -258,6 +260,11 @@ const setDeliveredOrRejected = (
     }
   });
 
+const setLoaderInfo = (key, state) =>
+  produce(state, draft => {
+    draft.loaderInfo = key;
+  });
+
 export const clearCenterMapLocation = state =>
   produce(state, draft => {
     draft.centerMapLocation = null;
@@ -270,6 +277,7 @@ export const getVehicleStockForDriverSuccess = (
   produce(state, draft => {
     const misplacedProducts = {};
 
+    draft.loaderInfo = null;
     draft.itemCount = 0;
     draft.additionalItemCount = 0;
     draft.stock = payload;
@@ -331,6 +339,7 @@ export const getVehicleStockForDriverSuccess = (
 
 export const getForDriverSuccess = (state, { payload }) =>
   produce(state, draft => {
+    draft.loaderInfo = 'getVehicleStockForDriver';
     draft.stockWithData = payload;
     let hasNonPendingOrders = false;
     let markedOrders = 0;
@@ -748,9 +757,16 @@ export default createReducer(initialState, {
   [Types.CONTINUE_DELIVERING]: startDelivering,
   [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DRIVER_REPLY]: driverReply,
-  [Types.GET_FOR_DRIVER]: processingTrue,
+  [Types.GET_FOR_DRIVER]: getForDriver,
+  [Types.GET_DRIVER_DATA_FAILURE]: setLoaderInfo.bind(null, null),
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
-  [Types.GET_REJECT_DELIVERY_REASONS]: processingTrue,
+  [Types.GET_PRODUCTS_ORDER]: setLoaderInfo.bind(null, 'productsOrder'),
+  [Types.GET_REJECT_DELIVERY_REASONS]: setLoaderInfo.bind(
+    null,
+    'rejectReasons'
+  ),
+  [Types.GET_RETURN_TYPES]: setLoaderInfo.bind(null, 'returnTypes'),
+  [Types.GET_VEHICLE_CHECKS]: setLoaderInfo.bind(null, 'vehicleChecks'),
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.INIT_CHECKLIST]: initChecklist,
   [Types.REDIRECT_SET_SELECTED_CLAIM_ID]: setSelectedClaimId,

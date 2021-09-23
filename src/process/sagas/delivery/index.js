@@ -237,6 +237,7 @@ export const getForDriverSuccess = function* ({ payload }) {
     promise: Api.repositories.delivery.getVehicleStockForDriver(),
     deliveryDate: payload.deliveryDate
   });
+
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, {
     payload
   });
@@ -250,7 +251,7 @@ export const getProductsOrder = function* () {
       fail: { type: DeliveryTypes.UPDATE_PROPS }
     },
     promise: Api.repositories.delivery.getProductsOrder(),
-    props: { processing: false }
+    props: { processing: false, loaderInfo: null }
   });
 };
 
@@ -262,7 +263,7 @@ export const getRejectDeliveryReasons = function* () {
       fail: { type: DeliveryTypes.UPDATE_PROPS }
     },
     promise: Api.repositories.delivery.getReasons(),
-    props: { processing: false }
+    props: { processing: false, loaderInfo: null }
   });
 };
 
@@ -274,7 +275,7 @@ export const getReturnTypes = function* () {
       fail: { type: DeliveryTypes.UPDATE_PROPS }
     },
     promise: Api.repositories.delivery.getReturnTypes(),
-    props: { processing: false }
+    props: { processing: false, loaderInfo: null }
   });
 };
 
@@ -286,7 +287,7 @@ export const getVehicleChecks = function* () {
       fail: { type: DeliveryTypes.UPDATE_PROPS }
     },
     promise: Api.repositories.delivery.getVehicleChecks(),
-    props: { processing: false }
+    props: { processing: false, loaderInfo: null }
   });
 };
 
