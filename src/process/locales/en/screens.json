@@ -87,7 +87,10 @@
       "Miniml": "Miniml Bottles",
       "Pop": "Pop Bottles",
       "Tea": "Tea Bottles",
-      "Water": "Watter Bottles"
+      "Water": "Water Bottles",
+      "Yogurt": "Yoghurt Bottles",
+      "Yogourt": "Yoghurt Bottles",
+      "Yoghurt": "Yoghurt Bottles"
     }
   },
   "home": {
