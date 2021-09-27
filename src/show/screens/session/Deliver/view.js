@@ -34,8 +34,6 @@ const forFade = ({ current, closing }) => ({
   }
 });
 
-const { width } = deviceFrame();
-
 const animateContent = ({
   contentTranslateYValue,
   contentOpacityValue,
@@ -102,7 +100,7 @@ const rejectAndNavigateBack = (callback, setModalVisible) => {
   setTimeout(navigateBack.bind(null, callback), 250);
 };
 
-const renderFallbackCustomerImage = () => (
+const renderFallbackCustomerImage = width => (
   <RowView height={width - defaults.marginHorizontal * 2}>
     <CustomIcon
       width={width - defaults.marginHorizontal * 2}
@@ -120,7 +118,8 @@ const renderSkipModal = ({
   setModalVisible,
   setRejected,
   reasonType = rejectReasons[2].id,
-  updateTransientProps
+  updateTransientProps,
+  width
 }) => (
   <ColumnView
     marginHorizontal={defaults.marginHorizontal}
@@ -219,6 +218,8 @@ const Deliver = props => {
     toggleOutOfStock
   } = props;
 
+  const { width } = deviceFrame();
+
   if (!selectedStop) {
     return null;
   }
@@ -269,14 +270,15 @@ const Deliver = props => {
       />
 
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
-        {modalType === 'skip' && renderSkipModal({ ...props, setModalVisible })}
+        {modalType === 'skip' &&
+          renderSkipModal({ ...props, width, setModalVisible })}
         {modalType === 'image' &&
           renderImageTextModal({
             imageSource: {
               uri: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
             },
             onPress: setModalVisible,
-            renderFallback: renderFallbackCustomerImage,
+            renderFallback: renderFallbackCustomerImage.bind(null, width),
             text: selectedStop.deliveryInstructions
           })}
       </Modal>

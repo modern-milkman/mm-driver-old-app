@@ -13,6 +13,7 @@ import {
   deviceFrame,
   statusBarHeight
 } from 'Helpers';
+
 import { height as textInputHeight } from 'Components/TextInput';
 
 import { configuration } from './helpers';
@@ -24,8 +25,6 @@ import {
   PullHandle,
   Search
 } from './subviews';
-
-const { height, width } = deviceFrame();
 
 const mainForegroundAction = ({
   checklist,
@@ -186,6 +185,7 @@ const Main = props => {
     startDelivering,
     updateDeviceProps
   } = props;
+  const { height, width } = deviceFrame();
 
   const [foregroundTitleHeight, setForegroundTitleHeight] = useState(0);
   const { top, bottom } = useSafeAreaInsets();

@@ -47,9 +47,6 @@ const focusEmail = () => {
   }, 0);
 };
 
-let hasSmallHeight =
-  deviceFrame().height - minimumKeyboardHeight < minimumRequiredHeight;
-
 const renderBiometrics = ({
   biometrics,
   biometricLogin,
@@ -82,7 +79,7 @@ const renderBiometrics = ({
   </>
 );
 
-const renderLogo = () => (
+const renderLogo = hasSmallHeight => (
   <ColumnView
     flex={hasSmallHeight ? 0 : 2}
     width={'100%'}
@@ -161,6 +158,8 @@ const Home = props => {
     updateTransientProps
   } = props;
 
+  let hasSmallHeight =
+    deviceFrame().height - minimumKeyboardHeight < minimumRequiredHeight;
   const [animatedValue] = useState(new Animated.Value(0));
   const [bioSandE, setbioSandE] = useState(
     biometrics.supported && biometrics.enrolled && biometrics.active
@@ -207,7 +206,7 @@ const Home = props => {
           }
           onDidBlur={reset}
         />
-        {!hasSmallHeight && renderLogo(true)}
+        {!hasSmallHeight && renderLogo(hasSmallHeight)}
         <ColumnView
           flex={hasSmallHeight ? 2 : 3}
           animated
@@ -318,7 +317,7 @@ const Home = props => {
 
         {hasSmallHeight &&
           ((biometrics.supported && bioSandE) || !biometrics.supported) &&
-          renderLogo()}
+          renderLogo(hasSmallHeight)}
         <RowView
           flex={hasSmallHeight ? 0 : 1}
           justifyContent={'center'}

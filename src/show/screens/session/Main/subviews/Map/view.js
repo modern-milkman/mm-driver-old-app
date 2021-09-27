@@ -15,7 +15,6 @@ import styles from './style';
 import mapStyle from './mapStyle';
 import { DirectionsPolyline, Fabs, Markers } from './subviews';
 
-const deviceHeight = deviceFrame().height;
 const cameraAnimationOptions = {
   duration: 325
 };
@@ -97,6 +96,8 @@ const Map = props => {
     showMapControlsOnMovement,
     updateDeviceProps
   } = props;
+
+  const deviceHeight = deviceFrame().height;
 
   let mapIsInteracting = useRef(false);
   let mapRef = useRef(undefined);

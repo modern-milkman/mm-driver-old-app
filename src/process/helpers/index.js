@@ -1,17 +1,13 @@
 import Config from 'react-native-config';
 import { useEffect, useRef } from 'react';
-import {
-  Animated,
-  Dimensions,
-  Easing,
-  Linking,
-  NativeModules
-} from 'react-native';
+import { Animated, Easing, Linking, NativeModules } from 'react-native';
 import { Base64 } from 'js-base64';
 
 import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
+
+import { useSafeAreaFrame } from 'react-native-safe-area-context';
 
 const appVersionString = () =>
   Config.ENVIRONMENT !== 'production'
@@ -74,7 +70,7 @@ const deliveryStates = {
 
 const deliveredStatuses = ['completed', 'rejected'];
 
-const deviceFrame = () => Dimensions.get('window');
+const deviceFrame = useSafeAreaFrame;
 
 const distance = (p, q, unit) => {
   //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

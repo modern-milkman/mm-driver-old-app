@@ -15,8 +15,6 @@ import styles from './style';
 import plates from './plates';
 import { renderProgressBar } from '../shared';
 
-const { width } = deviceFrame();
-const videowidth = width - defaults.marginHorizontal * 2;
 const mileageReference = React.createRef();
 const focusMileage = () => {
   mileageReference?.current?.focus();
@@ -48,6 +46,9 @@ const RegistrationMileage = ({
   vehicleRegistrationErrorMessage,
   vehicleRegistrationHasError
 }) => {
+  const { width } = deviceFrame();
+  const videowidth = width - defaults.marginHorizontal * 2;
+
   const {
     currentMileage: payloadCurrentMileage,
     vehicleRegistration: payloadVehicleRegistration

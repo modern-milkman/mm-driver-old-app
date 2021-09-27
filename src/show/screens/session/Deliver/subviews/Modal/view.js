@@ -25,8 +25,6 @@ import {
 
 import style from './style';
 
-const { width, height } = deviceFrame();
-
 const hideClaimsModal = toggleModal => {
   NavigationService.goBack();
   toggleModal('showClaimModal', false);
@@ -181,7 +179,8 @@ const renderReplyBody = ({
 const renderCustomerIssueBody = ({
   customerComment = '',
   reason = '',
-  sectionData = []
+  sectionData = [],
+  height
 }) => {
   return (
     <ColumnView maxHeight={height * 0.4}>
@@ -250,6 +249,8 @@ const CustomerIssueModal = props => {
     toggleModal,
     updateDriverResponse
   } = props;
+
+  const { width, height } = deviceFrame();
 
   let selectedClaimData;
   if (unacknowledgedList.length > 0) {
@@ -357,7 +358,8 @@ const CustomerIssueModal = props => {
             : renderCustomerIssueBody({
                 customerComment: selectedClaimData?.customerComment,
                 reason: selectedClaimData?.reason,
-                sectionData
+                sectionData,
+                height
               })}
 
           <Separator color={colors.input} width={'100%'} />

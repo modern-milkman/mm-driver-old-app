@@ -21,9 +21,6 @@ import {
 
 import styles from './styles';
 
-const { width } = deviceFrame();
-const sidebarWidth = 0.8 * width;
-
 const navigateAndClose = (updateProps, callback) => {
   updateProps({ sideBarOpen: false });
   if (callback) {
@@ -45,6 +42,8 @@ const SideBar = props => {
     updateInAppBrowserProps,
     updateProps
   } = props;
+  const { width } = deviceFrame();
+  const sidebarWidth = 0.8 * width;
 
   const showOfflineLabel =
     requestQueues.offline.length > 0 || requestQueues.failed.length > 0;
@@ -84,7 +83,7 @@ const SideBar = props => {
         })
       ]).start();
     }
-  }, [left, opacity, sideBarOpen]);
+  }, [left, opacity, sideBarOpen, sidebarWidth]);
 
   return (
     show && (

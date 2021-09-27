@@ -6,8 +6,6 @@ import { defaults } from 'Theme';
 import { Image, Text } from 'Components';
 import { ColumnView, RowView } from 'Containers';
 
-const { width, height } = deviceFrame();
-
 import style from './style';
 
 export const renderImageTextModal = ({
@@ -15,26 +13,31 @@ export const renderImageTextModal = ({
   onPress,
   renderFallback,
   text
-}) => (
-  <TouchableOpacity style={style.fullView} onPress={onPress.bind(null, false)}>
-    <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
-      <Image
-        source={imageSource}
-        style={style.image}
-        width={width - defaults.marginHorizontal * 2}
-        maxHeight={height * 0.7}
-        renderFallback={renderFallback}
-      />
-      {text && (
-        <RowView
-          height={'auto'}
-          alignItems={'flex-start'}
-          marginVertical={defaults.marginVertical}
-          width={'auto'}
-          marginHorizontal={defaults.marginHorizontal}>
-          <Text.List>{text}</Text.List>
-        </RowView>
-      )}
-    </ColumnView>
-  </TouchableOpacity>
-);
+}) => {
+  const { width, height } = deviceFrame();
+  return (
+    <TouchableOpacity
+      style={style.fullView}
+      onPress={onPress.bind(null, false)}>
+      <ColumnView flex={1} justifyContent={'center'} alignItems={'center'}>
+        <Image
+          source={imageSource}
+          style={style.image}
+          width={width - defaults.marginHorizontal * 2}
+          maxHeight={height * 0.7}
+          renderFallback={renderFallback}
+        />
+        {text && (
+          <RowView
+            height={'auto'}
+            alignItems={'flex-start'}
+            marginVertical={defaults.marginVertical}
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}>
+            <Text.List>{text}</Text.List>
+          </RowView>
+        )}
+      </ColumnView>
+    </TouchableOpacity>
+  );
+};
