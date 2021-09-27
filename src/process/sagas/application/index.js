@@ -273,11 +273,6 @@ export const rehydratedAndMounted = function* () {
       yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
     }
   }
-  DeviceInfo.getTotalMemory().then(totalMemory => {
-    Analytics.trackEvent(EVENTS.TOTAL_MEMORY, {
-      totalMemory: Math.floor(totalMemory / (1024 * 1024))
-    });
-  });
 };
 
 export const resetAndReload = function* () {

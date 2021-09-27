@@ -42,5 +42,8 @@
         <meta-data
          android:name="com.google.android.geo.API_KEY"
          android:value="@string/places_api_key" />
+        <meta-data
+         android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+         android:value="ocr" />
     </application>
 </manifest>

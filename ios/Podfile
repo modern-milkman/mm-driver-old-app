@@ -26,14 +26,13 @@ target 'ModernMilkmanDriver' do
 
   pod 'Firebase/Core'
 
-  # ignore console warning, below required for text recognition
-  pod 'react-native-camera', path: '../node_modules/react-native-camera', subspecs: [
-  'TextDetector'
-  ]
-
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
 
+  # ignore console warning, below required for text recognition
+  pod 'react-native-camera', path: '../node_modules/react-native-camera', subspecs: [
+    'TextDetector'
+  ]
 
   # Enables Flipper.
   #

@@ -1,10 +1,8 @@
 import { put, select } from 'redux-saga/effects';
-import DeviceInfo from 'react-native-device-info';
 import { InteractionManager, Platform } from 'react-native';
 
 import Api from 'Api';
 import store from 'Redux/store';
-import Analytics, { EVENTS } from 'Services/analytics';
 import { Types as DeviceTypes } from 'Reducers/device';
 import { blacklists, deliveryStates as DS } from 'Helpers';
 import { Creators as TransientCreators } from 'Reducers/transient';
@@ -92,15 +90,4 @@ export function* onNavigateSideEffects(navigateParams) {
       dispatch(TransientCreators.reset());
     });
   }
-
-  InteractionManager.runAfterInteractions(() => {
-    Promise.all([DeviceInfo.getUsedMemory(), DeviceInfo.getMaxMemory()]).then(
-      values => {
-        Analytics.trackEvent(EVENTS.MEMORY, {
-          usedMemory: Math.floor(values[0] / (1024 * 1024)),
-          maxMemory: Math.floor(values[1] / (1024 * 1024))
-        });
-      }
-    );
-  });
 }
