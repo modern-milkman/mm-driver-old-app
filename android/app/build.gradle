@@ -88,9 +88,9 @@ apply from: "../../node_modules/react-native/react.gradle"
 //react-native-config
 project.ext.envConfigFiles = [
     debug: ".env.development",
+    release: ".env.production",
     releasetest: ".env.test",
-    releaseuat: ".env.uat",
-    release: ".env.production"
+    releaseuat: ".env.uat"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 //react-native-vector-icons
