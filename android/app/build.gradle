@@ -80,6 +80,9 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
+    bundleInRelease: true,
+    bundleInQatest: true,
+    bundleInUat: true,
     enableHermes: false,  // clean and rebuild if changing
 ]
 
