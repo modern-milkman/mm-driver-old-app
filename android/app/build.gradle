@@ -172,6 +172,13 @@ android {
             matchingFallbacks = ['releaseTest']
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
         }
+        release {
+            // Caution! In production, you need to generate your own keystore file.
+            // see https://reactnative.dev/docs/signed-apk-android.
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+        }
         releaseTest {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
@@ -180,13 +187,6 @@ android {
         releaseUat {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
-        }
-        release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
         }
     }
