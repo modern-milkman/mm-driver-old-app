@@ -89,8 +89,8 @@ apply from: "../../node_modules/react-native/react.gradle"
 project.ext.envConfigFiles = [
     debug: ".env.development",
     release: ".env.production",
-    releasetest: ".env.test",
-    releaseuat: ".env.uat"
+    test: ".env.test",
+    uat: ".env.uat"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 //react-native-vector-icons
@@ -169,7 +169,7 @@ android {
     }
     buildTypes {
         debug {
-            matchingFallbacks = ['releaseTest']
+            matchingFallbacks = ['test']
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
         }
         release {
@@ -179,12 +179,12 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
         }
-        releaseTest {
+        test {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
         }
-        releaseUat {
+        uat {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
