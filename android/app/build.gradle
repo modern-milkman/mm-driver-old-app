@@ -89,7 +89,7 @@ apply from: "../../node_modules/react-native/react.gradle"
 project.ext.envConfigFiles = [
     debug: ".env.development",
     release: ".env.production",
-    test: ".env.test",
+    qatest: ".env.test",
     uat: ".env.uat"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -169,7 +169,7 @@ android {
     }
     buildTypes {
         debug {
-            matchingFallbacks = ['test']
+            matchingFallbacks = ['qatest']
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
         }
         release {
@@ -179,7 +179,7 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
         }
-        test {
+        qatest {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
             resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
