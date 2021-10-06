@@ -9,22 +9,31 @@ const config = {
 };
 
 const NavigationService = {
-  goBack: () => {
+  goBack: props => {
     if (!config.goBackDisabled) {
       config.goBackDisabled = true;
       if (config.navigator) {
+        if (props?.beforeCallback) {
+          props.beforeCallback();
+        }
+
         config.navigator.dispatch(NavigationActions.back({}));
         config.storeDispatcher({
           type: ApplicationTypes.NAVIGATE_BACK
         });
-
         config.storeDispatcher({
           type: ApplicationTypes.REMOVE_LAST_STACK_ROUTE
         });
-      }
-      InteractionManager.runAfterInteractions(() => {
+        InteractionManager.runAfterInteractions(() => {
+          config.goBackDisabled = false;
+        });
+
+        if (props?.afterCallback) {
+          props.afterCallback();
+        }
+      } else {
         config.goBackDisabled = false;
-      });
+      }
     }
   },
   setNavigator: (nav, storeDispatcher) => {

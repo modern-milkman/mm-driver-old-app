@@ -48,7 +48,7 @@ const Checklist = ({
         justifyContent={'flex-start'}>
         <NavBar
           leftIcon={'chevron-left'}
-          leftIconAction={!processing && NavigationService.goBack.bind()}
+          leftIconAction={!processing && NavigationService.goBack}
           {...(processing && { leftIconColor: colors.inputDark })}
           title={I18n.t('screens:checklist.title')}
           rightAction={nextStep.bind(null, {

@@ -13,7 +13,6 @@ import { ColumnView, SafeAreaView } from 'Containers';
 const doneLoadedVan = (updateChecklistProps, updateDriverActivity) => {
   updateChecklistProps({ loadedVan: true });
   updateDriverActivity();
-  NavigationService.goBack();
 };
 
 const LoadVan = props => {
@@ -65,11 +64,13 @@ const LoadVan = props => {
               : combinedItemCount
           } ${I18n.t('screens:loadVan.title')}`}
           rightText={readOnly ? null : I18n.t('screens:loadVan.done')}
-          rightAction={doneLoadedVan.bind(
-            null,
-            updateChecklistProps,
-            updateDriverActivity
-          )}
+          rightAction={NavigationService.goBack.bind(null, {
+            beforeCallback: doneLoadedVan.bind(
+              null,
+              updateChecklistProps,
+              updateDriverActivity
+            )
+          })}
           testID={'loadVan-navbar'}
         />
         <List data={mappedStock} />

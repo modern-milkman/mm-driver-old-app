@@ -72,7 +72,7 @@ const DamageReport = ({
         justifyContent={'flex-start'}>
         <NavBar
           leftIcon={'chevron-left'}
-          leftIconAction={NavigationService.goBack.bind()}
+          leftIconAction={NavigationService.goBack}
           title={I18n.t('screens:damageReport.title')}
           rightAction={NavigationService.navigate.bind(null, {
             routeName: 'Checklist'

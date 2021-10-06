@@ -26,7 +26,6 @@ import {
 import style from './style';
 
 const hideClaimsModal = toggleModal => {
-  NavigationService.goBack();
   toggleModal('showClaimModal', false);
   window.setTimeout(toggleModal.bind(null, 'showReplyModal', false), 250);
   //prevents flicker when canceling from reply modal
@@ -368,7 +367,9 @@ const CustomerIssueModal = props => {
               title={I18n.t(showReplyModal ? 'general:cancel' : 'general:hide')}
               width={'50%'}
               noBorderRadius
-              onPress={hideClaimsModal.bind(null, toggleModal)}
+              onPress={NavigationService.goBack.bind(null, {
+                afterCallback: hideClaimsModal.bind(null, toggleModal)
+              })}
             />
 
             <Button.Primary

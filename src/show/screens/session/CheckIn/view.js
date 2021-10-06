@@ -25,8 +25,6 @@ const navigateBack = callback => {
     callback,
     reverse: true
   });
-
-  NavigationService.goBack();
 };
 
 const animateContent = ({
@@ -49,13 +47,13 @@ const animateContent = ({
     runAnimations.push(
       Animated.timing(contentTranslateY[index], {
         toValue: contentTranslateYValue,
-        useNativeDriver: false,
+        useNativeDriver: true,
         duration: 75,
         delay: delayIndex * 100
       }),
       Animated.timing(contentOpacity[index], {
         toValue: contentOpacityValue,
-        useNativeDriver: false,
+        useNativeDriver: true,
         duration: 75,
         delay: delayIndex * 100
       })
@@ -200,10 +198,12 @@ const CheckIn = props => {
       suffixBottom: I18n.t('screens:main.descriptions.deliveryActive', {
         stopCount
       }),
-      onPress: navigateBack.bind(
-        null,
-        optimisedRouting ? continueDelivering : startDelivering
-      ),
+      onPress: NavigationService.goBack.bind(null, {
+        beforeCallback: navigateBack.bind(
+          null,
+          optimisedRouting ? continueDelivering : startDelivering
+        )
+      }),
       rightIcon: checklist.deliveryComplete
         ? 'check'
         : deliverProductsDisabled
@@ -278,7 +278,9 @@ const CheckIn = props => {
         justifyContent={'flex-start'}>
         <NavBar
           leftIcon={'chevron-down'}
-          leftIconAction={navigateBack.bind(null, null)}
+          leftIconAction={NavigationService.goBack.bind(null, {
+            beforeCallback: navigateBack.bind(null, null)
+          })}
           title={renderTitle({ checklist, status })}
           testID={'checkIn-navbar'}
         />

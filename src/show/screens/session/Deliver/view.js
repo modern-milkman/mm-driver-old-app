@@ -54,13 +54,13 @@ const animateContent = ({
     runAnimations.push(
       Animated.timing(contentTranslateY[index], {
         toValue: contentTranslateYValue,
-        useNativeDriver: false,
+        useNativeDriver: true,
         duration: 75,
         delay: delayIndex * 100
       }),
       Animated.timing(contentOpacity[index], {
         toValue: contentOpacityValue,
-        useNativeDriver: false,
+        useNativeDriver: true,
         duration: 75,
         delay: delayIndex * 100
       })
@@ -91,13 +91,16 @@ const navigateBack = callback => {
     callback,
     reverse: true
   });
-
-  NavigationService.goBack();
 };
 
 const rejectAndNavigateBack = (callback, setModalVisible) => {
   setModalVisible(false);
-  setTimeout(navigateBack.bind(null, callback), 250);
+  setTimeout(
+    NavigationService.goBack.bind(null, {
+      beforeCallback: navigateBack.bind(null, callback)
+    }),
+    250
+  );
 };
 
 const renderFallbackCustomerImage = width => (
@@ -289,7 +292,9 @@ const Deliver = props => {
         justifyContent={'flex-start'}>
         <NavBar
           leftIcon={'chevron-down'}
-          leftIconAction={navigateBack.bind(null, null)}
+          leftIconAction={NavigationService.goBack.bind(null, {
+            beforeCallback: navigateBack.bind(null, null)
+          })}
           title={I18n.t('general:details')}
           rightCustomIcon={
             acknowledgedList?.length > 0 ? 'customerIssue' : null
@@ -456,15 +461,17 @@ const Deliver = props => {
                 <RowView>
                   <Button.Primary
                     title={I18n.t('general:done')}
-                    onPress={navigateBack.bind(
-                      null,
-                      setDelivered.bind(
+                    onPress={NavigationService.goBack.bind(null, {
+                      beforeCallback: navigateBack.bind(
                         null,
-                        selectedStop.orderId,
-                        selectedStop.key,
-                        outOfStockIds
+                        setDelivered.bind(
+                          null,
+                          selectedStop.orderId,
+                          selectedStop.key,
+                          outOfStockIds
+                        )
                       )
-                    )}
+                    })}
                     disabled={!allItemsDone}
                   />
                 </RowView>
