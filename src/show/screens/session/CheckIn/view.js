@@ -306,14 +306,16 @@ const CheckIn = props => {
                       checklist.shiftStartVanChecks === false)) ||
                   ![DS.NCI, DS.LV, DS.SSC, DS.SC].includes(status)
                 }
-                onPress={navigateBack.bind(
-                  null,
-                  status !== DS.SC
-                    ? optimisedRouting
-                      ? continueDelivering
-                      : startDelivering
-                    : null
-                )}
+                onPress={NavigationService.goBack.bind(null, {
+                  beforeCallback: navigateBack.bind(
+                    null,
+                    status !== DS.SC
+                      ? optimisedRouting
+                        ? continueDelivering
+                        : startDelivering
+                      : null
+                  )
+                })}
               />
               {renderHelperMessage({ checklist, status })}
             </ColumnView>
