@@ -88,9 +88,10 @@
       "Pop": "Pop Bottles",
       "Tea": "Tea/Coffee Tins",
       "Water": "Water Bottles",
-      "Yogurt": "Yoghurt Bottles",
-      "Yogourt": "Yoghurt Bottles",
-      "Yoghurt": "Yoghurt Bottles"
+      "Yoghourt": "Yogurt Bottles",
+      "Yoghurt": "Yogurt Bottles",
+      "Yogourt": "Yogurt Bottles",
+      "Yogurt": "Yogurt Bottles"
     }
   },
   "home": {
