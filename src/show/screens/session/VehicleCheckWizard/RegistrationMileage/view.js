@@ -55,10 +55,7 @@ const RegistrationMileage = ({
   } = payload;
   const camera = useRef();
   const [plateImage, setPlateImage] = useState('');
-  const nextRouteName = payload.shiftStart
-    ? 'EmptiesCollected'
-    : 'DamageReport';
-
+  const routeName = 'EmptiesCollected';
   const disabled = currentMileageHasError || vehicleRegistrationHasError;
 
   const setNrPlateAndStop = async plate => {
@@ -111,7 +108,7 @@ const RegistrationMileage = ({
             disabled
               ? mock
               : NavigationService.navigate.bind(null, {
-                  routeName: nextRouteName
+                  routeName
                 })
           }
           {...(disabled && { rightColor: colors.inputDark })}
@@ -206,7 +203,7 @@ const RegistrationMileage = ({
                 disabled
                   ? mock
                   : NavigationService.navigate.bind(null, {
-                      routeName: nextRouteName
+                      routeName
                     })
               }
               placeholder={I18n.t('input:placeholder.mileage')}
@@ -224,7 +221,7 @@ const RegistrationMileage = ({
           marginBottom={defaults.marginVertical}>
           <Button.Primary
             onPress={NavigationService.navigate.bind(null, {
-              routeName: nextRouteName
+              routeName
             })}
             title={I18n.t('general:next')}
             disabled={disabled}

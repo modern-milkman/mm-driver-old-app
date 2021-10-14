@@ -82,15 +82,20 @@
   },
   "emptiesCollected": {
     "title": "Empties Collected",
+    "subHeading": {
+      "start": "Dropping any empties tonight? Type 0 if not.",
+      "end": "Dropping any empties this morning? Type 0 if you want to drop them when starting your next round!"
+    },
     "elements": {
       "Milk": "Milk Bottles",
       "Miniml": "Miniml Bottles",
       "Pop": "Pop Bottles",
       "Tea": "Tea/Coffee Tins",
       "Water": "Water Bottles",
-      "Yogurt": "Yoghurt Bottles",
-      "Yogourt": "Yoghurt Bottles",
-      "Yoghurt": "Yoghurt Bottles"
+      "Yoghourt": "Yogurt Bottles",
+      "Yoghurt": "Yogurt Bottles",
+      "Yogourt": "Yogurt Bottles",
+      "Yogurt": "Yogurt Bottles"
     }
   },
   "home": {

@@ -43,5 +43,9 @@ export default {
   PopBottles: [requiredValidation, numericValidation],
   TeaBottles: [requiredValidation, numericValidation],
   vehicleRegistration: [requiredValidation],
-  WaterBottles: [requiredValidation, numericValidation]
+  WaterBottles: [requiredValidation, numericValidation],
+  YoghourtBottles: [requiredValidation, numericValidation],
+  YoghurtBottles: [requiredValidation, numericValidation],
+  YogourtBottles: [requiredValidation, numericValidation],
+  YogurtBottles: [requiredValidation, numericValidation]
 };

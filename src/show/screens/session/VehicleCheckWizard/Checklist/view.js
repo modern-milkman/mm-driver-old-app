@@ -59,7 +59,7 @@ const Checklist = ({
           rightText={payload.shiftStart && !processing ? mainActionTitle : null}
           testID={'checkList-navbar'}
         />
-        {renderProgressBar(payload.shiftStart ? 4 : 3, payload)}
+        {renderProgressBar(4, payload)}
         <ColumnView flex={1} justifyContent={'space-between'}>
           <List data={data} onPress={toggleCheckJson} disabled={processing} />
           <RowView

@@ -7,7 +7,7 @@ import I18n from 'Locales/I18n';
 import { defaults, colors } from 'Theme';
 import NavigationService from 'Navigation/service';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
-import { Button, ListHeader, NavBar, TextInput } from 'Components';
+import { Button, ListHeader, NavBar, Text, TextInput } from 'Components';
 
 import { renderProgressBar } from '../shared';
 
@@ -124,6 +124,18 @@ const EmptiesCollected = ({
         {renderProgressBar(2, payload)}
 
         <ColumnView scrollable width={'auto'} alignItems={'stretch'}>
+          <RowView
+            width={'auto'}
+            marginTop={defaults.marginVertical / 2}
+            marginHorizontal={defaults.marginHorizontal}>
+            <Text.Caption align={'left'} flex={1} color={colors.secondary}>
+              {I18n.t(
+                `screens:emptiesCollected.subHeading.${
+                  payload.shiftStart ? 'start' : 'end'
+                }`
+              )}
+            </Text.Caption>
+          </RowView>
           {emptiesArray.map(
             renderEmpty.bind(null, {
               disabled,
