@@ -82,6 +82,10 @@
   },
   "emptiesCollected": {
     "title": "Empties Collected",
+    "subHeading": {
+      "start": "Dropping any empties tonight? Type 0 if not.",
+      "end": "Dropping any empties this morning? Type 0 if you want to drop them when starting your next round!"
+    },
     "elements": {
       "Milk": "Milk Bottles",
       "Miniml": "Miniml Bottles",

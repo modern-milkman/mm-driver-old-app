@@ -161,10 +161,6 @@ const CheckIn = props => {
     checklist.shiftStartVanChecks === false ||
     checklist.loadedVan === false ||
     [DS.DELC, DS.SEC, DS.SC].includes(status);
-  const shiftEndVanChecksDisabled =
-    checklist.shiftStartVanChecks === false ||
-    checklist.loadedVan === false ||
-    checklist.deliveryComplete === false;
 
   const checkinRows = [
     {
@@ -214,11 +210,15 @@ const CheckIn = props => {
     },
     {
       customIcon: 'vanCheck',
-      disabled: shiftEndVanChecksDisabled,
+      disabled:
+        checklist.shiftEndVanChecks ||
+        !checklist.deliveryComplete ||
+        !checklist.loadedVan ||
+        !checklist.shiftStartVanChecks,
       onPress: NavigationService.navigate.bind(null, {
         routeName: 'RegistrationMileage'
       }),
-      rightIcon: shiftEndVanChecksDisabled
+      rightIcon: !checklist.deliveryComplete
         ? null
         : checklist.shiftEndVanChecks
         ? 'check'

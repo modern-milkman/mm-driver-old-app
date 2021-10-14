@@ -500,8 +500,12 @@ export const getForDriverSuccess = (state, { payload }) =>
       hasNonPendingOrders = true;
     }
 
-    if (markedOrders === payload.itemCount) {
-      draft.status = DS.DELC;
+    if (markedOrders === payload.items.length) {
+      if (draft.checklist[state.userId].shiftEndVanChecks) {
+        draft.status = DS.SC;
+      } else {
+        draft.status = DS.SEC;
+      }
       draft.checklist[state.userId].deliveryComplete = true;
       draft.checklist[state.userId].shiftStartVanChecks = true;
       draft.checklist[state.userId].loadedVan = true;
