@@ -80,7 +80,7 @@ const DamageReport = ({
           rightText={mainActionTitle}
           testID={'damageReport-navbar'}
         />
-        {renderProgressBar(payload.shiftStart ? 3 : 2, payload)}
+        {renderProgressBar(3, payload)}
         <ColumnView
           flex={1}
           justifyContent={'space-between'}
