@@ -69,12 +69,12 @@ import {
   lowConnectionUpdate,
   reduxSagaNetstatChange,
   setLocation,
+  setLocationHeading,
   setMapMode,
   shareOfflineData,
   syncOffline,
   updateDeviceProps,
   updateNetworkProps,
-  watchCompassHeading,
   watchUserLocation
 } from './device';
 
@@ -85,7 +85,6 @@ import { getDriver, setDriver } from './user';
 export default function* root() {
   yield all([
     spawn(watchLocationChannel),
-    spawn(watchCompassHeading),
 
     takeLatest('REDUX_SAGA_NETSTAT_CHANGE', reduxSagaNetstatChange),
 
@@ -169,6 +168,7 @@ export default function* root() {
       ensureMandatoryPermissions
     ),
     takeLatest(DeviceTypes.LOW_CONNECTION_UPDATE, lowConnectionUpdate),
+    takeLatest(DeviceTypes.SET_LOCATION_HEADING, setLocationHeading),
     takeLatest(DeviceTypes.SET_MAP_MODE, setMapMode),
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA, shareOfflineData),
     takeLatest(DeviceTypes.SYNC_OFFLINE, syncOffline),

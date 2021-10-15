@@ -7,9 +7,9 @@ import { produce, updateProps } from '../shared';
 export const { Types, Creators } = createActions(
   {
     clearFailedRequests: null,
+    ensureMandatoryPermissions: ['routeName'],
     lowConnectionUpdate: ['lowConnection'],
     pushRequest: ['queue', 'payload'],
-    ensureMandatoryPermissions: ['routeName'],
     setLatestApp: ['payload'],
     setLocation: ['position'],
     setLocationHeading: ['heading'],
@@ -102,14 +102,6 @@ export const setLocation = (state, action) =>
     }
   });
 
-export const setLocationHeading = (state, action) =>
-  produce(state, draft => {
-    const { heading } = action;
-    if (draft.position) {
-      draft.position.heading = heading;
-    }
-  });
-
 export const updateNetworkProps = (state, { props }) =>
   produce(state, draft => {
     let data = { ...props };
@@ -167,7 +159,6 @@ export default createReducer(initialState, {
   [Types.PUSH_REQUEST]: pushRequest,
   [Types.SET_LATEST_APP]: setLatestApp,
   [Types.SET_LOCATION]: setLocation,
-  [Types.SET_LOCATION_HEADING]: setLocationHeading,
   [Types.SET_MAP_MODE]: setMapMode,
   [Types.SYNC_OFFLINE]: syncOffline,
   [Types.UPDATE_NETWORK_PROPS]: updateNetworkProps,
@@ -179,5 +170,6 @@ export const biometrics = state => state.device.biometrics;
 export const device = state => state.device;
 export const heading = state => state.device.position?.heading || 0;
 export const network = state => state.device.network;
-export const requestQueues = state => state.device.requestQueues;
+export const position = state => state.device.position;
 export const processors = state => state.device.processors;
+export const requestQueues = state => state.device.requestQueues;

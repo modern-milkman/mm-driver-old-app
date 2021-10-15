@@ -2,8 +2,7 @@
 // could be used for offline / online / set position
 import Share from 'react-native-share';
 import RNBootSplash from 'react-native-bootsplash';
-import { put, delay, select } from 'redux-saga/effects';
-import CompassHeading from 'react-native-compass-heading';
+import { delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Platform } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import {
@@ -20,13 +19,13 @@ import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as GrowlCreators, Types as GrowlTypes } from 'Reducers/growl';
 import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
-
 import {
   Types as DeviceTypes,
   Creators as DeviceCreators,
   biometrics as biometricsSelector,
   heading as headingSelector,
   network as networkSelector,
+  position as positionSelector,
   processors as processorsSelector,
   requestQueues as requestQueuesSelector
 } from 'Reducers/device';
@@ -132,6 +131,22 @@ export function* setLocation({ position }) {
         })
       });
     }
+  }
+}
+
+export function* setLocationHeading({ heading }) {
+  yield delay(250);
+  const position = yield select(positionSelector);
+  if (position) {
+    yield put({
+      type: DeviceTypes.UPDATE_PROPS,
+      props: {
+        position: {
+          ...position,
+          heading: heading.heading
+        }
+      }
+    });
   }
 }
 
@@ -284,17 +299,4 @@ export function* updateNetworkProps() {
     });
     yield put({ type: DeviceTypes.SYNC_OFFLINE });
   }
-}
-
-export function* watchCompassHeading() {
-  CompassHeading.start(3, ({ heading }) => {
-    const { dispatch, getState } = store().store;
-    const {
-      device: { position }
-    } = getState();
-
-    if (position?.speed < 2.5) {
-      dispatch(DeviceCreators.setLocationHeading(heading));
-    }
-  });
 }

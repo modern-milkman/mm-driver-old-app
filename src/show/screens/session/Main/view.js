@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavigationEvents } from 'react-navigation';
+import CompassHeading from 'react-native-compass-heading';
 import { Animated, PanResponder, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -25,6 +26,8 @@ import {
   PullHandle,
   Search
 } from './subviews';
+
+const compassStarted = React.createRef(false);
 
 const mainForegroundAction = ({
   checklist,
@@ -167,6 +170,16 @@ const springForeground = ({
   }
 };
 
+const toggleCompass = (flag, callback) => {
+  if (flag && !compassStarted.current) {
+    compassStarted.current = true;
+    CompassHeading.start(3, callback);
+  } else if (compassStarted.current) {
+    compassStarted.current = false;
+    CompassHeading.stop();
+  }
+};
+
 const triggerNavigation = routeName => {
   NavigationService.navigate({ routeName });
 };
@@ -181,11 +194,13 @@ const Main = props => {
     foregroundSize,
     optimisedRouting,
     selectedStop,
+    setLocationHeading,
     status,
     startDelivering,
     updateDeviceProps
   } = props;
   const { height, width } = deviceFrame();
+  const currentSpeed = currentLocation ? currentLocation.speed : null;
 
   const [foregroundTitleHeight, setForegroundTitleHeight] = useState(0);
   const { top, bottom } = useSafeAreaInsets();
@@ -475,10 +490,24 @@ const Main = props => {
     topBorderRadius: pullHandleMoveY.interpolate(interpolations.topBorderRadius)
   };
 
+  useEffect(() => {
+    if (currentSpeed < 2.5 && !compassStarted.current) {
+      toggleCompass(true, setLocationHeading);
+    } else {
+      toggleCompass(false);
+    }
+  }, [currentSpeed, setLocationHeading]);
+
   return (
     <ColumnView flex={1} justifyContent={'flex-start'}>
       <Search panY={interpolatedValues.searchY} />
       <NavigationEvents
+        onDidFocus={() => {
+          if (currentSpeed < 2.5 && !compassStarted.current) {
+            toggleCompass(true, setLocationHeading);
+          }
+        }}
+        onDidBlur={toggleCompass.bind(null, false)}
         onWillFocus={setTimeout.bind(
           null,
           springForeground.bind(null, {
@@ -576,6 +605,7 @@ Main.propTypes = {
   foregroundSize: PropTypes.string,
   optimisedRouting: PropTypes.bool,
   selectedStop: PropTypes.any,
+  setLocationHeading: PropTypes.func,
   status: PropTypes.string,
   startDelivering: PropTypes.func,
   updateDeviceProps: PropTypes.func
