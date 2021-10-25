@@ -14,6 +14,7 @@ import { defaultRoutes, isAppInstalled } from 'Helpers';
 import EncryptedStorage from 'Services/encryptedStorage';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
 import { user as userSelector, Types as UserTypes } from 'Reducers/user';
+import { Types as InAppBrowserTypes } from 'Reducers/inappbrowser';
 
 import {
   Types as TransientTypes,
@@ -136,9 +137,23 @@ export const login = function* ({ isBiometricLogin = false }) {
 };
 
 export const login_completed = function* () {
+  const device = yield select(deviceSelector);
   yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
 
   NavigationService.navigate({ routeName: defaultRoutes.session });
+  if (!device.mm3yo) {
+    yield put({
+      type: InAppBrowserTypes.UPDATE_PROPS,
+      props: {
+        visible: true,
+        url: 'https://blog.themodernmilkman.co.uk/thanks-for-your-hard-work/'
+      }
+    });
+    yield put({
+      type: DeviceTypes.UPDATE_PROPS,
+      props: { mm3yo: true }
+    });
+  }
   Analytics.trackEvent(EVENTS.LOGIN_COMPLETED);
 };
 

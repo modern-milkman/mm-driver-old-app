@@ -38,12 +38,12 @@ const initialState = {
   crashCount: 0,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info,
-
   lowConnection: false,
   mapMarkerSize: sizes.marker.normal,
   mapMode: 'auto',
   mapNoTrackingHeading: 0,
   mapZoom: 14,
+  mm3yo: false,
   network: {
     isConnected: false,
     status: 0 //0-Online * 1-Soft Offline * 2-offline
