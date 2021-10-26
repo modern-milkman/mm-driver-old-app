@@ -1,17 +1,23 @@
 import { connect } from 'react-redux';
 
 import { Creators as deviceActions } from 'Reducers/device';
-import { Creators as deliveryActions } from 'Reducers/delivery';
 import { Creators as transientActions } from 'Reducers/transient';
+import {
+  Creators as deliveryActions,
+  orderedStopsIds
+} from 'Reducers/delivery';
 
 import Search from './view';
 
 export default connect(
   state => {
     return {
+      completedStopsIds: state.delivery?.completedStopsIds,
+      isOptimised: state.delivery?.stockWithData?.isOptimised || false,
+      optimisedRouting: state.delivery?.optimisedRouting,
+      orderedStopsIds: orderedStopsIds(state),
       searchValue: state.transient.searchValue,
       status: state.delivery?.status,
-      completedStopsIds: state.delivery?.completedStopsIds,
       stops: Object.values(state.delivery?.stops || {})
     };
   },

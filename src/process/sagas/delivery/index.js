@@ -15,6 +15,7 @@ import { userSessionPresent as userSessionPresentSelector } from 'Reducers/appli
 import {
   checklist as checklistSelector,
   completedStopsIds as completedStopsIdsSelector,
+  isOptimised as isOptimisedSelector,
   optimisedRouting as optimisedRoutingSelector,
   orderedStopsIds as orderedStopsIdsSelector,
   selectedStop as selectedStopSelector,
@@ -363,13 +364,14 @@ export const setDeliveredOrRejected = function* (
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
   const device = yield select(deviceSelector);
+  const isOptimised = yield select(isOptimisedSelector);
   const optimisedRouting = yield select(optimisedRoutingSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
   const status = yield select(statusSelector);
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
 
-  const { position, requestQueues } = device;
+  const { foregroundSize, position, requestQueues } = device;
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
@@ -443,8 +445,11 @@ export const setDeliveredOrRejected = function* (
       ? EVENTS.TAP_DONE_DELIVER
       : EVENTS.TAP_SKIP_DELIVERY,
     {
+      foregroundSize,
       id,
-      ...(requestType === 'rejected' && { reasonType, reasonMessage })
+      ...(requestType === 'rejected' && { reasonType, reasonMessage }),
+      isOptimised,
+      optimisedRouting
     }
   );
 };

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
 import { NavigationEvents } from 'react-navigation';
 import CompassHeading from 'react-native-compass-heading';
+import React, { useEffect, useRef, useState } from 'react';
 import { Animated, PanResponder, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,13 +9,13 @@ import { ColumnView } from 'Containers';
 import { deliveryStates as DS } from 'Helpers';
 import { colors, defaults, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
+import Analytics, { EVENTS } from 'Services/analytics';
+import { height as textInputHeight } from 'Components/TextInput';
 import {
   customerSatisfactionColor,
   deviceFrame,
   statusBarHeight
 } from 'Helpers';
-
-import { height as textInputHeight } from 'Components/TextInput';
 
 import { configuration } from './helpers';
 import {
@@ -45,6 +45,7 @@ const mainForegroundAction = ({
   status,
   startDelivering,
   top,
+  updateDeliveryProps,
   updateDeviceProps
 }) => {
   switch (status) {
@@ -116,10 +117,12 @@ const mainForegroundAction = ({
       } else {
         // this action is available only when the route is optimised
         // foreground content disables the button otherwise
+        updateDeliveryProps({ optimisedRouting: true });
         continueDelivering();
       }
       break;
   }
+  Analytics.trackEvent(EVENTS.MAIN_FOREGROUND_ACTION);
 };
 
 const springForeground = ({
@@ -199,6 +202,7 @@ const Main = props => {
     setLocationHeading,
     status,
     startDelivering,
+    updateDeliveryProps,
     updateDeviceProps
   } = props;
   const currentSpeed = currentLocation ? currentLocation.speed : null;
@@ -575,6 +579,7 @@ const Main = props => {
             status,
             startDelivering,
             top,
+            updateDeliveryProps,
             updateDeviceProps
           })}
           onChevronUpPress={springForeground.bind(null, {
@@ -609,6 +614,7 @@ Main.propTypes = {
   setLocationHeading: PropTypes.func,
   status: PropTypes.string,
   startDelivering: PropTypes.func,
+  updateDeliveryProps: PropTypes.func,
   updateDeviceProps: PropTypes.func
 };
 

@@ -112,7 +112,7 @@ const renderItemInterface = (
     onLongPress: listOnLongPress,
     listItemStyle: listStyle
   },
-  { item }
+  { item, section }
 ) => {
   const {
     customIcon,
@@ -121,7 +121,6 @@ const renderItemInterface = (
     customRightIconProps,
     description,
     descriptionColor = colors.secondary,
-    disabled = listDisabled || false,
     enforceLayout = false,
     icon,
     iconColor = colors.secondary,
@@ -157,6 +156,7 @@ const renderItemInterface = (
     onPress?.bind(null, key) || listOnPress?.bind(null, key);
   const computedOnLongPress =
     onLongPress?.bind(null, key) || listOnLongPress?.bind(null, key);
+  const disabled = listDisabled || section?.disabled || false;
 
   return (
     <TouchableOpacity
@@ -409,6 +409,10 @@ ListItem.defaultProps = {
   title: null,
   titleColor: colors.secondary,
   titleExpands: false
+};
+
+SectionHeader.propTypes = {
+  section: PropTypes.object
 };
 
 export default List;

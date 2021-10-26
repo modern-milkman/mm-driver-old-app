@@ -1,3 +1,4 @@
+import Config from 'react-native-config';
 import { createActions, createReducer } from 'reduxsauce';
 
 import I18n from 'Locales/I18n';
@@ -341,6 +342,7 @@ export const getForDriverSuccess = (state, { payload }) =>
   produce(state, draft => {
     draft.loaderInfo = 'getVehicleStockForDriver';
     draft.stockWithData = payload;
+
     let hasNonPendingOrders = false;
     let markedOrders = 0;
 
@@ -813,9 +815,14 @@ export const completedStopsIds = state => state.delivery?.completedStopsIds;
 
 export const itemCount = state => state.delivery?.itemCount || 0;
 
+export const isOptimised = state => state.delivery?.stockWithData?.isOptimised;
+
 export const optimisedRouting = state => state.delivery.optimisedRouting;
 
-export const orderedStopsIds = state => state.delivery?.orderedStopsIds;
+export const orderedStopsIds = state =>
+  state.delivery.optimisedRouting
+    ? state.delivery?.orderedStopsIds.slice(0, Config.OPTIMISED_STOPS_TO_SHOW)
+    : state.delivery?.orderedStopsIds;
 
 export const selectedStop = state => {
   const todaysDelivery = state.delivery;

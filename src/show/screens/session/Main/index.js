@@ -34,6 +34,7 @@ export default connect(
   {
     continueDelivering: deliveryActions.continueDelivering,
     startDelivering: deliveryActions.startDelivering,
+    updateDeliveryProps: deliveryActions.updateProps,
     updateDeviceProps: deviceActions.updateProps,
     setLocationHeading: deviceActions.setLocationHeading
   }
