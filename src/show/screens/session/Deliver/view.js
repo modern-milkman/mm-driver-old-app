@@ -205,6 +205,8 @@ const showModal = (type, setModalType, setModalVisible) => {
   setModalVisible(true);
 };
 
+const { width } = deviceFrame();
+
 const Deliver = props => {
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
@@ -220,8 +222,6 @@ const Deliver = props => {
     toggleModal,
     toggleOutOfStock
   } = props;
-
-  const { width } = deviceFrame();
 
   if (!selectedStop) {
     return null;

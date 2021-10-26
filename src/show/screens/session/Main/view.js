@@ -29,6 +29,8 @@ import {
 
 const compassStarted = React.createRef(false);
 
+const { height, width } = deviceFrame();
+
 const mainForegroundAction = ({
   checklist,
   continueDelivering,
@@ -199,7 +201,6 @@ const Main = props => {
     startDelivering,
     updateDeviceProps
   } = props;
-  const { height, width } = deviceFrame();
   const currentSpeed = currentLocation ? currentLocation.speed : null;
 
   const [foregroundTitleHeight, setForegroundTitleHeight] = useState(0);

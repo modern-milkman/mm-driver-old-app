@@ -140,6 +140,8 @@ const updateTransient = (updateTransientProps, prop, value) => {
   updateTransientProps(update);
 };
 
+const deviceFrameHeight = deviceFrame().height;
+
 const Home = props => {
   const {
     biometrics,
@@ -159,7 +161,7 @@ const Home = props => {
   } = props;
 
   let hasSmallHeight =
-    deviceFrame().height - minimumKeyboardHeight < minimumRequiredHeight;
+    deviceFrameHeight - minimumKeyboardHeight < minimumRequiredHeight;
   const [animatedValue] = useState(new Animated.Value(0));
   const [bioSandE, setbioSandE] = useState(
     biometrics.supported && biometrics.enrolled && biometrics.active
