@@ -65,6 +65,7 @@ const renderEmpty = (
         value={empties[`${description}Bottles`]}
         ref={emptiesReference[index]}
         returnKeyType={'next'}
+        testID={`empties-textInput-${id}`}
       />
     </RowView>
   </>
@@ -120,6 +121,7 @@ const EmptiesCollected = ({
                 })
           }
           {...(disabled && { rightColor: colors.inputDark })}
+          testID="empties-navbar"
         />
         {renderProgressBar(2, payload)}
 
@@ -157,6 +159,7 @@ const EmptiesCollected = ({
             })}
             title={I18n.t('general:next')}
             disabled={disabled}
+            testID="empties-mainNext-btn"
           />
         </RowView>
       </ColumnView>

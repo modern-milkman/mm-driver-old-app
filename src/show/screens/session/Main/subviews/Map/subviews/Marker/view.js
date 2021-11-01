@@ -3,17 +3,26 @@ import { View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Marker as RNMMarker } from 'react-native-maps';
 
+import { Text } from 'Components';
+import { colors, defaults } from 'Theme';
+
 import {
   mock,
   customerSatisfactionColor as getCustomerSatisfactionColor
 } from 'Helpers';
-import { colors, defaults } from 'Theme';
 
 import style from './style';
 
 const markerOnPress = ({ updateProps, updateSelectedStop, id }) => {
-  updateProps({ optimisedRouting: false });
   updateSelectedStop(id);
+};
+
+const renderSequence = ({ id, selectedStopId, sequence }) => {
+  return sequence && selectedStopId !== id ? (
+    <View style={{ transform: [{ rotateZ: '45deg' }] }}>
+      <Text.Input color={colors.secondary}>{sequence}</Text.Input>
+    </View>
+  ) : null;
 };
 
 const Marker = props => {
@@ -25,6 +34,7 @@ const Marker = props => {
     previousStopId,
     stops,
     selectedStopId,
+    sequence,
     updateProps,
     updateSelectedStop
   } = props;
@@ -118,6 +128,7 @@ const Marker = props => {
               ]}
             />
           )}
+          {renderSequence({ id, selectedStopId, sequence })}
         </View>
         {selectedStopId === id && (
           <View
@@ -141,7 +152,8 @@ const Marker = props => {
 
 Marker.defaultProps = {
   completed: false,
-  disabled: false
+  disabled: false,
+  sequence: null
 };
 
 Marker.propTypes = {
@@ -153,6 +165,7 @@ Marker.propTypes = {
   previousStopId: PropTypes.number,
   stops: PropTypes.object,
   selectedStopId: PropTypes.number,
+  sequence: PropTypes.number,
   updateProps: PropTypes.func,
   updateSelectedStop: PropTypes.func
 };
@@ -163,6 +176,7 @@ const areEqual = (prevProps, nextProps) => {
     prevProps.completed !== nextProps.completed ||
     prevProps.mapMarkerSize !== nextProps.mapMarkerSize ||
     nextProps.selectedStopId === nextProps.id ||
+    prevProps.sequence !== nextProps.sequence ||
     nextProps.previousStopId === nextProps.id
   );
 };

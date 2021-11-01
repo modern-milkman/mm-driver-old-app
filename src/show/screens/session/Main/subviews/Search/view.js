@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import I18n from 'Locales/I18n';
 import List from 'Components/List';
 import { RowView } from 'Containers';
+import Label from 'Components/Label';
 import { colors, defaults } from 'Theme';
 import { deliveryStates as DS, statusBarHeight, mock } from 'Helpers';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
@@ -26,12 +27,14 @@ const handleSearchFilter = (items, searchValue) => {
 const Search = props => {
   const {
     completedStopsIds,
+    isOptimised,
+    optimisedRouting,
+    orderedStopsIds,
     panY,
     searchValue,
     status,
     stops,
     updateDeviceProps,
-    updateProps,
     updateSelectedStop,
     updateTransientProps
   } = props;
@@ -62,7 +65,6 @@ const Search = props => {
       shouldTrackHeading: false,
       shouldTrackLocation: false
     });
-    updateProps({ optimisedRouting: false });
     updateSelectedStop(key);
     handleFocus(false, false);
   };
@@ -72,13 +74,30 @@ const Search = props => {
   const search = [
     {
       title: I18n.t('general:upNext'),
-      data: dataSearched.filter(item => !completedStopsIds.includes(item.key))
+      data: dataSearched.filter(item =>
+        optimisedRouting
+          ? orderedStopsIds.includes(item.key) &&
+            !completedStopsIds.includes(item.key)
+          : !completedStopsIds.includes(item.key)
+      )
     },
     {
       title: I18n.t('screens:deliver.status.completed'),
       data: dataSearched.filter(item => completedStopsIds.includes(item.key))
     }
   ];
+  if (optimisedRouting) {
+    search.splice(1, 0, {
+      title: I18n.t('general:laterTonight'),
+      disabled: true,
+      data: dataSearched.filter(item =>
+        optimisedRouting
+          ? !orderedStopsIds.includes(item.key) &&
+            !completedStopsIds.includes(item.key)
+          : !completedStopsIds.includes(item.key)
+      )
+    });
+  }
 
   if (searchValue.length > 0) {
     if (dataSearched.length > 0) {
@@ -126,17 +145,30 @@ const Search = props => {
             <RowView
               marginHorizontal={defaults.marginHorizontal}
               width={'auto'}>
-              <TextInput
-                disableErrors
-                leftIcon={focused ? 'chevron-back' : 'search'}
-                onChangeText={handleChange.bind(this)}
-                onFocusChanged={handleFocus.bind(null, true)}
-                onLeftIconPress={handleFocus.bind(null, false, false)}
-                placeholder={I18n.t('screens:main.search.placeholder')}
-                ref={searchReference}
+              <RowView flex={1} marginRight={defaults.marginHorizontal / 2}>
+                <TextInput
+                  disableErrors
+                  leftIcon={focused ? 'chevron-back' : 'search'}
+                  onChangeText={handleChange.bind(this)}
+                  onFocusChanged={handleFocus.bind(null, true)}
+                  onLeftIconPress={handleFocus.bind(null, false, false)}
+                  placeholder={I18n.t('screens:main.search.placeholder')}
+                  ref={searchReference}
+                  shadow
+                  size={'normal'}
+                  value={searchValue}
+                />
+              </RowView>
+              <Label
+                backgroundColor={
+                  isOptimised
+                    ? optimisedRouting
+                      ? colors.success
+                      : colors.error
+                    : colors.inputDark
+                }
                 shadow
-                size={'normal'}
-                value={searchValue}
+                text={I18n.t('general:RO')}
               />
             </RowView>
           </Animated.View>
@@ -176,6 +208,9 @@ const Search = props => {
 
 Search.propTypes = {
   completedStopsIds: PropTypes.array,
+  isOptimised: PropTypes.bool,
+  optimisedRouting: PropTypes.bool,
+  orderedStopsIds: PropTypes.array,
   panY: PropTypes.object,
   searchValue: PropTypes.string,
   status: PropTypes.string,
@@ -188,6 +223,9 @@ Search.propTypes = {
 
 Search.defaultProps = {
   completedStopsIds: [],
+  isOptimised: true,
+  optimisedRouting: true,
+  orderedStopsIds: [],
   panY: new Animated.Value(0),
   searchValue: '',
   stops: [],

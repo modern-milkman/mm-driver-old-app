@@ -19,6 +19,8 @@ const cameraAnimationOptions = {
   duration: 325
 };
 
+const deviceHeight = deviceFrame().height;
+
 const regionChangeComplete = (
   {
     heading,
@@ -96,8 +98,6 @@ const Map = props => {
     showMapControlsOnMovement,
     updateDeviceProps
   } = props;
-
-  const deviceHeight = deviceFrame().height;
 
   let mapIsInteracting = useRef(false);
   let mapRef = useRef(undefined);

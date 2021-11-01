@@ -11,11 +11,12 @@ const Label = props => {
 
   return (
     <RowView
-      width={'auto'}
+      borderRadius={defaults.borderRadius / 2}
+      backgroundColor={backgroundColor}
       height={Text.Label.height + defaults.marginVertical / 4}
       paddingHorizontal={defaults.marginHorizontal / 4}
-      borderRadius={defaults.borderRadius / 2}
-      backgroundColor={backgroundColor}>
+      shadow
+      width={'auto'}>
       <Text.Label color={color} testID={testID}>
         {text}
       </Text.Label>
@@ -26,6 +27,7 @@ const Label = props => {
 Label.propTypes = {
   backgroundColor: PropTypes.any,
   color: PropTypes.any,
+  shadow: PropTypes.bool,
   testID: PropTypes.string,
   text: PropTypes.string
 };
@@ -33,6 +35,7 @@ Label.propTypes = {
 Label.defaultProps = {
   backgroundColor: colors.error,
   color: colors.white,
+  shadow: false,
   text: null
 };
 

@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import { ScrollView } from '@react-navigation/native';
 import { View, Animated } from 'react-native';
 
+import { shadows } from 'Theme';
+
 const ColumnRowView = ({
   alignItems,
   animated,
@@ -38,6 +40,7 @@ const ColumnRowView = ({
   paddingTop,
   paddingVertical,
   scrollable,
+  shadow,
   testID,
   width
 }) => {
@@ -58,14 +61,14 @@ const ColumnRowView = ({
     marginLeft: marginLeft || marginHorizontal || 0,
     marginRight: marginRight || marginHorizontal || 0,
     marginTop: marginTop || marginVertical || 0,
+    maxHeight: maxHeight,
+    minHeight: minHeight,
     overflow: overflow,
     paddingBottom: paddingBottom || paddingVertical || 0,
     paddingLeft: paddingLeft || paddingHorizontal || 0,
     paddingRight: paddingRight || paddingHorizontal || 0,
     paddingTop: paddingTop || paddingVertical || 0,
-
-    maxHeight: maxHeight,
-    minHeight: minHeight
+    ...(shadow && shadows.hintLower)
   };
 
   const CRWiewComponent = animated
@@ -107,23 +110,24 @@ ColumnRowView.propTypes = {
   flexGrow: PropTypes.number,
   height: PropTypes.oneOfType(PropTypes.number, PropTypes.string),
   justifyContent: PropTypes.string,
+  onLayout: PropTypes.func,
+  overflow: PropTypes.string,
   marginBottom: PropTypes.number,
   marginHorizontal: PropTypes.number,
   marginLeft: PropTypes.number,
   marginRight: PropTypes.number,
   marginTop: PropTypes.number,
   marginVertical: PropTypes.number,
+  maxHeight: PropTypes.number,
+  minHeight: PropTypes.number,
   paddingBottom: PropTypes.number,
   paddingHorizontal: PropTypes.number,
   paddingLeft: PropTypes.number,
   paddingRight: PropTypes.number,
   paddingTop: PropTypes.number,
   paddingVertical: PropTypes.number,
-  maxHeight: PropTypes.number,
-  minHeight: PropTypes.number,
-  onLayout: PropTypes.func,
-  overflow: PropTypes.string,
   scrollable: PropTypes.bool,
+  shadow: PropTypes.bool,
   testID: PropTypes.string,
   width: PropTypes.oneOfType(PropTypes.number, PropTypes.string)
 };
@@ -144,6 +148,8 @@ ColumnRowView.defaultProps = {
   marginRight: undefined,
   marginTop: undefined,
   marginVertical: undefined,
+  maxHeight: undefined,
+  minHeight: 0,
   overflow: undefined,
   paddingBottom: undefined,
   paddingHorizontal: undefined,
@@ -151,9 +157,8 @@ ColumnRowView.defaultProps = {
   paddingRight: undefined,
   paddingTop: undefined,
   paddingVertical: undefined,
-  maxHeight: undefined,
-  minHeight: 0,
   scrollable: false,
+  shadow: false,
   width: '100%'
 };
 

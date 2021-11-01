@@ -7,8 +7,9 @@ import { deviceFrame } from 'Helpers';
 import { alphaColor, colors, defaults } from 'Theme';
 import { Button, Text, Icon, Separator } from 'Components';
 
+const { height } = deviceFrame();
+
 const LowConnectionModal = () => {
-  const { height } = deviceFrame();
   return (
     <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
       <ColumnView

@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
 import React, { useState } from 'react';
 import Config from 'react-native-config';
+import { Animated, Platform } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { Animated } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
@@ -99,7 +99,9 @@ const rejectAndNavigateBack = (callback, setModalVisible) => {
     NavigationService.goBack.bind(null, {
       beforeCallback: navigateBack.bind(null, callback)
     }),
-    250
+    Platform.OS === 'ios' ? 250 : 1000
+    // some androids still have trouble with too many operations at a time
+    // should be removed once upgraded to v6 navigation / native animations
   );
 };
 
@@ -205,6 +207,8 @@ const showModal = (type, setModalType, setModalVisible) => {
   setModalVisible(true);
 };
 
+const { width } = deviceFrame();
+
 const Deliver = props => {
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
@@ -220,8 +224,6 @@ const Deliver = props => {
     toggleModal,
     toggleOutOfStock
   } = props;
-
-  const { width } = deviceFrame();
 
   if (!selectedStop) {
     return null;

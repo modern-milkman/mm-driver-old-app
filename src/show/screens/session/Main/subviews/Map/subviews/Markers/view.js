@@ -9,6 +9,7 @@ const Markers = props => {
   const {
     completedStopsIds,
     mapMarkerSize,
+    optimisedRouting,
     orderedStopsIds,
     selectedStopId,
     showDoneDeliveries,
@@ -23,11 +24,14 @@ const Markers = props => {
   return (
     (hasMarkers && (
       <>
-        {orderedStopsIds?.map(sID => (
+        {orderedStopsIds?.map((sID, index) => (
           <Marker
-            key={`${sID}-${mapMarkerSize}-${disabled}`}
+            key={`${sID}-${mapMarkerSize}-${disabled}-${
+              optimisedRouting ? index + 1 : 0
+            }`}
             id={sID}
             disabled={disabled}
+            {...(optimisedRouting && { sequence: index + 1 })}
           />
         ))}
         {showDoneDeliveries &&
@@ -58,6 +62,7 @@ Markers.defaultProps = {};
 Markers.propTypes = {
   completedStopsIds: PropTypes.array,
   mapMarkerSize: PropTypes.number,
+  optimisedRouting: PropTypes.bool,
   orderedStopsIds: PropTypes.array,
   selectedStopId: PropTypes.number,
   showDoneDeliveries: PropTypes.bool,

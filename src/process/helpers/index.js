@@ -1,13 +1,18 @@
 import Config from 'react-native-config';
 import { useEffect, useRef } from 'react';
-import { Animated, Easing, Linking, NativeModules } from 'react-native';
+import {
+  Animated,
+  Easing,
+  Dimensions,
+  Linking,
+  NativeModules,
+  StatusBar
+} from 'react-native';
 import { Base64 } from 'js-base64';
 
 import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
-
-import { useSafeAreaFrame } from 'react-native-safe-area-context';
 
 const appVersionString = () =>
   Config.ENVIRONMENT !== 'production'
@@ -70,7 +75,18 @@ const deliveryStates = {
 
 const deliveredStatuses = ['completed', 'rejected'];
 
-const deviceFrame = useSafeAreaFrame;
+const deviceFrame = () => {
+  const deviceHeight = Dimensions.get('screen').height;
+  const windowHeight = Dimensions.get('window').height;
+  const windowWidth = Dimensions.get('window').width;
+  const statusBarHeight = StatusBar.currentHeight;
+  const bottomNavBarHeight = deviceHeight - (windowHeight + statusBarHeight);
+  if (bottomNavBarHeight > 0) {
+    return { height: windowHeight + statusBarHeight, width: windowWidth };
+  } else {
+    return { height: windowHeight, width: windowWidth };
+  }
+};
 
 const distance = (p, q, unit) => {
   //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
