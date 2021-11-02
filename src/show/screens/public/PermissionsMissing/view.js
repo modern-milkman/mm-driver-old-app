@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
 
-import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import { CarLogo } from 'Images';
+import { colors, defaults } from 'Theme';
 import { ListItem, Text } from 'Components';
 import { ColumnView, FullView } from 'Containers';
 
 const logoSize = 100;
 
-const PermissionsMissing = (props) => {
+const PermissionsMissing = props => {
   const {} = props;
 
   return (
@@ -33,7 +33,10 @@ const PermissionsMissing = (props) => {
           </Text.Heading>
         </ColumnView>
 
-        <ColumnView marginVertical={24} width={'auto'} marginHorizontal={24}>
+        <ColumnView
+          marginVertical={defaults.marginVertical}
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}>
           <Text.List align={'left'} color={colors.white}>
             {I18n.t('screens:permissionsMissing.description')}
           </Text.List>
@@ -51,7 +54,10 @@ const PermissionsMissing = (props) => {
           title={I18n.t('general:location')}
           titleColor={colors.white}
         />
-        <ColumnView marginVertical={24} width={'auto'} marginHorizontal={24}>
+        <ColumnView
+          marginVertical={defaults.marginVertical}
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}>
           <Text.List align={'left'} color={colors.white}>
             {I18n.t('screens:permissionsMissing.instructions.general')}
           </Text.List>

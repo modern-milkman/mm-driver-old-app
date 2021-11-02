@@ -1,7 +1,8 @@
 {
   "appCrash": {
     "title": "Driver has a problem",
-    "description": "Unfortunately Driver app has encountered an error that couldn't be handled. The error was reported to the developers and will be addressed in an app update. If the issue persists, contact your supervisor."
+    "description": "Unfortunately Driver app has encountered an error that couldn't be handled. The error was reported to the developers and will be addressed in an app update. If the issue persists, contact your supervisor.",
+    "crashCode": "Tap to copy Error CODE: {{crashCode}}"
   },
   "checkIn": {
     "checkIn": "Check In",

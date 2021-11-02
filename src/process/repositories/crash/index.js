@@ -12,6 +12,8 @@ export default {
       \`\`\`${JSON.stringify(
         {
           device: {
+            crashCode: device.crashCode,
+            crashCount: device.crashCount,
             lowConnection: device.lowConnection,
             network: device.network,
             position: device.position,

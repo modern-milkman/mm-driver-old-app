@@ -293,6 +293,9 @@ export const sendCrashLog = function* ({ payload }) {
     type: Api.API_CALL,
     promise: Api.repositories.crash.sendCrashLog(payload)
   });
+  Analytics.trackEvent(EVENTS.CRASH_CODE, {
+    crashCode: payload?.device?.crashCode
+  });
 };
 
 export const verifyAutomatedLoginOrLogout = function* () {

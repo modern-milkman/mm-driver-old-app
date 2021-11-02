@@ -12,6 +12,10 @@
     "title": "Link failed",
     "message": "There was a problem opening the link."
   },
+  "clipboard": {
+    "title": "Error code copied to clipboard",
+    "description": "Simply paste in the app of your choosing and send the crashcode to your supervisor. Thanks!"
+  },
   "errors": {
     "api": {
       "driverData": {

@@ -13,7 +13,7 @@ import style from './style';
 
 const logoSize = 100;
 
-const UpgradeApp = (props) => {
+const UpgradeApp = props => {
   const {
     appcenter,
     navigation: {
@@ -35,13 +35,16 @@ const UpgradeApp = (props) => {
             {I18n.t('screens:home.driver')}
           </Text.Heading>
         </ColumnView>
-        <ColumnView marginTop={24} width={'auto'} marginHorizontal={24}>
+        <ColumnView
+          marginTop={defaults.marginVertical}
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}>
           <Text.List color={colors.white} align={'left'}>
             {I18n.t('screens:upgradeApp.description')}
           </Text.List>
 
           {params?.minimumVersion && (
-            <ColumnView marginTop={24}>
+            <ColumnView marginTop={defaults.marginVertical}>
               <Text.Caption align={'center'}>
                 {I18n.t('screens:upgradeApp.minimumVersion', {
                   minimumVersion: params.minimumVersion

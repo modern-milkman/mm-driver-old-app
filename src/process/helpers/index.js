@@ -14,6 +14,8 @@ import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 
+const addZero = i => (i < 10 ? `0${i}` : i);
+
 const appVersionString = () =>
   Config.ENVIRONMENT !== 'production'
     ? `V: ${Config.APP_VERSION_NAME}-${Config.APP_VERSION_CODE} ${Config.ENVIRONMENT}`
@@ -149,7 +151,14 @@ const distance = (p, q, unit) => {
 };
 
 const formatDate = date =>
-  date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+  `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+const formatDateTime = date =>
+  `${addZero(date.getDate())}${addZero(
+    date.getMonth() + 1
+  )}${date.getFullYear()}.${addZero(date.getHours())}${addZero(
+    date.getMinutes()
+  )}${addZero(date.getSeconds())}`;
 
 const isAppInstalled = async appName => {
   return await Linking.canOpenURL(appName + '://')
@@ -323,6 +332,7 @@ export {
   defaultRoutes,
   distance,
   formatDate,
+  formatDateTime,
   isAppInstalled,
   jiggleAnimation,
   mock,

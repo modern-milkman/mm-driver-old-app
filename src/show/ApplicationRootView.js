@@ -4,15 +4,17 @@ import { connect } from 'react-redux';
 import Config from 'react-native-config';
 import RNRestart from 'react-native-restart';
 import { Platform, StatusBar } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import I18n from 'Locales/I18n';
+import Alert from 'Services/alert';
 import { colors, defaults } from 'Theme';
 import { CarLogoFlatTire } from 'Images';
-import { appVersionString } from 'Helpers';
 import Navigator from 'Navigation/Navigator';
 import { ColumnView, FullView } from 'Containers';
 import NavigationService from 'Navigation/service';
 import { Types as DeviceTypes } from 'Reducers/device';
+import { appVersionString, formatDateTime } from 'Helpers';
 import {
   Creators as applicationActions,
   Types as ApplicationTypes
@@ -32,6 +34,20 @@ const restartApp = () => {
   RNRestart.Restart();
 };
 
+const sendToClipboard = ({ crashCode }) => {
+  Clipboard.setString(crashCode);
+  Alert({
+    title: I18n.t('alert:clipboard.title'),
+    message: I18n.t('alert:clipboard.description'),
+    buttons: [
+      {
+        text: I18n.t('general:ok'),
+        style: 'cancel'
+      }
+    ]
+  });
+};
+
 class Root extends React.Component {
   constructor(props) {
     super(props);
@@ -47,12 +63,26 @@ class Root extends React.Component {
   componentDidCatch = (error, info) => {
     const { device, dispatch, sendCrashLog, user } = this.props;
     const { crashCount } = device;
+    const props = {
+      crashCount: crashCount + 1,
+      crashCode: `${device.uniqueID}.${formatDateTime(new Date())}`
+    };
     dispatch({
       type: DeviceTypes.UPDATE_PROPS,
-      props: { crashCount: crashCount + 1 }
+      props
     });
     if (JSON.parse(Config.SEND_SLACK_CRASHLOGS)) {
-      dispatch(sendCrashLog({ device, error, info, user }));
+      dispatch(
+        sendCrashLog({
+          device: {
+            ...device,
+            ...props
+          },
+          error,
+          info,
+          user
+        })
+      );
     }
   };
 
@@ -96,6 +126,7 @@ class Root extends React.Component {
     const {
       device: {
         crashCount,
+        crashCode,
         processors: { reloadingDevice }
       },
       dispatch,
@@ -115,12 +146,29 @@ class Root extends React.Component {
               {I18n.t('screens:appCrash.title')}
             </Text.Heading>
           </ColumnView>
-          <ColumnView marginTop={24} width={'auto'} marginHorizontal={24}>
+          <ColumnView
+            marginTop={defaults.marginVertical}
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}>
             <Text.List color={colors.white} align={'center'}>
               {I18n.t('screens:appCrash.description')}
             </Text.List>
           </ColumnView>
-          <ColumnView marginTop={24} width={'auto'} marginHorizontal={24}>
+          <ColumnView
+            marginTop={defaults.marginVertical}
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}>
+            <Text.Caption
+              color={colors.white}
+              align={'center'}
+              onPress={sendToClipboard.bind(null, { crashCode })}>
+              {I18n.t('screens:appCrash.crashCode', { crashCode })}
+            </Text.Caption>
+          </ColumnView>
+          <ColumnView
+            marginTop={defaults.marginVertical}
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}>
             {crashCount <= 1 && (
               <Button.Tertiary
                 title={I18n.t('general:restart')}
