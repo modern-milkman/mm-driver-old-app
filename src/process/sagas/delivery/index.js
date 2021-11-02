@@ -17,6 +17,7 @@ import {
   completedStopsIds as completedStopsIdsSelector,
   isOptimised as isOptimisedSelector,
   optimisedRouting as optimisedRoutingSelector,
+  orderedStock as orderedStockSelector,
   orderedStopsIds as orderedStopsIdsSelector,
   selectedStop as selectedStopSelector,
   selectedStopId as selectedStopIdSelector,
@@ -296,13 +297,18 @@ export const getVehicleStockForDriverSuccess = function* ({ payload }) {
   const checklist = yield select(checklistSelector);
   const status = yield select(statusSelector);
   const optimisedRouting = yield select(optimisedRoutingSelector);
+  const orderedStock = yield select(orderedStockSelector);
+  const productId = {};
   if (optimisedRouting && !checklist.deliveryComplete && status === DS.DEL) {
     yield put({
       type: DeliveryTypes.CONTINUE_DELIVERING
     });
   }
+  for (const { productId: id, quantity } of orderedStock) {
+    productId[id] = quantity;
+  }
   Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, {
-    payload
+    productId
   });
 };
 

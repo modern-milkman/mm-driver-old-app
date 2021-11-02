@@ -819,6 +819,8 @@ export const isOptimised = state => state.delivery?.stockWithData?.isOptimised;
 
 export const optimisedRouting = state => state.delivery.optimisedRouting;
 
+export const orderedStock = state => state.delivery.orderedStock;
+
 export const orderedStopsIds = state =>
   state.delivery.optimisedRouting
     ? state.delivery?.orderedStopsIds.slice(0, Config.OPTIMISED_STOPS_TO_SHOW)
