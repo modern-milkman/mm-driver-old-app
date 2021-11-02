@@ -65,7 +65,7 @@ const renderLowConnection = () => (
   />
 );
 
-const Navigation = (props) => {
+const Navigation = props => {
   const {
     completedStopsIds,
     countDown,
@@ -80,8 +80,8 @@ const Navigation = (props) => {
   } = props;
 
   const completed = completedStopsIds.length;
-  const showOfflineLabel =
-    [1, 2].includes(network.status) || requestQueues.offline.length > 0;
+  const showOfflineLabel = [1, 2].includes(network.status);
+  const offLineRequests = requestQueues.offline.length > 0;
 
   return (
     <Animated.View
@@ -118,14 +118,15 @@ const Navigation = (props) => {
               : renderCountUp(completed, stopCount)}
           </RowView>
         )}
-        {showOfflineLabel && (
+        {offLineRequests && (
           <Pressable
             onPress={NavigationService.navigate.bind(null, {
               routeName: 'Reports'
             })}>
-            <Label text={I18n.t('general:offline')} />
+            <Label text={I18n.t('general:failed')} />
           </Pressable>
         )}
+        {showOfflineLabel && <Label text={I18n.t('general:offline')} />}
         {!showOfflineLabel &&
           lowConnection &&
           network.status === 0 &&
