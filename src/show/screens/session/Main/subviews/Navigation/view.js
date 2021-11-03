@@ -8,7 +8,7 @@ import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
 import NavigationService from 'Navigation/service';
 import { Icon, Label, ProgressBar, Text } from 'Components';
-import { statusBarHeight, deliveryStates as DS } from 'Helpers';
+import { statusBarHeight, deliveryStates as DS, deviceFrame } from 'Helpers';
 
 import style from './style';
 
@@ -65,7 +65,7 @@ const renderLowConnection = () => (
   />
 );
 
-const Navigation = (props) => {
+const Navigation = props => {
   const {
     completedStopsIds,
     countDown,
@@ -80,8 +80,10 @@ const Navigation = (props) => {
   } = props;
 
   const completed = completedStopsIds.length;
-  const showOfflineLabel =
-    [1, 2].includes(network.status) || requestQueues.offline.length > 0;
+  const failedRequests = requestQueues.failed.length > 0;
+  const showIssuesLabel =
+    failedRequests || (lowConnection && network.status === 0);
+  const { width } = deviceFrame();
 
   return (
     <Animated.View
@@ -110,7 +112,7 @@ const Navigation = (props) => {
           <RowView
             flex={1}
             marginLeft={defaults.marginHorizontal / 2}
-            {...(showOfflineLabel && {
+            {...(showIssuesLabel && {
               marginRight: defaults.marginHorizontal / 2
             })}>
             {countDown
@@ -118,15 +120,19 @@ const Navigation = (props) => {
               : renderCountUp(completed, stopCount)}
           </RowView>
         )}
-        {showOfflineLabel && (
+        {failedRequests && (
           <Pressable
             onPress={NavigationService.navigate.bind(null, {
               routeName: 'Reports'
             })}>
-            <Label text={I18n.t('general:offline')} />
+            <Label
+              text={I18n.t(
+                `general:syncFailed.${width < 375 ? 'short' : 'long'}`
+              )}
+            />
           </Pressable>
         )}
-        {!showOfflineLabel &&
+        {!failedRequests &&
           lowConnection &&
           network.status === 0 &&
           renderLowConnection()}

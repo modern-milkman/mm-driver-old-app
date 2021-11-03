@@ -21,6 +21,10 @@
   "reset": "Reset & Restart Driver",
   "restart": "Restart Driver",
   "skip": "Skip",
+  "syncFailed": {
+    "short": "Failed",
+    "long": "Sync failed"
+  },
   "takePhoto": "Take a Photo",
   "upNext": "Up next",
   "yes": "Yes"

@@ -1,11 +1,11 @@
 {
   "name": "ModernMilkmanDriver",
   "version": "6.3.0",
-  "versionCode": "90",
+  "versionCode": "91",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; cd android && ./gradlew clean",
-    "postinstall": "./scripts/infuse_version.sh; cd ios && pod install",
+    "postinstall": "./scripts/infuse_version.sh; ./scripts/update_netinfo.sh; cd ios && pod install",
     "precommit": "lint-staged",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "sync-translations": "./scripts/infuse_locale.sh"
