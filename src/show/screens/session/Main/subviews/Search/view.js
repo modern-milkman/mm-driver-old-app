@@ -30,6 +30,7 @@ const Search = props => {
     isOptimised,
     optimisedRouting,
     orderedStopsIds,
+    outOfSequenceIds,
     panY,
     searchValue,
     status,
@@ -76,7 +77,8 @@ const Search = props => {
       title: I18n.t('general:upNext'),
       data: dataSearched.filter(item =>
         optimisedRouting
-          ? orderedStopsIds.includes(item.key) &&
+          ? (orderedStopsIds.includes(item.key) ||
+              outOfSequenceIds.includes(item.key)) &&
             !completedStopsIds.includes(item.key)
           : !completedStopsIds.includes(item.key)
       )
@@ -93,6 +95,7 @@ const Search = props => {
       data: dataSearched.filter(item =>
         optimisedRouting
           ? !orderedStopsIds.includes(item.key) &&
+            !outOfSequenceIds.includes(item.key) &&
             !completedStopsIds.includes(item.key)
           : !completedStopsIds.includes(item.key)
       )
@@ -211,6 +214,7 @@ Search.propTypes = {
   isOptimised: PropTypes.bool,
   optimisedRouting: PropTypes.bool,
   orderedStopsIds: PropTypes.array,
+  outOfSequenceIds: PropTypes.array,
   panY: PropTypes.object,
   searchValue: PropTypes.string,
   status: PropTypes.string,
@@ -226,6 +230,7 @@ Search.defaultProps = {
   isOptimised: true,
   optimisedRouting: true,
   orderedStopsIds: [],
+  outOfSequenceIds: [],
   panY: new Animated.Value(0),
   searchValue: '',
   stops: [],

@@ -112,6 +112,7 @@ export const initialState = {
   optimisedRouting: true,
   orderedStock: [],
   orderedStopsIds: [],
+  outOfSequenceIds: [],
   outOfStockIds: [],
   previousStopId: null,
   processing: true,
@@ -240,6 +241,10 @@ const setDeliveredOrRejected = (
       draft.completedStopsIds.push(
         ...draft.orderedStopsIds.splice(selectedStopIndex, 1)
       );
+      const outOfSequenceIndex = draft.outOfSequenceIds.indexOf(selectedStopId);
+      if (outOfSequenceIndex >= 0) {
+        draft.outOfSequenceIds.splice(outOfSequenceIndex, 1);
+      }
       draft.stops[selectedStopId].status =
         requestType === 'delivered' ? 'completed' : 'rejected';
 
@@ -351,6 +356,7 @@ export const getForDriverSuccess = (state, { payload }) =>
       draft.status = initialState.status;
       draft.stops = {};
       draft.orderedStopsIds = [];
+      draft.outOfSequenceIds = [];
       draft.completedStopsIds = [];
       draft.deliveredStock = {};
       resetChecklistFlags(draft.checklist[state.userId]);
@@ -370,7 +376,7 @@ export const getForDriverSuccess = (state, { payload }) =>
 
     // PREPARE RAW STOPS
     const serverAddressIds = [];
-    for (const { address, orderItems } of payload.items) {
+    for (const { address, orderItems, sequenceNo } of payload.items) {
       const computedAddress =
         (address.nameOrNumber ? `${address.nameOrNumber}` : '') +
         (address.line1 ? ` ${address.line1}` : '') +
@@ -468,12 +474,23 @@ export const getForDriverSuccess = (state, { payload }) =>
           if (!draft.orderedStopsIds.includes(address.addressId)) {
             draft.orderedStopsIds.push(address.addressId);
           }
+          if (sequenceNo < 0) {
+            if (!draft.outOfSequenceIds.includes(address.addressId)) {
+              draft.outOfSequenceIds.push(address.addressId);
+            }
+          }
           break;
         case 'rejected':
         case 'completed':
           markedOrders++;
           if (!draft.completedStopsIds.includes(address.addressId)) {
             draft.completedStopsIds.push(address.addressId);
+          }
+          const outOfSequenceIndex = draft.outOfSequenceIds.indexOf(
+            address.addressId
+          );
+          if (outOfSequenceIndex >= 0) {
+            draft.outOfSequenceIds.splice(outOfSequenceIndex, 1);
           }
           break;
       }
@@ -494,6 +511,10 @@ export const getForDriverSuccess = (state, { payload }) =>
       const completedStopIndex = draft.completedStopsIds.indexOf(parseInt(key));
       if (completedStopIndex >= 0) {
         draft.completedStopsIds.splice(orderedStopIndex, 1);
+      }
+      const outOfSequenceIndex = draft.outOfSequenceIds.indexOf(parseInt(key));
+      if (outOfSequenceIndex >= 0) {
+        draft.outOfSequenceIds.splice(outOfSequenceIndex, 1);
       }
       delete draft.stops[key];
     }
@@ -823,7 +844,9 @@ export const orderedStock = state => state.delivery.orderedStock;
 
 export const orderedStopsIds = state =>
   state.delivery.optimisedRouting
-    ? state.delivery?.orderedStopsIds.slice(0, Config.OPTIMISED_STOPS_TO_SHOW)
+    ? state.delivery?.orderedStopsIds
+        .filter(sid => !state.delivery?.outOfStockIds?.includes(sid))
+        .slice(0, Config.OPTIMISED_STOPS_TO_SHOW)
     : state.delivery?.orderedStopsIds;
 
 export const selectedStop = state => {

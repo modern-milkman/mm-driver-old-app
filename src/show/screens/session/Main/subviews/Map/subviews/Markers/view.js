@@ -11,6 +11,7 @@ const Markers = props => {
     mapMarkerSize,
     optimisedRouting,
     orderedStopsIds,
+    outOfSequenceIds,
     selectedStopId,
     showDoneDeliveries,
     status
@@ -18,7 +19,9 @@ const Markers = props => {
 
   const hasMarkers =
     status !== DS.SC &&
-    (orderedStopsIds?.length > 0 || completedStopsIds?.length > 0);
+    (orderedStopsIds?.length > 0 ||
+      completedStopsIds?.length > 0 ||
+      (optimisedRouting && outOfSequenceIds?.length > 0));
   const disabled = [DS.NCI, DS.LV, DS.SSC, DS.SC].includes(status);
 
   return (
@@ -51,6 +54,14 @@ const Markers = props => {
             completed
           />
         )}
+        {optimisedRouting &&
+          outOfSequenceIds?.map(sID => (
+            <Marker
+              key={`${sID}-${mapMarkerSize}-${disabled}`}
+              id={sID}
+              disabled={disabled}
+            />
+          ))}
       </>
     )) ||
     null
@@ -64,6 +75,7 @@ Markers.propTypes = {
   mapMarkerSize: PropTypes.number,
   optimisedRouting: PropTypes.bool,
   orderedStopsIds: PropTypes.array,
+  outOfSequenceIds: PropTypes.array,
   selectedStopId: PropTypes.number,
   showDoneDeliveries: PropTypes.bool,
   status: PropTypes.string

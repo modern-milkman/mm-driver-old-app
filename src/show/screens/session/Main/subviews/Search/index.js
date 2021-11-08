@@ -16,6 +16,7 @@ export default connect(
       isOptimised: state.delivery?.stockWithData?.isOptimised || false,
       optimisedRouting: state.delivery?.optimisedRouting,
       orderedStopsIds: orderedStopsIds(state),
+      outOfSequenceIds: state.delivery?.outOfSequenceIds,
       searchValue: state.transient.searchValue,
       status: state.delivery?.status,
       stops: Object.values(state.delivery?.stops || {})
