@@ -6,9 +6,9 @@ import { NavigationEvents } from 'react-navigation';
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
 import NavigationService from 'Navigation/service';
-import { mock, deliveryStates as DS } from 'Helpers';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
+import { mock, deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
 
 import style from './style';
 
@@ -157,10 +157,7 @@ const CheckIn = props => {
     stopCount
   } = props;
 
-  const deliverProductsDisabled =
-    checklist.shiftStartVanChecks === false ||
-    checklist.loadedVan === false ||
-    [DS.DELC, DS.SEC, DS.SC].includes(status);
+  const dpDisabled = deliverProductsDisabled({ checklist, status });
 
   const checkinRows = [
     {
@@ -190,7 +187,7 @@ const CheckIn = props => {
     },
     {
       customIcon: 'deliver',
-      disabled: deliverProductsDisabled,
+      disabled: dpDisabled,
       suffixBottom: I18n.t('screens:main.descriptions.deliveryActive', {
         stopCount
       }),
@@ -202,7 +199,7 @@ const CheckIn = props => {
       }),
       rightIcon: checklist.deliveryComplete
         ? 'check'
-        : deliverProductsDisabled
+        : dpDisabled
         ? null
         : 'chevron-right',
       title: I18n.t('screens:checkIn.deliverProducts'),

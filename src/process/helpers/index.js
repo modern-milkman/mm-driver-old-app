@@ -77,6 +77,11 @@ const deliveryStates = {
 
 const deliveredStatuses = ['completed', 'rejected'];
 
+const deliverProductsDisabled = ({ checklist, status }) =>
+  checklist.shiftStartVanChecks === false ||
+  checklist.loadedVan === false ||
+  [deliveryStates.DELC, deliveryStates.SEC, deliveryStates.SC].includes(status);
+
 const deviceFrame = () => {
   const deviceHeight = Dimensions.get('screen').height;
   const windowHeight = Dimensions.get('window').height;
@@ -326,6 +331,7 @@ export {
   blacklists,
   capitalize,
   customerSatisfactionColor,
+  deliverProductsDisabled,
   deliveredStatuses,
   deliveryStates,
   deviceFrame,

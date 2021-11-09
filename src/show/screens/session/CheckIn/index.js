@@ -11,10 +11,10 @@ import Main from './view';
 
 export default connect(
   state => ({
+    checklist: checklist(state),
     itemCount: itemCount(state),
     optimisedRouting: state.delivery?.optimisedRouting,
     status: state.delivery?.status,
-    checklist: checklist(state),
     stopCount: stopCount(state)
   }),
   {

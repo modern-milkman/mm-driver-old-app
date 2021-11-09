@@ -5,6 +5,7 @@ import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import Vibration from 'Services/vibration';
 import { colors, defaults, sizes } from 'Theme';
+import { deliverProductsDisabled } from 'Helpers';
 import NavigationService from 'Navigation/service';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
@@ -98,11 +99,11 @@ const triggerLogout = ({ logout, network }) => {
 };
 
 const onOptimization = (
-  { continueDelivering, updateDeliveryProps },
+  { continueDelivering, checklist, status, updateDeliveryProps },
   optimisedRouting
 ) => {
   updateDeliveryProps({ optimisedRouting });
-  if (optimisedRouting) {
+  if (optimisedRouting && !deliverProductsDisabled({ checklist, status })) {
     continueDelivering();
   }
 };
@@ -112,6 +113,7 @@ const Settings = props => {
     biometrics,
     biometricDisable,
     buttonAccessibility,
+    checklist,
     computeDirections,
     computeShortDirections,
     continueDelivering,
@@ -124,6 +126,7 @@ const Settings = props => {
     network,
     showDoneDeliveries,
     showMapControlsOnMovement,
+    status,
     updateDeliveryProps,
     updateDeviceProps,
     vibrate
@@ -171,7 +174,9 @@ const Settings = props => {
               disabled={!isOptimised}
               value={optimisedRouting}
               onValueChange={onOptimization.bind(null, {
+                checklist,
                 continueDelivering,
+                status,
                 updateDeliveryProps
               })}
             />
@@ -431,6 +436,7 @@ Settings.propTypes = {
   biometrics: PropTypes.object,
   biometricDisable: PropTypes.func,
   buttonAccessibility: PropTypes.number,
+  checklist: PropTypes.object,
   computeDirections: PropTypes.bool,
   computeShortDirections: PropTypes.bool,
   continueDelivering: PropTypes.func,
@@ -444,6 +450,7 @@ Settings.propTypes = {
   network: PropTypes.object,
   showDoneDeliveries: PropTypes.bool,
   showMapControlsOnMovement: PropTypes.bool,
+  status: PropTypes.string,
   updateDeliveryProps: PropTypes.func,
   updateDeviceProps: PropTypes.func,
   vibrate: PropTypes.bool
