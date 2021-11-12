@@ -21,7 +21,8 @@ const focusMileage = () => {
 };
 
 const UKregex = RegExp(
-  '(^[A-Z]{2}[0-9]{2}s?[A-Z]{3}$)|(^[A-Z][0-9]{1,3}[A-Z]{3}$)|(^[A-Z]{3}[0-9]{1,3}[A-Z]$)|(^[0-9]{1,4}[A-Z]{1,2}$)|(^[0-9]{1,3}[A-Z]{1,3}$)|(^[A-Z]{1,2}[0-9]{1,4}$)|(^[A-Z]{1,3}[0-9]{1,3}$)|(^[A-Z]{1,3}[0-9]{1,4}$)|(^[0-9]{3}[DX]{1}[0-9]{3}$)'
+  '(^[A-Z]{2}([0-9]|i|o|s){2}s?[A-Z]{3}$)|(^[A-Z]([0-9]|i|o|s){1,3}[A-Z]{3}$)|(^[A-Z]{3}([0-9]|i|o|s){1,3}[A-Z]$)|(^([0-9]|i|o|s){1,4}[A-Z]{1,2}$)|(^([0-9]|i|o|s){1,3}[A-Z]{1,3}$)|(^[A-Z]{1,2}([0-9]|i|o|s){1,4}$)|(^[A-Z]{1,3}([0-9]|i|o|s){1,3}$)|(^[A-Z]{1,3}([0-9]|i|o|s){1,4}$)|(^([0-9]|i|o|s){3}[DX]{1}([0-9]|i|o|s){3}$)',
+  'i'
 );
 
 const { width } = deviceFrame();
@@ -65,7 +66,14 @@ const RegistrationMileage = ({
     });
 
     setPlateImage(data.uri);
-    setRegistration(plate);
+    updateReducerAndTransient(
+      {
+        updateTransientProps,
+        reducerMethod: setRegistration,
+        prop: 'vehicleRegistration'
+      },
+      plate
+    );
   };
 
   const smartUKFilter = async blocks => {
