@@ -2,19 +2,20 @@ import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
 import React, { useState } from 'react';
 import Config from 'react-native-config';
-import { Animated, Platform } from 'react-native';
+import { Animated, Platform, Pressable } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
-import { colors, defaults } from 'Theme';
+import { colors, defaults, sizes } from 'Theme';
 import NavigationService from 'Navigation/service';
 import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import {
   Button,
+  Image,
   List,
-  ListItem,
+  ListHeader,
   NavBar,
   Picker,
   Separator,
@@ -207,7 +208,7 @@ const showModal = (type, setModalType, setModalVisible) => {
   setModalVisible(true);
 };
 
-const { width } = deviceFrame();
+const { width, height } = deviceFrame();
 
 const Deliver = props => {
   const [modalType, setModalType] = useState('skip');
@@ -238,7 +239,7 @@ const Deliver = props => {
         const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,
-          prefix: order.quantity + ' X',
+          prefix: order.quantity,
           title: order.title,
           customIcon: 'productPlaceholder',
           disabled:
@@ -336,35 +337,43 @@ const Deliver = props => {
               opacity: contentOpacity[0]
             }
           ]}>
-          <Separator />
-          <ListItem
-            suffixBottom={I18n.t('screens:deliver.routeDescription', {
-              routeDescription
-            })}
-            suffixColor={colors.Primarylight}
-            description={I18n.t('screens:deliver.userId', {
-              userId: selectedStop?.userId
-            })}
-            disabled
-          />
-        </Animated.View>
-        <Animated.View
-          style={[
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[0] }],
-              opacity: contentOpacity[0]
-            }
-          ]}>
-          <>
-            <Separator />
-            <ListItem
-              customIcon={'location'}
-              title={selectedStop?.title}
-              titleExpands
-              disabled
-            />
-          </>
+          <RowView
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}
+            marginVertical={defaults.marginVertical / 2}>
+            <Text.Heading color={colors.secondary} numberOfLines={2}>
+              {selectedStop.title}
+            </Text.Heading>
+            {selectedStop.hasCoolBox && (
+              <RowView width={sizes.list.image + defaults.marginHorizontal / 2}>
+                <CustomIcon
+                  width={sizes.list.image}
+                  containerWidth={sizes.list.image}
+                  icon={'coolbox'}
+                  iconColor={colors.secondary}
+                  disabled
+                />
+              </RowView>
+            )}
+          </RowView>
+          <Separator marginHorizontal={defaults.marginHorizontal} />
+
+          <RowView
+            width={'auto'}
+            marginHorizontal={defaults.marginHorizontal}
+            marginVertical={defaults.marginVertical / 2}
+            justifyContent={'space-between'}>
+            <Text.Caption color={colors.secondary}>
+              {I18n.t('screens:deliver.userId', {
+                userId: selectedStop?.userId
+              })}
+            </Text.Caption>
+            <Text.Caption color={colors.secondary}>
+              {I18n.t('screens:deliver.routeDescription', {
+                routeDescription
+              })}
+            </Text.Caption>
+          </RowView>
         </Animated.View>
         <Animated.View
           style={[
@@ -380,31 +389,48 @@ const Deliver = props => {
               selectedStop.hasCoolBox) && (
               <>
                 <Separator />
-                <ListItem
+                <ListHeader
+                  title={I18n.t('screens:deliver.customer.instructions')}
+                />
+                <Pressable
                   onPress={showModal.bind(
                     null,
                     'image',
                     setModalType,
                     setModalVisible
-                  )}
-                  image={`file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`}
-                  customIcon={'frontDeliveryPlaceholder'}
-                  customIconProps={{ color: colors.primary }}
-                  customRightIconProps={{
-                    color: colors.primary
-                  }}
-                  customRightIcon={
-                    selectedStop.deliveryInstructions || selectedStop.hasImage
-                      ? 'expand'
-                      : null
-                  }
-                  title={selectedStop.deliveryInstructions}
-                  titleExpands
-                  {...(selectedStop.hasCoolBox && {
-                    secondaryCustomRightIcon: 'coolbox',
-                    secondaryCustomRightIconProps: { color: colors.secondary }
-                  })}
-                />
+                  )}>
+                  <RowView
+                    width={'auto'}
+                    marginHorizontal={defaults.marginHorizontal}
+                    marginVertical={defaults.marginVertical / 2}
+                    justifyContent={'space-between'}>
+                    <Image
+                      style={style.image}
+                      source={{
+                        uri: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
+                      }}
+                      resizeMode={'contain'}
+                      width={sizes.list.image * 2}
+                      renderFallback={() => (
+                        <CustomIcon
+                          width={sizes.list.image * 2}
+                          containerWidth={sizes.list.image * 2}
+                          icon={'frontDeliveryPlaceholder'}
+                          iconColor={colors.primary}
+                          disabled
+                        />
+                      )}
+                    />
+                    <RowView
+                      flex={1}
+                      width={'auto'}
+                      marginLeft={defaults.marginHorizontal / 2}>
+                      <Text.Input color={colors.secondary} numberOfLines={4}>
+                        {selectedStop.deliveryInstructions}
+                      </Text.Input>
+                    </RowView>
+                  </RowView>
+                </Pressable>
               </>
             )}
         </Animated.View>
@@ -421,15 +447,19 @@ const Deliver = props => {
             <>
               <Separator />
               <List
-                data={[
-                  {
-                    title: I18n.t('screens:deliver.deliveryItems'),
-                    data: optimizedStopOrders
-                  }
-                ]}
+                data={
+                  height > 700
+                    ? [
+                        {
+                          title: I18n.t('screens:deliver.deliveryItems'),
+                          data: optimizedStopOrders
+                        }
+                      ]
+                    : optimizedStopOrders
+                }
+                hasSections={height > 700}
                 onLongPress={toggleOutOfStock}
                 onPress={toggleConfirmedItem}
-                hasSections
               />
             </>
           )}

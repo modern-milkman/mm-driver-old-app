@@ -121,6 +121,7 @@ const renderItemInterface = (
     customRightIconProps,
     description,
     descriptionColor = colors.secondary,
+    disabled: listItemDisabled,
     enforceLayout = false,
     icon,
     iconColor = colors.secondary,
@@ -156,7 +157,8 @@ const renderItemInterface = (
     onPress?.bind(null, key) || listOnPress?.bind(null, key);
   const computedOnLongPress =
     onLongPress?.bind(null, key) || listOnLongPress?.bind(null, key);
-  const disabled = listDisabled || section?.disabled || false;
+  const disabled =
+    listDisabled || section?.disabled || listItemDisabled || false;
 
   return (
     <TouchableOpacity

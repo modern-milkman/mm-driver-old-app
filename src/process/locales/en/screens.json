@@ -41,12 +41,8 @@
     "title": "Damage Report"
   },
   "deliver": {
-    "userId": "User ID #{{userId}}",
-    "deliveryItems": "Delivery items",
-    "viewClaims": "View claims ({{claimNo}})",
-    "routeDescription": "Route ID #{{routeDescription}}",
-    "modal": {
-      "inputPlaceholder": "Type your reason here"
+    "customer": {
+      "instructions": "Customer instructions"
     },
     "customerIssue": {
       "modal": {
@@ -76,10 +72,17 @@
         "driverReplies": "Driver Replies"
       }
     },
+    "deliveryItems": "Delivery items",
+    "modal": {
+      "inputPlaceholder": "Type your reason here"
+    },
+    "routeDescription": "Route ID #{{routeDescription}}",
     "status": {
       "completed": "Delivered",
       "rejected": "Skipped"
-    }
+    },
+    "userId": "User ID #{{userId}}",
+    "viewClaims": "View claims ({{claimNo}})"
   },
   "emptiesCollected": {
     "title": "Empties Collected",
