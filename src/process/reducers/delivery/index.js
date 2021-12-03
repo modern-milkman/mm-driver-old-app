@@ -359,10 +359,9 @@ export const getForDriverSuccess = (state, { payload }) =>
       draft.outOfSequenceIds = [];
       draft.completedStopsIds = [];
       draft.deliveredStock = {};
+      draft.optimisedRouting = draft.stockWithData.isOptimised;
       resetChecklistFlags(draft.checklist[state.userId]);
     }
-
-    draft.optimisedRouting = draft.stockWithData.isOptimised;
 
     /*
     BE deliveryState values for orderItems
