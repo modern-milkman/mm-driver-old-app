@@ -29,8 +29,8 @@ const Markers = props => {
       <>
         {orderedStopsIds?.map((sID, index) => (
           <Marker
-            key={`${sID}-${mapMarkerSize}-${disabled}-${
-              optimisedRouting ? index + 1 : 0
+            key={`${sID}-${mapMarkerSize}-${disabled}-${index + 1}-${
+              optimisedRouting ? 'ROON' : 'ROOFF'
             }`}
             id={sID}
             disabled={disabled}
