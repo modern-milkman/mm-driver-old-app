@@ -14,7 +14,7 @@ import {
 import Api from 'Api';
 import store from 'Redux/store';
 import I18n from 'Locales/I18n';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as GrowlCreators, Types as GrowlTypes } from 'Reducers/growl';

@@ -1,9 +1,10 @@
 import { InteractionManager } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
 
-import { blacklists } from 'Helpers';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
+import { createNavigationContainerRef } from '@react-navigation/native';
+
+export const navigationRef = createNavigationContainerRef();
 const config = {
   goBackDisabled: false
 };
@@ -12,12 +13,11 @@ const NavigationService = {
   goBack: props => {
     if (!config.goBackDisabled) {
       config.goBackDisabled = true;
-      if (config.navigator) {
+      if (navigationRef.isReady()) {
         if (props?.beforeCallback) {
           props.beforeCallback();
         }
-
-        config.navigator.dispatch(NavigationActions.back({}));
+        navigationRef.goBack();
         config.storeDispatcher({
           type: ApplicationTypes.NAVIGATE_BACK
         });
@@ -27,7 +27,6 @@ const NavigationService = {
         InteractionManager.runAfterInteractions(() => {
           config.goBackDisabled = false;
         });
-
         if (props?.afterCallback) {
           props.afterCallback();
         }
@@ -36,34 +35,25 @@ const NavigationService = {
       }
     }
   },
-  setNavigator: (nav, storeDispatcher) => {
-    if (nav && storeDispatcher) {
-      config.navigator = nav;
+  setNavigator: storeDispatcher => {
+    if (storeDispatcher) {
       config.storeDispatcher = storeDispatcher;
     }
   },
   navigate: navigationParams => {
     const { routeName, params, action = [], key = '' } = navigationParams;
-    if (config.navigator && routeName) {
-      if (blacklists.resetStackRoutes.includes(routeName)) {
-        if (action && action.push) {
-          action.push(StackActions.reset({ index: 0 }));
-        }
-        config.navigator.dispatch(
-          NavigationActions.navigate({ routeName, params, action, key })
-        );
-      } else {
-        config.navigator.dispatch(
-          NavigationActions.navigate({ routeName, params, action, key })
-        );
+    if (navigationRef.isReady() && routeName) {
+      navigationRef.navigate(routeName, params);
+
+      if (config.storeDispatcher) {
+        config.storeDispatcher({
+          type: ApplicationTypes.NAVIGATE,
+          routeName,
+          params,
+          action,
+          key
+        });
       }
-      config.storeDispatcher({
-        type: ApplicationTypes.NAVIGATE,
-        routeName,
-        params,
-        action,
-        key
-      });
     }
   }
 };

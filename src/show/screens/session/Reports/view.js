@@ -1,18 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Config from 'react-native-config';
 import { ActivityIndicator } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
 
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, ListHeader, NavBar, ProgressBar, Text } from 'Components';
 
 let reportsTimer = null;
 
-const startTimer = (setProcessing) => {
+const startTimer = setProcessing => {
   if (setProcessing) {
     reportsTimer = setTimeout(
       setProcessing.bind(null, false),
@@ -21,7 +20,7 @@ const startTimer = (setProcessing) => {
   }
 };
 
-const clearTimer = (setProcessing) => {
+const clearTimer = setProcessing => {
   clearTimeout(reportsTimer);
 };
 
@@ -138,18 +137,34 @@ const renderSyncingData = ({
 );
 
 const Reports = ({
+  navigation,
   requestQueues,
   shareOfflineData,
   syncingData,
   syncOffline
 }) => {
   const [processing, setProcessing] = useState(true);
+
+  useEffect(() => {
+    const blurListener = navigation.addListener(
+      'blur',
+      clearTimer.bind(null, setProcessing)
+    );
+    const focusListener = navigation.addListener(
+      'focus',
+      startTimer.bind(null, setProcessing)
+    );
+
+    const unsubscribe = () => {
+      blurListener();
+      focusListener();
+    };
+
+    return unsubscribe;
+  }, [navigation, setProcessing]);
+
   return (
-    <SafeAreaView top bottom>
-      <NavigationEvents
-        onDidFocus={startTimer.bind(null, setProcessing)}
-        onDidBlur={clearTimer.bind(null, setProcessing)}
-      />
+    <SafeAreaView>
       <ColumnView
         flex={1}
         justifyContent={'flex-start'}
@@ -199,6 +214,7 @@ const Reports = ({
 };
 
 Reports.propTypes = {
+  navigation: PropTypes.object,
   requestQueues: PropTypes.object,
   shareOfflineData: PropTypes.func,
   syncingData: PropTypes.bool,

@@ -35,7 +35,6 @@ const initialState = {
   lastRouteParams: null,
   mounted: false,
   processing: false,
-  sideBarOpen: false,
   stackRoute: ['Home'],
   userSessionPresent: false
 };

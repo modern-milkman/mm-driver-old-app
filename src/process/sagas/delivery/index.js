@@ -5,7 +5,7 @@ import { call, put, select } from 'redux-saga/effects';
 import Api from 'Api';
 import I18n from 'Locales/I18n';
 import Repositories from 'Repositories';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';

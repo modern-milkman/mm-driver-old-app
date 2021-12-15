@@ -8,6 +8,7 @@ export default connect(state => {
   const selectedStopId = state.delivery?.selectedStopId;
 
   return {
+    buttonAccessibility: state.device.buttonAccessibility,
     checklist: checklist(state),
     foregroundSize: state.device.foregroundSize,
     isOptimised: state.delivery?.stockWithData?.isOptimised || false,

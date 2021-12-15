@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
-import React, { useState } from 'react';
 import Config from 'react-native-config';
-import { Animated, Platform, Pressable } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
+import { Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { colors, defaults, sizes } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import {
@@ -29,81 +28,15 @@ import style from './style';
 
 const reasonMessageRef = React.createRef();
 
-const forFade = ({ current, closing }) => ({
-  cardStyle: {
-    opacity: current.progress
-  }
-});
-
-const animateContent = ({
-  contentTranslateYValue,
-  contentOpacityValue,
-  callback = mock,
-  reverse = false
-}) => {
-  let index = 0;
-  let delayIndex = 0;
-  if (reverse) {
-    index = contentTranslateY.length - 1;
-  }
-  const runAnimations = [];
-  for (
-    index;
-    (index < contentTranslateY.length && !reverse) || (index >= 0 && reverse);
-    reverse ? (index--, delayIndex++) : (index++, delayIndex++)
-  ) {
-    runAnimations.push(
-      Animated.timing(contentTranslateY[index], {
-        toValue: contentTranslateYValue,
-        useNativeDriver: true,
-        duration: 75,
-        delay: delayIndex * 100
-      }),
-      Animated.timing(contentOpacity[index], {
-        toValue: contentOpacityValue,
-        useNativeDriver: true,
-        duration: 75,
-        delay: delayIndex * 100
-      })
-    );
-  }
-  Animated.parallel(runAnimations).start(callback);
-};
-
-const contentTranslateY = [
-  new Animated.Value(100),
-  new Animated.Value(100),
-  new Animated.Value(100)
-];
-const contentOpacity = [
-  new Animated.Value(0),
-  new Animated.Value(0),
-  new Animated.Value(0)
-];
-
 const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
 };
 
-const navigateBack = callback => {
-  animateContent({
-    contentTranslateYValue: 100,
-    contentOpacityValue: 0,
-    callback,
-    reverse: true
-  });
-};
-
 const rejectAndNavigateBack = (callback, setModalVisible) => {
   setModalVisible(false);
-  setTimeout(
-    NavigationService.goBack.bind(null, {
-      beforeCallback: navigateBack.bind(null, callback)
-    }),
-    Platform.OS === 'ios' ? 250 : 1000
-    // some androids still have trouble with too many operations at a time
-    // should be removed once upgraded to v6 navigation / native animations
-  );
+  NavigationService.goBack({
+    beforeCallback: callback
+  });
 };
 
 const renderFallbackCustomerImage = width => (
@@ -162,7 +95,7 @@ const renderSkipModal = ({
         </RowView>
       </ColumnView>
 
-      <Separator color={colors.input} width={'100%'} />
+      <Separator width={'100%'} />
 
       <RowView>
         <Button.Tertiary
@@ -217,6 +150,7 @@ const Deliver = props => {
   const {
     allItemsDone,
     confirmedItem,
+    navigation,
     outOfStockIds,
     routeDescription,
     selectedStop,
@@ -226,13 +160,9 @@ const Deliver = props => {
     toggleOutOfStock
   } = props;
 
-  if (!selectedStop) {
-    return null;
-  }
-
-  const {
-    claims: { acknowledgedList, showClaimModal, unacknowledgedList }
-  } = selectedStop;
+  const acknowledgedList = selectedStop?.claims.acknowledgedList || [];
+  const unacknowledgedList = selectedStop?.claims.unacknowledgedList || [];
+  const showClaimModal = selectedStop?.claims.showClaimModal;
 
   const optimizedStopOrders = selectedStop
     ? Object.values(selectedStop.orderItems).map(order => {
@@ -244,7 +174,7 @@ const Deliver = props => {
           customIcon: 'productPlaceholder',
           disabled:
             deliveredStatuses.includes(selectedStop.status) ||
-            unacknowledgedList.length > 0,
+            unacknowledgedList?.length > 0,
           image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${order.productId}`,
           rightIcon:
             isOutOfStock || order.status === 3
@@ -261,20 +191,24 @@ const Deliver = props => {
       })
     : null;
 
-  return (
-    <SafeAreaView top bottom>
-      <NavigationEvents
-        onDidFocus={animateContent.bind(null, {
-          contentTranslateYValue: 0,
-          contentOpacityValue: 1,
-          callback: showClaimModal
-            ? NavigationService.navigate.bind(null, {
-                routeName: 'CustomerIssueModal'
-              })
-            : null
-        })}
-      />
+  useEffect(() => {
+    const focusListener = navigation.addListener('focus', () => {
+      if (showClaimModal) {
+        NavigationService.navigate({
+          routeName: 'CustomerIssueModal'
+        });
+      }
+    });
 
+    return focusListener;
+  }, [showClaimModal, navigation]);
+
+  if (!selectedStop) {
+    return null;
+  }
+
+  return (
+    <SafeAreaView>
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
         {modalType === 'skip' &&
           renderSkipModal({ ...props, width, setModalVisible })}
@@ -292,12 +226,11 @@ const Deliver = props => {
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}
-        justifyContent={'flex-start'}>
+        justifyContent={'flex-start'}
+        alignItems={'stretch'}>
         <NavBar
           leftIcon={'chevron-down'}
-          leftIconAction={NavigationService.goBack.bind(null, {
-            beforeCallback: navigateBack.bind(null, null)
-          })}
+          leftIconAction={NavigationService.goBack}
           title={I18n.t('general:details')}
           rightCustomIcon={
             acknowledgedList?.length > 0 ? 'customerIssue' : null
@@ -308,15 +241,8 @@ const Deliver = props => {
           })}
         />
         {selectedStop && selectedStop.status !== 'pending' && (
-          <Animated.View
-            style={[
-              style.fullWidth,
-              {
-                transform: [{ translateY: contentTranslateY[0] }],
-                opacity: contentOpacity[0]
-              }
-            ]}>
-            <Separator />
+          <>
+            <Separator width={'100%'} />
             <RowView
               backgroundColor={
                 selectedStop.status === 'completed'
@@ -327,201 +253,166 @@ const Deliver = props => {
                 {I18n.t(`screens:deliver.status.${selectedStop.status}`)}
               </Text.Button>
             </RowView>
-          </Animated.View>
+          </>
         )}
-        <Animated.View
-          style={[
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[0] }],
-              opacity: contentOpacity[0]
-            }
-          ]}>
-          <RowView
-            width={'auto'}
-            marginHorizontal={defaults.marginHorizontal}
-            marginVertical={defaults.marginVertical / 2}>
-            <Text.Heading color={colors.secondary} numberOfLines={2}>
-              {selectedStop.title}
-            </Text.Heading>
-            {selectedStop.hasCoolBox && (
-              <RowView width={sizes.list.image + defaults.marginHorizontal / 2}>
-                <CustomIcon
-                  width={sizes.list.image}
-                  containerWidth={sizes.list.image}
-                  icon={'coolbox'}
-                  iconColor={colors.secondary}
-                  disabled
-                />
-              </RowView>
-            )}
-          </RowView>
-          <Separator marginHorizontal={defaults.marginHorizontal} />
-
-          <RowView
-            width={'auto'}
-            marginHorizontal={defaults.marginHorizontal}
-            marginVertical={defaults.marginVertical / 2}
-            justifyContent={'space-between'}>
-            <Text.Caption color={colors.secondary}>
-              {I18n.t('screens:deliver.userId', {
-                userId: selectedStop?.userId
-              })}
-            </Text.Caption>
-            <Text.Caption color={colors.secondary}>
-              {I18n.t('screens:deliver.routeDescription', {
-                routeDescription
-              })}
-            </Text.Caption>
-          </RowView>
-        </Animated.View>
-        <Animated.View
-          style={[
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[0] }],
-              opacity: contentOpacity[0]
-            }
-          ]}>
-          {selectedStop &&
-            (selectedStop.deliveryInstructions ||
-              selectedStop.hasImage ||
-              selectedStop.hasCoolBox) && (
-              <>
-                <Separator />
-                <ListHeader
-                  title={I18n.t('screens:deliver.customer.instructions')}
-                />
-                <Pressable
-                  onPress={showModal.bind(
-                    null,
-                    'image',
-                    setModalType,
-                    setModalVisible
-                  )}>
-                  <RowView
-                    width={'auto'}
-                    marginHorizontal={defaults.marginHorizontal}
-                    marginVertical={defaults.marginVertical / 2}
-                    justifyContent={'space-between'}>
-                    <Image
-                      style={style.image}
-                      source={{
-                        uri: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
-                      }}
-                      resizeMode={'contain'}
-                      width={sizes.list.image * 2}
-                      renderFallback={() => (
-                        <CustomIcon
-                          width={sizes.list.image * 2}
-                          containerWidth={sizes.list.image * 2}
-                          icon={'frontDeliveryPlaceholder'}
-                          iconColor={colors.primary}
-                          disabled
-                        />
-                      )}
-                    />
-                    <RowView
-                      flex={1}
-                      width={'auto'}
-                      marginLeft={defaults.marginHorizontal / 2}>
-                      <Text.Input color={colors.secondary} numberOfLines={4}>
-                        {selectedStop.deliveryInstructions}
-                      </Text.Input>
-                    </RowView>
-                  </RowView>
-                </Pressable>
-              </>
-            )}
-        </Animated.View>
-        <Animated.View
-          style={[
-            style.flex1,
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[1] }],
-              opacity: contentOpacity[1]
-            }
-          ]}>
-          {optimizedStopOrders && (
-            <>
-              <Separator />
-              <List
-                data={
-                  height > 700
-                    ? [
-                        {
-                          title: I18n.t('screens:deliver.deliveryItems'),
-                          data: optimizedStopOrders
-                        }
-                      ]
-                    : optimizedStopOrders
-                }
-                hasSections={height > 700}
-                onLongPress={toggleOutOfStock}
-                onPress={toggleConfirmedItem}
+        <RowView
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}
+          marginVertical={defaults.marginVertical / 2}>
+          <Text.Heading color={colors.secondary} numberOfLines={2}>
+            {selectedStop.title}
+          </Text.Heading>
+          {selectedStop.hasCoolBox && (
+            <RowView width={sizes.list.image + defaults.marginHorizontal / 2}>
+              <CustomIcon
+                width={sizes.list.image}
+                containerWidth={sizes.list.image}
+                icon={'coolbox'}
+                iconColor={colors.secondary}
+                disabled
               />
-            </>
+            </RowView>
           )}
-        </Animated.View>
-      </ColumnView>
-      {selectedStop && selectedStop.status === 'pending' && (
-        <Animated.View
-          style={[
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[2] }],
-              opacity: contentOpacity[2]
-            }
-          ]}>
-          <ColumnView
-            width={'auto'}
-            marginHorizontal={defaults.marginHorizontal}
-            marginTop={defaults.marginVertical / 2}>
-            {unacknowledgedList.length > 0 && (
-              <RowView marginVertical={defaults.marginVertical}>
-                <Button.Secondary
-                  title={I18n.t('screens:deliver.viewClaims', {
-                    claimNo: unacknowledgedList.length
-                  })}
-                  onPress={showClaims.bind(null, toggleModal)}
-                />
-              </RowView>
-            )}
-            {unacknowledgedList.length === 0 && (
-              <>
-                <RowView>
-                  <Button.Primary
-                    title={I18n.t('general:done')}
-                    onPress={NavigationService.goBack.bind(null, {
-                      beforeCallback: navigateBack.bind(
-                        null,
-                        setDelivered.bind(
-                          null,
-                          selectedStop.orderId,
-                          selectedStop.key,
-                          outOfStockIds
-                        )
-                      )
-                    })}
-                    disabled={!allItemsDone}
-                  />
-                </RowView>
-                <RowView marginVertical={defaults.marginVertical}>
-                  <Button.Outline
-                    title={I18n.t('general:skip')}
-                    onPress={showModal.bind(
-                      null,
-                      'skip',
-                      setModalType,
-                      setModalVisible
+        </RowView>
+
+        <Separator
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}
+        />
+
+        <RowView
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}
+          marginVertical={defaults.marginVertical / 2}
+          justifyContent={'space-between'}>
+          <Text.Caption color={colors.secondary}>
+            {I18n.t('screens:deliver.userId', {
+              userId: selectedStop?.userId
+            })}
+          </Text.Caption>
+          <Text.Caption color={colors.secondary}>
+            {I18n.t('screens:deliver.routeDescription', {
+              routeDescription
+            })}
+          </Text.Caption>
+        </RowView>
+
+        {selectedStop &&
+          (selectedStop.deliveryInstructions ||
+            selectedStop.hasImage ||
+            selectedStop.hasCoolBox) && (
+            <>
+              <Separator width={'100%'} />
+              <ListHeader
+                title={I18n.t('screens:deliver.customer.instructions')}
+              />
+              <Pressable
+                onPress={showModal.bind(
+                  null,
+                  'image',
+                  setModalType,
+                  setModalVisible
+                )}>
+                <RowView
+                  width={'auto'}
+                  marginHorizontal={defaults.marginHorizontal}
+                  marginVertical={defaults.marginVertical / 2}
+                  justifyContent={'space-between'}>
+                  <Image
+                    style={style.image}
+                    source={{
+                      uri: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
+                    }}
+                    resizeMode={'contain'}
+                    width={sizes.list.image * 2}
+                    renderFallback={() => (
+                      <CustomIcon
+                        width={sizes.list.image * 2}
+                        containerWidth={sizes.list.image * 2}
+                        icon={'frontDeliveryPlaceholder'}
+                        iconColor={colors.primary}
+                        disabled
+                      />
                     )}
                   />
+                  <RowView
+                    flex={1}
+                    width={'auto'}
+                    marginLeft={defaults.marginHorizontal / 2}>
+                    <Text.Input color={colors.secondary} numberOfLines={4}>
+                      {selectedStop.deliveryInstructions}
+                    </Text.Input>
+                  </RowView>
                 </RowView>
-              </>
-            )}
-          </ColumnView>
-        </Animated.View>
+              </Pressable>
+            </>
+          )}
+        {optimizedStopOrders && (
+          <>
+            <Separator width={'100%'} />
+            <List
+              data={
+                height > 700
+                  ? [
+                      {
+                        title: I18n.t('screens:deliver.deliveryItems'),
+                        data: optimizedStopOrders
+                      }
+                    ]
+                  : optimizedStopOrders
+              }
+              hasSections={height > 700}
+              onLongPress={toggleOutOfStock}
+              onPress={toggleConfirmedItem}
+            />
+          </>
+        )}
+      </ColumnView>
+      {selectedStop && selectedStop.status === 'pending' && (
+        <ColumnView
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}
+          marginTop={defaults.marginVertical / 2}>
+          {unacknowledgedList?.length > 0 && (
+            <RowView marginVertical={defaults.marginVertical}>
+              <Button.Secondary
+                title={I18n.t('screens:deliver.viewClaims', {
+                  claimNo: unacknowledgedList?.length
+                })}
+                onPress={showClaims.bind(null, toggleModal)}
+              />
+            </RowView>
+          )}
+          {unacknowledgedList?.length === 0 && (
+            <>
+              <RowView>
+                <Button.Primary
+                  title={I18n.t('general:done')}
+                  onPress={NavigationService.goBack.bind(null, {
+                    beforeCallback: setDelivered.bind(
+                      null,
+                      selectedStop.orderId,
+                      selectedStop.key,
+                      outOfStockIds
+                    )
+                  })}
+                  disabled={!allItemsDone}
+                />
+              </RowView>
+              <RowView marginVertical={defaults.marginVertical}>
+                <Button.Outline
+                  title={I18n.t('general:skip')}
+                  onPress={showModal.bind(
+                    null,
+                    'skip',
+                    setModalType,
+                    setModalVisible
+                  )}
+                />
+              </RowView>
+            </>
+          )}
+        </ColumnView>
       )}
     </SafeAreaView>
   );
@@ -530,6 +421,7 @@ const Deliver = props => {
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
   confirmedItem: PropTypes.array,
+  navigation: PropTypes.object,
   outOfStockIds: PropTypes.array,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
@@ -555,10 +447,6 @@ Deliver.defaultProps = {
   toggleModal: mock,
   toggleOutOfStock: mock,
   updateTransientProps: mock
-};
-
-Deliver.navigationOptions = {
-  cardStyleInterpolator: forFade
 };
 
 export default Deliver;

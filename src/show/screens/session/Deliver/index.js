@@ -6,7 +6,7 @@ import { Creators as deliveryActions, selectedStop } from 'Reducers/delivery';
 import Deliver from './view';
 
 export default connect(
-  (state) => {
+  state => {
     return {
       allItemsDone: state.delivery?.allItemsDone,
       selectedStop: selectedStop(state),

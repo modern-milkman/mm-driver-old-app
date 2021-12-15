@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
-import React, { useState, useRef } from 'react';
-import NavigationService from 'Navigation/service';
+import React, { useState, useRef, useEffect } from 'react';
+import NavigationService from 'Services/navigation';
 import { Platform, Pressable } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
-
 import I18n from 'Locales/I18n';
 import { defaults, colors } from 'Theme';
 import { deviceFrame, mock, plateRecognition } from 'Helpers';
@@ -41,6 +39,7 @@ const RegistrationMileage = ({
   currentMileage,
   currentMileageErrorMessage,
   currentMileageHasError,
+  navigation,
   payload,
   setMileage,
   setRegistration,
@@ -95,14 +94,20 @@ const RegistrationMileage = ({
     }
   };
 
+  useEffect(() => {
+    const focusListener = navigation.addListener(
+      'focus',
+      updateTransientProps.bind(null, {
+        currentMileage: payloadCurrentMileage,
+        vehicleRegistration: payloadVehicleRegistration
+      })
+    );
+
+    return focusListener;
+  });
+
   return (
-    <SafeAreaView top bottom>
-      <NavigationEvents
-        onWillFocus={updateTransientProps.bind(null, {
-          currentMileage: payloadCurrentMileage,
-          vehicleRegistration: payloadVehicleRegistration
-        })}
-      />
+    <SafeAreaView>
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}
@@ -246,6 +251,7 @@ RegistrationMileage.propTypes = {
   currentMileage: PropTypes.string,
   currentMileageErrorMessage: PropTypes.string,
   currentMileageHasError: PropTypes.bool,
+  navigation: PropTypes.object,
   payload: PropTypes.object,
   setMileage: PropTypes.func,
   setRegistration: PropTypes.func,

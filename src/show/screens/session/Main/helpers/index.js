@@ -5,9 +5,7 @@ import Alert from 'Services/alert';
 import actionSheet from 'Services/actionSheet';
 import Analytics, { EVENTS } from 'Services/analytics';
 
-import configuration from './configuration';
-
-const appName = (type) => {
+const appName = type => {
   switch (type) {
     case 'maps':
       return 'Apple Maps';
@@ -109,4 +107,4 @@ const openNavigation = ({
   });
 };
 
-export { configuration, navigateInSheet };
+export { navigateInSheet };

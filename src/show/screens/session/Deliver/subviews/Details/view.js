@@ -7,7 +7,7 @@ import I18n from 'Locales/I18n';
 import { formatDate, mock } from 'Helpers';
 import { renderImageTextModal } from 'Renders';
 import { defaults, colors, sizes } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import { Button, Label, List, ListItem, NavBar, Separator } from 'Components';
 
@@ -133,7 +133,7 @@ const CustomerIssueDetails = props => {
   }
 
   return (
-    <SafeAreaView top bottom>
+    <SafeAreaView>
       <NavBar
         leftIcon={'chevron-left'}
         leftIconAction={NavigationService.goBack}

@@ -24,7 +24,6 @@ export default connect(
   },
   {
     updateDeviceProps: deviceActions.updateProps,
-    updateProps: deliveryActions.updateProps,
     updateSelectedStop: deliveryActions.updateSelectedStop,
     updateTransientProps: transientActions.updateProps
   }

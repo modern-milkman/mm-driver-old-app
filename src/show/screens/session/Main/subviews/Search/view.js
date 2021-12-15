@@ -31,7 +31,6 @@ const Search = props => {
     optimisedRouting,
     orderedStopsIds,
     outOfSequenceIds,
-    panY,
     searchValue,
     status,
     stops,
@@ -141,8 +140,7 @@ const Search = props => {
           <Animated.View
             style={[
               {
-                top,
-                transform: [{ translateY: panY }]
+                top
               }
             ]}>
             <RowView
@@ -215,12 +213,10 @@ Search.propTypes = {
   optimisedRouting: PropTypes.bool,
   orderedStopsIds: PropTypes.array,
   outOfSequenceIds: PropTypes.array,
-  panY: PropTypes.object,
   searchValue: PropTypes.string,
   status: PropTypes.string,
   stops: PropTypes.array,
   updateDeviceProps: PropTypes.func,
-  updateProps: PropTypes.func,
   updateSelectedStop: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
@@ -231,11 +227,9 @@ Search.defaultProps = {
   optimisedRouting: true,
   orderedStopsIds: [],
   outOfSequenceIds: [],
-  panY: new Animated.Value(0),
   searchValue: '',
   stops: [],
   updateDeviceProps: mock,
-  updateProps: mock,
   updateSelectedStop: mock,
   updateTransientProps: mock
 };

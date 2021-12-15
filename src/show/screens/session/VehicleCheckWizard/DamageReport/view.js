@@ -7,7 +7,7 @@ import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import actionSheet from 'Services/actionSheet';
 import { sizes, colors, defaults } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { SafeAreaView, RowView, ColumnView } from 'Containers';
 import { Image, Button, NavBar, Text, TextInput } from 'Components';
 
@@ -65,7 +65,7 @@ const DamageReport = ({
   const mainActionTitle = I18n.t(`general:${skip ? 'skip' : 'next'}`);
 
   return (
-    <SafeAreaView top bottom>
+    <SafeAreaView>
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}

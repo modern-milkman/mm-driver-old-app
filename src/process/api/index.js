@@ -5,7 +5,7 @@ import Config from 'react-native-config';
 
 import store from 'Redux/store';
 import repositories from 'Repositories';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
 import EncryptedStorage from 'Services/encryptedStorage';

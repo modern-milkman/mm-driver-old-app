@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { Button, List, NavBar } from 'Components';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 
@@ -41,7 +41,7 @@ const Checklist = ({
     });
   }
   return (
-    <SafeAreaView top bottom>
+    <SafeAreaView>
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}

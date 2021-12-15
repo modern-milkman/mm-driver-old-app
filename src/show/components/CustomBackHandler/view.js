@@ -4,14 +4,12 @@ import { InteractionManager } from 'react-native';
 import { useBackHandler } from '@react-native-community/hooks';
 
 import { defaultRoutes, mock } from 'Helpers';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 
 const customBackHandlerCallback = ({
   internallyDisabled,
   lastRoute,
-  sideBarOpen,
-  toggleModal,
-  updateProps
+  toggleModal
 }) => {
   if (!internallyDisabled.current) {
     internallyDisabled.current = true;
@@ -21,9 +19,6 @@ const customBackHandlerCallback = ({
         return false;
 
       case 'Main':
-        if (sideBarOpen) {
-          updateProps({ sideBarOpen: false });
-        }
         internallyDisabled.current = false;
         return true;
       case 'CustomerIssueModal':
@@ -46,20 +41,13 @@ const customBackHandlerCallback = ({
   }
 };
 
-const CustomBackHandler = ({
-  lastRoute,
-  sideBarOpen,
-  toggleModal,
-  updateProps
-}) => {
+const CustomBackHandler = ({ lastRoute, toggleModal }) => {
   const internallyDisabled = useRef(false);
   useBackHandler(
     customBackHandlerCallback.bind(null, {
       internallyDisabled,
       lastRoute,
-      sideBarOpen,
-      toggleModal,
-      updateProps
+      toggleModal
     })
   );
 
@@ -68,23 +56,16 @@ const CustomBackHandler = ({
 
 CustomBackHandler.propTypes = {
   lastRoute: PropTypes.string,
-  sideBarOpen: PropTypes.bool,
-  toggleModal: PropTypes.func,
-  updateProps: PropTypes.func
+  toggleModal: PropTypes.func
 };
 
 CustomBackHandler.defaultProps = {
   lastRoute: defaultRoutes.public,
-  sideBarOpen: false,
-  toggleModal: mock,
-  updateProps: mock
+  toggleModal: mock
 };
 
 const areEqual = (prevProps, nextProps) => {
-  return !(
-    prevProps.sideBarOpen !== nextProps.sideBarOpen ||
-    prevProps.lastRoute !== nextProps.lastRoute
-  );
+  return !(prevProps.lastRoute !== nextProps.lastRoute);
 };
 
 export default React.memo(CustomBackHandler, areEqual);

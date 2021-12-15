@@ -6,8 +6,7 @@ alignItems      - horizontal alignment / secondary axis
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView } from '@react-navigation/native';
-import { View, Animated } from 'react-native';
+import { View, Animated, ScrollView } from 'react-native';
 
 import { shadows } from 'Theme';
 

@@ -8,7 +8,7 @@ import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
 import store from 'Redux/store';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { defaultRoutes, isAppInstalled } from 'Helpers';
 import EncryptedStorage from 'Services/encryptedStorage';

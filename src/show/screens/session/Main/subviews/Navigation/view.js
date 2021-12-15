@@ -1,18 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Animated, Platform, Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { Icon, Label, ProgressBar, Text } from 'Components';
-import { statusBarHeight, deliveryStates as DS, deviceFrame } from 'Helpers';
+import { deliveryStates as DS, deviceFrame } from 'Helpers';
 
 import style from './style';
-
-const navigationBottom = Platform.OS === 'android' ? -statusBarHeight() : 0;
 
 const renderCountDown = (completed, stopCount) => (
   <>
@@ -71,12 +69,11 @@ const Navigation = props => {
     countDown,
     lowConnection,
     network,
-    paddingBottom,
-    panY,
+    openDrawer,
+
     requestQueues,
     status,
-    stopCount,
-    updateProps
+    stopCount
   } = props;
 
   const completed = completedStopsIds.length;
@@ -86,15 +83,7 @@ const Navigation = props => {
   const { width } = deviceFrame();
 
   return (
-    <Animated.View
-      style={[
-        style.container,
-        {
-          bottom: navigationBottom,
-          paddingBottom,
-          transform: [{ translateY: panY }]
-        }
-      ]}>
+    <View style={[style.container]}>
       <RowView
         justifyContent={'space-between'}
         height={48}
@@ -106,7 +95,7 @@ const Navigation = props => {
           width={30}
           bgColor={'transparent'}
           icon={'hamburger'}
-          onPress={() => updateProps({ sideBarOpen: true })}
+          onPress={openDrawer}
         />
         {status === DS.DEL && (
           <RowView
@@ -137,7 +126,7 @@ const Navigation = props => {
           network.status === 0 &&
           renderLowConnection()}
       </RowView>
-    </Animated.View>
+    </View>
   );
 };
 
@@ -145,7 +134,6 @@ Navigation.defaultProps = {
   countDown: false,
   completedStopsIds: [],
   lowConnection: false,
-  panY: new Animated.Value(0),
   status: DS.NCI,
   stopCount: 0
 };
@@ -155,12 +143,10 @@ Navigation.propTypes = {
   completedStopsIds: PropTypes.array,
   lowConnection: PropTypes.bool,
   network: PropTypes.object,
-  paddingBottom: PropTypes.number,
-  panY: PropTypes.object,
+  openDrawer: PropTypes.func,
   requestQueues: PropTypes.object,
   status: PropTypes.string,
-  stopCount: PropTypes.number,
-  updateProps: PropTypes.func
+  stopCount: PropTypes.number
 };
 
 export default Navigation;

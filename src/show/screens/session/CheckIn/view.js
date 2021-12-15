@@ -1,81 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Animated } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
+import { View } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
-import { mock, deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
+import { deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
 
 import style from './style';
-
-const forFade = ({ current, closing }) => ({
-  cardStyle: {
-    opacity: current.progress
-  }
-});
-
-const navigateBack = callback => {
-  animateContent({
-    contentTranslateYValue: 100,
-    contentOpacityValue: 0,
-    callback,
-    reverse: true
-  });
-};
-
-const animateContent = ({
-  contentTranslateYValue,
-  contentOpacityValue,
-  callback = mock,
-  reverse = false
-}) => {
-  let index = 0;
-  let delayIndex = 0;
-  if (reverse) {
-    index = contentTranslateY.length - 1;
-  }
-  const runAnimations = [];
-  for (
-    index;
-    (index < contentTranslateY.length && !reverse) || (index >= 0 && reverse);
-    reverse ? (index--, delayIndex++) : (index++, delayIndex++)
-  ) {
-    runAnimations.push(
-      Animated.timing(contentTranslateY[index], {
-        toValue: contentTranslateYValue,
-        useNativeDriver: true,
-        duration: 75,
-        delay: delayIndex * 100
-      }),
-      Animated.timing(contentOpacity[index], {
-        toValue: contentOpacityValue,
-        useNativeDriver: true,
-        duration: 75,
-        delay: delayIndex * 100
-      })
-    );
-  }
-  Animated.parallel(runAnimations).start(callback);
-};
-
-const contentTranslateY = [
-  new Animated.Value(100),
-  new Animated.Value(100),
-  new Animated.Value(100),
-  new Animated.Value(100),
-  new Animated.Value(100)
-];
-const contentOpacity = [
-  new Animated.Value(0),
-  new Animated.Value(0),
-  new Animated.Value(0),
-  new Animated.Value(0),
-  new Animated.Value(0)
-];
 
 const renderButtonTitle = ({ checklist, status }) => {
   switch (status) {
@@ -192,10 +126,7 @@ const CheckIn = props => {
         stopCount
       }),
       onPress: NavigationService.goBack.bind(null, {
-        beforeCallback: navigateBack.bind(
-          null,
-          optimisedRouting ? continueDelivering : startDelivering
-        )
+        beforeCallback: optimisedRouting ? continueDelivering : startDelivering
       }),
       rightIcon: checklist.deliveryComplete
         ? 'check'
@@ -236,14 +167,7 @@ const CheckIn = props => {
       testID
     } = checkinRows[index];
     return (
-      <Animated.View
-        style={[
-          style.fullWidth,
-          {
-            transform: [{ translateY: contentTranslateY[index] }],
-            opacity: contentOpacity[index]
-          }
-        ]}>
+      <View style={style.fullWidth}>
         <Separator />
         <ListItem
           disabled={disabled}
@@ -257,27 +181,19 @@ const CheckIn = props => {
           testID={testID}
         />
         {index === checkinRows.length - 1 && <Separator />}
-      </Animated.View>
+      </View>
     );
   };
 
   return (
-    <SafeAreaView top bottom>
-      <NavigationEvents
-        onDidFocus={animateContent.bind(null, {
-          contentTranslateYValue: 0,
-          contentOpacityValue: 1
-        })}
-      />
+    <SafeAreaView>
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}
         justifyContent={'flex-start'}>
         <NavBar
           leftIcon={'chevron-down'}
-          leftIconAction={NavigationService.goBack.bind(null, {
-            beforeCallback: navigateBack.bind(null, null)
-          })}
+          leftIconAction={NavigationService.goBack}
           title={renderTitle({ checklist, status })}
           testID={'checkIn-navbar'}
         />
@@ -285,16 +201,10 @@ const CheckIn = props => {
           <ColumnView flex={1} justifyContent={'flex-start'}>
             {checkinRows.map((row, index) => renderCheckinRow(index))}
           </ColumnView>
-          <Animated.View
-            style={{
-              ...style.fullWidth,
-              transform: [{ translateY: contentTranslateY[4] }],
-              opacity: contentOpacity[4]
-            }}>
+          <View style={style.fullWidth}>
             <ColumnView
               width={'auto'}
-              marginHorizontal={defaults.marginHorizontal}
-              marginVertical={defaults.marginVertical}>
+              marginHorizontal={defaults.marginHorizontal}>
               <Button.Primary
                 title={renderButtonTitle({ checklist, status })}
                 disabled={
@@ -304,19 +214,17 @@ const CheckIn = props => {
                   ![DS.NCI, DS.LV, DS.SSC, DS.SC].includes(status)
                 }
                 onPress={NavigationService.goBack.bind(null, {
-                  beforeCallback: navigateBack.bind(
-                    null,
+                  beforeCallback:
                     status !== DS.SC
                       ? optimisedRouting
                         ? continueDelivering
                         : startDelivering
                       : null
-                  )
                 })}
               />
               {renderHelperMessage({ checklist, status })}
             </ColumnView>
-          </Animated.View>
+          </View>
         </ColumnView>
       </ColumnView>
     </SafeAreaView>
@@ -338,10 +246,6 @@ CheckIn.defaultProps = {
   optimisedRouting: false,
   status: DS.NCI,
   stopCount: 0
-};
-
-CheckIn.navigationOptions = {
-  cardStyleInterpolator: forFade
 };
 
 export default CheckIn;

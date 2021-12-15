@@ -11,7 +11,7 @@ export default connect(
 
     return {
       cannedContent: state.delivery?.cannedContent,
-      claims: state.delivery?.stops[selectedStopId].claims,
+      claims: state.delivery?.stops[selectedStopId]?.claims,
       driverResponse: { ...state.transient }
     };
   },
