@@ -20,7 +20,7 @@ const defaultRenderItemSeparator = () => <Separator marginLeft={20} />;
 const defaultSectionFooter = () => <Separator />;
 const widthReducer = 0.8;
 
-const renderCustomIcon = ({ customIcon, customIconProps }) => (
+const renderCustomIcon = ({ customIcon, customIconProps, testID }) => (
   <CustomIcon
     width={customIconProps?.width || style.image.width}
     containerWidth={customIconProps?.containerWidth || style.image.width}
@@ -28,20 +28,22 @@ const renderCustomIcon = ({ customIcon, customIconProps }) => (
     iconColor={customIconProps?.color}
     bgColor={customIconProps?.bgColor}
     disabled
+    testID={`${testID}-customIcon-${customIcon}`}
   />
 );
 
-const renderIcon = ({ icon, iconColor }) => (
+const renderIcon = ({ icon, iconColor, testID }) => (
   <Icon
     name={icon}
     color={iconColor}
     size={style.image.width * widthReducer}
     containerSize={style.image.width}
     disabled
+    testID={`${testID}-icon-${icon}`}
   />
 );
 
-const renderImage = ({ customIcon, customIconProps, image }) => (
+const renderImage = ({ customIcon, customIconProps, image, testID }) => (
   <Image
     requiresAuthentication
     style={style.image}
@@ -56,50 +58,62 @@ const renderImage = ({ customIcon, customIconProps, image }) => (
         customIconProps
       })
     })}
+    testID={`${testID}-image`}
   />
 );
 
-const renderMedia = (customIcon, customIconProps, icon, iconColor, image) => {
+const renderMedia = ({
+  customIcon,
+  customIconProps,
+  icon,
+  iconColor,
+  image,
+  testID
+}) => {
   if (image) {
-    return renderImage({ customIcon, customIconProps, image });
+    return renderImage({ customIcon, customIconProps, image, testID });
   }
   if (customIcon) {
-    return renderCustomIcon({ customIcon, customIconProps });
+    return renderCustomIcon({ customIcon, customIconProps, testID });
   }
   if (icon) {
-    return renderIcon({ icon, iconColor });
+    return renderIcon({ icon, iconColor, testID });
   }
 };
 
-const renderPrefix = (PrefixTextComponent, prefix, prefixColor) => (
+const renderPrefix = ({ prefix, prefixColor, PrefixTextComponent, testID }) => (
   <ColumnView flex={1} justifyContent={'center'} alignItems={'flex-start'}>
     <PrefixTextComponent
       align={'left'}
-      color={prefixColor || colors.secondaryLight}>
+      color={prefixColor || colors.secondaryLight}
+      testID={`${testID}-prefix`}>
       {prefix}
     </PrefixTextComponent>
   </ColumnView>
 );
 
-const renderSuffix = (
-  SuffixTopTextComponent,
-  SuffixBottomTextComponent,
-  suffixTop,
+const renderSuffix = ({
   suffixBottom,
-  suffixColor
-) => (
+  SuffixBottomTextComponent,
+  suffixColor,
+  suffixTop,
+  SuffixTopTextComponent,
+  testID
+}) => (
   <ColumnView
     flex={2}
     justifyContent={'flex-end'}
     alignItems={suffixTop && suffixBottom ? 'space-between' : 'center'}>
     <SuffixTopTextComponent
       align={'right'}
-      color={suffixColor || colors.secondaryLight}>
+      color={suffixColor || colors.secondaryLight}
+      testID={`${testID}-suffixTop`}>
       {suffixTop}
     </SuffixTopTextComponent>
     <SuffixBottomTextComponent
       align={'right'}
-      color={suffixColor || colors.inputDark}>
+      color={suffixColor || colors.inputDark}
+      testID={`${testID}-suffixBottom`}>
       {suffixBottom}
     </SuffixBottomTextComponent>
   </ColumnView>
@@ -177,11 +191,19 @@ const renderItemInterface = (
             width={style.image.width + defaults.marginHorizontal / 2}
             justifyContent={'flex-start'}>
             {(customIcon || image || icon) &&
-              renderMedia(customIcon, customIconProps, icon, iconColor, image)}
+              renderMedia({
+                customIcon,
+                customIconProps,
+                icon,
+                iconColor,
+                image,
+                testID
+              })}
           </RowView>
         )}
 
-        {prefix && renderPrefix(PrefixTextComponent, prefix, prefixColor)}
+        {prefix &&
+          renderPrefix({ prefix, prefixColor, PrefixTextComponent, testID })}
 
         {(title || description) && (
           <ColumnView
@@ -191,21 +213,27 @@ const renderItemInterface = (
             <Text.List
               align={'left'}
               color={titleColor}
-              {...(titleExpands && { numberOfLines: 2 })}>
+              {...(titleExpands && { numberOfLines: 2 })}
+              testID={`${testID}-title`}>
               {title}
             </Text.List>
-            <Text.Caption color={descriptionColor}>{description}</Text.Caption>
+            <Text.Caption
+              color={descriptionColor}
+              testID={`${testID}-description`}>
+              {description}
+            </Text.Caption>
           </ColumnView>
         )}
 
         {(suffixTop || suffixBottom) &&
-          renderSuffix(
-            SuffixTopTextComponent,
-            SuffixBottomTextComponent,
-            suffixTop,
+          renderSuffix({
             suffixBottom,
-            suffixColor
-          )}
+            SuffixBottomTextComponent,
+            suffixColor,
+            suffixTop,
+            SuffixTopTextComponent,
+            testID
+          })}
 
         {rightComponent}
 
@@ -215,26 +243,32 @@ const renderItemInterface = (
           <RowView
             width={style.image.width}
             justifyContent={'flex-end'}
-            marginRight={defaults.marginHorizontal / 4}>
+            marginRight={defaults.marginHorizontal / 4}
+            testID={`${testID}-secondaryRight`}>
             {(secondaryCustomRightIcon ||
               secondaryRightImage ||
               secondaryRightIcon) &&
-              renderMedia(
-                secondaryCustomRightIcon,
-                secondaryCustomRightIconProps
-              )}
+              renderMedia({
+                customIcon: secondaryCustomRightIcon,
+                customIconProps: secondaryCustomRightIconProps,
+                testID
+              })}
           </RowView>
         )}
         {(customRightIcon || rightImage || rightIcon || enforceLayout) && (
-          <RowView width={style.image.width} justifyContent={'flex-end'}>
+          <RowView
+            width={style.image.width}
+            justifyContent={'flex-end'}
+            testID={`${testID}-right`}>
             {(customRightIcon || rightImage || rightIcon) &&
-              renderMedia(
-                customRightIcon,
-                customRightIconProps,
-                rightIcon,
-                rightIconColor,
-                rightImage
-              )}
+              renderMedia({
+                customIcon: customRightIcon,
+                customIconProps: customRightIconProps,
+                icon: rightIcon,
+                iconColor: rightIconColor,
+                image: rightImage,
+                testID
+              })}
           </RowView>
         )}
       </RowView>

@@ -169,6 +169,7 @@ const Deliver = props => {
         const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,
+          testID: `deliver-deliveryItemRow-${order.productId}`,
           prefix: order.quantity,
           title: order.title,
           customIcon: 'productPlaceholder',
@@ -239,6 +240,7 @@ const Deliver = props => {
           rightAction={NavigationService.navigate.bind(null, {
             routeName: 'CustomerIssueList'
           })}
+          testID={'deliver-navbar'}
         />
         {selectedStop && selectedStop.status !== 'pending' && (
           <>
@@ -249,7 +251,7 @@ const Deliver = props => {
                   ? colors.primary
                   : colors.error
               }>
-              <Text.Button>
+              <Text.Button testID={'deliver-deliveryStatus'}>
                 {I18n.t(`screens:deliver.status.${selectedStop.status}`)}
               </Text.Button>
             </RowView>
@@ -259,11 +261,16 @@ const Deliver = props => {
           width={'auto'}
           marginHorizontal={defaults.marginHorizontal}
           marginVertical={defaults.marginVertical / 2}>
-          <Text.Heading color={colors.secondary} numberOfLines={2}>
+          <Text.Heading
+            color={colors.secondary}
+            numberOfLines={2}
+            testID={'deliver-title'}>
             {selectedStop.title}
           </Text.Heading>
           {selectedStop.hasCoolBox && (
-            <RowView width={sizes.list.image + defaults.marginHorizontal / 2}>
+            <RowView
+              width={sizes.list.image + defaults.marginHorizontal / 2}
+              testID={'deliver-coolbox'}>
               <CustomIcon
                 width={sizes.list.image}
                 containerWidth={sizes.list.image}
@@ -285,12 +292,14 @@ const Deliver = props => {
           marginHorizontal={defaults.marginHorizontal}
           marginVertical={defaults.marginVertical / 2}
           justifyContent={'space-between'}>
-          <Text.Caption color={colors.secondary}>
+          <Text.Caption color={colors.secondary} testID={'deliver-userId'}>
             {I18n.t('screens:deliver.userId', {
               userId: selectedStop?.userId
             })}
           </Text.Caption>
-          <Text.Caption color={colors.secondary}>
+          <Text.Caption
+            color={colors.secondary}
+            testID={'deliver-routeDescription'}>
             {I18n.t('screens:deliver.routeDescription', {
               routeDescription
             })}
@@ -317,7 +326,8 @@ const Deliver = props => {
                   width={'auto'}
                   marginHorizontal={defaults.marginHorizontal}
                   marginVertical={defaults.marginVertical / 2}
-                  justifyContent={'space-between'}>
+                  justifyContent={'space-between'}
+                  testID={'deliver-frontDeliveryDoor'}>
                   <Image
                     style={style.image}
                     source={{
@@ -339,7 +349,10 @@ const Deliver = props => {
                     flex={1}
                     width={'auto'}
                     marginLeft={defaults.marginHorizontal / 2}>
-                    <Text.Input color={colors.secondary} numberOfLines={4}>
+                    <Text.Input
+                      color={colors.secondary}
+                      numberOfLines={4}
+                      testID={'deliver-deliveryInstructions'}>
                       {selectedStop.deliveryInstructions}
                     </Text.Input>
                   </RowView>
@@ -397,6 +410,7 @@ const Deliver = props => {
                     )
                   })}
                   disabled={!allItemsDone}
+                  testID={'deliver-done'}
                 />
               </RowView>
               <RowView marginVertical={defaults.marginVertical}>
@@ -408,6 +422,7 @@ const Deliver = props => {
                     setModalType,
                     setModalVisible
                   )}
+                  testID={'deliver-skip'}
                 />
               </RowView>
             </>
