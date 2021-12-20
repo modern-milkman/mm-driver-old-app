@@ -5,7 +5,7 @@ import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import Vibration from 'Services/vibration';
 import { colors, defaults, sizes } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import {
@@ -130,7 +130,7 @@ const Settings = props => {
   } = props;
 
   return (
-    <SafeAreaView top bottom>
+    <SafeAreaView>
       <ColumnView
         flex={1}
         justifyContent={'space-between'}

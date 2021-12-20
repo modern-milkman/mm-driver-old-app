@@ -9,7 +9,7 @@ import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import actionSheet from 'Services/actionSheet';
 import { ColumnView, RowView } from 'Containers';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { deviceFrame, formatDate, mock } from 'Helpers';
 import { alphaColor, colors, defaults, sizes } from 'Theme';
 import {
@@ -252,7 +252,7 @@ const CustomerIssueModal = props => {
   const { width, height } = deviceFrame();
 
   let selectedClaimData;
-  if (unacknowledgedList.length > 0) {
+  if (unacknowledgedList?.length > 0) {
     selectedClaimData = unacknowledgedList.filter(
       claim => claim.claimId === selectedClaimId
     )[0];
@@ -417,7 +417,7 @@ CustomerIssueModal.propTypes = {
 
 CustomerIssueModal.defaultProps = {
   cannedContent: [],
-  claims: {},
+  claims: { unacknowledgedList: [], acknowledgedList: [] },
   driverReply: mock,
   driverResponse: {},
   toggleModal: mock,

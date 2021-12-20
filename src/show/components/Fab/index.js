@@ -21,7 +21,6 @@ const Fab = props => {
     containerSize,
     disabled,
     iconName,
-    fabTop,
     left,
     onLongPress,
     onPress,
@@ -45,10 +44,7 @@ const Fab = props => {
     top,
     width: containerSize,
     opacity,
-    transform: [
-      { translateY: fabTop },
-      { rotate: rotate.interpolate(rotationInterpolation) }
-    ],
+    transform: [{ rotate: rotate.interpolate(rotationInterpolation) }],
     zIndex
   };
 
@@ -98,7 +94,6 @@ Fab.propTypes = {
   containerSize: PropTypes.number,
   disabled: PropTypes.bool,
   iconName: PropTypes.string,
-  fabTop: PropTypes.instanceOf(Animated.Value),
   left: PropTypes.number,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,

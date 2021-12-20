@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { Animated, Keyboard } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { NavigationEvents } from 'react-navigation';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import I18n from 'Locales/I18n';
 import { CarLogo } from 'Images';
@@ -149,6 +148,7 @@ const Home = props => {
     emailHasError,
     jiggleForm,
     login,
+    navigation,
     network,
     password,
     processing,
@@ -165,6 +165,13 @@ const Home = props => {
     biometrics.supported && biometrics.enrolled && biometrics.active
   );
 
+  const disabledLogin =
+    processing ||
+    emailHasError ||
+    email.length === 0 ||
+    password.length === 0 ||
+    network.status === 2;
+
   useEffect(() => {
     if (jiggleForm) {
       jiggleAnimation(
@@ -174,22 +181,35 @@ const Home = props => {
       Vibration.vibrate();
       focusEmail();
     }
-  });
 
-  const disabledLogin =
-    processing ||
-    emailHasError ||
-    email.length === 0 ||
-    password.length === 0 ||
-    network.status === 2;
+    const blurListener = navigation.addListener('blur', reset);
+    const focusListener = navigation.addListener(
+      'focus',
+      rememberMe ? checkRememberMe.bind(null, updateTransientProps) : focusEmail
+    );
 
-  const reset = () => {
+    const unsubscribe = () => {
+      blurListener();
+      focusListener();
+    };
+
+    return unsubscribe;
+  }, [
+    animatedValue,
+    jiggleForm,
+    rememberMe,
+    reset,
+    updateTransientProps,
+    navigation
+  ]);
+
+  const reset = useCallback(() => {
     updateApplicationProps({ processing: false });
     Keyboard.dismiss();
-  };
+  }, [updateApplicationProps]);
 
   return (
-    <SafeAreaView top bottom>
+    <SafeAreaView>
       <ColumnView
         flex={1}
         width={'100%'}
@@ -198,14 +218,6 @@ const Home = props => {
         backgroundColor={colors.neutral}
         minHeight={minimumRequiredHeight}
         scrollable>
-        <NavigationEvents
-          onWillFocus={
-            rememberMe
-              ? checkRememberMe.bind(null, updateTransientProps)
-              : focusEmail
-          }
-          onDidBlur={reset}
-        />
         {!hasSmallHeight && renderLogo(hasSmallHeight)}
         <ColumnView
           flex={hasSmallHeight ? 2 : 3}
@@ -348,6 +360,7 @@ Home.propTypes = {
   emailErrorMessage: PropTypes.string,
   jiggleForm: PropTypes.bool,
   login: PropTypes.func,
+  navigation: PropTypes.func,
   network: PropTypes.object,
   password: PropTypes.string,
   processing: PropTypes.bool,

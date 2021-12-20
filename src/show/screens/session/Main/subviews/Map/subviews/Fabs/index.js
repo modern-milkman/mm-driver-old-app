@@ -9,7 +9,6 @@ export default connect(
   state => {
     return {
       availableNavApps: state.device?.availableNavApps,
-      buttonAccessibility: state.device.buttonAccessibility,
       mapMode: state.device?.mapMode,
       mapNoTrackingHeading: state.device?.mapNoTrackingHeading,
       network: state.device.network,

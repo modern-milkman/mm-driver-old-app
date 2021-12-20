@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
+import { View } from 'react-native';
 import Config from 'react-native-config';
-import { Animated, View } from 'react-native';
 import React, { useCallback, useEffect, useRef } from 'react';
 import MapView, {
   Marker as RNMMarker,
@@ -8,7 +8,6 @@ import MapView, {
 } from 'react-native-maps';
 
 import { sizes } from 'Theme';
-import { deviceFrame } from 'Helpers';
 import { CurrentLocation } from 'Images';
 
 import styles from './style';
@@ -83,10 +82,7 @@ const Map = props => {
   const {
     centerMapLocation,
     clearCenterMapLocation,
-    fabTop,
-    height,
     mapNoTrackingHeading,
-    mapPadding,
     mapZoom,
     position: { heading, latitude, longitude },
     setMapMode,
@@ -96,8 +92,6 @@ const Map = props => {
     showMapControlsOnMovement,
     updateDeviceProps
   } = props;
-
-  const deviceHeight = deviceFrame().height;
 
   let mapIsInteracting = useRef(false);
   let mapRef = useRef(undefined);
@@ -184,11 +178,10 @@ const Map = props => {
   ]);
 
   return (
-    <View style={[styles.map, { height: deviceHeight }]}>
+    <View style={styles.map}>
       <MapView
         customMapStyle={mapStyle}
         initialCamera={initialCamera.current}
-        mapPadding={mapPadding}
         minZoomLevel={parseInt(Config.MIN_MAP_ZOOM_LEVEL)}
         moveOnMarkerPress={false}
         onStartShouldSetResponder={triggerManualMove.bind(null, {
@@ -215,7 +208,7 @@ const Map = props => {
         showsCompass={false}
         showsMyLocationButton={false}
         showsUserLocation={false}
-        style={[styles.map, { height }]}>
+        style={[styles.map]}>
         {latitude && longitude && (
           <RNMMarker
             key={'current-location'}
@@ -232,19 +225,13 @@ const Map = props => {
         <Markers />
         <DirectionsPolyline />
       </MapView>
-      <Fabs
-        fabTop={fabTop}
-        mapPadding={mapPadding}
-        mapIsInteracting={mapIsInteracting}
-      />
+      <Fabs mapIsInteracting={mapIsInteracting} />
     </View>
   );
 };
 
 Map.defaultProps = {
-  height: 0,
   mapMarkerSize: sizes.marker.normal,
-  mapPadding: { bottom: 0 },
   position: {
     heading: 0,
     latitude: parseFloat(Config.DEFAULT_LATITUDE),
@@ -259,10 +246,8 @@ Map.defaultProps = {
 Map.propTypes = {
   centerMapLocation: PropTypes.object,
   clearCenterMapLocation: PropTypes.func,
-  fabTop: PropTypes.instanceOf(Animated.Value),
   height: PropTypes.number,
   mapNoTrackingHeading: PropTypes.number,
-  mapPadding: PropTypes.object,
   mapZoom: PropTypes.number,
   position: PropTypes.object,
   setMapMode: PropTypes.func,

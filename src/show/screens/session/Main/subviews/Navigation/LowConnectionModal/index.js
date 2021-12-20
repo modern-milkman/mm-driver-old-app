@@ -2,7 +2,7 @@ import React from 'react';
 
 import I18n from 'Locales/I18n';
 import { ColumnView, RowView } from 'Containers';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { deviceFrame } from 'Helpers';
 import { alphaColor, colors, defaults } from 'Theme';
 import { Button, Text, Icon, Separator } from 'Components';

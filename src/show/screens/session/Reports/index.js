@@ -5,7 +5,7 @@ import { Creators as deviceActions } from 'Reducers/device';
 import Reports from './view';
 
 export default connect(
-  (state) => {
+  state => {
     return {
       requestQueues: state.device.requestQueues,
       syncingData: state.device.processors.syncData

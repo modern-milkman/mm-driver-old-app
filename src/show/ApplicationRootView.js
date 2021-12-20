@@ -6,25 +6,23 @@ import RNRestart from 'react-native-restart';
 import { Platform, StatusBar } from 'react-native';
 
 import I18n from 'Locales/I18n';
+import Navigator from 'Navigator';
 import { colors, defaults } from 'Theme';
 import { CarLogoFlatTire } from 'Images';
 import { appVersionString } from 'Helpers';
-import Navigator from 'Navigation/Navigator';
 import { ColumnView, FullView } from 'Containers';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { Types as DeviceTypes } from 'Reducers/device';
 import {
   Creators as applicationActions,
   Types as ApplicationTypes
 } from 'Reducers/application';
-
 import {
   ActionSheetAndroid,
   Button,
   CustomBackHandler,
   Growl,
   InAppBrowser,
-  SideBar,
   Text
 } from 'Components';
 
@@ -59,7 +57,7 @@ class Root extends React.Component {
   componentDidMount = () => {
     const { dispatch } = this.props;
 
-    NavigationService.setNavigator(this.navigator, dispatch);
+    NavigationService.setNavigator(dispatch);
     dispatch({ type: ApplicationTypes.MOUNTED });
   };
 
@@ -82,13 +80,7 @@ class Root extends React.Component {
 
       {/* content that should go on top of the app, full view, no safe area bounds */}
 
-      <Navigator
-        ref={nav => {
-          this.navigator = nav;
-        }}
-      />
-
-      <SideBar />
+      <Navigator />
     </FullView>
   );
 

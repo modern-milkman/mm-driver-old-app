@@ -26,7 +26,6 @@ const handleSearchFilter = (items, searchValue) => {
 const Search = props => {
   const {
     completedStopsIds,
-    panY,
     searchValue,
     status,
     stops,
@@ -119,8 +118,7 @@ const Search = props => {
           <Animated.View
             style={[
               {
-                top,
-                transform: [{ translateY: panY }]
+                top
               }
             ]}>
             <RowView
@@ -176,7 +174,6 @@ const Search = props => {
 
 Search.propTypes = {
   completedStopsIds: PropTypes.array,
-  panY: PropTypes.object,
   searchValue: PropTypes.string,
   status: PropTypes.string,
   stops: PropTypes.array,
@@ -188,7 +185,6 @@ Search.propTypes = {
 
 Search.defaultProps = {
   completedStopsIds: [],
-  panY: new Animated.Value(0),
   searchValue: '',
   stops: [],
   updateDeviceProps: mock,

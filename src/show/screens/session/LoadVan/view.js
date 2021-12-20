@@ -7,7 +7,7 @@ import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
 import { colors } from 'Theme';
 import { List, NavBar } from 'Components';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { ColumnView, SafeAreaView } from 'Containers';
 
 const doneLoadedVan = (updateChecklistProps, updateDriverActivity) => {
@@ -50,7 +50,7 @@ const LoadVan = props => {
     : itemCount;
 
   return (
-    <SafeAreaView top bottom>
+    <SafeAreaView>
       <ColumnView
         flex={1}
         justifyContent={'flex-start'}

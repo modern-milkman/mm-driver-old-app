@@ -5,11 +5,11 @@ import { selectedStop, Creators as deliveryActions } from 'Reducers/delivery';
 import CustomerIssueList from './view';
 
 export default connect(
-  (state) => {
+  state => {
     const selectedStopId = state.delivery?.selectedStopId;
 
     return {
-      claims: state.delivery?.stops[selectedStopId].claims,
+      claims: state.delivery?.stops[selectedStopId]?.claims,
       selectedStop: selectedStop(state)
     };
   },

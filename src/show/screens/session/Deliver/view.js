@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
-import React, { useState } from 'react';
 import Config from 'react-native-config';
-import { NavigationEvents } from 'react-navigation';
-import { Animated } from 'react-native';
+import { View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { colors, defaults } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import {
@@ -28,79 +27,15 @@ import style from './style';
 
 const reasonMessageRef = React.createRef();
 
-const forFade = ({ current, closing }) => ({
-  cardStyle: {
-    opacity: current.progress
-  }
-});
-
-const animateContent = ({
-  contentTranslateYValue,
-  contentOpacityValue,
-  callback = mock,
-  reverse = false
-}) => {
-  let index = 0;
-  let delayIndex = 0;
-  if (reverse) {
-    index = contentTranslateY.length - 1;
-  }
-  const runAnimations = [];
-  for (
-    index;
-    (index < contentTranslateY.length && !reverse) || (index >= 0 && reverse);
-    reverse ? (index--, delayIndex++) : (index++, delayIndex++)
-  ) {
-    runAnimations.push(
-      Animated.timing(contentTranslateY[index], {
-        toValue: contentTranslateYValue,
-        useNativeDriver: true,
-        duration: 75,
-        delay: delayIndex * 100
-      }),
-      Animated.timing(contentOpacity[index], {
-        toValue: contentOpacityValue,
-        useNativeDriver: true,
-        duration: 75,
-        delay: delayIndex * 100
-      })
-    );
-  }
-  Animated.parallel(runAnimations).start(callback);
-};
-
-const contentTranslateY = [
-  new Animated.Value(100),
-  new Animated.Value(100),
-  new Animated.Value(100)
-];
-const contentOpacity = [
-  new Animated.Value(0),
-  new Animated.Value(0),
-  new Animated.Value(0)
-];
-
 const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
 };
 
-const navigateBack = callback => {
-  animateContent({
-    contentTranslateYValue: 100,
-    contentOpacityValue: 0,
-    callback,
-    reverse: true
-  });
-};
-
 const rejectAndNavigateBack = (callback, setModalVisible) => {
   setModalVisible(false);
-  setTimeout(
-    NavigationService.goBack.bind(null, {
-      beforeCallback: navigateBack.bind(null, callback)
-    }),
-    250
-  );
+  NavigationService.goBack({
+    beforeCallback: callback
+  });
 };
 
 const renderFallbackCustomerImage = width => (
@@ -159,7 +94,7 @@ const renderSkipModal = ({
         </RowView>
       </ColumnView>
 
-      <Separator color={colors.input} width={'100%'} />
+      <Separator width={'100%'} />
 
       <RowView>
         <Button.Tertiary
@@ -212,6 +147,7 @@ const Deliver = props => {
   const {
     allItemsDone,
     confirmedItem,
+    navigation,
     outOfStockIds,
     routeDescription,
     selectedStop,
@@ -223,13 +159,9 @@ const Deliver = props => {
 
   const { width } = deviceFrame();
 
-  if (!selectedStop) {
-    return null;
-  }
-
-  const {
-    claims: { acknowledgedList, showClaimModal, unacknowledgedList }
-  } = selectedStop;
+  const acknowledgedList = selectedStop?.claims.acknowledgedList || [];
+  const unacknowledgedList = selectedStop?.claims.unacknowledgedList || [];
+  const showClaimModal = selectedStop?.claims.showClaimModal;
 
   const optimizedStopOrders = selectedStop
     ? Object.values(selectedStop.orderItems).map(order => {
@@ -241,7 +173,7 @@ const Deliver = props => {
           customIcon: 'productPlaceholder',
           disabled:
             deliveredStatuses.includes(selectedStop.status) ||
-            unacknowledgedList.length > 0,
+            unacknowledgedList?.length > 0,
           image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${order.productId}`,
           rightIcon:
             isOutOfStock || order.status === 3
@@ -258,20 +190,24 @@ const Deliver = props => {
       })
     : null;
 
-  return (
-    <SafeAreaView top bottom>
-      <NavigationEvents
-        onDidFocus={animateContent.bind(null, {
-          contentTranslateYValue: 0,
-          contentOpacityValue: 1,
-          callback: showClaimModal
-            ? NavigationService.navigate.bind(null, {
-                routeName: 'CustomerIssueModal'
-              })
-            : null
-        })}
-      />
+  useEffect(() => {
+    const focusListener = navigation.addListener('focus', () => {
+      if (showClaimModal) {
+        NavigationService.navigate({
+          routeName: 'CustomerIssueModal'
+        });
+      }
+    });
 
+    return focusListener;
+  }, [showClaimModal, navigation]);
+
+  if (!selectedStop) {
+    return null;
+  }
+
+  return (
+    <SafeAreaView>
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
         {modalType === 'skip' &&
           renderSkipModal({ ...props, width, setModalVisible })}
@@ -289,12 +225,11 @@ const Deliver = props => {
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}
-        justifyContent={'flex-start'}>
+        justifyContent={'flex-start'}
+        alignItems={'stretch'}>
         <NavBar
           leftIcon={'chevron-down'}
-          leftIconAction={NavigationService.goBack.bind(null, {
-            beforeCallback: navigateBack.bind(null, null)
-          })}
+          leftIconAction={NavigationService.goBack}
           title={I18n.t('general:details')}
           rightCustomIcon={
             acknowledgedList?.length > 0 ? 'customerIssue' : null
@@ -305,15 +240,8 @@ const Deliver = props => {
           })}
         />
         {selectedStop && selectedStop.status !== 'pending' && (
-          <Animated.View
-            style={[
-              style.fullWidth,
-              {
-                transform: [{ translateY: contentTranslateY[0] }],
-                opacity: contentOpacity[0]
-              }
-            ]}>
-            <Separator />
+          <>
+            <Separator width={'100%'} />
             <RowView
               backgroundColor={
                 selectedStop.status === 'completed'
@@ -324,16 +252,9 @@ const Deliver = props => {
                 {I18n.t(`screens:deliver.status.${selectedStop.status}`)}
               </Text.Button>
             </RowView>
-          </Animated.View>
+          </>
         )}
-        <Animated.View
-          style={[
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[0] }],
-              opacity: contentOpacity[0]
-            }
-          ]}>
+        <View style={style.fullWidth}>
           <Separator />
           <ListItem
             suffixBottom={I18n.t('screens:deliver.routeDescription', {
@@ -345,15 +266,8 @@ const Deliver = props => {
             })}
             disabled
           />
-        </Animated.View>
-        <Animated.View
-          style={[
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[0] }],
-              opacity: contentOpacity[0]
-            }
-          ]}>
+        </View>
+        <View style={style.fullWidth}>
           <>
             <Separator />
             <ListItem
@@ -363,15 +277,8 @@ const Deliver = props => {
               disabled
             />
           </>
-        </Animated.View>
-        <Animated.View
-          style={[
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[0] }],
-              opacity: contentOpacity[0]
-            }
-          ]}>
+        </View>
+        <View style={style.fullWidth}>
           {selectedStop &&
             (selectedStop.deliveryInstructions ||
               selectedStop.hasImage ||
@@ -405,16 +312,8 @@ const Deliver = props => {
                 />
               </>
             )}
-        </Animated.View>
-        <Animated.View
-          style={[
-            style.flex1,
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[1] }],
-              opacity: contentOpacity[1]
-            }
-          ]}>
+        </View>
+        <View style={[style.flex1, style.fullWidth]}>
           {optimizedStopOrders && (
             <>
               <Separator />
@@ -431,65 +330,53 @@ const Deliver = props => {
               />
             </>
           )}
-        </Animated.View>
+        </View>
       </ColumnView>
       {selectedStop && selectedStop.status === 'pending' && (
-        <Animated.View
-          style={[
-            style.fullWidth,
-            {
-              transform: [{ translateY: contentTranslateY[2] }],
-              opacity: contentOpacity[2]
-            }
-          ]}>
-          <ColumnView
-            width={'auto'}
-            marginHorizontal={defaults.marginHorizontal}
-            marginTop={defaults.marginVertical / 2}>
-            {unacknowledgedList.length > 0 && (
-              <RowView marginVertical={defaults.marginVertical}>
-                <Button.Secondary
-                  title={I18n.t('screens:deliver.viewClaims', {
-                    claimNo: unacknowledgedList.length
+        <ColumnView
+          width={'auto'}
+          marginHorizontal={defaults.marginHorizontal}
+          marginTop={defaults.marginVertical / 2}>
+          {unacknowledgedList?.length > 0 && (
+            <RowView marginVertical={defaults.marginVertical}>
+              <Button.Secondary
+                title={I18n.t('screens:deliver.viewClaims', {
+                  claimNo: unacknowledgedList?.length
+                })}
+                onPress={showClaims.bind(null, toggleModal)}
+              />
+            </RowView>
+          )}
+          {unacknowledgedList?.length === 0 && (
+            <>
+              <RowView>
+                <Button.Primary
+                  title={I18n.t('general:done')}
+                  onPress={NavigationService.goBack.bind(null, {
+                    beforeCallback: setDelivered.bind(
+                      null,
+                      selectedStop.orderId,
+                      selectedStop.key,
+                      outOfStockIds
+                    )
                   })}
-                  onPress={showClaims.bind(null, toggleModal)}
+                  disabled={!allItemsDone}
                 />
               </RowView>
-            )}
-            {unacknowledgedList.length === 0 && (
-              <>
-                <RowView>
-                  <Button.Primary
-                    title={I18n.t('general:done')}
-                    onPress={NavigationService.goBack.bind(null, {
-                      beforeCallback: navigateBack.bind(
-                        null,
-                        setDelivered.bind(
-                          null,
-                          selectedStop.orderId,
-                          selectedStop.key,
-                          outOfStockIds
-                        )
-                      )
-                    })}
-                    disabled={!allItemsDone}
-                  />
-                </RowView>
-                <RowView marginVertical={defaults.marginVertical}>
-                  <Button.Outline
-                    title={I18n.t('general:skip')}
-                    onPress={showModal.bind(
-                      null,
-                      'skip',
-                      setModalType,
-                      setModalVisible
-                    )}
-                  />
-                </RowView>
-              </>
-            )}
-          </ColumnView>
-        </Animated.View>
+              <RowView marginVertical={defaults.marginVertical}>
+                <Button.Outline
+                  title={I18n.t('general:skip')}
+                  onPress={showModal.bind(
+                    null,
+                    'skip',
+                    setModalType,
+                    setModalVisible
+                  )}
+                />
+              </RowView>
+            </>
+          )}
+        </ColumnView>
       )}
     </SafeAreaView>
   );
@@ -498,6 +385,7 @@ const Deliver = props => {
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
   confirmedItem: PropTypes.array,
+  navigation: PropTypes.object,
   outOfStockIds: PropTypes.array,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
@@ -523,10 +411,6 @@ Deliver.defaultProps = {
   toggleModal: mock,
   toggleOutOfStock: mock,
   updateTransientProps: mock
-};
-
-Deliver.navigationOptions = {
-  cardStyleInterpolator: forFade
 };
 
 export default Deliver;

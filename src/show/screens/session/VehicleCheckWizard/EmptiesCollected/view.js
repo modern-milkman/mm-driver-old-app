@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { NavigationEvents } from 'react-navigation';
 
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
 import { defaults, colors } from 'Theme';
-import NavigationService from 'Navigation/service';
+import NavigationService from 'Services/navigation';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
 import { Button, ListHeader, NavBar, Text, TextInput } from 'Components';
 
@@ -79,6 +78,7 @@ const updateTransientEmpties = ({ emptiesCollected, updateTransientProps }) => {
 };
 
 const EmptiesCollected = ({
+  navigation,
   payload,
   setEmpty,
   updateTransientProps,
@@ -94,14 +94,20 @@ const EmptiesCollected = ({
     emptiesReference.push(React.createRef());
   }
 
+  useEffect(() => {
+    const focusListener = navigation.addListener(
+      'focus',
+      updateTransientEmpties.bind(null, {
+        emptiesCollected: payload.emptiesCollected,
+        updateTransientProps
+      })
+    );
+
+    return focusListener;
+  });
+
   return (
-    <SafeAreaView top bottom>
-      <NavigationEvents
-        onWillFocus={updateTransientEmpties.bind(null, {
-          emptiesCollected: payload.emptiesCollected,
-          updateTransientProps
-        })}
-      />
+    <SafeAreaView>
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}
@@ -165,6 +171,7 @@ const EmptiesCollected = ({
 };
 
 EmptiesCollected.propTypes = {
+  navigation: PropTypes.object,
   payload: PropTypes.object,
   setEmpty: PropTypes.func,
   updateTransientProps: PropTypes.func
