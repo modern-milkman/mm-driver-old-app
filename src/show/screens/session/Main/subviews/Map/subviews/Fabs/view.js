@@ -180,7 +180,7 @@ const Fabs = props => {
           containerSize={fabContainerSize}
           color={network.status === 0 ? colors.primary : colors.inputDark}
           right={fabMargin}
-          bottom={defaults.paddingHorizontal / 2}
+          bottom={fabContainerSize + defaults.marginVertical}
           onPress={navigateInSheet.bind(null, {
             availableNavApps,
             source,
