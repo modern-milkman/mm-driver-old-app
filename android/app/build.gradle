@@ -136,6 +136,11 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
 
+/**
+ * Architectures to build native code for in debug.
+*/
+def nativeArchitectures = project.getProperties().get("reactNativeDebugArchitectures")
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -149,8 +154,10 @@ android {
         versionCode project.env.get("APP_VERSION_CODE")?.toInteger()
         versionName project.env.get("APP_VERSION_NAME")
         vectorDrawables.useSupportLibrary = true
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
+        if (nativeArchitectures) {
+          ndk {
+            abiFilters nativeArchitectures.split(',')
+          }
         }
         missingDimensionStrategy 'react-native-camera', 'mlkit'
     }
@@ -221,7 +228,7 @@ dependencies {
     addUnimodulesDependencies()
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
-      exclude group:'com.facebook.fbjni'
+        exclude group:'com.facebook.fbjni'
     }
 
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
