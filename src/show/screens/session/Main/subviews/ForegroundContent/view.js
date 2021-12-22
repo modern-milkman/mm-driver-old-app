@@ -21,7 +21,7 @@ const loaderConfig = {
 };
 const MIN_FOREGROUND_HEIGHT = 60;
 
-const renderButtonTitle = foregroundState => {
+const buttonTitleText = (foregroundState, { selectedStop }) => {
   switch (foregroundState) {
     case 'MANUAL':
       return I18n.t('screens:main.useOptimizedRouting');
@@ -32,13 +32,20 @@ const renderButtonTitle = foregroundState => {
     case 'START_ROUTE':
       return I18n.t('screens:checkIn.go');
     case 'DELIVERING':
-      return I18n.t('general:details');
+      return I18n.t(
+        `screens:main.activeDeliveryFor.${
+          selectedStop.itemCount === 1 ? 'singular' : 'plural'
+        }`,
+        {
+          itemCount: selectedStop.itemCount
+        }
+      );
     case 'VEHICLE_CHECKS_END':
       return I18n.t('screens:checkIn.checkVan');
   }
 };
 
-const renderHeading = (foregroundState, { routeDescription, selectedStop }) => {
+const headingText = (foregroundState, { routeDescription, selectedStop }) => {
   switch (foregroundState) {
     case 'MANUAL':
       return I18n.t('screens:main.titles.selectNextStop');
@@ -56,7 +63,7 @@ const renderHeading = (foregroundState, { routeDescription, selectedStop }) => {
   }
 };
 
-const renderSubHeading = (foregroundState, { stopCount, selectedStop }) => {
+const subHeadingText = (foregroundState, { stopCount, selectedStop }) => {
   switch (foregroundState) {
     case 'MANUAL':
       return I18n.t('screens:main.descriptions.or');
@@ -69,12 +76,9 @@ const renderSubHeading = (foregroundState, { stopCount, selectedStop }) => {
       return I18n.t('screens:main.descriptions.deliveryActive', {
         stopCount
       });
-    case 'DELIVERING':
-      return I18n.t('screens:main.activeDeliveryFor', {
-        itemCount: selectedStop.itemCount
-      });
+
     default:
-      return ' ';
+      return null;
   }
 };
 
@@ -151,6 +155,8 @@ const ForegroundContent = props => {
       }
   }
 
+  const renderedSubHeadingText = subHeadingText(foregroundState, props);
+
   useEffect(() => {
     if (loaderInfo && processing && progress <= LOADER_MAX_PROGRESS) {
       let steper;
@@ -174,9 +180,10 @@ const ForegroundContent = props => {
       height={
         foregroundSize === 'large'
           ? Text.Heading.height +
-            Text.Caption.height +
+            (renderedSubHeadingText ? Text.Caption.height : 0) +
             buttonAccessibility +
-            defaults.marginVertical * (1 + 1 / 2 + 1 / 2)
+            defaults.marginVertical *
+              (1 + 1 / 2 + (renderedSubHeadingText ? 1 / 2 : 0))
           : MIN_FOREGROUND_HEIGHT
       }
       backgroundColor={
@@ -223,7 +230,10 @@ const ForegroundContent = props => {
                   marginTop: defaults.marginVertical / 2
                 })}
                 width={'auto'}>
-                <RowView>
+                <RowView
+                  {...(!renderedSubHeadingText && {
+                    marginVertical: defaults.marginVertical / 2
+                  })}>
                   <Text.Heading
                     color={
                       foregroundSize === 'large'
@@ -232,16 +242,16 @@ const ForegroundContent = props => {
                     }
                     align={'center'}
                     numberOfLines={1}>
-                    {renderHeading(foregroundState, props)}
+                    {headingText(foregroundState, props)}
                   </Text.Heading>
                 </RowView>
               </RowView>
-              {foregroundSize === 'large' && (
+              {foregroundSize === 'large' && renderedSubHeadingText && (
                 <RowView
                   width={'auto'}
                   paddingVertical={defaults.marginVertical / 2}>
-                  <Text.Caption color={colors.secondaryLight} align={'center'}>
-                    {renderSubHeading(foregroundState, props)}
+                  <Text.Caption color={colors.inputDark} align={'center'}>
+                    {subHeadingText(foregroundState, props)}
                   </Text.Caption>
                 </RowView>
               )}
@@ -250,7 +260,7 @@ const ForegroundContent = props => {
               <RowView paddingHorizontal={defaults.marginHorizontal}>
                 <Button.Primary
                   titleColor={buttonTitleColor}
-                  title={renderButtonTitle(foregroundState, props)}
+                  title={buttonTitleText(foregroundState, props)}
                   disabled={mainActionDisabled}
                   onPress={onButtonPress}
                   testID={'foregroundContent-main-btn'}

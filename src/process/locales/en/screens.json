@@ -118,7 +118,10 @@
     "done": "Done"
   },
   "main": {
-    "activeDeliveryFor": "{{itemCount}} items",
+    "activeDeliveryFor": {
+      "singular": "View {{itemCount}} item",
+      "plural": "View {{itemCount}} items"
+    },
     "actions": {
       "openIn": "Open in {{appName}}"
     },
