@@ -160,7 +160,8 @@ const Map = props => {
       });
     }
     if (centerMapLocation) {
-      clearCenterMapLocation();
+      // without timeout sometimes iOS will not reposition map onto pin location when selected
+      window.setTimeout(clearCenterMapLocation, 250);
     }
   }, [
     animateCamera,
