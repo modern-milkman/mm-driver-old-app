@@ -28,7 +28,6 @@ const Search = props => {
   const {
     completedStopsIds,
     isOptimised,
-    optimisedRouting,
     orderedStopsIds,
     outOfSequenceIds,
     searchValue,
@@ -73,39 +72,44 @@ const Search = props => {
 
   const search = [
     {
+      index: 0,
       title: I18n.t('general:upNext'),
-      data: dataSearched.filter(item =>
-        optimisedRouting
-          ? (orderedStopsIds.includes(item.key) ||
-              outOfSequenceIds.includes(item.key)) &&
-            !completedStopsIds.includes(item.key)
-          : !completedStopsIds.includes(item.key)
+      data: dataSearched.filter(
+        item =>
+          (orderedStopsIds.includes(item.key) ||
+            outOfSequenceIds.includes(item.key)) &&
+          !completedStopsIds.includes(item.key)
       )
     },
     {
+      index: 1,
+      title: I18n.t('general:laterTonight'),
+      disabled: true,
+      data: dataSearched.filter(
+        item =>
+          !orderedStopsIds.includes(item.key) &&
+          !outOfSequenceIds.includes(item.key) &&
+          !completedStopsIds.includes(item.key)
+      )
+    },
+    {
+      index: 2,
       title: I18n.t('screens:deliver.status.completed'),
       data: dataSearched.filter(item => completedStopsIds.includes(item.key))
     }
   ];
-  if (optimisedRouting) {
-    search.splice(1, 0, {
-      title: I18n.t('general:laterTonight'),
-      disabled: true,
-      data: dataSearched.filter(item =>
-        optimisedRouting
-          ? !orderedStopsIds.includes(item.key) &&
-            !outOfSequenceIds.includes(item.key) &&
-            !completedStopsIds.includes(item.key)
-          : !completedStopsIds.includes(item.key)
-      )
-    });
-  }
 
   if (searchValue.length > 0) {
-    if (dataSearched.length > 0) {
-      search.title = I18n.t('screens:main.search.results');
-    } else {
-      search.title = I18n.t('screens:main.search.noResults');
+    for (let index = search.length - 1; index >= 0; index--) {
+      if (search[index].data.length === 0) {
+        search.splice(index, 1);
+      }
+    }
+    if (search.length === 0) {
+      search[0] = {
+        title: I18n.t('screens:main.search.noResults'),
+        data: []
+      };
     }
   }
 
@@ -161,13 +165,7 @@ const Search = props => {
                 />
               </RowView>
               <Label
-                backgroundColor={
-                  isOptimised
-                    ? optimisedRouting
-                      ? colors.success
-                      : colors.error
-                    : colors.inputDark
-                }
+                backgroundColor={isOptimised ? colors.success : colors.error}
                 shadow
                 text={I18n.t('general:RO')}
               />
@@ -210,7 +208,6 @@ const Search = props => {
 Search.propTypes = {
   completedStopsIds: PropTypes.array,
   isOptimised: PropTypes.bool,
-  optimisedRouting: PropTypes.bool,
   orderedStopsIds: PropTypes.array,
   outOfSequenceIds: PropTypes.array,
   searchValue: PropTypes.string,
@@ -224,7 +221,6 @@ Search.propTypes = {
 Search.defaultProps = {
   completedStopsIds: [],
   isOptimised: true,
-  optimisedRouting: true,
   orderedStopsIds: [],
   outOfSequenceIds: [],
   searchValue: '',

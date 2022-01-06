@@ -42,7 +42,7 @@ const Marker = props => {
   const completed = completedStopsIds.includes(id);
 
   const customerSatisfactionColor = getCustomerSatisfactionColor(
-    selectedStop.satisfactionStatus
+    selectedStop?.satisfactionStatus
   );
   const mapMarkerBackgroundColor =
     selectedStopId === id
@@ -171,13 +171,13 @@ Marker.propTypes = {
 };
 
 const areEqual = (prevProps, nextProps) => {
-  return !(
-    prevProps.disabled !== nextProps.disabled ||
-    prevProps.completed !== nextProps.completed ||
-    prevProps.mapMarkerSize !== nextProps.mapMarkerSize ||
-    nextProps.selectedStopId === nextProps.id ||
-    prevProps.sequence !== nextProps.sequence ||
-    nextProps.previousStopId === nextProps.id
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    prevProps.completed === nextProps.completed &&
+    prevProps.mapMarkerSize === nextProps.mapMarkerSize &&
+    prevProps.sequence === nextProps.sequence &&
+    nextProps.selectedStopId !== nextProps.id &&
+    nextProps.previousStopId !== nextProps.id
   );
 };
 export default React.memo(Marker, areEqual);

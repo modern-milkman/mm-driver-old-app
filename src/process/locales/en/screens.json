@@ -78,7 +78,7 @@
     },
     "routeDescription": "Route ID #{{routeDescription}}",
     "status": {
-      "completed": "Delivered",
+      "completed": "Completed",
       "rejected": "Skipped"
     },
     "userId": "User ID #{{userId}}",
@@ -125,6 +125,7 @@
     "actions": {
       "openIn": "Open in {{appName}}"
     },
+    "autoSelectStop": "Select next optimised stop",
     "descriptions": {
       "comeBackLater": "Come back later",
       "deliveryActive": "{{stopCount}} deliveries",
@@ -154,16 +155,14 @@
       "deliveriesLeft": "{{nr}} deliveries left"
     },
     "search": {
-      "noResults": "No Results",
-      "placeholder": "Search",
-      "results": "Results"
+      "noResults": "No Results found",
+      "placeholder": "Search"
     },
     "titles": {
       "comeBackLater": "No delivery info yet",
       "noDelivery": "No deliveries tonight",
       "selectNextStop": "Please select next stop"
-    },
-    "useOptimizedRouting": "Use optimized routing"
+    }
   },
   "panel": {
     "driverID": "Driver ID #{{driverId}}",
@@ -218,24 +217,29 @@
       "authentication": "Authentication",
       "device": "Device",
       "map": "Map",
-      "routing": "Routing"
+      "routeManagement": "Route Management"
     },
     "sliders": {
       "buttons": "Button size",
       "drag": "Drag to resize",
-      "mapMarkers": "Pin size"
+      "mapMarkers": "Pin size",
+      "optimisedStopsToShow": "Number next stops"
     },
     "switches": {
+      "autoSelectStop": "Automatically select next stop",
       "biometricsDisabled": "Biometrics can only be setup on login screen",
-      "deliveriesRemaining": "Deliveries Remaining",
+      "deliveriesRemaining": "Deliveries remaining",
       "deliveriesCountDown": "Enable to show as count down",
       "foreground": "Large foreground",
       "optimisedRoutingUnavailable": "Unavailable for current route at this time",
-      "optimisedRouting": "Use optimised routing",
       "computeDirections": "Compute delivery directions",
       "computeShortDirections": "Compute delivery directions within 500m",
       "showDoneDeliveries": "Show done deliveries",
       "showMapControlsOnMovement": "Show controls on manual movement",
+      "showAllPendingStops": {
+        "title": "Show all pending stops",
+        "description": "Showing large number of stops might affect app's performance"
+      },
       "vibrations": "Vibrations"
     }
   },

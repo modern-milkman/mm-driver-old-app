@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 
 import I18n from 'Locales/I18n';
-
-import { colors, defaults, shadows } from 'Theme';
-import { ColumnView, RowView } from 'Containers';
-import { deliveryStates as DS, ukTimeNow } from 'Helpers';
-import { Button, Text, ProgressBar } from 'Components';
+import Alert from 'Services/alert';
 import translationStrings from 'Locales/en';
+import { ColumnView, RowView } from 'Containers';
+import { colors, defaults, shadows, sizes } from 'Theme';
+import { Button, Icon, Text, ProgressBar } from 'Components';
+import { deliveryStates as DS, deviceFrame, ukTimeNow } from 'Helpers';
 
 const loaderKeys = Object.keys(
   translationStrings.screens.main.foreground.loaderText
@@ -19,12 +19,13 @@ const loaderConfig = {
   steps: loaderKeys.length + 1,
   stepSize: LOADER_MAX_PROGRESS / (loaderKeys.length + 1)
 };
+const { width } = deviceFrame();
 const MIN_FOREGROUND_HEIGHT = 60;
 
 const buttonTitleText = (foregroundState, { selectedStop }) => {
   switch (foregroundState) {
     case 'MANUAL':
-      return I18n.t('screens:main.useOptimizedRouting');
+      return I18n.t('screens:main.autoSelectStop');
     case 'CHECKIN':
     case 'NO_DELIVERIES':
     case 'COME_BACK_LATER':
@@ -82,11 +83,28 @@ const subHeadingText = (foregroundState, { stopCount, selectedStop }) => {
   }
 };
 
+const promptDeliverLater = ({ deliverLater, selectedStopId }) => {
+  Alert({
+    title: I18n.t('alert:success.main.deliverLater.title'),
+    message: I18n.t('alert:success.main.deliverLater.description'),
+    buttons: [
+      {
+        text: I18n.t('general:cancel'),
+        style: 'cancel'
+      },
+      {
+        text: I18n.t('general:ok'),
+        onPress: deliverLater.bind(null, selectedStopId)
+      }
+    ]
+  });
+};
+
 const ForegroundContent = props => {
   const {
     buttonAccessibility,
-    buttonTitleColor,
     checklist,
+    deliverLater,
     foregroundSize,
     isOptimised,
     loaderInfo,
@@ -95,12 +113,17 @@ const ForegroundContent = props => {
     resetHourDay,
     status,
     stopCount,
-    selectedStop
+    selectedStop,
+    selectedStopId
   } = props;
 
   let foregroundState = 'COME_BACK_LATER';
   const [progress, setProgress] = useState(0);
   let mainActionDisabled = true;
+  const canDeliverLater =
+    isOptimised &&
+    selectedStop?.status === 'pending' &&
+    selectedStop?.sequenceNo > -1;
 
   switch (status) {
     case DS.NCI:
@@ -231,19 +254,41 @@ const ForegroundContent = props => {
                 })}
                 width={'auto'}>
                 <RowView
-                  {...(!renderedSubHeadingText && {
-                    marginVertical: defaults.marginVertical / 2
-                  })}>
-                  <Text.Heading
-                    color={
-                      foregroundSize === 'large'
-                        ? colors.secondary
-                        : colors.white
-                    }
-                    align={'center'}
-                    numberOfLines={1}>
-                    {headingText(foregroundState, props)}
-                  </Text.Heading>
+                  width={'auto'}
+                  marginHorizontal={defaults.marginHorizontal}
+                  justifyContent={'space-between'}>
+                  {foregroundSize === 'small' && canDeliverLater && (
+                    <Icon
+                      color={colors.white}
+                      name={'timer-outline'}
+                      size={sizes.fab.icon}
+                      containerSize={sizes.fab.container}
+                      onPress={promptDeliverLater.bind(null, {
+                        deliverLater,
+                        selectedStopId
+                      })}
+                    />
+                  )}
+                  <RowView
+                    {...(!renderedSubHeadingText && {
+                      marginVertical: defaults.marginVertical / 2
+                    })}
+                    width={
+                      width -
+                      (canDeliverLater ? sizes.fab.container : 0) -
+                      defaults.marginHorizontal
+                    }>
+                    <Text.Heading
+                      color={
+                        foregroundSize === 'large'
+                          ? colors.secondary
+                          : colors.white
+                      }
+                      align={'center'}
+                      numberOfLines={1}>
+                      {headingText(foregroundState, props)}
+                    </Text.Heading>
+                  </RowView>
                 </RowView>
               </RowView>
               {foregroundSize === 'large' && renderedSubHeadingText && (
@@ -257,12 +302,38 @@ const ForegroundContent = props => {
               )}
             </ColumnView>
             {foregroundSize === 'large' && (
-              <RowView paddingHorizontal={defaults.marginHorizontal}>
+              <RowView
+                width={width - defaults.marginHorizontal}
+                justifyContent={'space-between'}>
+                {canDeliverLater && (
+                  <View
+                    style={{
+                      backgroundColor: colors.primary,
+                      borderRadius: defaults.borderRadius,
+                      width: buttonAccessibility,
+                      height: buttonAccessibility
+                    }}>
+                    <Icon
+                      color={colors.white}
+                      name={'timer-outline'}
+                      size={sizes.fab.icon * (buttonAccessibility / 40)}
+                      containerSize={buttonAccessibility}
+                      onPress={promptDeliverLater.bind(null, {
+                        deliverLater,
+                        selectedStopId
+                      })}
+                    />
+                  </View>
+                )}
                 <Button.Primary
-                  titleColor={buttonTitleColor}
                   title={buttonTitleText(foregroundState, props)}
                   disabled={mainActionDisabled}
                   onPress={onButtonPress}
+                  width={
+                    width -
+                    (canDeliverLater ? buttonAccessibility : 0) -
+                    defaults.marginHorizontal * 1.5
+                  }
                   testID={'foregroundContent-main-btn'}
                 />
               </RowView>
@@ -276,8 +347,8 @@ const ForegroundContent = props => {
 
 ForegroundContent.propTypes = {
   buttonAccessibility: PropTypes.number,
-  buttonTitleColor: PropTypes.string,
   checklist: PropTypes.object,
+  deliverLater: PropTypes.func,
   foregroundSize: PropTypes.string,
   isOptimised: PropTypes.bool,
   loaderInfo: PropTypes.string,
@@ -286,23 +357,11 @@ ForegroundContent.propTypes = {
   resetHourDay: PropTypes.number,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
+  selectedStopId: PropTypes.number,
   status: PropTypes.string,
   stopCount: PropTypes.number
 };
 
-ForegroundContent.defaults = {
-  buttonTitleColor: colors.secondary,
-  checklist: PropTypes.object,
-  foregroundSize: PropTypes.string,
-  isOptimised: PropTypes.bool,
-  loaderInfo: PropTypes.string,
-  onButtonPress: PropTypes.func,
-  processing: PropTypes.bool,
-  resetHourDay: PropTypes.number,
-  routeDescription: PropTypes.string,
-  selectedStop: PropTypes.object,
-  status: PropTypes.string,
-  stopCount: PropTypes.number
-};
+ForegroundContent.defaults = {};
 
 export default ForegroundContent;

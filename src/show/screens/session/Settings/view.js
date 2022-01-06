@@ -99,17 +99,18 @@ const triggerLogout = ({ logout, network }) => {
 };
 
 const onOptimization = (
-  { continueDelivering, checklist, status, updateDeliveryProps },
-  optimisedRouting
+  { continueDelivering, checklist, status, updateDeviceProps },
+  autoSelectStop
 ) => {
-  updateDeliveryProps({ optimisedRouting });
-  if (optimisedRouting && !deliverProductsDisabled({ checklist, status })) {
+  updateDeviceProps({ autoSelectStop });
+  if (autoSelectStop && !deliverProductsDisabled({ checklist, status })) {
     continueDelivering();
   }
 };
 
 const Settings = props => {
   const {
+    autoSelectStop,
     biometrics,
     biometricDisable,
     buttonAccessibility,
@@ -122,12 +123,12 @@ const Settings = props => {
     isOptimised,
     logout,
     mapMarkerSize,
-    optimisedRouting,
+    optimisedStopsToShow,
     network,
     showDoneDeliveries,
     showMapControlsOnMovement,
+    showAllPendingStops,
     status,
-    updateDeliveryProps,
     updateDeviceProps,
     vibrate
   } = props;
@@ -150,7 +151,46 @@ const Settings = props => {
           justifyContent={'flex-start'}
           alignItems={'stretch'}
           width={'auto'}>
-          <ListHeader title={I18n.t('screens:settings.sections.routing')} />
+          <ListHeader
+            title={I18n.t('screens:settings.sections.routeManagement')}
+          />
+
+          <ColumnView
+            alignItems={'flex-start'}
+            marginVertical={defaults.marginVertical / 2}
+            marginHorizontal={defaults.marginHorizontal}
+            width={'auto'}>
+            <RowView justifyContent={'space-between'}>
+              <ColumnView flex={1} alignItems={'flex-start'}>
+                <Text.List color={colors.secondary}>
+                  {I18n.t('screens:settings.sliders.optimisedStopsToShow')}
+                </Text.List>
+                {!isOptimised && (
+                  <Text.Caption color={colors.secondary}>
+                    {I18n.t(
+                      'screens:settings.switches.optimisedRoutingUnavailable'
+                    )}
+                  </Text.Caption>
+                )}
+              </ColumnView>
+              <Text.List color={colors.secondary}>
+                {optimisedStopsToShow}
+              </Text.List>
+            </RowView>
+
+            <Slider
+              onSlidingComplete={onSliderChange.bind(
+                null,
+                updateDeviceProps,
+                'optimisedStopsToShow'
+              )}
+              minimumValue={5}
+              maximumValue={50}
+              step={1}
+              value={optimisedStopsToShow}
+              disabled={!isOptimised}
+            />
+          </ColumnView>
 
           <RowView
             marginHorizontal={defaults.marginHorizontal}
@@ -159,7 +199,39 @@ const Settings = props => {
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.secondary}>
-                {I18n.t('screens:settings.switches.optimisedRouting')}
+                {I18n.t('screens:settings.switches.showAllPendingStops.title')}
+              </Text.List>
+
+              <Text.Caption color={colors.secondary}>
+                {I18n.t(
+                  isOptimised
+                    ? 'screens:settings.switches.showAllPendingStops.description'
+                    : 'screens:settings.switches.optimisedRoutingUnavailable'
+                )}
+              </Text.Caption>
+            </ColumnView>
+
+            <Switch
+              value={showAllPendingStops}
+              onValueChange={toggleDeviceProp.bind(
+                null,
+                updateDeviceProps,
+                'showAllPendingStops'
+              )}
+              disabled={!isOptimised}
+            />
+          </RowView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.autoSelectStop')}
               </Text.List>
               {!isOptimised && (
                 <Text.Caption color={colors.secondary}>
@@ -171,20 +243,38 @@ const Settings = props => {
             </ColumnView>
 
             <Switch
-              disabled={!isOptimised}
-              value={optimisedRouting}
+              value={autoSelectStop}
               onValueChange={onOptimization.bind(null, {
                 checklist,
                 continueDelivering,
                 status,
-                updateDeliveryProps
+                updateDeviceProps
               })}
+              disabled={!isOptimised}
             />
           </RowView>
 
-          <Separator />
+          <Separator marginLeft={defaults.marginHorizontal} />
 
-          <ListHeader title={I18n.t('screens:settings.sections.map')} />
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <Text.List color={colors.secondary}>
+              {I18n.t('screens:settings.switches.showDoneDeliveries')}
+            </Text.List>
+            <Switch
+              value={showDoneDeliveries}
+              onValueChange={toggleDeviceProp.bind(
+                null,
+                updateDeviceProps,
+                'showDoneDeliveries'
+              )}
+            />
+          </RowView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
 
           <RowView
             marginHorizontal={defaults.marginHorizontal}
@@ -205,6 +295,33 @@ const Settings = props => {
           </RowView>
 
           <Separator marginLeft={defaults.marginHorizontal} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.deliveriesRemaining')}
+              </Text.List>
+              <Text.Caption color={colors.secondary}>
+                {I18n.t('screens:settings.switches.deliveriesCountDown')}
+              </Text.Caption>
+            </ColumnView>
+            <Switch
+              value={countDown}
+              onValueChange={toggleDeviceProp.bind(
+                null,
+                updateDeviceProps,
+                'countDown'
+              )}
+            />
+          </RowView>
+
+          <Separator />
+
+          <ListHeader title={I18n.t('screens:settings.sections.map')} />
 
           {computeDirections && (
             <>
@@ -256,26 +373,6 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.showDoneDeliveries')}
-            </Text.List>
-            <Switch
-              value={showDoneDeliveries}
-              onValueChange={toggleDeviceProp.bind(
-                null,
-                updateDeviceProps,
-                'showDoneDeliveries'
-              )}
-            />
-          </RowView>
-
-          <Separator marginLeft={defaults.marginHorizontal} />
-
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
-            <Text.List color={colors.secondary}>
               {I18n.t('screens:settings.switches.foreground')}
             </Text.List>
             <Switch
@@ -283,31 +380,6 @@ const Settings = props => {
               onValueChange={onForegroundSizeChange.bind(
                 null,
                 updateDeviceProps
-              )}
-            />
-          </RowView>
-
-          <Separator marginLeft={defaults.marginHorizontal} />
-
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
-            <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
-                {I18n.t('screens:settings.switches.deliveriesRemaining')}
-              </Text.List>
-              <Text.Caption color={colors.secondary}>
-                {I18n.t('screens:settings.switches.deliveriesCountDown')}
-              </Text.Caption>
-            </ColumnView>
-            <Switch
-              value={countDown}
-              onValueChange={toggleDeviceProp.bind(
-                null,
-                updateDeviceProps,
-                'countDown'
               )}
             />
           </RowView>
@@ -433,6 +505,7 @@ const Settings = props => {
 };
 
 Settings.propTypes = {
+  autoSelectStop: PropTypes.bool,
   biometrics: PropTypes.object,
   biometricDisable: PropTypes.func,
   buttonAccessibility: PropTypes.number,
@@ -446,12 +519,12 @@ Settings.propTypes = {
   isOptimised: PropTypes.bool,
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
-  optimisedRouting: PropTypes.bool,
+  optimisedStopsToShow: PropTypes.number,
   network: PropTypes.object,
   showDoneDeliveries: PropTypes.bool,
   showMapControlsOnMovement: PropTypes.bool,
+  showAllPendingStops: PropTypes.bool,
   status: PropTypes.string,
-  updateDeliveryProps: PropTypes.func,
   updateDeviceProps: PropTypes.func,
   vibrate: PropTypes.bool
 };

@@ -6,8 +6,8 @@ import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
 import NavigationService from 'Services/navigation';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
-import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 import { deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
+import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 
 import style from './style';
 
@@ -82,10 +82,11 @@ const renderTitle = ({ checklist, status }) => {
 
 const CheckIn = props => {
   const {
+    autoSelectStop,
     checklist,
     continueDelivering,
     itemCount,
-    optimisedRouting,
+    isOptimised,
     status,
     startDelivering,
     stopCount
@@ -126,7 +127,8 @@ const CheckIn = props => {
         stopCount
       }),
       onPress: NavigationService.goBack.bind(null, {
-        beforeCallback: optimisedRouting ? continueDelivering : startDelivering
+        beforeCallback:
+          isOptimised && autoSelectStop ? continueDelivering : startDelivering
       }),
       rightIcon: checklist.deliveryComplete
         ? 'check'
@@ -216,7 +218,7 @@ const CheckIn = props => {
                 onPress={NavigationService.goBack.bind(null, {
                   beforeCallback:
                     status !== DS.SC
-                      ? optimisedRouting
+                      ? isOptimised && autoSelectStop
                         ? continueDelivering
                         : startDelivering
                       : null
@@ -232,18 +234,20 @@ const CheckIn = props => {
 };
 
 CheckIn.propTypes = {
+  autoSelectStop: PropTypes.bool,
   checklist: PropTypes.object,
-  itemCount: PropTypes.number,
   continueDelivering: PropTypes.func,
-  optimisedRouting: PropTypes.bool,
+  itemCount: PropTypes.number,
+  isOptimised: PropTypes.bool,
   status: PropTypes.string,
   startDelivering: PropTypes.func,
   stopCount: PropTypes.number
 };
 
 CheckIn.defaultProps = {
+  autoSelectStop: true,
   itemCount: 0,
-  optimisedRouting: false,
+  isOptimised: false,
   status: DS.NCI,
   stopCount: 0
 };

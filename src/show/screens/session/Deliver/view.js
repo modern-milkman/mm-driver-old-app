@@ -402,7 +402,7 @@ const Deliver = props => {
                 <Button.Primary
                   title={I18n.t('general:done')}
                   onPress={NavigationService.goBack.bind(null, {
-                    beforeCallback: setDelivered.bind(
+                    afterCallback: setDelivered.bind(
                       null,
                       selectedStop.orderId,
                       selectedStop.key,

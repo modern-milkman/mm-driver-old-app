@@ -15,9 +15,10 @@ export default connect(
     const currentChecklist = checklist(state);
 
     return {
+      autoSelectStop: state.device.autoSelectStop,
       checklist: currentChecklist,
       currentLocation: state.device.position,
-      optimisedRouting: state.delivery?.optimisedRouting,
+      isOptimised: state.delivery?.stockWithData?.isOptimised || false,
       selectedStop: currentSelectedStop,
       status: state.delivery?.status
     };
@@ -25,7 +26,7 @@ export default connect(
   {
     continueDelivering: deliveryActions.continueDelivering,
     startDelivering: deliveryActions.startDelivering,
-    updateDeliveryProps: deliveryActions.updateProps,
+    updateDeviceProps: deviceActions.updateProps,
     setLocationHeading: deviceActions.setLocationHeading
   }
 )(Main);

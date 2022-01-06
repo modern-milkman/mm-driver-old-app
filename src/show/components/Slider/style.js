@@ -5,6 +5,9 @@ export default StyleSheet.create({
   containerStyle: {
     width: '100%'
   },
+  disabled: {
+    borderColor: colors.input
+  },
   thumbStyle: {
     backgroundColor: colors.white,
     borderWidth: 2,

@@ -10,8 +10,6 @@ import defaultStyle from './style';
 
 const Icon = props => {
   const {
-    circle,
-    circleColor,
     color,
     containerSize,
     disabled,
@@ -24,14 +22,8 @@ const Icon = props => {
     style
   } = props;
 
-  const circleStyle = {
-    ...defaultStyle.circleStyle(containerSize, size),
-    backgroundColor: circleColor
-  };
-
   return (
     <View style={[defaultStyle.iconDefaultContainerSize(containerSize)]}>
-      <View style={circle && circleStyle} />
       <RNEIcon
         color={color}
         iconStyle={[
@@ -52,8 +44,6 @@ const Icon = props => {
 };
 
 Icon.propTypes = {
-  circle: PropTypes.bool,
-  circleColor: PropTypes.string,
   color: PropTypes.any,
   containerSize: PropTypes.number,
   disabled: PropTypes.bool,
@@ -67,8 +57,6 @@ Icon.propTypes = {
 };
 
 Icon.defaultProps = {
-  circle: false,
-  circleColor: colors.white,
   color: colors.primary,
   containerSize: 44,
   disabled: false,

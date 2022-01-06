@@ -136,7 +136,8 @@ const renderReplyBody = ({
             containerWidth={sizes.list.image}
             width={sizes.list.image}
             icon={'addPhoto'}
-            iconColor={colors.Primary}
+            iconColor={colors.input}
+            bgColor={colors.primary}
             style={style.addPhotoIcon}
             onPress={openActionSheet.bind(null, {
               driverResponse,
@@ -368,7 +369,7 @@ const CustomerIssueModal = props => {
               width={'50%'}
               noBorderRadius
               onPress={NavigationService.goBack.bind(null, {
-                afterCallback: hideClaimsModal.bind(null, toggleModal)
+                beforeCallback: hideClaimsModal.bind(null, toggleModal)
               })}
             />
 

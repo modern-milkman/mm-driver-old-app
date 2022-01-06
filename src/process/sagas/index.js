@@ -36,6 +36,7 @@ import {
 
 import {
   continueDelivering,
+  deliverLater,
   driverReply,
   foregroundDeliveryActions,
   getBundleProducts,
@@ -111,6 +112,7 @@ export default function* root() {
     ),
 
     takeEvery(DeliveryTypes.CONTINUE_DELIVERING, continueDelivering),
+    takeEvery(DeliveryTypes.DELIVER_LATER, deliverLater),
     takeEvery(DeliveryTypes.DRIVER_REPLY, driverReply),
     takeEvery(
       DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS,

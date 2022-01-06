@@ -11,9 +11,10 @@ import Main from './view';
 
 export default connect(
   state => ({
+    autoSelectStop: state.device.autoSelectStop,
     checklist: checklist(state),
     itemCount: itemCount(state),
-    optimisedRouting: state.delivery?.optimisedRouting,
+    isOptimised: state.delivery?.stockWithData?.isOptimised || false,
     status: state.delivery?.status,
     stopCount: stopCount(state)
   }),

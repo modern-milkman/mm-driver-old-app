@@ -10,19 +10,27 @@ import { colors } from 'Theme';
 import style from './style';
 
 const Slider = props => {
-  const { maximumValue, minimumValue, onSlidingComplete, step, testID, value } =
-    props;
+  const {
+    disabled,
+    maximumValue,
+    minimumValue,
+    onSlidingComplete,
+    step,
+    testID,
+    value
+  } = props;
 
   return (
     <SliderRN
       animateTransitions
-      maximumTrackTintColor={colors.secondary}
+      disabled={disabled}
+      maximumTrackTintColor={disabled ? colors.input : colors.secondary}
       maximumValue={maximumValue}
-      minimumTrackTintColor={colors.primary}
+      minimumTrackTintColor={disabled ? colors.input : colors.primary}
       minimumValue={minimumValue}
       onSlidingComplete={onSlidingComplete}
       step={step}
-      thumbStyle={style.thumbStyle}
+      thumbStyle={{ ...style.thumbStyle, ...(disabled && style.disabled) }}
       trackStyle={style.trackStyle}
       value={value}
       containerStyle={style.containerStyle}
@@ -32,6 +40,7 @@ const Slider = props => {
 };
 
 Slider.defaultProps = {
+  disabled: false,
   maximumValue: 1,
   minimumValue: 0,
   title: '',
@@ -41,6 +50,7 @@ Slider.defaultProps = {
 };
 
 Slider.propTypes = {
+  disabled: PropTypes.bool,
   maximumValue: PropTypes.number,
   minimumValue: PropTypes.number,
   testID: PropTypes.string,

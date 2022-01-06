@@ -8,6 +8,7 @@ import Settings from './view';
 
 export default connect(
   state => ({
+    autoSelectStop: state.device.autoSelectStop,
     biometrics: state.device.biometrics,
     buttonAccessibility: state.device.buttonAccessibility,
     checklist: checklist(state),
@@ -18,10 +19,11 @@ export default connect(
     foregroundSize: state.device.foregroundSize,
     isOptimised: state.delivery?.stockWithData?.isOptimised || false,
     mapMarkerSize: state.device.mapMarkerSize,
-    optimisedRouting: state.delivery?.optimisedRouting,
+    optimisedStopsToShow: state.device.optimisedStopsToShow,
     network: state.device.network,
     showDoneDeliveries: state.device.showDoneDeliveries,
     showMapControlsOnMovement: state.device.showMapControlsOnMovement,
+    showAllPendingStops: state.device.showAllPendingStops,
     status: state.delivery?.status,
     vibrate: state.device.vibrate
   }),
@@ -29,7 +31,6 @@ export default connect(
     biometricDisable: applicationActions.biometricDisable,
     logout: applicationActions.logout,
     continueDelivering: deliveryActions.continueDelivering,
-    updateDeliveryProps: deliveryActions.updateProps,
     updateDeviceProps: deviceActions.updateProps
   }
 )(Settings);

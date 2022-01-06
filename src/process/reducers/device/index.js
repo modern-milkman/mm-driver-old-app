@@ -26,6 +26,7 @@ export const { Types, Creators } = createActions(
 
 const initialState = {
   appcenter: null,
+  autoSelectStop: true,
   biometrics: {
     supported: false,
     enrolled: false,
@@ -48,6 +49,7 @@ const initialState = {
     isConnected: false,
     status: 0 //0-Online * 1-Soft Offline * 2-offline
   },
+  optimisedStopsToShow: 9,
   permissions: {},
   position: {
     heading: 0,
@@ -68,6 +70,7 @@ const initialState = {
   shouldTrackLocation: false,
   showDoneDeliveries: false,
   showMapControlsOnMovement: true,
+  showAllPendingStops: true,
   uniqueID: 'uninitialized',
   vibrate: true
 };
@@ -166,6 +169,7 @@ export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps
 });
 
+export const autoSelectStop = state => state.device.autoSelectStop;
 export const biometrics = state => state.device.biometrics;
 export const device = state => state.device;
 export const heading = state => state.device.position?.heading || 0;

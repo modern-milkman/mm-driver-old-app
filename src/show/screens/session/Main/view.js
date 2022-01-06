@@ -13,20 +13,21 @@ import { ForegroundContent, Navigation, Map, Search } from './subviews';
 const compassStarted = React.createRef(false);
 
 const mainForegroundAction = ({
+  autoSelectStop,
   checklist,
   continueDelivering,
-  optimisedRouting,
+  isOptimised,
   selectedStop,
   status,
   startDelivering,
-  updateDeliveryProps
+  updateDeviceProps
 }) => {
   switch (status) {
     case DS.NCI:
     case DS.LV:
     case DS.SSC:
       if (checklist.loadedVan && checklist.shiftStartVanChecks) {
-        if (optimisedRouting) {
+        if (isOptimised && autoSelectStop) {
           continueDelivering();
         } else {
           startDelivering();
@@ -50,7 +51,7 @@ const mainForegroundAction = ({
       } else {
         // this action is available only when the route is optimised
         // foreground content disables the button otherwise
-        updateDeliveryProps({ optimisedRouting: true });
+        updateDeviceProps({ autoSelectStop: true });
         continueDelivering();
       }
       break;
@@ -70,16 +71,17 @@ const toggleCompass = (flag, callback) => {
 
 const Main = props => {
   const {
+    autoSelectStop,
     checklist,
     continueDelivering,
     currentLocation,
+    isOptimised,
     navigation,
-    optimisedRouting,
     selectedStop,
     setLocationHeading,
     status,
     startDelivering,
-    updateDeliveryProps
+    updateDeviceProps
   } = props;
 
   const currentSpeed = currentLocation ? currentLocation.speed : null;
@@ -122,13 +124,14 @@ const Main = props => {
           <ColumnView backgroundColor={colors.white}>
             <ForegroundContent
               onButtonPress={mainForegroundAction.bind(null, {
+                autoSelectStop,
                 checklist,
                 continueDelivering,
-                optimisedRouting,
+                isOptimised,
                 selectedStop,
                 status,
                 startDelivering,
-                updateDeliveryProps
+                updateDeviceProps
               })}
             />
           </ColumnView>
@@ -141,16 +144,17 @@ const Main = props => {
 };
 
 Main.propTypes = {
+  autoSelectStop: PropTypes.bool,
   checklist: PropTypes.object,
   continueDelivering: PropTypes.func,
   currentLocation: PropTypes.object,
   navigation: PropTypes.func,
-  optimisedRouting: PropTypes.bool,
+  isOptimised: PropTypes.bool,
   selectedStop: PropTypes.any,
   setLocationHeading: PropTypes.func,
   status: PropTypes.string,
   startDelivering: PropTypes.func,
-  updateDeliveryProps: PropTypes.func
+  updateDeviceProps: PropTypes.func
 };
 
 Main.defaultProps = {

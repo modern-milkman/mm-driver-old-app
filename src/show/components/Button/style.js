@@ -73,14 +73,17 @@ export const style = {
   },
 
   iconStyleContainer: {
+    position: 'absolute',
     right: defaults.paddingHorizontal / 2,
     justifyContent: 'center'
   },
   leftIcon: {
-    marginLeft: defaults.paddingHorizontal / 2
+    position: 'absolute',
+    left: defaults.paddingHorizontal / 2
   },
   rightIcon: {
-    marginRight: defaults.paddingHorizontal / 2
+    position: 'absolute',
+    right: defaults.paddingHorizontal / 2
   },
   noBorderRadius: {
     borderRadius: 0

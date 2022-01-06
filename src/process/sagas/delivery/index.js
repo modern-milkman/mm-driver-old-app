@@ -16,7 +16,6 @@ import {
   checklist as checklistSelector,
   completedStopsIds as completedStopsIdsSelector,
   isOptimised as isOptimisedSelector,
-  optimisedRouting as optimisedRoutingSelector,
   orderedStock as orderedStockSelector,
   orderedStopsIds as orderedStopsIdsSelector,
   selectedStop as selectedStopSelector,
@@ -27,6 +26,7 @@ import {
 } from 'Reducers/delivery';
 import {
   Types as DeviceTypes,
+  autoSelectStop as autoSelectStopSelector,
   device as deviceSelector
 } from 'Reducers/device';
 
@@ -61,6 +61,23 @@ export const continueDelivering = function* () {
   }
 
   yield call(updateTrackerData, { status });
+};
+
+export const deliverLater = function* () {
+  const autoSelectStop = yield select(autoSelectStopSelector);
+  const isOptimised = yield select(isOptimisedSelector);
+  if (isOptimised && autoSelectStop) {
+    yield put({
+      type: DeliveryTypes.CONTINUE_DELIVERING
+    });
+  }
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'info',
+      message: I18n.t('alert:success.main.deliverLater.confirmation')
+    }
+  });
 };
 
 export const driverReply = function* ({
@@ -294,12 +311,19 @@ export const getVehicleChecks = function* () {
 };
 
 export const getVehicleStockForDriverSuccess = function* ({ payload }) {
+  const autoSelectStop = yield select(autoSelectStopSelector);
   const checklist = yield select(checklistSelector);
-  const status = yield select(statusSelector);
-  const optimisedRouting = yield select(optimisedRoutingSelector);
+  const isOptimised = yield select(isOptimisedSelector);
   const orderedStock = yield select(orderedStockSelector);
+  const status = yield select(statusSelector);
+
   const productId = {};
-  if (optimisedRouting && !checklist.deliveryComplete && status === DS.DEL) {
+  if (
+    isOptimised &&
+    autoSelectStop &&
+    !checklist.deliveryComplete &&
+    status === DS.DEL
+  ) {
     yield put({
       type: DeliveryTypes.CONTINUE_DELIVERING
     });
@@ -371,13 +395,23 @@ export const setDeliveredOrRejected = function* (
   const completedStopsIds = yield select(completedStopsIdsSelector);
   const device = yield select(deviceSelector);
   const isOptimised = yield select(isOptimisedSelector);
-  const optimisedRouting = yield select(optimisedRoutingSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
   const status = yield select(statusSelector);
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
 
-  const { foregroundSize, position, requestQueues } = device;
+  const {
+    autoSelectStop,
+    foregroundSize,
+    optimisedStopsToShow,
+    position,
+    requestQueues,
+    shouldPitchMap,
+    shouldTrackHeading,
+    shouldTrackLocation,
+    showAllPendingStops,
+    showDoneDeliveries
+  } = device;
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
@@ -391,7 +425,7 @@ export const setDeliveredOrRejected = function* (
       ? Api.repositories.delivery.patchDelivered
       : Api.repositories.delivery.patchRejected;
 
-  if (optimisedRouting) {
+  if (isOptimised && autoSelectStop) {
     yield put({
       type: DeliveryTypes.CONTINUE_DELIVERING
     });
@@ -451,11 +485,21 @@ export const setDeliveredOrRejected = function* (
       ? EVENTS.TAP_DONE_DELIVER
       : EVENTS.TAP_SKIP_DELIVERY,
     {
+      autoSelectStop,
       foregroundSize,
       id,
-      ...(requestType === 'rejected' && { reasonType, reasonMessage }),
       isOptimised,
-      optimisedRouting
+      optimisedStopsToShow,
+      ...(requestType === 'rejected' && { reasonType, reasonMessage }),
+      requestQueues: {
+        offline: requestQueues.offline?.length,
+        failed: requestQueues.failed?.length
+      },
+      shouldPitchMap,
+      shouldTrackHeading,
+      shouldTrackLocation,
+      showAllPendingStops,
+      showDoneDeliveries
     }
   );
 };

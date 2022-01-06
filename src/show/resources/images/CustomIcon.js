@@ -8,7 +8,7 @@ import { colors, defaults } from 'Theme';
 
 import internalStyle from './style';
 
-const CustomIcon = (props) => {
+const CustomIcon = props => {
   const {
     bgColor,
     containerWidth,
@@ -44,19 +44,19 @@ const CustomIcon = (props) => {
         viewBox="0 0 24 24">
         {icon === 'addPhoto' && (
           <>
-            <Rect width="24" height="24" rx="5" fill={iconColor} />
+            <Rect width="24" height="24" rx="5" fill={bgColor} />
             <G>
               <Path
                 d="M16.7166 8.89065H15.0626L14.1079 7.84717H10.4557V9.41238H8.89047V10.9776H7.32526V16.195C7.32526 16.7689 7.79482 17.2385 8.36874 17.2385H16.7166C17.2905 17.2385 17.76 16.7689 17.76 16.195V9.93412C17.76 9.36022 17.2905 8.89065 16.7166 8.89065ZM12.5426 15.6733C11.1026 15.6733 9.93393 14.5045 9.93393 13.0645C9.93393 11.6245 11.1026 10.4559 12.5426 10.4559C13.9826 10.4559 15.1513 11.6246 15.1513 13.0646C15.1513 14.5046 13.9826 15.6733 12.5426 15.6733Z"
-                fill={colors.input}
+                fill={iconColor}
               />
               <Path
                 d="M7.32523 10.4557H8.36871V8.89044H9.93393V7.84695H8.36871V6.28174H7.32523V7.84695H5.76001V8.89044H7.32523V10.4557Z"
-                fill={colors.input}
+                fill={iconColor}
               />
               <Path
                 d="M12.5424 11.3945C11.619 11.3945 10.8729 12.1406 10.8729 13.0641C10.8729 13.9876 11.619 14.7337 12.5424 14.7337C13.4659 14.7337 14.212 13.9876 14.212 13.0641C14.212 12.1406 13.4659 11.3945 12.5424 11.3945Z"
-                fill={colors.input}
+                fill={iconColor}
               />
             </G>
           </>

@@ -26,10 +26,10 @@ const NavigationService = {
         });
         InteractionManager.runAfterInteractions(() => {
           config.goBackDisabled = false;
+          if (props?.afterCallback) {
+            props.afterCallback();
+          }
         });
-        if (props?.afterCallback) {
-          props.afterCallback();
-        }
       } else {
         config.goBackDisabled = false;
       }

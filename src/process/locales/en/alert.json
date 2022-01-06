@@ -50,6 +50,13 @@
     }
   },
   "success": {
+    "main": {
+      "deliverLater": {
+        "title": "Deliver later?",
+        "description": "Pin will be removed from sequence",
+        "confirmation": "Unoptimised and \"Deliver later\" drops will always be visible on the map. Manually select them when you're close by."
+      }
+    },
     "reports": {
       "sendToSuper": {
         "title": "Successfully sent data to supervisor",

@@ -1,4 +1,3 @@
-import Config from 'react-native-config';
 import { createActions, createReducer } from 'reduxsauce';
 
 import I18n from 'Locales/I18n';
@@ -11,6 +10,7 @@ export const { Types, Creators } = createActions(
     clearCenterMapLocation: null,
     continueDelivering: null,
     deleteVanDamageImage: ['key', 'index'],
+    deliverLater: ['selectedStopId'],
     driverReply: [
       'claimId',
       'comment',
@@ -109,7 +109,6 @@ export const initialState = {
   deliveredStock: {},
   directionsPolyline: [],
   hasRoutes: false,
-  optimisedRouting: true,
   orderedStock: [],
   orderedStopsIds: [],
   outOfSequenceIds: [],
@@ -133,6 +132,20 @@ const deleteVanDamageImage = (state, { key, index }) =>
     ].payload.vehicleCheckDamage[key].vehicleCheckDamageImage.filter(
       (image, idx) => idx !== index
     );
+  });
+
+const deliverLater = (state, { selectedStopId }) =>
+  produce(state, draft => {
+    const selectedStopIndex = draft.orderedStopsIds.indexOf(selectedStopId);
+    if (selectedStopIndex >= 0) {
+      resetSelectedStopInfo(draft);
+      draft.selectedStopId = null;
+      draft.stops[selectedStopId].sequenceNo = -1;
+      draft.outOfSequenceIds.push(selectedStopId);
+      draft.orderedStopsIds.push(
+        ...draft.orderedStopsIds.splice(selectedStopIndex, 1)
+      );
+    }
   });
 
 const driverReply = (
@@ -359,7 +372,6 @@ export const getForDriverSuccess = (state, { payload }) =>
       draft.outOfSequenceIds = [];
       draft.completedStopsIds = [];
       draft.deliveredStock = {};
-      draft.optimisedRouting = draft.stockWithData.isOptimised;
       resetChecklistFlags(draft.checklist[state.userId]);
     }
 
@@ -408,6 +420,7 @@ export const getForDriverSuccess = (state, { payload }) =>
           orderItems: {},
           searchHandle:
             computedAddress.toLowerCase() + address.userId.toString(),
+          sequenceNo: sequenceNo,
           status: 'pending',
           title: computedAddress
         };
@@ -782,6 +795,7 @@ export default createReducer(initialState, {
   [Types.CLEAR_CENTER_MAP_LOCATION]: clearCenterMapLocation,
   [Types.CONTINUE_DELIVERING]: startDelivering,
   [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
+  [Types.DELIVER_LATER]: deliverLater,
   [Types.DRIVER_REPLY]: driverReply,
   [Types.GET_FOR_DRIVER]: getForDriver,
   [Types.GET_DRIVER_DATA_FAILURE]: setLoaderInfo.bind(null, null),
@@ -837,16 +851,19 @@ export const itemCount = state => state.delivery?.itemCount || 0;
 
 export const isOptimised = state => state.delivery?.stockWithData?.isOptimised;
 
-export const optimisedRouting = state => state.delivery.optimisedRouting;
-
 export const orderedStock = state => state.delivery.orderedStock;
 
 export const orderedStopsIds = state =>
-  state.delivery.optimisedRouting
+  (state.delivery?.stockWithData?.isOptimised &&
+    state.device.showAllPendingStops) ||
+  !state.delivery?.stockWithData?.isOptimised
     ? state.delivery?.orderedStopsIds
-        .filter(sid => !state.delivery?.outOfStockIds?.includes(sid))
-        .slice(0, Config.OPTIMISED_STOPS_TO_SHOW)
-    : state.delivery?.orderedStopsIds;
+    : state.delivery?.orderedStopsIds.slice(
+        0,
+        state.device.optimisedStopsToShow
+      );
+
+export const outOfSequenceIds = state => state.delivery?.outOfSequenceIds;
 
 export const selectedStop = state => {
   const todaysDelivery = state.delivery;

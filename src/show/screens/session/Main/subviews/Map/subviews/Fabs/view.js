@@ -3,12 +3,12 @@ import { Animated } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 
 import { Fab } from 'Components';
-import { colors, defaults } from 'Theme';
+import { colors, defaults, sizes } from 'Theme';
 import { deliveryStates as DS } from 'Helpers';
 import { navigateInSheet } from 'Screens/session/Main/helpers';
 
-const fabContainerSize = 56;
-const fabMargin = 10;
+const fabContainerSize = sizes.fab.container;
+const fabMargin = defaults.marginHorizontal / 2;
 
 const toggleProp = ({ callback, mapIsInteracting, setMapMode }) => {
   if (setMapMode) {
@@ -105,7 +105,6 @@ const Fabs = props => {
       <Fab
         type={'material-community'}
         iconName={'plus'}
-        size={24}
         containerSize={fabContainerSize}
         color={colors.primary}
         right={fabMargin}
@@ -121,7 +120,6 @@ const Fabs = props => {
       <Fab
         type={'entypo'}
         iconName={'direction'}
-        size={24}
         containerSize={fabContainerSize}
         color={shouldTrackHeading ? colors.primary : colors.secondary}
         rotate={
@@ -143,7 +141,6 @@ const Fabs = props => {
       <Fab
         type={'material'}
         iconName={'3d-rotation'}
-        size={24}
         containerSize={fabContainerSize}
         color={shouldPitchMap ? colors.primary : colors.secondary}
         right={right.interpolate(mapControlInterpolations.position.second)}
@@ -160,7 +157,6 @@ const Fabs = props => {
       <Fab
         type={'material'}
         iconName={shouldTrackLocation ? 'my-location' : 'location-searching'}
-        size={24}
         containerSize={fabContainerSize}
         color={shouldTrackLocation ? colors.primary : colors.secondary}
         right={right.interpolate(mapControlInterpolations.position.third)}
@@ -176,7 +172,6 @@ const Fabs = props => {
         <Fab
           type="material-community"
           iconName="directions"
-          size={24}
           containerSize={fabContainerSize}
           color={network.status === 0 ? colors.primary : colors.inputDark}
           right={fabMargin}
@@ -193,7 +188,6 @@ const Fabs = props => {
         <Fab
           type={'material-community'}
           iconName={'refresh'}
-          size={24}
           containerSize={fabContainerSize}
           color={network.status === 0 ? colors.primary : colors.inputDark}
           left={fabMargin}

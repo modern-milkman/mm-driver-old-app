@@ -3,8 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Animated } from 'react-native';
 
-import { colors } from 'Theme';
 import Icon from 'Components/Icon';
+import { colors, sizes } from 'Theme';
 
 import styles from './style';
 
@@ -72,7 +72,7 @@ const Fab = props => {
 Fab.defaultProps = {
   bottom: undefined,
   color: colors.primary,
-  containerSize: 56,
+  containerSize: sizes.fab.container,
   disabled: false,
   iconName: 'close-thick',
   left: undefined,
@@ -82,7 +82,7 @@ Fab.defaultProps = {
   processing: false,
   rotate: new Animated.Value(0),
   right: undefined,
-  size: 44,
+  size: sizes.fab.icon,
   top: undefined,
   type: 'material-community',
   zIndex: 1

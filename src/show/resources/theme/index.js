@@ -47,6 +47,10 @@ export const sizes = {
   list: {
     height: 60,
     image: 44
+  },
+  fab: {
+    container: 56,
+    icon: 24
   }
 };
 
