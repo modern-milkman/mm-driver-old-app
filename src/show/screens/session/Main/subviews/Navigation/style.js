@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.neutral,
     width: '100%'
+  },
+  flex1: {
+    flex: 1
   }
 });
 

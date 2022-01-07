@@ -218,7 +218,7 @@
       "autoSelectStop": "Automatically select next stop",
       "biometricsDisabled": "Biometrics can only be setup on login screen",
       "deliveriesRemaining": "Deliveries remaining",
-      "deliveriesCountDown": "Enable to show as count down",
+      "deliveriesCountDown": "Toggle by tapping delivery bar in main screen",
       "foreground": "Large foreground",
       "optimisedRoutingUnavailable": "Unavailable for current route at this time",
       "computeDirections": "Compute delivery directions",
