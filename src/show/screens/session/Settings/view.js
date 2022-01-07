@@ -296,6 +296,30 @@ const Settings = props => {
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
+          {computeDirections && (
+            <>
+              <RowView
+                marginHorizontal={defaults.marginHorizontal}
+                justifyContent={'space-between'}
+                marginVertical={defaults.marginVertical / 2}
+                width={'auto'}>
+                <Text.List color={colors.secondary}>
+                  {I18n.t('screens:settings.switches.computeShortDirections')}
+                </Text.List>
+                <Switch
+                  value={computeShortDirections}
+                  onValueChange={toggleDeviceProp.bind(
+                    null,
+                    updateDeviceProps,
+                    'computeShortDirections'
+                  )}
+                />
+              </RowView>
+
+              <Separator marginLeft={defaults.marginHorizontal} />
+            </>
+          )}
+
           <RowView
             marginHorizontal={defaults.marginHorizontal}
             justifyContent={'space-between'}
@@ -322,30 +346,6 @@ const Settings = props => {
           <Separator />
 
           <ListHeader title={I18n.t('screens:settings.sections.map')} />
-
-          {computeDirections && (
-            <>
-              <RowView
-                marginHorizontal={defaults.marginHorizontal}
-                justifyContent={'space-between'}
-                marginVertical={defaults.marginVertical / 2}
-                width={'auto'}>
-                <Text.List color={colors.secondary}>
-                  {I18n.t('screens:settings.switches.computeShortDirections')}
-                </Text.List>
-                <Switch
-                  value={computeShortDirections}
-                  onValueChange={toggleDeviceProp.bind(
-                    null,
-                    updateDeviceProps,
-                    'computeShortDirections'
-                  )}
-                />
-              </RowView>
-
-              <Separator marginLeft={defaults.marginHorizontal} />
-            </>
-          )}
 
           <RowView
             marginHorizontal={defaults.marginHorizontal}
