@@ -23,9 +23,7 @@ import {
   Types as DeviceTypes,
   Creators as DeviceCreators,
   biometrics as biometricsSelector,
-  heading as headingSelector,
   network as networkSelector,
-  position as positionSelector,
   processors as processorsSelector,
   requestQueues as requestQueuesSelector
 } from 'Reducers/device';
@@ -113,13 +111,8 @@ export function* reduxSagaNetstatChange({ netStatProps }) {
 export function* setLocation({ position }) {
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
-  const heading = yield select(headingSelector);
 
   if (position?.coords?.latitude !== 0 || position?.coords?.longitude !== 0) {
-    if (position?.coords?.speed < 2.5) {
-      position.coords.heading = heading;
-    }
-
     yield put({ type: DeviceTypes.SET_LOCATION, position: position.coords });
 
     if (user_session && user.driverId) {
@@ -131,22 +124,6 @@ export function* setLocation({ position }) {
         })
       });
     }
-  }
-}
-
-export function* setLocationHeading({ heading }) {
-  yield delay(250);
-  const position = yield select(positionSelector);
-  if (position) {
-    yield put({
-      type: DeviceTypes.UPDATE_PROPS,
-      props: {
-        position: {
-          ...position,
-          heading: heading.heading
-        }
-      }
-    });
   }
 }
 
