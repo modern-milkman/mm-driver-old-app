@@ -386,6 +386,13 @@ export const saveVehicleChecks = function* ({ saveType }) {
     })
   });
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
+
+  if (checklist.shiftEndVanChecks && checklist.rateMyRound) {
+    yield put({
+      type: DeliveryTypes.UPDATE_PROPS,
+      props: { status: DS.SC }
+    });
+  }
 };
 
 export const setDeliveredOrRejected = function* (
@@ -539,10 +546,13 @@ export const showMustComplyWithTerms = function* () {
   });
 };
 
-export const updateProps = function* ({ props: { status } }) {
-  const user = yield select(userSelector);
-  if (user && status) {
-    yield call(updateTrackerData, { status });
+export const updateChecklistProps = function* () {
+  const checklist = yield select(checklistSelector);
+  if (checklist.shiftEndVanChecks && checklist.rateMyRound) {
+    yield put({
+      type: DeliveryTypes.UPDATE_PROPS,
+      props: { status: DS.SC }
+    });
   }
 };
 
@@ -601,6 +611,13 @@ export const updateDirectionsPolyline = function* () {
         })
       });
     }
+  }
+};
+
+export const updateProps = function* ({ props: { status } }) {
+  const user = yield select(userSelector);
+  if (user && status) {
+    yield call(updateTrackerData, { status });
   }
 };
 

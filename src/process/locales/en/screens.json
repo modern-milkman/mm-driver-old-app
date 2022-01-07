@@ -19,7 +19,8 @@
       "loadVan": "Load van to start your round"
     },
     "itemsLeft": "{{items}} items left",
-    "loadVan": "Load Van"
+    "loadVan": "Load Van",
+    "rateMyRound": "Rate My Round"
   },
   "checklist": {
     "driverPrompts": {

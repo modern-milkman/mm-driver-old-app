@@ -58,6 +58,7 @@ import {
   setProductsOrder,
   setReturnTypes,
   showMustComplyWithTerms,
+  updateChecklistProps,
   updateDriverActivity,
   updateDirectionsPolyline,
   updateProps as updateDeliveryProps,
@@ -156,13 +157,14 @@ export default function* root() {
     ),
     takeEvery(DeliveryTypes.SET_RETURN_TYPES, setReturnTypes),
     takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, getReturnTypes),
-    takeEvery(DeliveryTypes.UPDATE_DRIVER_ACTIVITY, updateDriverActivity),
-    takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
-    takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
+    takeEvery(DeliveryTypes.UPDATE_CHECKLIST_PROPS, updateChecklistProps),
     takeEvery(
       DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE,
       updateDirectionsPolyline
     ),
+    takeEvery(DeliveryTypes.UPDATE_DRIVER_ACTIVITY, updateDriverActivity),
+    takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
+    takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
 
     takeLatest(
       DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
