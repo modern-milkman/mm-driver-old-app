@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Platform } from 'react-native';
+import React, { useEffect } from 'react';
 
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
@@ -21,7 +22,7 @@ const updateEmpty = (
   value
 ) => {
   const update = {};
-  update[`${description}Bottles`] = value;
+  update[`empty${id}`] = value;
   updateTransientProps(update);
   setEmpty(id, value);
 };
@@ -32,9 +33,7 @@ const renderEmpty = (
   index
 ) => (
   <>
-    <ListHeader
-      title={I18n.t(`screens:emptiesCollected.elements.${description}`)}
-    />
+    <ListHeader title={description} />
 
     <RowView
       width={'auto'}
@@ -42,8 +41,8 @@ const renderEmpty = (
       marginTop={defaults.marginVertical / 2}>
       <TextInput
         keyboardType={'numeric'}
-        error={empties[`${description}BottlesHasError`]}
-        errorMessage={empties[`${description}BottlesErrorMessage`]}
+        error={empties[`empty${id}HasError`]}
+        errorMessage={empties[`empty${id}ErrorMessage`]}
         autoCapitalize={'none'}
         onChangeText={updateEmpty.bind(null, {
           description,
@@ -61,9 +60,9 @@ const renderEmpty = (
             : focusNext.bind(null, index)
         }
         placeholder={I18n.t('input:placeholder.number')}
-        value={empties[`${description}Bottles`]}
+        value={empties[`empty${id}`]}
         ref={emptiesReference[index]}
-        returnKeyType={'next'}
+        returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
         testID={`empties-textInput-${id}`}
       />
     </RowView>
@@ -88,8 +87,8 @@ const EmptiesCollected = ({
   const { emptiesCollected } = payload;
   let disabled = false;
   const emptiesArray = Object.values(emptiesCollected);
-  for (const { description, value } of emptiesArray) {
-    if (!value || empties[`${description}BottlesHasError`]) {
+  for (const { id, value } of emptiesArray) {
+    if (!value || empties[`empty${id}HasError`]) {
       disabled = true;
     }
     emptiesReference.push(React.createRef());

@@ -1,6 +1,6 @@
 import { createActions, createReducer } from 'reduxsauce';
 
-import validations from './validations';
+import { standard, regex } from './validations';
 
 import { produce } from '../shared';
 
@@ -23,17 +23,22 @@ export const updateProps = (state, { props }) => {
   return produce(state, draft => {
     for (const [prop, value] of Object.entries(props)) {
       draft[prop] = value;
-      if (validations[prop]) {
-        for (const validation of validations[prop]) {
-          if (validation) {
-            if (validation.isValid(value)) {
-              draft[`${prop}HasError`] = false;
-              draft[`${prop}ErrorMessage`] = '';
-            } else {
-              draft[`${prop}HasError`] = true;
-              draft[`${prop}ErrorMessage`] = validation.message;
-              break;
-            }
+      let validations = [];
+      if (standard[prop]) {
+        validations.push(...standard[prop]);
+      }
+      if (regex.empties.tester.test(prop)) {
+        validations.push(...regex.empties.validations);
+      }
+      for (const validation of validations) {
+        if (validation) {
+          if (validation.isValid(value)) {
+            draft[`${prop}HasError`] = false;
+            draft[`${prop}ErrorMessage`] = '';
+          } else {
+            draft[`${prop}HasError`] = true;
+            draft[`${prop}ErrorMessage`] = validation.message;
+            break;
           }
         }
       }

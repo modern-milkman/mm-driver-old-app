@@ -20,7 +20,14 @@ const numericValidation = {
   message: I18n.t('validations:invalid.numericValidation')
 };
 
-export default {
+export const regex = {
+  empties: {
+    tester: new RegExp(/^empty[0-9]+$/),
+    validations: [requiredValidation, numericValidation]
+  }
+};
+
+export const standard = {
   currentMileage: [requiredValidation, numericValidation],
   email: [
     {
@@ -37,15 +44,5 @@ export default {
       },
       message: I18n.t('validations:invalid.email')
     }
-  ],
-  MilkBottles: [requiredValidation, numericValidation],
-  MinimlBottles: [requiredValidation, numericValidation],
-  PopBottles: [requiredValidation, numericValidation],
-  TeaBottles: [requiredValidation, numericValidation],
-  vehicleRegistration: [requiredValidation],
-  WaterBottles: [requiredValidation, numericValidation],
-  YoghourtBottles: [requiredValidation, numericValidation],
-  YoghurtBottles: [requiredValidation, numericValidation],
-  YogourtBottles: [requiredValidation, numericValidation],
-  YogurtBottles: [requiredValidation, numericValidation]
+  ]
 };
