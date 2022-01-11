@@ -52,6 +52,7 @@ const Marker = props => {
       : customerSatisfactionColor;
 
   const [previousMarkerSize, setPreviousMarkerSize] = useState(mapMarkerSize);
+  const [previousSequence, setPreviousSequence] = useState(sequence);
   const [tracksViewChanges, setTracksViewChanges] = useState(
     selectedStopId === id || previousStopId === id
   );
@@ -60,15 +61,27 @@ const Marker = props => {
     setTracksViewChanges(
       selectedStopId === id ||
         previousStopId === id ||
-        previousMarkerSize !== mapMarkerSize
+        previousMarkerSize !== mapMarkerSize ||
+        previousSequence !== sequence
     );
     if (previousMarkerSize !== mapMarkerSize) {
       setPreviousMarkerSize(mapMarkerSize);
     }
+    if (previousSequence !== sequence) {
+      setPreviousSequence(sequence);
+    }
     setTimeout(() => {
       setTracksViewChanges(false);
     }, 125);
-  }, [id, mapMarkerSize, previousMarkerSize, previousStopId, selectedStopId]);
+  }, [
+    id,
+    mapMarkerSize,
+    previousMarkerSize,
+    previousSequence,
+    previousStopId,
+    selectedStopId,
+    sequence
+  ]);
 
   return (
     (selectedStop && (
