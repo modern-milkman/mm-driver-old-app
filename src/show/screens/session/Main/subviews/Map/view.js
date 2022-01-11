@@ -209,7 +209,7 @@ const Map = props => {
         showsIndoors={false}
         showsMyLocationButton={false}
         showsPointsOfInterest={false}
-        showsTraffic
+        showsTraffic={false}
         showsUserLocation={false}
         style={[styles.map]}>
         {latitude && longitude && (
