@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import React, { useEffect } from 'react';
 
 import { mock } from 'Helpers';
@@ -55,8 +55,8 @@ const renderEmpty = (
             ? disabled
               ? mock
               : NavigationService.navigate.bind(null, {
-                  routeName: 'DamageReport'
-                })
+                routeName: 'DamageReport'
+              })
             : focusNext.bind(null, index)
         }
         placeholder={I18n.t('input:placeholder.number')}
@@ -71,8 +71,8 @@ const renderEmpty = (
 
 const updateTransientEmpties = ({ emptiesCollected, updateTransientProps }) => {
   const update = {};
-  for (const { description, value } of Object.values(emptiesCollected)) {
-    update[`${description}Bottles`] = value;
+  for (const { id, value } of Object.values(emptiesCollected)) {
+    update[`empty${id}`] = value;
   }
   updateTransientProps(update);
 };
@@ -122,8 +122,8 @@ const EmptiesCollected = ({
             disabled
               ? mock
               : NavigationService.navigate.bind(null, {
-                  routeName: 'DamageReport'
-                })
+                routeName: 'DamageReport'
+              })
           }
           {...(disabled && { rightColor: colors.inputDark })}
           testID="empties-navbar"
@@ -137,21 +137,22 @@ const EmptiesCollected = ({
             marginHorizontal={defaults.marginHorizontal}>
             <Text.Caption align={'left'} flex={1} color={colors.secondary}>
               {I18n.t(
-                `screens:emptiesCollected.subHeading.${
-                  payload.shiftStart ? 'start' : 'end'
+                `screens:emptiesCollected.subHeading.${payload.shiftStart ? 'start' : 'end'
                 }`
               )}
             </Text.Caption>
           </RowView>
-          {emptiesArray.map(
-            renderEmpty.bind(null, {
-              disabled,
-              length: emptiesArray.length,
-              updateTransientProps,
-              setEmpty,
-              ...empties
-            })
-          )}
+          <KeyboardAvoidingView behavior={'padding'}>
+            {emptiesArray.map(
+              renderEmpty.bind(null, {
+                disabled,
+                length: emptiesArray.length,
+                updateTransientProps,
+                setEmpty,
+                ...empties
+              })
+            )}
+          </KeyboardAvoidingView>
         </ColumnView>
 
         <RowView
