@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
 import React, { useState, useRef, useEffect } from 'react';
-import NavigationService from 'Services/navigation';
-import { Platform, Pressable } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable } from 'react-native';
+
 import I18n from 'Locales/I18n';
 import { defaults, colors } from 'Theme';
+import NavigationService from 'Services/navigation';
 import { deviceFrame, mock, plateRecognition } from 'Helpers';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
 import { Button, ListHeader, NavBar, Text, TextInput, Image } from 'Components';
@@ -131,102 +132,104 @@ const RegistrationMileage = ({
         {renderProgressBar(1, payload)}
 
         <ColumnView scrollable width={'auto'} alignItems={'stretch'}>
-          <ListHeader
-            title={I18n.t('screens:registrationMileage.registration')}
-          />
-
-          <ColumnView
-            width={videowidth}
-            height={videowidth * (4 / 3)}
-            backgroundColor={colors.primary}
-            overflow={'hidden'}
-            borderRadius={defaults.borderRadius}
-            marginHorizontal={defaults.marginHorizontal}
-            marginVertical={defaults.marginVertical / 2}>
-            <Pressable
-              onPress={setPlateImage.bind(null, '')}
-              style={styles.preview}>
-              {plateImage.length > 0 ? (
-                <Image
-                  style={styles.preview}
-                  blurRadius={Platform.select({
-                    android: 4,
-                    ios: 120
-                  })}
-                  source={{
-                    uri: plateImage
-                  }}
-                />
-              ) : (
-                <RNCamera
-                  pictureSize={'640x480'}
-                  quality={RNCamera.Constants.VideoQuality['4:3']}
-                  ratio={'4:3'}
-                  ref={camera}
-                  style={styles.preview}
-                  type={RNCamera.Constants.Type.back}
-                  onTextRecognized={smartUKFilter}
-                  captureAudio={false}
-                />
-              )}
-            </Pressable>
-          </ColumnView>
-
-          <Text.Label color={colors.inputDark} align={'center'}>
-            {I18n.t('screens:registrationMileage.or')}
-          </Text.Label>
-
-          <RowView
-            width={'auto'}
-            marginHorizontal={defaults.marginHorizontal}
-            marginVertical={defaults.marginVertical / 2}>
-            <TextInput
-              autoCapitalize={'none'}
-              error={vehicleRegistrationHasError}
-              errorMessage={vehicleRegistrationErrorMessage}
-              onChangeText={updateReducerAndTransient.bind(null, {
-                updateTransientProps,
-                reducerMethod: setRegistration,
-                prop: 'vehicleRegistration'
-              })}
-              onSubmitEditing={focusMileage}
-              placeholder={I18n.t('input:placeholder.registration')}
-              value={vehicleRegistration}
-              returnKeyType={'next'}
-              testID={'checkVan-registration-input'}
+          <KeyboardAvoidingView behavior={'padding'}>
+            <ListHeader
+              title={I18n.t('screens:registrationMileage.registration')}
             />
-          </RowView>
 
-          <ListHeader title={I18n.t('screens:registrationMileage.mileage')} />
+            <ColumnView
+              width={videowidth}
+              height={videowidth * (4 / 3)}
+              backgroundColor={colors.primary}
+              overflow={'hidden'}
+              borderRadius={defaults.borderRadius}
+              marginHorizontal={defaults.marginHorizontal}
+              marginVertical={defaults.marginVertical / 2}>
+              <Pressable
+                onPress={setPlateImage.bind(null, '')}
+                style={styles.preview}>
+                {plateImage.length > 0 ? (
+                  <Image
+                    style={styles.preview}
+                    blurRadius={Platform.select({
+                      android: 4,
+                      ios: 120
+                    })}
+                    source={{
+                      uri: plateImage
+                    }}
+                  />
+                ) : (
+                  <RNCamera
+                    pictureSize={'640x480'}
+                    quality={RNCamera.Constants.VideoQuality['4:3']}
+                    ratio={'4:3'}
+                    ref={camera}
+                    style={styles.preview}
+                    type={RNCamera.Constants.Type.back}
+                    onTextRecognized={smartUKFilter}
+                    captureAudio={false}
+                  />
+                )}
+              </Pressable>
+            </ColumnView>
 
-          <RowView
-            width={'auto'}
-            marginHorizontal={defaults.marginHorizontal}
-            marginVertical={defaults.marginVertical / 2}>
-            <TextInput
-              keyboardType={'numeric'}
-              error={currentMileageHasError}
-              errorMessage={currentMileageErrorMessage}
-              autoCapitalize={'none'}
-              onChangeText={updateReducerAndTransient.bind(null, {
-                updateTransientProps,
-                reducerMethod: setMileage,
-                prop: 'currentMileage'
-              })}
-              onSubmitEditing={
-                disabled
-                  ? mock
-                  : NavigationService.navigate.bind(null, {
-                      routeName
-                    })
-              }
-              placeholder={I18n.t('input:placeholder.mileage')}
-              value={currentMileage}
-              ref={mileageReference}
-              returnKeyType={'next'}
-              testID={'checkVan-mileage-input'}
-            />
-          </RowView>
+            <Text.Label color={colors.inputDark} align={'center'}>
+              {I18n.t('screens:registrationMileage.or')}
+            </Text.Label>
+
+            <RowView
+              width={'auto'}
+              marginHorizontal={defaults.marginHorizontal}
+              marginVertical={defaults.marginVertical / 2}>
+              <TextInput
+                autoCapitalize={'none'}
+                error={vehicleRegistrationHasError}
+                errorMessage={vehicleRegistrationErrorMessage}
+                onChangeText={updateReducerAndTransient.bind(null, {
+                  updateTransientProps,
+                  reducerMethod: setRegistration,
+                  prop: 'vehicleRegistration'
+                })}
+                onSubmitEditing={focusMileage}
+                placeholder={I18n.t('input:placeholder.registration')}
+                value={vehicleRegistration}
+                returnKeyType={'next'}
+                testID={'checkVan-registration-input'}
+              />
+            </RowView>
+
+            <ListHeader title={I18n.t('screens:registrationMileage.mileage')} />
+
+            <RowView
+              width={'auto'}
+              marginHorizontal={defaults.marginHorizontal}
+              marginVertical={defaults.marginVertical / 2}>
+              <TextInput
+                keyboardType={'numeric'}
+                error={currentMileageHasError}
+                errorMessage={currentMileageErrorMessage}
+                autoCapitalize={'none'}
+                onChangeText={updateReducerAndTransient.bind(null, {
+                  updateTransientProps,
+                  reducerMethod: setMileage,
+                  prop: 'currentMileage'
+                })}
+                onSubmitEditing={
+                  disabled
+                    ? mock
+                    : NavigationService.navigate.bind(null, {
+                        routeName
+                      })
+                }
+                placeholder={I18n.t('input:placeholder.mileage')}
+                value={currentMileage}
+                ref={mileageReference}
+                returnKeyType={'next'}
+                testID={'checkVan-mileage-input'}
+              />
+            </RowView>
+          </KeyboardAvoidingView>
         </ColumnView>
 
         <RowView

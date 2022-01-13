@@ -206,7 +206,10 @@ const Map = props => {
         provider={PROVIDER_GOOGLE}
         ref={setMapRef.bind(null, mapRef)}
         showsCompass={false}
+        showsIndoors={false}
         showsMyLocationButton={false}
+        showsPointsOfInterest={false}
+        showsTraffic={false}
         showsUserLocation={false}
         style={[styles.map]}>
         {latitude && longitude && (

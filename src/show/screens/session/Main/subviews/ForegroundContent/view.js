@@ -331,8 +331,10 @@ const ForegroundContent = props => {
                   onPress={onButtonPress}
                   width={
                     width -
-                    (canDeliverLater ? buttonAccessibility : 0) -
-                    defaults.marginHorizontal * 1.5
+                    (canDeliverLater
+                      ? buttonAccessibility + defaults.marginHorizontal / 2
+                      : 0) -
+                    defaults.marginHorizontal
                   }
                   testID={'foregroundContent-main-btn'}
                 />
