@@ -58,6 +58,7 @@ import {
   setProductsOrder,
   setReturnTypes,
   showMustComplyWithTerms,
+  updateChecklistProps,
   updateDriverActivity,
   updateDirectionsPolyline,
   updateProps as updateDeliveryProps,
@@ -70,7 +71,6 @@ import {
   lowConnectionUpdate,
   reduxSagaNetstatChange,
   setLocation,
-  setLocationHeading,
   setMapMode,
   shareOfflineData,
   syncOffline,
@@ -157,20 +157,20 @@ export default function* root() {
     ),
     takeEvery(DeliveryTypes.SET_RETURN_TYPES, setReturnTypes),
     takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, getReturnTypes),
-    takeEvery(DeliveryTypes.UPDATE_DRIVER_ACTIVITY, updateDriverActivity),
-    takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
-    takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
+    takeEvery(DeliveryTypes.UPDATE_CHECKLIST_PROPS, updateChecklistProps),
     takeEvery(
       DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE,
       updateDirectionsPolyline
     ),
+    takeEvery(DeliveryTypes.UPDATE_DRIVER_ACTIVITY, updateDriverActivity),
+    takeEvery(DeliveryTypes.UPDATE_PROPS, updateDeliveryProps),
+    takeEvery(DeliveryTypes.UPDATE_SELECTED_STOP, updateSelectedStop),
 
     takeLatest(
       DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
       ensureMandatoryPermissions
     ),
     takeLatest(DeviceTypes.LOW_CONNECTION_UPDATE, lowConnectionUpdate),
-    takeLatest(DeviceTypes.SET_LOCATION_HEADING, setLocationHeading),
     takeLatest(DeviceTypes.SET_MAP_MODE, setMapMode),
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA, shareOfflineData),
     takeLatest(DeviceTypes.SYNC_OFFLINE, syncOffline),

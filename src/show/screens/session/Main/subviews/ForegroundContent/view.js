@@ -161,7 +161,7 @@ const ForegroundContent = props => {
         foregroundState = 'DELIVERING';
         mainActionDisabled = false;
       } else {
-        if (checklist.shiftEndVanChecks) {
+        if (checklist.shiftEndVanChecks && checklist.rateMyRound) {
           foregroundState = 'COME_BACK_LATER';
         } else {
           foregroundState = 'VEHICLE_CHECKS_END';

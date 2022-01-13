@@ -17,7 +17,6 @@ export default connect(
     return {
       autoSelectStop: state.device.autoSelectStop,
       checklist: currentChecklist,
-      currentLocation: state.device.position,
       isOptimised: state.delivery?.stockWithData?.isOptimised || false,
       selectedStop: currentSelectedStop,
       status: state.delivery?.status
@@ -26,7 +25,6 @@ export default connect(
   {
     continueDelivering: deliveryActions.continueDelivering,
     startDelivering: deliveryActions.startDelivering,
-    updateDeviceProps: deviceActions.updateProps,
-    setLocationHeading: deviceActions.setLocationHeading
+    updateDeviceProps: deviceActions.updateProps
   }
 )(Main);

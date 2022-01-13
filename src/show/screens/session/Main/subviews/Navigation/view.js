@@ -17,7 +17,7 @@ const renderCountDown = (completed, stopCount) => (
     {renderProgressBar({
       completed,
       stopCount,
-      props: { marginRight: defaults.marginHorizontal }
+      props: { marginRight: defaults.marginHorizontal / 4 }
     })}
 
     <Text.List color={colors.secondary}>
@@ -37,7 +37,7 @@ const renderCountUp = (completed, stopCount) => (
     {renderProgressBar({
       completed,
       stopCount,
-      props: { marginHorizontal: defaults.marginHorizontal }
+      props: { marginHorizontal: defaults.marginHorizontal / 4 }
     })}
 
     <Text.List color={colors.secondary}>{completed} </Text.List>
@@ -70,7 +70,7 @@ const Navigation = props => {
     lowConnection,
     network,
     openDrawer,
-
+    updateDeviceProps,
     requestQueues,
     status,
     stopCount
@@ -78,8 +78,6 @@ const Navigation = props => {
 
   const completed = completedStopsIds.length;
   const failedRequests = requestQueues.failed.length > 0;
-  const showIssuesLabel =
-    failedRequests || (lowConnection && network.status === 0);
   const { width } = deviceFrame();
 
   return (
@@ -87,9 +85,7 @@ const Navigation = props => {
       <RowView
         justifyContent={'space-between'}
         height={48}
-        marginHorizontal={
-          defaults.marginHorizontal - defaults.marginHorizontal / 3
-        }
+        marginHorizontal={defaults.marginHorizontal * 0.75}
         width={'auto'}>
         <CustomIcon
           width={30}
@@ -98,15 +94,16 @@ const Navigation = props => {
           onPress={openDrawer}
         />
         {status === DS.DEL && (
-          <RowView
-            flex={1}
-            marginLeft={defaults.marginHorizontal / 2}
-            {...(showIssuesLabel && {
-              marginRight: defaults.marginHorizontal / 2
-            })}>
-            {countDown
-              ? renderCountDown(completed, stopCount)
-              : renderCountUp(completed, stopCount)}
+          <RowView flex={1} marginHorizontal={defaults.marginHorizontal / 2}>
+            <Pressable
+              style={style.flex1}
+              onPress={updateDeviceProps.bind(null, { countDown: !countDown })}>
+              <RowView height={48}>
+                {countDown
+                  ? renderCountDown(completed, stopCount)
+                  : renderCountUp(completed, stopCount)}
+              </RowView>
+            </Pressable>
           </RowView>
         )}
         {failedRequests && (
@@ -146,7 +143,8 @@ Navigation.propTypes = {
   openDrawer: PropTypes.func,
   requestQueues: PropTypes.object,
   status: PropTypes.string,
-  stopCount: PropTypes.number
+  stopCount: PropTypes.number,
+  updateDeviceProps: PropTypes.func
 };
 
 export default Navigation;

@@ -294,10 +294,10 @@ const Settings = props => {
             />
           </RowView>
 
-          <Separator marginLeft={defaults.marginHorizontal} />
-
           {computeDirections && (
             <>
+              <Separator marginLeft={defaults.marginHorizontal} />
+
               <RowView
                 marginHorizontal={defaults.marginHorizontal}
                 justifyContent={'space-between'}
@@ -315,33 +315,8 @@ const Settings = props => {
                   )}
                 />
               </RowView>
-
-              <Separator marginLeft={defaults.marginHorizontal} />
             </>
           )}
-
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
-            <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
-                {I18n.t('screens:settings.switches.deliveriesRemaining')}
-              </Text.List>
-              <Text.Caption color={colors.secondary}>
-                {I18n.t('screens:settings.switches.deliveriesCountDown')}
-              </Text.Caption>
-            </ColumnView>
-            <Switch
-              value={countDown}
-              onValueChange={toggleDeviceProp.bind(
-                null,
-                updateDeviceProps,
-                'countDown'
-              )}
-            />
-          </RowView>
 
           <Separator />
 
@@ -380,6 +355,33 @@ const Settings = props => {
               onValueChange={onForegroundSizeChange.bind(
                 null,
                 updateDeviceProps
+              )}
+            />
+          </RowView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
+
+          {/*TODO remove countDown switch in later release*/}
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.deliveriesRemaining')}
+              </Text.List>
+              <Text.Caption color={colors.secondary}>
+                {I18n.t('screens:settings.switches.deliveriesCountDown')}
+              </Text.Caption>
+            </ColumnView>
+            <Switch
+              disabled={true}
+              value={countDown}
+              onValueChange={toggleDeviceProp.bind(
+                null,
+                updateDeviceProps,
+                'countDown'
               )}
             />
           </RowView>

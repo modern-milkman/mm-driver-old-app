@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 
+import { Creators as inAppBrowserActions } from 'Reducers/inappbrowser';
 import {
   Creators as deliveryActions,
   checklist,
@@ -20,6 +21,9 @@ export default connect(
   }),
   {
     continueDelivering: deliveryActions.continueDelivering,
-    startDelivering: deliveryActions.startDelivering
+    startDelivering: deliveryActions.startDelivering,
+    updateChecklistProps: deliveryActions.updateChecklistProps,
+    updateInAppBrowserProps: inAppBrowserActions.updateProps,
+    updateProps: deliveryActions.updateProps
   }
 )(Main);

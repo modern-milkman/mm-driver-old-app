@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
+import Config from 'react-native-config';
 
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
@@ -10,6 +11,14 @@ import { deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 
 import style from './style';
+
+const openRateMyRound = ({ updateChecklistProps, updateInAppBrowserProps }) => {
+  updateChecklistProps({ rateMyRound: true });
+  updateInAppBrowserProps({
+    visible: true,
+    url: Config.RATE_MY_ROUND
+  });
+};
 
 const renderButtonTitle = ({ checklist, status }) => {
   switch (status) {
@@ -89,7 +98,9 @@ const CheckIn = props => {
     isOptimised,
     status,
     startDelivering,
-    stopCount
+    stopCount,
+    updateChecklistProps,
+    updateInAppBrowserProps
   } = props;
 
   const dpDisabled = deliverProductsDisabled({ checklist, status });
@@ -137,6 +148,25 @@ const CheckIn = props => {
         : 'chevron-right',
       title: I18n.t('screens:checkIn.deliverProducts'),
       testID: 'checkIn-deliverProducts-listItem'
+    },
+    {
+      customIcon: 'star',
+      disabled:
+        checklist.rateMyRound ||
+        !checklist.deliveryComplete ||
+        !checklist.loadedVan ||
+        !checklist.shiftStartVanChecks,
+      onPress: openRateMyRound.bind(null, {
+        updateChecklistProps,
+        updateInAppBrowserProps
+      }),
+      rightIcon: !checklist.deliveryComplete
+        ? null
+        : checklist.rateMyRound
+        ? 'check'
+        : 'chevron-right',
+      title: I18n.t('screens:checkIn.rateMyRound'),
+      testID: 'checkIn-checkVanEnd-listItem'
     },
     {
       customIcon: 'vanCheck',
@@ -213,7 +243,8 @@ const CheckIn = props => {
                   ([DS.NCI, DS.LV, DS.SSC].includes(status) &&
                     (checklist.loadedVan === false ||
                       checklist.shiftStartVanChecks === false)) ||
-                  ![DS.NCI, DS.LV, DS.SSC, DS.SC].includes(status)
+                  ([DS.DELC, DS.SEC].includes(status) &&
+                    checklist.shiftEndVanChecks === false)
                 }
                 onPress={NavigationService.goBack.bind(null, {
                   beforeCallback:
@@ -241,7 +272,10 @@ CheckIn.propTypes = {
   isOptimised: PropTypes.bool,
   status: PropTypes.string,
   startDelivering: PropTypes.func,
-  stopCount: PropTypes.number
+  stopCount: PropTypes.number,
+  updateChecklistProps: PropTypes.func,
+  updateInAppBrowserProps: PropTypes.func,
+  updateProps: PropTypes.func
 };
 
 CheckIn.defaultProps = {

@@ -12,7 +12,6 @@ export const { Types, Creators } = createActions(
     pushRequest: ['queue', 'payload'],
     setLatestApp: ['payload'],
     setLocation: ['position'],
-    setLocationHeading: ['heading'],
     setMapMode: ['mode'],
     shareOfflineData: null,
     syncOffline: null,
@@ -172,7 +171,6 @@ export default createReducer(initialState, {
 export const autoSelectStop = state => state.device.autoSelectStop;
 export const biometrics = state => state.device.biometrics;
 export const device = state => state.device;
-export const heading = state => state.device.position?.heading || 0;
 export const network = state => state.device.network;
 export const position = state => state.device.position;
 export const processors = state => state.device.processors;
