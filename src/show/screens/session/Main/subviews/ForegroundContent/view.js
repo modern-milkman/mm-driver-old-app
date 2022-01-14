@@ -293,7 +293,6 @@ const ForegroundContent = props => {
               </RowView>
               {foregroundSize === 'large' && renderedSubHeadingText && (
                 <RowView
-                  backgroundColor={'red'}
                   width={'auto'}
                   paddingVertical={defaults.marginVertical / 2}>
                   <Text.Caption color={colors.inputDark} align={'center'}>

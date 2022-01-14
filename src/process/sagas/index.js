@@ -156,7 +156,6 @@ export default function* root() {
       setDeliveredOrRejected.bind(null, 'rejected')
     ),
     takeEvery(DeliveryTypes.SET_RETURN_TYPES, setReturnTypes),
-    takeEvery(DeliveryTypes.SET_VEHICLE_CHECKS, getReturnTypes),
     takeEvery(DeliveryTypes.UPDATE_CHECKLIST_PROPS, updateChecklistProps),
     takeEvery(
       DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE,
