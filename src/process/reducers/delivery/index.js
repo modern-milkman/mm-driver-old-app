@@ -9,7 +9,6 @@ export const { Types, Creators } = createActions(
   {
     clearCenterMapLocation: null,
     continueDelivering: null,
-    deleteVanDamageImage: ['key', 'index'],
     deliverLater: ['selectedStopId'],
     driverReply: [
       'claimId',
@@ -28,7 +27,6 @@ export const { Types, Creators } = createActions(
     getForDriver: null,
     getForDriverSuccess: ['payload'],
     getProductsOrder: null,
-    getVehicleChecks: null,
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
     getRejectDeliveryReasons: null,
@@ -58,12 +56,9 @@ export const { Types, Creators } = createActions(
     setSelectedClaimId: ['claim'],
     setRejectDeliveryReasons: ['payload'],
     setReturnTypes: ['payload'],
-    setVanDamageComment: ['key', 'comment'],
-    setVanDamageImage: ['key', 'imagePath', 'imageType'],
-    setVehicleChecks: ['payload'],
+
     startDelivering: null,
     showMustComplyWithTerms: null,
-    toggleCheckJson: ['key'],
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
     toggleModal: ['modal', 'show'],
@@ -78,13 +73,19 @@ export const { Types, Creators } = createActions(
 );
 
 const initialVehicleChecks = {
-  checksJson: '',
-  currentMileage: '',
-  emptiesCollected: {},
-  shiftEnd: false,
-  shiftStart: false,
-  vehicleCheckDamage: {},
-  vehicleRegistration: ''
+  end: {
+    shiftEnd: true
+  },
+  general: {
+    emptiesCollected: {},
+    shiftEnd: false,
+    shiftStart: false
+  },
+  start: {
+    currentMileage: '',
+    shiftStart: true,
+    vehicleRegistration: ''
+  }
 };
 
 export const initialChecklist = {
@@ -94,7 +95,7 @@ export const initialChecklist = {
   shiftEndVanChecks: false,
   shiftStartVanChecks: false,
   payload: {
-    ...initialVehicleChecks
+    ...initialVehicleChecks.general
   },
   payloadAltered: false
 };
@@ -124,17 +125,6 @@ export const initialState = {
   stops: {},
   userId: null
 };
-
-const deleteVanDamageImage = (state, { key, index }) =>
-  produce(state, draft => {
-    draft.checklist[draft.userId].payload.vehicleCheckDamage[
-      key
-    ].vehicleCheckDamageImage = draft.checklist[
-      draft.userId
-    ].payload.vehicleCheckDamage[key].vehicleCheckDamageImage.filter(
-      (image, idx) => idx !== index
-    );
-  });
 
 const deliverLater = (state, { selectedStopId }) =>
   produce(state, draft => {
@@ -235,13 +225,6 @@ const resetSelectedStopInfo = draft => {
   draft.allItemsDone = false;
   draft.confirmedItem = [];
   draft.outOfStockIds = [];
-};
-
-const resetVanDamage = (draft, key) => {
-  return (draft.checklist[draft.userId].payload.vehicleCheckDamage[key] = {
-    vehicleCheckDamageImage: [],
-    comments: ''
-  });
 };
 
 const setDeliveredOrRejected = (
@@ -574,10 +557,9 @@ export const resetChecklistPayload = (state, { resetType }) =>
       props: {
         payloadAltered: resetType ? true : false,
         payload: {
-          ...initialVehicleChecks,
-          ...(resetType === 'shiftEnd' && { shiftEnd: true }),
-          ...(resetType === 'shiftStart' && { shiftStart: true }),
-          checksJson: { ...draft.checksJson },
+          ...initialVehicleChecks.general,
+          ...(resetType === 'shiftEnd' && initialVehicleChecks.end),
+          ...(resetType === 'shiftStart' && initialVehicleChecks.start),
           emptiesCollected: { ...draft.emptiesCollected }
         }
       }
@@ -676,46 +658,10 @@ export const setReturnTypes = (state, { payload }) =>
     }
   });
 
-export const setVanDamageComment = (state, { key, comment }) =>
-  produce(state, draft => {
-    if (!draft.checklist[draft.userId].payload.vehicleCheckDamage[key]) {
-      resetVanDamage(draft, key);
-    }
-
-    draft.checklist[draft.userId].payload.vehicleCheckDamage[key].comments =
-      comment;
-  });
-
-export const setVanDamageImage = (state, { key, imagePath, imageType }) =>
-  produce(state, draft => {
-    if (!draft.checklist[draft.userId].payload.vehicleCheckDamage[key]) {
-      resetVanDamage(draft, key);
-    }
-
-    const images = [
-      ...draft.checklist[draft.userId].payload.vehicleCheckDamage[key]
-        .vehicleCheckDamageImage
-    ];
-
-    images.push({
-      imagePath,
-      imageType
-    });
-
-    draft.checklist[draft.userId].payload.vehicleCheckDamage[
-      key
-    ].vehicleCheckDamageImage = images;
-  });
-
 export const setSelectedClaimId = (state, { claimId }) =>
   produce(state, draft => {
     const selectedStopId = draft.selectedStopId;
     draft.stops[selectedStopId].claims.selectedClaimId = claimId;
-  });
-
-export const setVehicleChecks = (state, { payload }) =>
-  produce(state, draft => {
-    draft.checksJson = payload;
   });
 
 export const startDelivering = state =>
@@ -723,12 +669,6 @@ export const startDelivering = state =>
     if (draft.status !== DS.DEL && draft.orderedStopsIds.length > 0) {
       draft.status = DS.DEL;
     }
-  });
-
-export const toggleCheckJson = (state, { key }) =>
-  produce(state, draft => {
-    draft.checklist[draft.userId].payload.checksJson[key] =
-      !draft.checklist[draft.userId].payload.checksJson[key];
   });
 
 // TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
@@ -804,7 +744,6 @@ export const updateStopAutoSelectTimestamp = (state, { sID }) =>
 export default createReducer(initialState, {
   [Types.CLEAR_CENTER_MAP_LOCATION]: clearCenterMapLocation,
   [Types.CONTINUE_DELIVERING]: startDelivering,
-  [Types.DELETE_VAN_DAMAGE_IMAGE]: deleteVanDamageImage,
   [Types.DELIVER_LATER]: deliverLater,
   [Types.DRIVER_REPLY]: driverReply,
   [Types.GET_FOR_DRIVER]: getForDriver,
@@ -816,7 +755,7 @@ export default createReducer(initialState, {
     'rejectReasons'
   ),
   [Types.GET_RETURN_TYPES]: setLoaderInfo.bind(null, 'returnTypes'),
-  [Types.GET_VEHICLE_CHECKS]: setLoaderInfo.bind(null, 'vehicleChecks'),
+
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.INIT_CHECKLIST]: initChecklist,
   [Types.REDIRECT_SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
@@ -835,11 +774,7 @@ export default createReducer(initialState, {
   [Types.SET_REJECTED]: setRejected,
   [Types.SET_RETURN_TYPES]: setReturnTypes,
   [Types.SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
-  [Types.SET_VAN_DAMAGE_COMMENT]: setVanDamageComment,
-  [Types.SET_VAN_DAMAGE_IMAGE]: setVanDamageImage,
-  [Types.SET_VEHICLE_CHECKS]: setVehicleChecks,
   [Types.START_DELIVERING]: startDelivering,
-  [Types.TOGGLE_CHECK_JSON]: toggleCheckJson,
   [Types.TOGGLE_CONFIRMED_ITEM]: toggleConfirmedItem,
   [Types.TOGGLE_OUT_OF_STOCK]: toggleOutOfStock,
   [Types.TOGGLE_MODAL]: toggleModal,

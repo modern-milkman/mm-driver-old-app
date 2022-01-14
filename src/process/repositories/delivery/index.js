@@ -47,9 +47,7 @@ export default {
   getReturnTypes() {
     return Api.get('/ReturnType');
   },
-  getVehicleChecks() {
-    return Api.get('/Driver/VehicleCheck');
-  },
+
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
   },

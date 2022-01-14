@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { KeyboardAvoidingView, Platform } from 'react-native';
 import React, { useEffect } from 'react';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
@@ -9,12 +9,19 @@ import NavigationService from 'Services/navigation';
 import { ColumnView, SafeAreaView, RowView } from 'Containers';
 import { Button, ListHeader, NavBar, Text, TextInput } from 'Components';
 
-import { renderProgressBar } from '../shared';
+import { renderProgressBar, triggerDriverConfirmations } from '../shared';
 
 const emptiesReference = [];
 
 const focusNext = index => {
   emptiesReference[index + 1]?.current?.focus();
+};
+const nextStep = ({ payload, saveVehicleChecks, showMustComplyWithTerms }) => {
+  if (payload.shiftStart) {
+    triggerDriverConfirmations({ saveVehicleChecks, showMustComplyWithTerms });
+  } else {
+    saveVehicleChecks('shiftEndVanChecks');
+  }
 };
 
 const updateEmpty = (
@@ -28,7 +35,16 @@ const updateEmpty = (
 };
 
 const renderEmpty = (
-  { disabled, length, updateTransientProps, setEmpty, ...empties },
+  {
+    disabled,
+    length,
+    payload,
+    saveVehicleChecks,
+    setEmpty,
+    showMustComplyWithTerms,
+    updateTransientProps,
+    ...empties
+  },
   { id, description },
   index
 ) => (
@@ -54,9 +70,11 @@ const renderEmpty = (
           index === length - 1
             ? disabled
               ? mock
-              : NavigationService.navigate.bind(null, {
-                routeName: 'DamageReport'
-              })
+              : nextStep.bind(null, {
+                  payload,
+                  saveVehicleChecks,
+                  showMustComplyWithTerms
+                })
             : focusNext.bind(null, index)
         }
         placeholder={I18n.t('input:placeholder.number')}
@@ -80,7 +98,10 @@ const updateTransientEmpties = ({ emptiesCollected, updateTransientProps }) => {
 const EmptiesCollected = ({
   navigation,
   payload,
+  saveVehicleChecks,
   setEmpty,
+  processing,
+  showMustComplyWithTerms,
   updateTransientProps,
   ...empties
 }) => {
@@ -93,6 +114,10 @@ const EmptiesCollected = ({
     }
     emptiesReference.push(React.createRef());
   }
+
+  const mainActionTitle = payload.shiftStart
+    ? I18n.t('general:next')
+    : I18n.t('general:done');
 
   useEffect(() => {
     const focusListener = navigation.addListener(
@@ -116,14 +141,17 @@ const EmptiesCollected = ({
         <NavBar
           leftIcon={'chevron-left'}
           leftIconAction={NavigationService.goBack}
+          {...(processing && { leftIconColor: colors.inputDark })}
           title={I18n.t('screens:emptiesCollected.title')}
-          rightText={I18n.t('general:next')}
+          rightText={payload.shiftStart && !processing ? mainActionTitle : null}
           rightAction={
-            disabled
+            disabled || processing
               ? mock
-              : NavigationService.navigate.bind(null, {
-                routeName: 'DamageReport'
-              })
+              : nextStep.bind(null, {
+                  payload,
+                  saveVehicleChecks,
+                  showMustComplyWithTerms
+                })
           }
           {...(disabled && { rightColor: colors.inputDark })}
           testID="empties-navbar"
@@ -137,7 +165,8 @@ const EmptiesCollected = ({
             marginHorizontal={defaults.marginHorizontal}>
             <Text.Caption align={'left'} flex={1} color={colors.secondary}>
               {I18n.t(
-                `screens:emptiesCollected.subHeading.${payload.shiftStart ? 'start' : 'end'
+                `screens:emptiesCollected.subHeading.${
+                  payload.shiftStart ? 'start' : 'end'
                 }`
               )}
             </Text.Caption>
@@ -147,8 +176,11 @@ const EmptiesCollected = ({
               renderEmpty.bind(null, {
                 disabled,
                 length: emptiesArray.length,
-                updateTransientProps,
+                payload,
+                saveVehicleChecks,
                 setEmpty,
+                showMustComplyWithTerms,
+                updateTransientProps,
                 ...empties
               })
             )}
@@ -160,11 +192,14 @@ const EmptiesCollected = ({
           paddingHorizontal={defaults.marginHorizontal}
           marginBottom={defaults.marginVertical}>
           <Button.Primary
-            onPress={NavigationService.navigate.bind(null, {
-              routeName: 'DamageReport'
+            title={mainActionTitle}
+            disabled={disabled || processing}
+            processing={processing}
+            onPress={nextStep.bind(null, {
+              payload,
+              saveVehicleChecks,
+              showMustComplyWithTerms
             })}
-            title={I18n.t('general:next')}
-            disabled={disabled}
             testID="empties-mainNext-btn"
           />
         </RowView>
@@ -176,7 +211,10 @@ const EmptiesCollected = ({
 EmptiesCollected.propTypes = {
   navigation: PropTypes.object,
   payload: PropTypes.object,
+  processing: PropTypes.bool,
+  saveVehicleChecks: PropTypes.func,
   setEmpty: PropTypes.func,
+  showMustComplyWithTerms: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
 

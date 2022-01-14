@@ -49,7 +49,6 @@ import {
   getProductsOrder,
   getRejectDeliveryReasons,
   getReturnTypes,
-  getVehicleChecks,
   getVehicleStockForDriverSuccess,
   redirectSetSelectedClaimId,
   saveVehicleChecks,
@@ -129,7 +128,7 @@ export default function* root() {
       DeliveryTypes.GET_REJECT_DELIVERY_REASONS,
       getRejectDeliveryReasons
     ),
-    takeLatest(DeliveryTypes.GET_VEHICLE_CHECKS, getVehicleChecks),
+
     takeLatest(
       DeliveryTypes.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS,
       getVehicleStockForDriverSuccess
@@ -151,6 +150,7 @@ export default function* root() {
     ),
     takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
     takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
+    takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, getReturnTypes),
     takeLatest(
       DeliveryTypes.SET_REJECTED,
       setDeliveredOrRejected.bind(null, 'rejected')

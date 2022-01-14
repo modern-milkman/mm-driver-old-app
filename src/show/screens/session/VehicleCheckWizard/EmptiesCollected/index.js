@@ -8,10 +8,13 @@ import EmptiesCollected from './view';
 export default connect(
   state => ({
     payload: checklist(state)?.payload,
+    processing: state.delivery?.processing,
     ...state.transient
   }),
   {
+    saveVehicleChecks: deliveryActions.saveVehicleChecks,
     setEmpty: deliveryActions.setEmpty,
+    showMustComplyWithTerms: deliveryActions.showMustComplyWithTerms,
     updateTransientProps: transientActions.updateProps
   }
 )(EmptiesCollected);

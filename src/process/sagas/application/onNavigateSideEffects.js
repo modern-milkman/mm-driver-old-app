@@ -79,6 +79,7 @@ export function* onNavigateSideEffects(navigateParams) {
       break;
 
     case 'RegistrationMileage':
+    case 'EmptiesCollected':
       if (!checklist.payloadAltered) {
         yield put({
           type: DeliveryTypes.UPDATE_PROPS,

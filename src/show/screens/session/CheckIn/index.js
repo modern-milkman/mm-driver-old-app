@@ -21,9 +21,10 @@ export default connect(
   }),
   {
     continueDelivering: deliveryActions.continueDelivering,
+    resetChecklistPayload: deliveryActions.resetChecklistPayload,
     startDelivering: deliveryActions.startDelivering,
     updateChecklistProps: deliveryActions.updateChecklistProps,
-    updateInAppBrowserProps: inAppBrowserActions.updateProps,
-    updateProps: deliveryActions.updateProps
+    updateDeliveryProps: deliveryActions.updateProps,
+    updateInAppBrowserProps: inAppBrowserActions.updateProps
   }
 )(Main);

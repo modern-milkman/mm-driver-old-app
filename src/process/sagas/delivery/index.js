@@ -122,7 +122,7 @@ export const driverReply = function* ({
 
 export const foregroundDeliveryActions = function* ({}) {
   // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
-  // rejectReasons -> productsOrder -> vehicleChecks -> returnTypes -> getForDriver -> getVehicleStockForDriver |
+  // rejectReasons -> productsOrder -> returnTypes -> getForDriver -> getVehicleStockForDriver |
   // cannedContent |
   // bundleProducts |
   const status = yield select(statusSelector);
@@ -298,18 +298,6 @@ export const getReturnTypes = function* () {
   });
 };
 
-export const getVehicleChecks = function* () {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.SET_VEHICLE_CHECKS },
-      fail: { type: DeliveryTypes.UPDATE_PROPS }
-    },
-    promise: Api.repositories.delivery.getVehicleChecks(),
-    props: { processing: false, loaderInfo: null }
-  });
-};
-
 export const getVehicleStockForDriverSuccess = function* ({ payload }) {
   const autoSelectStop = yield select(autoSelectStopSelector);
   const checklist = yield select(checklistSelector);
@@ -343,30 +331,7 @@ export const redirectSetSelectedClaimId = function* () {
 export const saveVehicleChecks = function* ({ saveType }) {
   NavigationService.navigate({ routeName: 'CheckIn' });
   const checklist = yield select(checklistSelector);
-  let vehicleCheckDamage = [];
   const payload = { ...checklist.payload };
-
-  for (let [index, damage] of Object.values(
-    payload.vehicleCheckDamage
-  ).entries()) {
-    vehicleCheckDamage.push({
-      locationOfDamage: Object.keys(payload.vehicleCheckDamage)[index],
-      comments: damage.comments,
-      vehicleCheckDamageImage: []
-    });
-
-    for (let image of damage.vehicleCheckDamageImage) {
-      let base64Image = yield Repositories.filesystem.readFile(
-        image.imagePath,
-        'base64'
-      );
-
-      vehicleCheckDamage[index].vehicleCheckDamageImage.push({
-        imageType: image.imageType,
-        image: base64ToHex(base64Image)
-      });
-    }
-  }
 
   const returns = [];
   for (const { id, value } of Object.values(payload.emptiesCollected)) {
@@ -380,8 +345,9 @@ export const saveVehicleChecks = function* ({ saveType }) {
       payload: {
         ...payload,
         returns,
-        vehicleCheckDamage,
-        currentMileage: parseInt(payload.currentMileage)
+        ...(payload.shiftStart && {
+          currentMileage: parseInt(payload.currentMileage)
+        })
       }
     })
   });
@@ -523,8 +489,6 @@ export const setItemOutOfStock = function* ({ id }) {
 };
 
 export const setProductsOrder = function* ({ payload }) {
-  yield put({ type: DeliveryTypes.GET_VEHICLE_CHECKS });
-
   for (const i of payload) {
     Api.repositories.delivery.getProductImage(i);
   }

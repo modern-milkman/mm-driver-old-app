@@ -71,21 +71,20 @@ const renderHelperMessage = ({ checklist, status }) => {
   );
 };
 
-const renderTitle = ({ checklist, status }) => {
-  switch (status) {
-    case DS.LV:
-    case DS.SSC:
-      if (checklist.loadedVan && checklist.shiftStartVanChecks) {
-        return I18n.t('screens:checkIn.go');
-      }
-      return I18n.t('screens:checkIn.checkIn');
-    case DS.DELC:
-    case DS.SEC:
-      return I18n.t('screens:checkIn.checkVan');
-    case DS.SC:
-      return I18n.t('screens:checkIn.endShift');
-    default:
-      return I18n.t('screens:checkIn.checkIn');
+// TODO empties collected and registration mileage checks
+const navigationSideEffect = ({
+  updateDeliveryProps,
+  resetChecklistPayload,
+  checklist
+}) => {
+  if (!checklist.payloadAltered) {
+    updateDeliveryProps({
+      status: checklist.shiftStartVanChecks ? DS.SEC : DS.SSC
+    });
+
+    resetChecklistPayload({
+      resetType: checklist.shiftStartVanChecks ? 'shiftEnd' : 'shiftStart'
+    });
   }
 };
 
@@ -95,11 +94,13 @@ const CheckIn = props => {
     checklist,
     continueDelivering,
     itemCount,
+    resetChecklistPayload,
     isOptimised,
     status,
     startDelivering,
     stopCount,
     updateChecklistProps,
+    updateDeliveryProps,
     updateInAppBrowserProps
   } = props;
 
@@ -111,10 +112,15 @@ const CheckIn = props => {
       disabled: checklist.shiftStartVanChecks,
       suffixBottom: null,
       onPress: NavigationService.navigate.bind(null, {
+        beforeCallback: navigationSideEffect.bind(null, {
+          updateDeliveryProps,
+          resetChecklistPayload,
+          checklist
+        }),
         routeName: 'RegistrationMileage'
       }),
       rightIcon: checklist.shiftStartVanChecks ? 'check' : 'chevron-right',
-      title: I18n.t('screens:checkIn.checkVan'),
+      title: I18n.t('screens:checkIn.checkIn'),
       testID: 'checkIn-checkVan-listItem'
     },
     {
@@ -176,14 +182,19 @@ const CheckIn = props => {
         !checklist.loadedVan ||
         !checklist.shiftStartVanChecks,
       onPress: NavigationService.navigate.bind(null, {
-        routeName: 'RegistrationMileage'
+        beforeCallback: navigationSideEffect.bind(null, {
+          updateDeliveryProps,
+          resetChecklistPayload,
+          checklist
+        }),
+        routeName: 'EmptiesCollected'
       }),
       rightIcon: !checklist.deliveryComplete
         ? null
         : checklist.shiftEndVanChecks
         ? 'check'
         : 'chevron-right',
-      title: I18n.t('screens:checkIn.checkVan'),
+      title: I18n.t('screens:checkIn.checkOut'),
       testID: 'checkIn-checkVanEnd-listItem'
     }
   ];
@@ -226,7 +237,7 @@ const CheckIn = props => {
         <NavBar
           leftIcon={'chevron-down'}
           leftIconAction={NavigationService.goBack}
-          title={renderTitle({ checklist, status })}
+          title={I18n.t('screens:checkIn.title')}
           testID={'checkIn-navbar'}
         />
         <ColumnView flex={1} justifyContent={'space-between'}>
@@ -271,11 +282,12 @@ CheckIn.propTypes = {
   itemCount: PropTypes.number,
   isOptimised: PropTypes.bool,
   status: PropTypes.string,
+  resetChecklistPayload: PropTypes.func,
   startDelivering: PropTypes.func,
   stopCount: PropTypes.number,
   updateChecklistProps: PropTypes.func,
-  updateInAppBrowserProps: PropTypes.func,
-  updateProps: PropTypes.func
+  updateDeliveryProps: PropTypes.func,
+  updateInAppBrowserProps: PropTypes.func
 };
 
 CheckIn.defaultProps = {

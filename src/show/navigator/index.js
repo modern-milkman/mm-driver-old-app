@@ -10,11 +10,9 @@ import DrawerNavigator from './subViews/DrawerNav';
 import { navigationRef } from 'Services/navigation';
 import {
   CheckIn,
-  Checklist,
   CustomerIssueDetails,
   CustomerIssueList,
   CustomerIssueModal,
-  DamageReport,
   EmptiesCollected,
   Deliver,
   Home,
@@ -72,8 +70,6 @@ export const VechicleCheckWizardNavigator = () => (
     }}>
     <Stack.Screen name="RegistrationMileage" component={RegistrationMileage} />
     <Stack.Screen name="EmptiesCollected" component={EmptiesCollected} />
-    <Stack.Screen name="DamageReport" component={DamageReport} />
-    <Stack.Screen name="Checklist" component={Checklist} />
   </Stack.Group>
 );
 

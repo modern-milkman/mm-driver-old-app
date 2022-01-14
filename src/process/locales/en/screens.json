@@ -6,6 +6,7 @@
   },
   "checkIn": {
     "checkIn": "Check In",
+    "checkOut": "Check Out",
     "checkVan": "Check Van",
     "deliverProducts": "Deliver Products",
     "endShift": "End Shift",
@@ -20,7 +21,8 @@
     },
     "itemsLeft": "{{items}} items left",
     "loadVan": "Load Van",
-    "rateMyRound": "Rate My Round"
+    "rateMyRound": "Rate My Round",
+    "title": "Your Route Checklist"
   },
   "checklist": {
     "driverPrompts": {
@@ -31,15 +33,6 @@
       }
     },
     "title": "Checklist"
-  },
-  "damageReport": {
-    "sections": {
-      "front": "Front of van",
-      "left": "Passenger's side of van",
-      "rear": "Rear of van",
-      "right": "Driver's side the van"
-    },
-    "title": "Damage Report"
   },
   "deliver": {
     "customer": {
@@ -126,7 +119,6 @@
       "loaderText": {
         "rejectReasons": "Loading Reject Reasons",
         "productsOrder": "Loading Products",
-        "vehicleChecks": "Loading Vehicle Ckecks",
         "returnTypes": "Loading Return Types",
         "getForDriver": "Loading Route Data",
         "getVehicleStockForDriver": "Loading Stock Info"
