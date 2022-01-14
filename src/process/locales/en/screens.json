@@ -216,6 +216,10 @@
       "optimisedStopsToShow": "Number next stops"
     },
     "switches": {
+      "autoOpenStopDetails": {
+        "title": "Automatically open delivery",
+        "description": "Opens delivery details screen when you get to the location"
+      },
       "autoSelectStop": "Automatically select next stop",
       "biometricsDisabled": "Biometrics can only be setup on login screen",
       "deliveriesRemaining": "Deliveries remaining",

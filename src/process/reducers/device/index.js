@@ -25,6 +25,7 @@ export const { Types, Creators } = createActions(
 
 const initialState = {
   appcenter: null,
+  autoOpenStopDetails: true,
   autoSelectStop: true,
   biometrics: {
     supported: false,
@@ -168,6 +169,7 @@ export default createReducer(initialState, {
   [Types.UPDATE_PROPS]: updateProps
 });
 
+export const autoOpenStopDetails = state => state.device.autoOpenStopDetails;
 export const autoSelectStop = state => state.device.autoSelectStop;
 export const biometrics = state => state.device.biometrics;
 export const device = state => state.device;

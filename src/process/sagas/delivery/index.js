@@ -408,6 +408,7 @@ export const setDeliveredOrRejected = function* (
   const user = yield select(userSelector);
 
   const {
+    autoOpenStopDetails,
     autoSelectStop,
     foregroundSize,
     optimisedStopsToShow,
@@ -492,6 +493,7 @@ export const setDeliveredOrRejected = function* (
       ? EVENTS.TAP_DONE_DELIVER
       : EVENTS.TAP_SKIP_DELIVERY,
     {
+      autoOpenStopDetails,
       autoSelectStop,
       foregroundSize,
       id,

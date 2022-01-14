@@ -110,6 +110,7 @@ const onOptimization = (
 
 const Settings = props => {
   const {
+    autoOpenStopDetails,
     autoSelectStop,
     biometrics,
     biometricDisable,
@@ -251,6 +252,34 @@ const Settings = props => {
                 updateDeviceProps
               })}
               disabled={!isOptimised}
+            />
+          </RowView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
+
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.autoOpenStopDetails.title')}
+              </Text.List>
+              <Text.Caption color={colors.secondary}>
+                {I18n.t(
+                  'screens:settings.switches.autoOpenStopDetails.description'
+                )}
+              </Text.Caption>
+            </ColumnView>
+
+            <Switch
+              value={autoOpenStopDetails}
+              onValueChange={toggleDeviceProp.bind(
+                null,
+                updateDeviceProps,
+                'autoOpenStopDetails'
+              )}
             />
           </RowView>
 
@@ -507,6 +536,7 @@ const Settings = props => {
 };
 
 Settings.propTypes = {
+  autoOpenStopDetails: PropTypes.bool,
   autoSelectStop: PropTypes.bool,
   biometrics: PropTypes.object,
   biometricDisable: PropTypes.func,

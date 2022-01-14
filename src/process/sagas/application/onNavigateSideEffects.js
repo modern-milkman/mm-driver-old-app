@@ -48,6 +48,15 @@ export function* onNavigateSideEffects(navigateParams) {
       yield put({ type: ApplicationTypes.DISMISS_KEYBOARD });
       break;
 
+    case 'Deliver':
+      if (params?.auto && params?.selectedStopId) {
+        yield put({
+          type: DeliveryTypes.UPDATE_STOP_AUTO_SELECT_TIMESTAMP,
+          sID: params.selectedStopId
+        });
+      }
+      break;
+
     case 'UpgradeApp':
       if (Platform.OS === 'android') {
         yield put({

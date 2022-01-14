@@ -71,7 +71,8 @@ export const { Types, Creators } = createActions(
     updateChecklistProps: ['props'],
     updateDirectionsPolyline: null,
     updateProps: ['props'],
-    updateSelectedStop: ['sID']
+    updateSelectedStop: ['sID'],
+    updateStopAutoSelectTimestamp: ['sID']
   },
   { prefix: 'delivery/' }
 );
@@ -793,6 +794,13 @@ export const updateSelectedStop = (state, { sID }) =>
     }
   });
 
+export const updateStopAutoSelectTimestamp = (state, { sID }) =>
+  produce(state, draft => {
+    if (sID) {
+      draft.stops[sID].autoSelectTimestamp = Date.now();
+    }
+  });
+
 export default createReducer(initialState, {
   [Types.CLEAR_CENTER_MAP_LOCATION]: clearCenterMapLocation,
   [Types.CONTINUE_DELIVERING]: startDelivering,
@@ -837,7 +845,8 @@ export default createReducer(initialState, {
   [Types.TOGGLE_MODAL]: toggleModal,
   [Types.UPDATE_CHECKLIST_PROPS]: updateChecklistProps,
   [Types.UPDATE_PROPS]: updateProps,
-  [Types.UPDATE_SELECTED_STOP]: updateSelectedStop
+  [Types.UPDATE_SELECTED_STOP]: updateSelectedStop,
+  [Types.UPDATE_STOP_AUTO_SELECT_TIMESTAMP]: updateStopAutoSelectTimestamp
 });
 
 export const additionalItemCount = state => state.delivery?.additionalItemCount;

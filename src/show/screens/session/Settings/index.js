@@ -8,6 +8,7 @@ import Settings from './view';
 
 export default connect(
   state => ({
+    autoOpenStopDetails: state.device.autoOpenStopDetails,
     autoSelectStop: state.device.autoSelectStop,
     biometrics: state.device.biometrics,
     buttonAccessibility: state.device.buttonAccessibility,

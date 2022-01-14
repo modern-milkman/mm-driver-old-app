@@ -17,16 +17,26 @@ import I18n from 'Locales/I18n';
 import NavigationService from 'Services/navigation';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { deliveryStates as DS, distance } from 'Helpers';
 import { Creators as GrowlCreators, Types as GrowlTypes } from 'Reducers/growl';
-import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
+import {
+  lastRoute as lastRouteSelector,
+  userSessionPresent as userSessionPresentSelector
+} from 'Reducers/application';
 import {
   Types as DeviceTypes,
   Creators as DeviceCreators,
+  autoOpenStopDetails as autoOpenStopDetailsSelector,
   biometrics as biometricsSelector,
   network as networkSelector,
   processors as processorsSelector,
   requestQueues as requestQueuesSelector
 } from 'Reducers/device';
+import {
+  status as statusSelector,
+  selectedStop as selectedStopSelector,
+  selectedStopId as selectedStopIdSelector
+} from 'Reducers/delivery';
 
 export { watchUserLocation } from './extras/watchUserLocation';
 
@@ -109,11 +119,49 @@ export function* reduxSagaNetstatChange({ netStatProps }) {
 }
 
 export function* setLocation({ position }) {
+  const autoOpenStopDetails = yield select(autoOpenStopDetailsSelector);
+  const lastRoute = yield select(lastRouteSelector);
+  const status = yield select(statusSelector);
+  const selectedStop = yield select(selectedStopSelector);
+  const selectedStopId = yield select(selectedStopIdSelector);
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
+  const blackListAutoOpenDeliveryScreens = [
+    'Deliver',
+    'CustomerIssueDetails',
+    'CustomerIssueList',
+    'CustomerIssueModal'
+  ];
 
   if (position?.coords?.latitude !== 0 || position?.coords?.longitude !== 0) {
     yield put({ type: DeviceTypes.SET_LOCATION, position: position.coords });
+
+    if (
+      user_session &&
+      autoOpenStopDetails &&
+      selectedStop &&
+      status === DS.DEL &&
+      ((selectedStop.autoSelectTimestamp &&
+        Date.now() - selectedStop.autoSelectTimestamp > 5 * 60 * 1000) ||
+        !selectedStop.autoSelectTimestamp) &&
+      !blackListAutoOpenDeliveryScreens.includes(lastRoute) &&
+      distance(
+        {
+          x: position.coords.latitude,
+          y: position.coords.longitude
+        },
+        {
+          x: selectedStop.latitude,
+          y: selectedStop.longitude
+        },
+        'ME'
+      ) < 50
+    ) {
+      NavigationService.navigate({
+        routeName: 'Deliver',
+        params: { auto: true, selectedStopId }
+      });
+    }
 
     if (user_session && user.driverId) {
       yield put({
