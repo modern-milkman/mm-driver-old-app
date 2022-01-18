@@ -59,8 +59,8 @@ const openCannedContent = ({
   for (let cc of cannedContent) {
     actions[cc.name] = updateDriverResponse.bind(null, {
       text: cc.description,
-      image: driverResponse.path,
-      imageType: driverResponse.mime
+      image: driverResponse.image,
+      imageType: driverResponse.imageType
     });
   }
 
