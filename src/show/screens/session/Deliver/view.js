@@ -335,6 +335,7 @@ const Deliver = props => {
                     }}
                     resizeMode={'contain'}
                     width={sizes.list.image * 2}
+                    maxHeight={sizes.list.image * 2}
                     renderFallback={() => (
                       <CustomIcon
                         width={sizes.list.image * 2}
