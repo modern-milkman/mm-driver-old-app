@@ -51,17 +51,6 @@ export default {
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
   },
-  patchDelivered({
-    orderId,
-    deliveryLocationLatitude = null,
-    deliveryLocationLongitude = null
-  }) {
-    return Api.patch('/Delivery/SetDelivered', {
-      orderId,
-      deliveryLocationLatitude,
-      deliveryLocationLongitude
-    });
-  },
   patchItemOutOfStock(itemId) {
     return Api.patch(`/Delivery/SetOutfStock/${itemId}`);
   },
@@ -79,6 +68,28 @@ export default {
       deliveryLocationLatitude,
       deliveryLocationLongitude
     });
+  },
+  postDelivered({
+    orderId,
+    deliveryLocationLatitude = null,
+    deliveryLocationLongitude = null,
+    podImage = null,
+    podImageType = null
+  }) {
+    return Api.post(
+      `${Config.SERVER_SERVICE_URL}/delivery/v1/api/Delivery/${orderId}/SetDelivered`,
+      {
+        deliveryLocationLatitude,
+        deliveryLocationLongitude,
+        ...(podImage &&
+          podImageType && {
+            proofOfDelivery: {
+              imageData: podImage,
+              mimeType: podImageType
+            }
+          })
+      }
+    );
   },
   postDriverActivity(payload) {
     return Api.post('/Driver/DriverActivity', {

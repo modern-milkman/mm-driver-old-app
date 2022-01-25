@@ -1,5 +1,7 @@
+import { Base64 } from 'js-base64';
 import Config from 'react-native-config';
 import { useEffect, useRef } from 'react';
+import ImagePicker from 'react-native-image-crop-picker';
 import {
   Animated,
   Easing,
@@ -8,11 +10,11 @@ import {
   NativeModules,
   StatusBar
 } from 'react-native';
-import { Base64 } from 'js-base64';
 
 import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
+import actionSheet from 'Services/actionSheet';
 
 const addZero = i => (i < 10 ? `0${i}` : i);
 
@@ -165,6 +167,33 @@ const formatDateTime = date =>
     date.getMinutes()
   )}${addZero(date.getSeconds())}`;
 
+const preopenPicker = ({ addImage, deletePhoto, key, reviewPhoto, title }) => {
+  const pickerOptions = {};
+  let destructiveButtonIndex = null;
+  if (reviewPhoto) {
+    pickerOptions[I18n.t('general:reviewPhoto')] = reviewPhoto;
+  }
+  if (addImage) {
+    pickerOptions[I18n.t('general:takePhoto')] = openPicker.bind(null, {
+      addImage,
+      key,
+      method: 'openCamera'
+    });
+    pickerOptions[I18n.t('general:openGalery')] = openPicker.bind(null, {
+      addImage,
+      key,
+      method: 'openPicker'
+    });
+  }
+  if (deletePhoto) {
+    pickerOptions[I18n.t('general:deletePhoto')] = deletePhoto;
+    destructiveButtonIndex = 4;
+  }
+  if (key && addImage) {
+    actionSheet(pickerOptions, { destructiveButtonIndex, title });
+  }
+};
+
 const isAppInstalled = async appName => {
   return await Linking.canOpenURL(appName + '://')
     .then(installed => {
@@ -224,6 +253,17 @@ const openDriverUpdate = () => {
         }
       ]
     });
+  });
+};
+
+const openPicker = ({ addImage, key, method }) => {
+  ImagePicker[method]({
+    width: 1000,
+    height: 1000,
+    cropping: true,
+    includeBase64: true
+  }).then(img => {
+    addImage(key, img.path, img.mime);
   });
 };
 
@@ -343,8 +383,10 @@ export {
   jiggleAnimation,
   mock,
   openDriverUpdate,
+  openPicker,
   openURL,
   plateRecognition,
+  preopenPicker,
   randomKey,
   statusBarHeight,
   timeToHMArray,

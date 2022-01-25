@@ -1,5 +1,6 @@
 {
   "cancel": "Cancel",
+  "deletePhoto": "Delete Photo",
   "details": "Details",
   "disable": "Disable",
   "done": "Done",
@@ -20,6 +21,7 @@
   },
   "reset": "Reset & Restart Driver",
   "restart": "Restart Driver",
+  "reviewPhoto": "Review Photo",
   "skip": "Skip",
   "syncFailed": {
     "short": "Failed",

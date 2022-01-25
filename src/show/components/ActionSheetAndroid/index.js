@@ -5,7 +5,7 @@ import { Creators as ActionSheetAndroidActions } from 'Reducers/actionsheetandro
 import ActionSheetAndroid from './view';
 
 export default connect(
-  (state) => ({
+  state => ({
     ...state.actionsheetandroid
   }),
   {

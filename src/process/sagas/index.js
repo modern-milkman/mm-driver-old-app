@@ -57,6 +57,7 @@ import {
   setProductsOrder,
   setReturnTypes,
   showMustComplyWithTerms,
+  showPODRequired,
   updateChecklistProps,
   updateDriverActivity,
   updateDirectionsPolyline,
@@ -156,6 +157,7 @@ export default function* root() {
       setDeliveredOrRejected.bind(null, 'rejected')
     ),
     takeEvery(DeliveryTypes.SET_RETURN_TYPES, setReturnTypes),
+    takeEvery(DeliveryTypes.SHOW_POD_REQUIRED, showPODRequired),
     takeEvery(DeliveryTypes.UPDATE_CHECKLIST_PROPS, updateChecklistProps),
     takeEvery(
       DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE,

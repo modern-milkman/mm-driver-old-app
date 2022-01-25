@@ -70,6 +70,7 @@
     "modal": {
       "inputPlaceholder": "Type your reason here"
     },
+    "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",
     "status": {
       "completed": "Completed",

@@ -92,6 +92,12 @@
           "message": "Logging out while offline will clear all route data on the device and you will no longer be able to continue working until the device is back online."
         }
       }
+    },
+    "delivery": {
+      "proofOfDeliveryRequired": {
+        "title": "Proof of delivery required!",
+        "message": "Please take your phone with you and take a picture once you've delivered the products."
+      }
     }
   }
 }

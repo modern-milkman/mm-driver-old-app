@@ -12,6 +12,7 @@ export default connect(
       selectedStop: selectedStop(state),
       confirmedItem: state.delivery?.confirmedItem,
       outOfStockIds: state.delivery?.outOfStockIds,
+      podImage: state.delivery?.podImage,
       routeDescription: state.delivery?.stockWithData?.routeDescription,
       rejectReasons: state.delivery?.rejectReasons,
       ...state.transient
@@ -20,9 +21,11 @@ export default connect(
   {
     setDelivered: deliveryActions.setDelivered,
     setRejected: deliveryActions.setRejected,
+    showPODRequired: deliveryActions.showPODRequired,
     toggleConfirmedItem: deliveryActions.toggleConfirmedItem,
     toggleModal: deliveryActions.toggleModal,
     toggleOutOfStock: deliveryActions.toggleOutOfStock,
+    updateProps: deliveryActions.updateProps,
     updateTransientProps: transientActions.updateProps
   }
 )(Deliver);

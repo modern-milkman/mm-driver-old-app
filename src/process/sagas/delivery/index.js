@@ -363,7 +363,7 @@ export const saveVehicleChecks = function* ({ saveType }) {
 
 export const setDeliveredOrRejected = function* (
   requestType,
-  { id, outOfStockIds, selectedStopId, reasonType, reasonMessage }
+  { id, podImage, outOfStockIds, selectedStopId, reasonType, reasonMessage }
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
   const device = yield select(deviceSelector);
@@ -394,9 +394,10 @@ export const setDeliveredOrRejected = function* (
     deliveryLocationLatitude: position?.latitude,
     deliveryLocationLongitude: position?.longitude
   };
+
   const promise =
     requestType === 'delivered'
-      ? Api.repositories.delivery.patchDelivered
+      ? Api.repositories.delivery.postDelivered
       : Api.repositories.delivery.patchRejected;
 
   if (isOptimised && autoSelectStop) {
@@ -419,7 +420,15 @@ export const setDeliveredOrRejected = function* (
       ...(requestType === 'rejected' && {
         reasonType,
         description: reasonMessage
-      })
+      }),
+      ...(requestType === 'delivered' &&
+        podImage && {
+          podImage: yield Repositories.filesystem.readFile(
+            podImage.path,
+            'base64'
+          ),
+          podImageType: podImage.mime
+        })
     })
   });
 
@@ -508,6 +517,17 @@ export const showMustComplyWithTerms = function* () {
       type: 'error',
       title: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.title'),
       message: I18n.t('alert:errors.vanChecks.mustComplyWithTerms.message')
+    }
+  });
+};
+
+export const showPODRequired = function* () {
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'info',
+      title: I18n.t('alert:success.delivery.proofOfDeliveryRequired.title'),
+      message: I18n.t('alert:success.delivery.proofOfDeliveryRequired.message')
     }
   });
 };

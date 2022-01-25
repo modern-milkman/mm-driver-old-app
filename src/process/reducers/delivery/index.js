@@ -37,7 +37,7 @@ export const { Types, Creators } = createActions(
     resetChecklistPayload: ['resetType'],
     saveVehicleChecks: ['saveType'],
     setCustomerClaims: ['payload', 'stopId'],
-    setDelivered: ['id', 'selectedStopId', 'outOfStockIds'],
+    setDelivered: ['id', 'selectedStopId', 'outOfStockIds', 'podImage'],
     setEmpty: ['prop', 'value'],
     setDirectionsPolyline: ['payload'],
     setBundleProducts: ['payload'],
@@ -59,6 +59,7 @@ export const { Types, Creators } = createActions(
 
     startDelivering: null,
     showMustComplyWithTerms: null,
+    showPODRequired: null,
     toggleConfirmedItem: ['id'],
     toggleOutOfStock: ['id'],
     toggleModal: ['modal', 'show'],
@@ -221,6 +222,7 @@ const resetChecklistFlags = checklist => {
 };
 
 const resetSelectedStopInfo = draft => {
+  draft.podImage = null;
   draft.directionsPolyline = [];
   draft.allItemsDone = false;
   draft.confirmedItem = [];

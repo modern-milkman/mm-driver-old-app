@@ -8,8 +8,8 @@ import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { colors, defaults, sizes } from 'Theme';
 import NavigationService from 'Services/navigation';
-import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
+import { deliveredStatuses, deviceFrame, mock, preopenPicker } from 'Helpers';
 import {
   Button,
   Image,
@@ -32,8 +32,55 @@ const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
 };
 
-const rejectAndNavigateBack = (callback, setModalVisible) => {
+const podPrompt = ({
+  podImage,
+  proofOfDeliveryRequired,
+  setModalImageSrc,
+  setModalText,
+  setModalType,
+  setModalVisible,
+  updateProps
+}) => {
+  preopenPicker({
+    key: 'pod',
+    addImage: (key, path, mime) => {
+      updateProps({
+        podImage: {
+          key,
+          path,
+          mime
+        }
+      });
+    },
+    ...(podImage && {
+      reviewPhoto: showModal.bind(null, {
+        imageSrc: podImage.path,
+        text: null,
+        type: 'image',
+        setModalImageSrc,
+        setModalText,
+        setModalType,
+        setModalVisible
+      }),
+      deletePhoto: updateProps.bind(null, {
+        podImage: null
+      })
+    }),
+    title: proofOfDeliveryRequired
+      ? I18n.t('screens:deliver.proofOfDeliveryRequired')
+      : null
+  });
+};
+
+const rejectAndNavigateBack = (
+  callback,
+  setModalImageSrc,
+  setModalText,
+  setModalVisible
+) => {
   setModalVisible(false);
+  setModalImageSrc(null);
+  setModalText(null);
   NavigationService.goBack({
     beforeCallback: callback
   });
@@ -54,6 +101,8 @@ const renderSkipModal = ({
   reasonMessage,
   rejectReasons,
   selectedStop,
+  setModalImageSrc,
+  setModalText,
   setModalVisible,
   setRejected,
   reasonType = rejectReasons[2].id,
@@ -119,6 +168,8 @@ const renderSkipModal = ({
                 reasonType,
                 reasonMessage
               ),
+              setModalImageSrc,
+              setModalText,
               setModalVisible
             )}
             noBorderRadius
@@ -136,28 +187,46 @@ const showClaims = toggleModal => {
   });
 };
 
-const showModal = (type, setModalType, setModalVisible) => {
+const showModal = ({
+  imageSrc,
+  setModalText,
+  setModalImageSrc,
+  setModalType,
+  setModalVisible,
+  text,
+  type
+}) => {
   setModalType(type);
+  if (type === 'image') {
+    setModalImageSrc(imageSrc);
+    setModalText(text);
+  }
   setModalVisible(true);
 };
 
 const { width, height } = deviceFrame();
 
 const Deliver = props => {
+  const [modalImageSrc, setModalImageSrc] = useState(null);
+  const [modalText, setModalText] = useState(null);
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
+  const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
 
   const {
     allItemsDone,
     confirmedItem,
     navigation,
     outOfStockIds,
+    podImage,
     routeDescription,
     selectedStop,
     setDelivered,
+    showPODRequired,
     toggleConfirmedItem,
     toggleModal,
-    toggleOutOfStock
+    toggleOutOfStock,
+    updateProps
   } = props;
 
   const acknowledgedList = selectedStop?.claims.acknowledgedList || [];
@@ -192,17 +261,48 @@ const Deliver = props => {
       })
     : null;
 
+  if (
+    selectedStop?.proofOfDeliveryRequired &&
+    allItemsDone &&
+    !podImage &&
+    !modalVisible &&
+    !podPromptAutoShown
+  ) {
+    setPodPromptAutoShown(true);
+    podPrompt({
+      proofOfDeliveryRequired: selectedStop?.proofOfDeliveryRequired,
+      setModalImageSrc,
+      setModalText,
+      setModalType,
+      setModalVisible,
+      updateProps
+    });
+  }
+
   useEffect(() => {
     const focusListener = navigation.addListener('focus', () => {
       if (showClaimModal) {
         NavigationService.navigate({
           routeName: 'CustomerIssueModal'
         });
+      } else if (
+        selectedStop?.proofOfDeliveryRequired &&
+        unacknowledgedList.length === 0 &&
+        selectedStop?.status === 'pending'
+      ) {
+        showPODRequired();
       }
     });
 
     return focusListener;
-  }, [showClaimModal, navigation]);
+  }, [
+    navigation,
+    selectedStop?.proofOfDeliveryRequired,
+    selectedStop?.status,
+    showClaimModal,
+    showPODRequired,
+    unacknowledgedList.length
+  ]);
 
   if (!selectedStop) {
     return null;
@@ -212,15 +312,21 @@ const Deliver = props => {
     <SafeAreaView>
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
         {modalType === 'skip' &&
-          renderSkipModal({ ...props, width, setModalVisible })}
+          renderSkipModal({
+            ...props,
+            setModalImageSrc,
+            setModalText,
+            setModalVisible,
+            width
+          })}
         {modalType === 'image' &&
           renderImageTextModal({
             imageSource: {
-              uri: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`
+              uri: modalImageSrc
             },
             onPress: setModalVisible,
             renderFallback: renderFallbackCustomerImage.bind(null, width),
-            text: selectedStop.deliveryInstructions
+            text: modalText
           })}
       </Modal>
 
@@ -257,6 +363,7 @@ const Deliver = props => {
             </RowView>
           </>
         )}
+
         <RowView
           width={'auto'}
           marginHorizontal={defaults.marginHorizontal}
@@ -307,21 +414,22 @@ const Deliver = props => {
         </RowView>
 
         {selectedStop &&
-          (selectedStop.deliveryInstructions ||
-            selectedStop.hasImage ||
-            selectedStop.hasCoolBox) && (
+          (selectedStop.deliveryInstructions || selectedStop.hasImage) && (
             <>
-              <Separator width={'100%'} />
+              <Separator />
               <ListHeader
                 title={I18n.t('screens:deliver.customer.instructions')}
               />
               <Pressable
-                onPress={showModal.bind(
-                  null,
-                  'image',
+                onPress={showModal.bind(null, {
+                  imageSrc: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${selectedStop.customerId}-${selectedStop.key}`,
+                  text: selectedStop.deliveryInstructions,
+                  type: 'image',
+                  setModalImageSrc,
+                  setModalText,
                   setModalType,
                   setModalVisible
-                )}>
+                })}>
                 <RowView
                   width={'auto'}
                   marginHorizontal={defaults.marginHorizontal}
@@ -387,19 +495,65 @@ const Deliver = props => {
           width={'auto'}
           marginHorizontal={defaults.marginHorizontal}
           marginTop={defaults.marginVertical / 2}>
-          {unacknowledgedList?.length > 0 && (
+          {unacknowledgedList.length > 0 && (
             <RowView marginVertical={defaults.marginVertical}>
               <Button.Secondary
                 title={I18n.t('screens:deliver.viewClaims', {
-                  claimNo: unacknowledgedList?.length
+                  claimNo: unacknowledgedList.length
                 })}
                 onPress={showClaims.bind(null, toggleModal)}
               />
             </RowView>
           )}
-          {unacknowledgedList?.length === 0 && (
+          {unacknowledgedList.length === 0 && (
             <>
-              <RowView>
+              <RowView justifyContent={'space-between'}>
+                {!podImage && (
+                  <CustomIcon
+                    onPress={podPrompt.bind(null, {
+                      proofOfDeliveryRequired:
+                        selectedStop.proofOfDeliveryRequired,
+                      setModalImageSrc,
+                      setModalText,
+                      setModalType,
+                      setModalVisible,
+                      updateProps
+                    })}
+                    containerWidth={sizes.list.image}
+                    width={sizes.list.image}
+                    icon={'addPhoto'}
+                    iconColor={
+                      selectedStop.proofOfDeliveryRequired
+                        ? colors.error
+                        : colors.primary
+                    }
+                    style={style.addPhotoIcon}
+                  />
+                )}
+                {podImage && (
+                  <Pressable
+                    key={'pod'}
+                    style={style.photoWrapper}
+                    onPress={podPrompt.bind(null, {
+                      podImage,
+                      proofOfDeliveryRequired:
+                        selectedStop.proofOfDeliveryRequired,
+                      setModalImageSrc,
+                      setModalText,
+                      setModalType,
+                      setModalVisible,
+                      updateProps
+                    })}>
+                    <Image
+                      source={{
+                        uri: podImage.path
+                      }}
+                      style={{ borderRadius: defaults.borderRadius }}
+                      width={sizes.list.image}
+                      height={sizes.list.image}
+                    />
+                  </Pressable>
+                )}
                 <Button.Primary
                   title={I18n.t('general:done')}
                   onPress={NavigationService.goBack.bind(null, {
@@ -407,22 +561,28 @@ const Deliver = props => {
                       null,
                       selectedStop.orderId,
                       selectedStop.key,
-                      outOfStockIds
+                      outOfStockIds,
+                      podImage
                     )
                   })}
-                  disabled={!allItemsDone}
+                  disabled={
+                    !allItemsDone ||
+                    (selectedStop.proofOfDeliveryRequired && !podImage)
+                  }
+                  width={
+                    width - sizes.list.image - defaults.marginHorizontal * 2.5
+                  }
                   testID={'deliver-done'}
                 />
               </RowView>
               <RowView marginVertical={defaults.marginVertical}>
                 <Button.Outline
                   title={I18n.t('general:skip')}
-                  onPress={showModal.bind(
-                    null,
-                    'skip',
+                  onPress={showModal.bind(null, {
+                    type: 'skip',
                     setModalType,
                     setModalVisible
-                  )}
+                  })}
                   testID={'deliver-skip'}
                 />
               </RowView>
@@ -439,14 +599,17 @@ Deliver.propTypes = {
   confirmedItem: PropTypes.array,
   navigation: PropTypes.object,
   outOfStockIds: PropTypes.array,
+  podImage: PropTypes.object,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,
+  showPODRequired: PropTypes.func,
   toggleConfirmedItem: PropTypes.func,
   toggleModal: PropTypes.func,
   toggleOutOfStock: PropTypes.func,
+  updateProps: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
 
@@ -454,14 +617,17 @@ Deliver.defaultProps = {
   allItemsDone: false,
   confirmedItem: [],
   outOfStockIds: [],
+  podImage: null,
   reasonMessage: '',
   routeDescription: null,
   selectedStop: {},
   setDelivered: mock,
   setRejected: mock,
+  showPODRequired: mock,
   toggleConfirmedItem: mock,
   toggleModal: mock,
   toggleOutOfStock: mock,
+  updateProps: mock,
   updateTransientProps: mock
 };
 

@@ -4,15 +4,16 @@ import { Creators as ActionSheetAndroidActions } from 'Reducers/actionsheetandro
 export default ({
   optionKeys,
   options,
-  config: { destructiveButtonIndex }
+  config: { destructiveButtonIndex, title }
 }) => {
   const { dispatch } = store().store;
   dispatch(
     ActionSheetAndroidActions.updateProps({
+      destructiveButtonIndex,
       optionKeys,
       options,
-      visible: true,
-      destructiveButtonIndex
+      title,
+      visible: true
     })
   );
 };

@@ -1,7 +1,6 @@
 {
   "placeholder": {
     "customerIssueModal": "Reason",
-    "damageReport": "Enter any known issues here",
     "email": "Email",
     "mileage": "Input current mileage (ODO)",
     "number": "Input a number. Can be 0",
