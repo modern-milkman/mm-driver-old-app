@@ -77,7 +77,6 @@ class Root extends React.Component {
             ...props
           },
           error,
-          info,
           user
         })
       );

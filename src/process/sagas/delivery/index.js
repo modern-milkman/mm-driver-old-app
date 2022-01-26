@@ -20,6 +20,7 @@ import {
   orderedStopsIds as orderedStopsIdsSelector,
   selectedStop as selectedStopSelector,
   selectedStopId as selectedStopIdSelector,
+  serverAddressIds as serverAddressIdsSelector,
   status as statusSelector,
   stops as stopsSelector,
   Types as DeliveryTypes
@@ -229,6 +230,7 @@ export const getForDriver = function* () {
 
 export const getForDriverSuccess = function* ({ payload }) {
   const stops = yield select(stopsSelector);
+  const serverAddressIds = yield select(serverAddressIdsSelector);
 
   for (const stop of Object.values(stops)) {
     if (stop.satisfactionStatus === 3 || stop.satisfactionStatus === 4) {
@@ -258,7 +260,8 @@ export const getForDriverSuccess = function* ({ payload }) {
   });
 
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, {
-    payload
+    payload,
+    serverAddressIds
   });
 };
 
@@ -449,18 +452,7 @@ export const setDeliveredOrRejected = function* (
     status === DS.DELC &&
     (requestQueues.offline.length > 0 || requestQueues.failed.length > 0)
   ) {
-    yield put({
-      type: GrowlTypes.ALERT,
-      props: {
-        type: 'error',
-        title: I18n.t('alert:errors.reports.data.title'),
-        message: I18n.t('alert:errors.reports.data.message'),
-        interval: -1,
-        payload: {
-          action: DeviceTypes.SHARE_OFFLINE_DATA
-        }
-      }
-    });
+    yield put({ type: DeviceTypes.SHARE_OFFLINE_DATA });
   }
 
   Analytics.trackEvent(

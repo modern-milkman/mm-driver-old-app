@@ -112,6 +112,7 @@ export const initialState = {
   confirmedItem: [],
   deliveredStock: {},
   directionsPolyline: [],
+  failedItems: 0,
   hasRoutes: false,
   orderedStock: [],
   orderedStopsIds: [],
@@ -120,6 +121,7 @@ export const initialState = {
   previousStopId: null,
   processing: true,
   selectedStopId: null,
+  serverAddressIds: [],
   status: DS.NCI,
   stock: [],
   stockWithData: {},
@@ -347,6 +349,7 @@ export const getVehicleStockForDriverSuccess = (
 export const getForDriverSuccess = (state, { payload }) =>
   produce(state, draft => {
     draft.loaderInfo = 'getVehicleStockForDriver';
+    draft.serverAddressIds = [];
     draft.stockWithData = payload;
 
     let hasNonPendingOrders = false;
@@ -360,6 +363,7 @@ export const getForDriverSuccess = (state, { payload }) =>
       draft.outOfSequenceIds = [];
       draft.completedStopsIds = [];
       draft.deliveredStock = {};
+      draft.failedItems = 0;
       resetChecklistFlags(draft.checklist[state.userId]);
     }
 
@@ -374,7 +378,6 @@ export const getForDriverSuccess = (state, { payload }) =>
     */
 
     // PREPARE RAW STOPS
-    const serverAddressIds = [];
     for (const { address, orderItems, sequenceNo } of payload.items) {
       const computedAddress =
         (address.nameOrNumber ? `${address.nameOrNumber}` : '') +
@@ -385,7 +388,7 @@ export const getForDriverSuccess = (state, { payload }) =>
         address?.deliveryInstructions?.length > 0
           ? address.deliveryInstructions
           : null;
-      serverAddressIds.push(parseInt(address.addressId));
+      draft.serverAddressIds.push(parseInt(address.addressId));
 
       // create stop if it doesn't exist
       if (!draft.stops[address.addressId]) {
@@ -498,7 +501,7 @@ export const getForDriverSuccess = (state, { payload }) =>
 
     // remove stops no longer on route
     let stopsToRemove = Object.keys(draft.stops).filter(
-      key => !serverAddressIds.includes(parseInt(key))
+      key => !draft.serverAddressIds.includes(parseInt(key))
     );
     for (const key of stopsToRemove) {
       if (['rejected', 'completed'].includes(draft.stops[key].status)) {
@@ -624,6 +627,11 @@ export const setEmpty = (state, { prop, value }) =>
       ...draft.checklist[draft.userId].payload.emptiesCollected[prop],
       value
     };
+  });
+
+export const setItemOutOfStock = state =>
+  produce(state, draft => {
+    draft.failedItems = state.failedItems + 1;
   });
 
 export const setMileage = (state, { mileage }) =>
@@ -757,7 +765,6 @@ export default createReducer(initialState, {
     'rejectReasons'
   ),
   [Types.GET_RETURN_TYPES]: setLoaderInfo.bind(null, 'returnTypes'),
-
   [Types.GET_VEHICLE_STOCK_FOR_DRIVER_SUCCESS]: getVehicleStockForDriverSuccess,
   [Types.INIT_CHECKLIST]: initChecklist,
   [Types.REDIRECT_SET_SELECTED_CLAIM_ID]: setSelectedClaimId,
@@ -769,6 +776,7 @@ export default createReducer(initialState, {
   [Types.SET_DELIVERED]: setDelivered,
   [Types.SET_DIRECTIONS_POLYLINE]: setDirectionsPolyline,
   [Types.SET_EMPTY]: setEmpty,
+  [Types.SET_ITEM_OUT_OF_STOCK]: setItemOutOfStock,
   [Types.SET_MILEAGE]: setMileage,
   [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
   [Types.SET_REGISTRATION]: setRegistration,
@@ -791,9 +799,11 @@ export const additionalItemCount = state => state.delivery?.additionalItemCount;
 export const checklist = state =>
   state.delivery?.checklist?.[state.delivery?.userId];
 
+export const completedStopsIds = state => state.delivery?.completedStopsIds;
+
 export const directionsPolyline = state => state.delivery?.directionsPolyline;
 
-export const completedStopsIds = state => state.delivery?.completedStopsIds;
+export const failedItems = state => state.delivery?.failedItems;
 
 export const itemCount = state => state.delivery?.itemCount || 0;
 
@@ -813,6 +823,9 @@ export const orderedStopsIds = state =>
 
 export const outOfSequenceIds = state => state.delivery?.outOfSequenceIds;
 
+export const routeDescription = state =>
+  state.delivery?.stockWithData?.routeDescription;
+
 export const selectedStop = state => {
   const todaysDelivery = state.delivery;
   return todaysDelivery &&
@@ -824,6 +837,8 @@ export const selectedStop = state => {
 };
 
 export const selectedStopId = state => state.delivery?.selectedStopId;
+
+export const serverAddressIds = state => state.delivery?.serverAddressIds;
 
 export const status = state => state.delivery?.status;
 

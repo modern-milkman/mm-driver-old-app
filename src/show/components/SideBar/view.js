@@ -35,16 +35,12 @@ const SideBar = props => {
     name,
     navigation,
     network,
-    requestQueues,
     source,
     status,
     updateInAppBrowserProps
   } = props;
   const { width } = deviceFrame();
   const sidebarWidth = 0.8 * width;
-
-  const showOfflineLabel =
-    requestQueues.offline.length > 0 || requestQueues.failed.length > 0;
 
   return (
     <SafeAreaView style={styles.flex1}>
@@ -125,21 +121,6 @@ const SideBar = props => {
             />
           )}
 
-          {showOfflineLabel && (
-            <ListItem
-              icon={'information-outline'}
-              title={I18n.t('routes:reports')}
-              rightIcon={'chevron-right'}
-              onPress={navigateAndClose.bind(
-                null,
-                navigation.closeDrawer,
-                NavigationService.navigate.bind(null, {
-                  routeName: 'Reports'
-                })
-              )}
-            />
-          )}
-
           {network.status !== 2 &&
             appcenter &&
             appcenter?.short_version &&
@@ -176,7 +157,6 @@ SideBar.propTypes = {
   name: PropTypes.string,
   navigation: PropTypes.object,
   network: PropTypes.object,
-  requestQueues: PropTypes.object,
   source: PropTypes.object,
   status: PropTypes.string,
   updateInAppBrowserProps: PropTypes.func

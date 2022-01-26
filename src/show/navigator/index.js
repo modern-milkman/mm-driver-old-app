@@ -19,7 +19,6 @@ import {
   LoadVan,
   LowConnectionModal,
   PermissionsMissing,
-  Reports,
   RegistrationMileage,
   Settings,
   UpgradeApp
@@ -98,7 +97,6 @@ const MainNavigator = () => (
       name="CustomerIssueDetails"
       component={CustomerIssueDetails}
     />
-    <Stack.Screen name="Reports" component={Reports} />
   </Stack.Group>
 );
 

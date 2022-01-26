@@ -170,31 +170,6 @@
     "or": "OR",
     "mileage": "Mileage"
   },
-  "reports": {
-    "buttons": {
-      "reconnectAndSync": "Reconnect & Sync Data",
-      "sendToSuper": "Send Data to Supervisor"
-    },
-    "failed": {
-      "hasData": "There's been work saved on the device that hasn't been pushed successfully to the server. If you've finished your round you should \"SEND DATA TO SUPERVISOR\" using the button below."
-    },
-    "generating": {
-      "message": "Please wait, gathering data can take up to 30 seconds"
-    },
-    "offline": {
-      "accuracy": "Data accuracy",
-      "noData": "No offline data",
-      "hasData": "{{requests}} offline requests need to be synchronised.",
-      "percentage": "{{percentage}}%"
-    },
-    "sections": {
-      "offline": "Offline data",
-      "failed": "Failed requests data"
-    },
-    "share": {
-      "title": "Deliveries Report"
-    }
-  },
   "settings": {
     "sections": {
       "authentication": "Authentication",

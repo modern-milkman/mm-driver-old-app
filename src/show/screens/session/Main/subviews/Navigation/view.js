@@ -6,9 +6,9 @@ import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { RowView } from 'Containers';
 import { colors, defaults } from 'Theme';
+import { deliveryStates as DS } from 'Helpers';
 import NavigationService from 'Services/navigation';
-import { Icon, Label, ProgressBar, Text } from 'Components';
-import { deliveryStates as DS, deviceFrame } from 'Helpers';
+import { Icon, ProgressBar, Text } from 'Components';
 
 import style from './style';
 
@@ -71,14 +71,11 @@ const Navigation = props => {
     network,
     openDrawer,
     updateDeviceProps,
-    requestQueues,
     status,
     stopCount
   } = props;
 
   const completed = completedStopsIds.length;
-  const failedRequests = requestQueues.failed.length > 0;
-  const { width } = deviceFrame();
 
   return (
     <View style={[style.container]}>
@@ -106,22 +103,7 @@ const Navigation = props => {
             </Pressable>
           </RowView>
         )}
-        {failedRequests && (
-          <Pressable
-            onPress={NavigationService.navigate.bind(null, {
-              routeName: 'Reports'
-            })}>
-            <Label
-              text={I18n.t(
-                `general:syncFailed.${width < 375 ? 'short' : 'long'}`
-              )}
-            />
-          </Pressable>
-        )}
-        {!failedRequests &&
-          lowConnection &&
-          network.status === 0 &&
-          renderLowConnection()}
+        {lowConnection && network.status === 0 && renderLowConnection()}
       </RowView>
     </View>
   );
@@ -141,7 +123,6 @@ Navigation.propTypes = {
   lowConnection: PropTypes.bool,
   network: PropTypes.object,
   openDrawer: PropTypes.func,
-  requestQueues: PropTypes.object,
   status: PropTypes.string,
   stopCount: PropTypes.number,
   updateDeviceProps: PropTypes.func

@@ -1,6 +1,5 @@
 // DEVICE SAGAS BELOW
 // could be used for offline / online / set position
-import Share from 'react-native-share';
 import RNBootSplash from 'react-native-bootsplash';
 import { delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Platform } from 'react-native';
@@ -18,7 +17,7 @@ import NavigationService from 'Services/navigation';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { deliveryStates as DS, distance } from 'Helpers';
-import { Creators as GrowlCreators, Types as GrowlTypes } from 'Reducers/growl';
+import { Types as GrowlTypes } from 'Reducers/growl';
 import {
   lastRoute as lastRouteSelector,
   userSessionPresent as userSessionPresentSelector
@@ -33,9 +32,14 @@ import {
   requestQueues as requestQueuesSelector
 } from 'Reducers/device';
 import {
+  completedStopsIds as completedStopsIdsSelector,
+  failedItems as failedItemsSelector,
+  itemCount as itemCountSelector,
+  routeDescription as routeDescriptionSelector,
   status as statusSelector,
   selectedStop as selectedStopSelector,
-  selectedStopId as selectedStopIdSelector
+  selectedStopId as selectedStopIdSelector,
+  stopCount as stopCountSelector
 } from 'Reducers/delivery';
 
 export { watchUserLocation } from './extras/watchUserLocation';
@@ -186,36 +190,67 @@ export function* setMapMode({ mode }) {
 }
 
 export function* shareOfflineData() {
+  const completedStopsIds = yield select(completedStopsIdsSelector);
+  const failedItems = yield select(failedItemsSelector);
+  const itemCount = yield select(itemCountSelector);
   const requestQueues = yield select(requestQueuesSelector);
-  const { dispatch } = store().store;
+  const routeId = yield select(routeDescriptionSelector);
+  const stopCount = yield select(stopCountSelector);
+  const user = yield select(userSelector);
 
-  Share.open({
-    title: I18n.t('screens:reports.share.title'),
-    message: JSON.stringify({
-      ...requestQueues
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeviceTypes.SHARE_OFFLINE_DATA_SUCCESS },
+      fail: { type: DeviceTypes.SHARE_OFFLINE_DATA_ERROR }
+    },
+    promise: Api.repositories.slack.sendRouteReport({
+      completedStops: completedStopsIds.length,
+      failedItems,
+      itemCount,
+      user,
+      routeId,
+      requestQueues,
+      stopCount
     })
-  })
-    .then(() => {
-      dispatch(DeviceCreators.clearFailedRequests());
-      dispatch(
-        GrowlCreators.alert({
-          type: 'info',
-          title: I18n.t('alert:success.reports.sendToSuper.title'),
-          message: I18n.t('alert:success.reports.sendToSuper.message'),
-          interval: -1
-        })
-      );
-    })
-    .catch(() => {
-      dispatch(
-        GrowlCreators.alert({
-          type: 'error',
-          title: I18n.t('alert:errors.reports.sendToSuper.title'),
-          message: I18n.t('alert:errors.reports.sendToSuper.message'),
-          interval: -1
-        })
-      );
-    });
+  });
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'info',
+      title: I18n.t('alert:success.shareOfflineData.start.title'),
+      message: I18n.t('alert:success.shareOfflineData.start.message')
+    }
+  });
+  Analytics.trackEvent(EVENTS.SHARE_OFFLINE_DATA);
+}
+
+export function* shareOfflineDataError() {
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'error',
+      title: I18n.t('alert:errors.shareOfflineData.failed.title'),
+      message: I18n.t('alert:errors.shareOfflineData.failed.message'),
+      interval: -1,
+      payload: {
+        action: DeviceTypes.SHARE_OFFLINE_DATA
+      }
+    }
+  });
+  Analytics.trackEvent(EVENTS.SHARE_OFFLINE_DATA_ERROR);
+}
+
+export function* shareOfflineDataSuccess() {
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'info',
+      title: I18n.t('alert:success.shareOfflineData.completed.title'),
+      message: I18n.t('alert:success.shareOfflineData.completed.message')
+    }
+  });
+  Analytics.trackEvent(EVENTS.SHARE_OFFLINE_DATA_SUCCESS);
 }
 
 export function* syncOffline({ status }) {
@@ -252,8 +287,8 @@ export function* syncOffline({ status }) {
       type: GrowlTypes.ALERT,
       props: {
         type: 'error',
-        title: I18n.t('alert:errors.reports.retrySync.title'),
-        message: I18n.t('alert:errors.reports.retrySync.message'),
+        title: I18n.t('alert:errors.syncOffline.failed.title'),
+        message: I18n.t('alert:errors.syncOffline.failed.message'),
         interval: -1,
         payload: {
           action: DeviceTypes.SYNC_OFFLINE
@@ -266,9 +301,12 @@ export function* syncOffline({ status }) {
         type: GrowlTypes.ALERT,
         props: {
           type: 'error',
-          title: I18n.t('alert:errors.reports.sync.title'),
-          message: I18n.t('alert:errors.reports.sync.message'),
-          interval: -1
+          title: I18n.t('alert:errors.syncOffline.failed.title'),
+          message: I18n.t('alert:errors.syncOffline.failed.message'),
+          interval: -1,
+          payload: {
+            action: DeviceTypes.SHARE_OFFLINE_DATA
+          }
         }
       });
     } else {
@@ -276,9 +314,8 @@ export function* syncOffline({ status }) {
         type: GrowlTypes.ALERT,
         props: {
           type: 'info',
-          title: I18n.t('alert:success.reports.sync.title'),
-          message: I18n.t('alert:success.reports.sync.message'),
-          interval: -1
+          title: I18n.t('alert:success.syncOffline.completed.title'),
+          message: I18n.t('alert:success.syncOffline.completed.message')
         }
       });
     }

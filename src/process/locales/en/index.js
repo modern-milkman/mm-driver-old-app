@@ -1,8 +1,19 @@
+import alert from './alert';
 import general from './general';
 import input from './input';
-import alert from './alert';
-import validations from './validations';
-import screens from './screens';
 import ios from './ios';
 import routes from './routes';
-export default { general, input, alert, validations, screens, ios, routes };
+import screens from './screens';
+import slack from './slack';
+import validations from './validations';
+
+export default {
+  alert,
+  general,
+  input,
+  ios,
+  routes,
+  screens,
+  slack,
+  validations
+};

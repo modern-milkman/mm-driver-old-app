@@ -324,7 +324,7 @@ const Home = props => {
 
           {[1, 2].includes(network.status) && (
             <RowView marginTop={defaults.marginVertical / 2}>
-              <Label text={I18n.t('general:syncFailed.long')} />
+              <Label text={I18n.t('general:offline')} />
             </RowView>
           )}
         </ColumnView>

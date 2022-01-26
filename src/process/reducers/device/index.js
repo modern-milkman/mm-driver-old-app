@@ -6,7 +6,6 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
-    clearFailedRequests: null,
     ensureMandatoryPermissions: ['routeName'],
     lowConnectionUpdate: ['lowConnection'],
     pushRequest: ['queue', 'payload'],
@@ -14,6 +13,8 @@ export const { Types, Creators } = createActions(
     setLocation: ['position'],
     setMapMode: ['mode'],
     shareOfflineData: null,
+    shareOfflineDataError: null,
+    shareOfflineDataSuccess: null,
     syncOffline: null,
     updateNetworkProps: ['props'],
     updateProcessor: ['processor', 'value'],
@@ -75,8 +76,9 @@ const initialState = {
   vibrate: true
 };
 
-export const clearFailedRequests = state =>
+export const shareOfflineDataSuccess = state =>
   produce(state, draft => {
+    draft.requestQueues.offline = [];
     draft.requestQueues.failed = [];
   });
 
@@ -158,11 +160,11 @@ export const syncOffline = (state, { lastRequest, status }) =>
   });
 
 export default createReducer(initialState, {
-  [Types.CLEAR_FAILED_REQUESTS]: clearFailedRequests,
   [Types.PUSH_REQUEST]: pushRequest,
   [Types.SET_LATEST_APP]: setLatestApp,
   [Types.SET_LOCATION]: setLocation,
   [Types.SET_MAP_MODE]: setMapMode,
+  [Types.SHARE_OFFLINE_DATA_SUCCESS]: shareOfflineDataSuccess,
   [Types.SYNC_OFFLINE]: syncOffline,
   [Types.UPDATE_NETWORK_PROPS]: updateNetworkProps,
   [Types.UPDATE_PROCESSOR]: updateProcessor,

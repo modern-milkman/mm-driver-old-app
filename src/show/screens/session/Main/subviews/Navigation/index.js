@@ -12,7 +12,6 @@ export default connect(
       countDown: state.device.countDown,
       lowConnection: state.device.lowConnection,
       network: state.device.network,
-      requestQueues: state.device.requestQueues,
       status: state.delivery?.status,
       stopCount: stopCount(state)
     };

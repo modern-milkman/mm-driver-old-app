@@ -23,10 +23,6 @@
   "restart": "Restart Driver",
   "reviewPhoto": "Review Photo",
   "skip": "Skip",
-  "syncFailed": {
-    "short": "Failed",
-    "long": "Sync failed"
-  },
   "takePhoto": "Take a Photo",
   "upNext": "Up next",
   "yes": "Yes"

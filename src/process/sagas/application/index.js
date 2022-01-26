@@ -291,7 +291,7 @@ export const resetAndReload = function* () {
 export const sendCrashLog = function* ({ payload }) {
   yield put({
     type: Api.API_CALL,
-    promise: Api.repositories.crash.sendCrashLog(payload)
+    promise: Api.repositories.slack.sendCrashLog(payload)
   });
   Analytics.trackEvent(EVENTS.CRASH_CODE, {
     crashCode: payload?.device?.crashCode

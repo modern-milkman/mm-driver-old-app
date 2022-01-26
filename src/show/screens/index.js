@@ -15,7 +15,6 @@ import LoadVan from './session/LoadVan';
 import LowConnectionModal from './session/Main/subviews/Navigation/LowConnectionModal';
 import Main from './session/Main';
 import RegistrationMileage from './session/VehicleCheckWizard/RegistrationMileage';
-import Reports from './session/Reports';
 import Settings from './session/Settings';
 
 export {
@@ -31,7 +30,6 @@ export {
   Main,
   PermissionsMissing,
   RegistrationMileage,
-  Reports,
   Settings,
   UpgradeApp
 };

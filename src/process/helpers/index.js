@@ -16,12 +16,15 @@ import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import actionSheet from 'Services/actionSheet';
 
+import slack from './slack';
+
 const addZero = i => (i < 10 ? `0${i}` : i);
 
-const appVersionString = () =>
-  Config.ENVIRONMENT !== 'production'
+const appVersionString = props => {
+  return Config.ENVIRONMENT !== 'production' || props?.diagnostics
     ? `V: ${Config.APP_VERSION_NAME}-${Config.APP_VERSION_CODE} ${Config.ENVIRONMENT}`
     : `Version ${Config.APP_VERSION_NAME}`;
+};
 
 const base64ToHex = base64 => {
   return [...Base64.atob(base64)]
@@ -33,12 +36,16 @@ const base64ToHex = base64 => {
 const blacklists = {
   apiEndpointFailureTracking: [
     `${Config.FLEET_TRACKER_URL}/drivers`,
-    '/Security/Logon'
+    '/Security/Logon',
+    `${Config.SLACK_CRASH_WEBHOOK}`,
+    `${Config.SLACK_FAILED_WEBHOOK}`
   ],
   apiEndpointOfflineTracking: [
     `${Config.FLEET_TRACKER_URL}/drivers`,
     '/Security/Logon',
-    '/Security/Refresh'
+    '/Security/Refresh',
+    `${Config.SLACK_CRASH_WEBHOOK}`,
+    `${Config.SLACK_FAILED_WEBHOOK}`
   ],
   addToStackRoute: ['PermissionsMissing', 'UpgradeApp'],
   resetStackRoutes: ['CheckIn'],
@@ -388,6 +395,7 @@ export {
   plateRecognition,
   preopenPicker,
   randomKey,
+  slack,
   statusBarHeight,
   timeToHMArray,
   timeoutResponseStatuses,
