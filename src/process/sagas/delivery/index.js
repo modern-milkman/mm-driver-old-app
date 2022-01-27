@@ -129,8 +129,7 @@ export const foregroundDeliveryActions = function* ({}) {
   const status = yield select(statusSelector);
   const user_session = yield select(userSessionPresentSelector);
 
-  //iOS lagging behind bug
-  // yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
+  yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
 
   if (status === DS.NCI && user_session) {
     yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
