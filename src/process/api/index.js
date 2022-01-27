@@ -2,6 +2,7 @@ import axios from 'axios';
 import EM from 'es-event-emitter';
 import { gt as semverGt } from 'semver';
 import Config from 'react-native-config';
+import NetInfo from '@react-native-community/netinfo';
 
 import store from 'Redux/store';
 import repositories from 'Repositories';
@@ -14,12 +15,50 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { Creators as ApplicationActions } from 'Reducers/application';
 import { blacklists, timeoutResponseStatuses, timeToHMArray } from 'Helpers';
 
+import countryBasedEnvironmentConfig from './countryBasedEnvironmentConfig.json';
+
 let TOKEN = null;
 let REFRESH_TOKEN = null;
+let NETINFO_LISTENER = null;
 const requestCountTimes = [];
 
+// COUNTRY BASED CONFIG
+const COUNTRY_BASED_PROP = prop => {
+  const country =
+    store().store.getState().device.country || Config.DEFAULT_COUNTRY;
+  return countryBasedEnvironmentConfig[Config.ENVIRONMENT][prop][country];
+};
+
+const configureCountryBaseURL = () => {
+  api.defaults.baseURL = `${COUNTRY_BASED_PROP('SERVER_URL')}${
+    Config.SERVER_URL_BASE
+  }`;
+
+  if (NETINFO_LISTENER) {
+    NETINFO_LISTENER();
+  }
+  NetInfo.configure({
+    reachabilityUrl: api.defaults.baseURL + Config.NETINFO_REACHABILITY_URL,
+    reachabilityLongTimeout: parseInt(Config.NETINFO_REACHABILITY_LONG_TIMEOUT),
+    reachabilityShortTimeout: parseInt(
+      Config.NETINFO_REACHABILITY_SHORT_TIMEOUT
+    ),
+    reachabilityRequestTimeout: parseInt(
+      Config.NETINFO_REACHABILITY_REQUEST_TIMEOUT
+    ),
+    reachabilityTest: async response => response.status === 200
+  });
+  NETINFO_LISTENER = NetInfo.addEventListener(handleNetStatChange);
+  NetInfo.fetch().done(handleNetStatChange);
+};
+
+const handleNetStatChange = netStatProps => {
+  const { dispatch } = store().store;
+  dispatch({ type: 'REDUX_SAGA_NETSTAT_CHANGE', netStatProps });
+};
+
+// API
 const api = axios.create({
-  baseURL: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}`,
   timeout: parseInt(Config.API_TIMEOUT)
 });
 
@@ -84,6 +123,7 @@ const refreshSession = {
   timeout: null
 };
 
+// API INTERCEPTORS
 const interceptors = {
   config: config => {
     config.meta = config.meta || {};
@@ -275,6 +315,11 @@ api.interceptors.response.use(
 
 const Api = {
   API_CALL: 'API_CALL',
+  RATE_MY_ROUND: COUNTRY_BASED_PROP.bind(null, 'RATE_MY_ROUND'),
+  SERVER_SERVICE_URL: COUNTRY_BASED_PROP.bind(null, 'SERVER_SERVICE_URL'),
+  SERVER_URL: COUNTRY_BASED_PROP.bind(null, 'SERVER_URL'),
+
+  configureCountryBaseURL,
   repositories,
 
   async setToken(jwtToken = null, refreshToken = null) {

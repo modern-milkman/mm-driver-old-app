@@ -1,19 +1,20 @@
-import alert from './alert';
 import general from './general';
 import input from './input';
-import ios from './ios';
-import routes from './routes';
-import screens from './screens';
-import slack from './slack';
+import alert from './alert';
+import countries from './countries';
 import validations from './validations';
-
+import screens from './screens';
+import ios from './ios';
+import slack from './slack';
+import routes from './routes';
 export default {
-  alert,
   general,
   input,
-  ios,
-  routes,
+  alert,
+  countries,
+  validations,
   screens,
+  ios,
   slack,
-  validations
+  routes
 };

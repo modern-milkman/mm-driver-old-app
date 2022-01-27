@@ -122,6 +122,10 @@ export function* reduxSagaNetstatChange({ netStatProps }) {
   }
 }
 
+export function* setCountry() {
+  Api.configureCountryBaseURL();
+}
+
 export function* setLocation({ position }) {
   const autoOpenStopDetails = yield select(autoOpenStopDetailsSelector);
   const lastRoute = yield select(lastRouteSelector);

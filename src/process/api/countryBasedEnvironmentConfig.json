@@ -1,0 +1,58 @@
+{
+  "development": {
+    "RATE_MY_ROUND": {
+      "uk": "https://forms.office.com/r/GUBhiL1Dhm",
+      "fr": "https://forms.office.com/r/gG2t9i0kHM"
+    },
+    "SERVER_SERVICE_URL": {
+      "uk": "https://driver-services.themodernmilkman.co.uk",
+      "fr": "https://modernmilkman-poly-apim.azure-api.net"
+    },
+    "SERVER_URL": {
+      "uk": "https://driver-adminapi.themodernmilkman.co.uk",
+      "fr": "https://modernmilkman-poly-adminapi.azurewebsites.net"
+    }
+  },
+  "production": {
+    "RATE_MY_ROUND": {
+      "uk": "https://forms.office.com/r/GUBhiL1Dhm",
+      "fr": "https://forms.office.com/r/gG2t9i0kHM"
+    },
+    "SERVER_SERVICE_URL": {
+      "uk": "https://services.themodernmilkman.co.uk",
+      "fr": "https://modernmilkman-poly-apim.azure-api.net"
+    },
+    "SERVER_URL": {
+      "uk": "https://live-adminapi.themodernmilkman.co.uk",
+      "fr": "https://modernmilkman-poly-adminapi.azurewebsites.net"
+    }
+  },
+  "test": {
+    "RATE_MY_ROUND": {
+      "uk": "https://forms.office.com/r/GUBhiL1Dhm",
+      "fr": "https://forms.office.com/r/gG2t9i0kHM"
+    },
+    "SERVER_SERVICE_URL": {
+      "uk": "https://driver-services.themodernmilkman.co.uk",
+      "fr": "https://modernmilkman-poly-apim.azure-api.net"
+    },
+    "SERVER_URL": {
+      "uk": "https://driver-adminapi.themodernmilkman.co.uk",
+      "fr": "https://modernmilkman-poly-adminapi.azurewebsites.net"
+    }
+  },
+  "uat": {
+    "RATE_MY_ROUND": {
+      "uk": "https://forms.office.com/r/GUBhiL1Dhm",
+      "fr": "https://forms.office.com/r/gG2t9i0kHM"
+    },
+    "SERVER_SERVICE_URL": {
+      "uk": "https://uat-services.themodernmilkman.co.uk",
+      "fr": "https://fr-preprod-services.themodernmilkman.co.uk"
+    },
+    "SERVER_URL": {
+      "uk": "https://uat-adminapi.themodernmilkman.co.uk",
+      "fr": "https://fr-preprod-adminapi.themodernmilkman.co.uk"
+    }
+  }
+}

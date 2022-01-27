@@ -28,6 +28,7 @@ import {
 import {
   Types as DeviceTypes,
   autoSelectStop as autoSelectStopSelector,
+  country as countrySelector,
   device as deviceSelector
 } from 'Reducers/device';
 
@@ -242,7 +243,9 @@ export const getForDriverSuccess = function* ({ payload }) {
 
     if (stop.hasImage) {
       Api.repositories.filesystem.downloadFile({
-        fromUrl: `${Config.SERVER_URL}${Config.SERVER_URL_BASE}/Customer/CustomerImageFile/${stop.customerId}/${stop.key}`,
+        fromUrl: `${Api.SERVER_URL()}${
+          Config.SERVER_URL_BASE
+        }/Customer/CustomerImageFile/${stop.customerId}/${stop.key}`,
         toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${stop.customerId}-${stop.key}`
       });
     }
@@ -361,6 +364,7 @@ export const setDeliveredOrRejected = function* (
   { id, podImage, outOfStockIds, selectedStopId, reasonType, reasonMessage }
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
+  const country = yield select(countrySelector);
   const device = yield select(deviceSelector);
   const isOptimised = yield select(isOptimisedSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
@@ -390,9 +394,13 @@ export const setDeliveredOrRejected = function* (
     deliveryLocationLongitude: position?.longitude
   };
 
+  // TODO once microservices are deployed into FR env, remove the country check / patchFRDelivered
+  // also remove country export from reducer as this is the sole place it is used
   const promise =
     requestType === 'delivered'
-      ? Api.repositories.delivery.postDelivered
+      ? country === 'uk'
+        ? Api.repositories.delivery.postDelivered
+        : Api.repositories.delivery.patchFRDelivered
       : Api.repositories.delivery.patchRejected;
 
   if (isOptimised && autoSelectStop) {

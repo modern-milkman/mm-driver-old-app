@@ -8,15 +8,17 @@ import Home from './view';
 
 export default connect(
   state => ({
+    biometrics: state.device.biometrics,
+    country: state.device.country,
     network: state.device.network,
     processing: state.application.processing,
     rememberMe: state.device.rememberMe,
-    biometrics: state.device.biometrics,
     ...state.transient
   }),
   {
     biometricLogin: applicationActions.biometricLogin,
     login: applicationActions.login,
+    setCountry: deviceActions.setCountry,
     updateApplicationProps: applicationActions.updateProps,
     updateDeviceProps: deviceActions.updateProps,
     updateTransientProps: transientActions.updateProps

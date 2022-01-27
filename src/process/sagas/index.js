@@ -69,6 +69,7 @@ import {
   locationError,
   lowConnectionUpdate,
   reduxSagaNetstatChange,
+  setCountry,
   setLocation,
   setMapMode,
   shareOfflineData,
@@ -172,6 +173,7 @@ export default function* root() {
       ensureMandatoryPermissions
     ),
     takeLatest(DeviceTypes.LOW_CONNECTION_UPDATE, lowConnectionUpdate),
+    takeLatest(DeviceTypes.SET_COUNTRY, setCountry),
     takeLatest(DeviceTypes.SET_MAP_MODE, setMapMode),
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA, shareOfflineData),
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA_ERROR, shareOfflineDataError),

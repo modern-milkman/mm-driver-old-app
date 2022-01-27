@@ -86,6 +86,7 @@ export const dismissKeyboard = function () {
 
 export const init = function* () {
   const availableNavApps = [];
+
   for (const appName of navigationAppList) {
     if (yield isAppInstalled(appName)) {
       availableNavApps.push(appName);
@@ -240,6 +241,8 @@ export const rehydratedAndMounted = function* () {
   const user = yield select(userSelector);
   const user_session = yield select(userSessionPresentSelector);
   const { reloadingDevice } = yield select(processorsSelector);
+
+  Api.configureCountryBaseURL();
 
   if (reloadingDevice) {
     yield put({

@@ -1,16 +1,23 @@
 import PropTypes from 'prop-types';
-import { Animated, Keyboard } from 'react-native';
+import { Animated, Keyboard, Pressable } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 
 import I18n from 'Locales/I18n';
 import { CarLogo } from 'Images';
 import { colors, defaults } from 'Theme';
 import Vibration from 'Services/vibration';
+import actionSheet from 'Services/actionSheet';
 import EncryptedStorage from 'Services/encryptedStorage';
 import { Button, Icon, Label, Switch, Text } from 'Components';
 import { ColumnView, RowView, SafeAreaView } from 'Containers';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
-import { appVersionString, jiggleAnimation, mock, deviceFrame } from 'Helpers';
+import {
+  appVersionString,
+  availableCountries,
+  jiggleAnimation,
+  mock,
+  deviceFrame
+} from 'Helpers';
 
 const emailReference = React.createRef();
 const passwordReference = React.createRef();
@@ -23,6 +30,7 @@ const minimumRequiredHeight =
   Text.Caption.height +
   logoSize +
   Text.Heading.height +
+  defaults.topNavigation.height +
   defaults.marginVertical / 4 +
   defaults.marginVertical * 2; // make things look spacious
 const focusPassword = () => {
@@ -44,6 +52,14 @@ const focusEmail = () => {
   setTimeout(() => {
     emailReference?.current?.focus();
   }, 0);
+};
+
+const openActionSheet = ({ setCountry }) => {
+  const options = [];
+  for (const country of availableCountries) {
+    options[I18n.t(`countries:${country}`)] = setCountry.bind(null, country);
+  }
+  actionSheet(options);
 };
 
 const renderBiometrics = ({
@@ -76,6 +92,23 @@ const renderBiometrics = ({
       disabled={disabledLogin}
     />
   </>
+);
+
+const renderCountrySelector = ({ country, setCountry }) => (
+  <Pressable onPress={openActionSheet.bind(null, { setCountry })}>
+    <RowView
+      justifyContent={'space-between'}
+      height={defaults.topNavigation.height}
+      marginVertical={defaults.marginVertical / 2}>
+      <Text.List color={colors.inputDark}>
+        {I18n.t('general:country')}
+      </Text.List>
+      <Label
+        backgroundColor={colors.inputDark}
+        text={I18n.t(`countries:${country}`)}
+      />
+    </RowView>
+  </Pressable>
 );
 
 const renderLogo = hasSmallHeight => (
@@ -145,6 +178,7 @@ const Home = props => {
   const {
     biometrics,
     biometricLogin,
+    country,
     email,
     emailErrorMessage,
     emailHasError,
@@ -155,6 +189,7 @@ const Home = props => {
     password,
     processing,
     rememberMe,
+    setCountry,
     updateDeviceProps,
     updateApplicationProps,
     updateTransientProps
@@ -289,6 +324,7 @@ const Home = props => {
                     updateDeviceProps,
                     updateTransientProps
                   })}
+              {renderCountrySelector({ country, setCountry })}
             </>
           )}
 
@@ -308,7 +344,7 @@ const Home = props => {
                 title={I18n.t('screens:home.biometrics.login')}
                 onPress={biometricLogin}
                 processing={processing}
-                disabled={!rememberMe}
+                disabled={!rememberMe || disabledLogin}
               />
               <RowView marginVertical={defaults.marginVertical / 2}>
                 <Text.Label align={'center'} color={colors.inputDark}>
@@ -319,10 +355,11 @@ const Home = props => {
                 title={I18n.t('screens:home.standard.login')}
                 onPress={setbioSandE.bind(null, !bioSandE)}
               />
+              {renderCountrySelector({ country, setCountry })}
             </>
           )}
 
-          {[1, 2].includes(network.status) && (
+          {network.status === 2 && (
             <RowView marginTop={defaults.marginVertical / 2}>
               <Label text={I18n.t('general:offline')} />
             </RowView>
@@ -357,6 +394,7 @@ Home.defaultProps = {
 Home.propTypes = {
   biometrics: PropTypes.object,
   biometricLogin: PropTypes.func,
+  country: PropTypes.string,
   email: PropTypes.string,
   emailHasError: PropTypes.bool,
   emailErrorMessage: PropTypes.string,
@@ -367,6 +405,7 @@ Home.propTypes = {
   password: PropTypes.string,
   processing: PropTypes.bool,
   rememberMe: PropTypes.bool,
+  setCountry: PropTypes.func,
   updateDeviceProps: PropTypes.func,
   updateApplicationProps: PropTypes.func,
   updateTransientProps: PropTypes.func

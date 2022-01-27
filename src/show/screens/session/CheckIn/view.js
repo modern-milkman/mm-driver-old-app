@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import Config from 'react-native-config';
 
+import Api from 'Api';
 import I18n from 'Locales/I18n';
 import { colors, defaults } from 'Theme';
 import NavigationService from 'Services/navigation';
@@ -16,7 +16,7 @@ const openRateMyRound = ({ updateChecklistProps, updateInAppBrowserProps }) => {
   updateChecklistProps({ rateMyRound: true });
   updateInAppBrowserProps({
     visible: true,
-    url: Config.RATE_MY_ROUND
+    url: Api.RATE_MY_ROUND()
   });
 };
 

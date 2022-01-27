@@ -9,6 +9,7 @@ export const { Types, Creators } = createActions(
     ensureMandatoryPermissions: ['routeName'],
     lowConnectionUpdate: ['lowConnection'],
     pushRequest: ['queue', 'payload'],
+    setCountry: ['country'],
     setLatestApp: ['payload'],
     setLocation: ['position'],
     setMapMode: ['mode'],
@@ -37,6 +38,7 @@ const initialState = {
   computeDirections: false,
   computeShortDirections: false,
   countDown: false,
+  country: Config.DEFAULT_COUNTRY,
   crashCount: 0,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info,
@@ -85,6 +87,11 @@ export const shareOfflineDataSuccess = state =>
 export const pushRequest = (state, { queue, payload }) =>
   produce(state, draft => {
     draft.requestQueues[queue].push({ datetime: Date.now(), ...payload });
+  });
+
+export const setCountry = (state, { country }) =>
+  produce(state, draft => {
+    draft.country = country;
   });
 
 export const setLatestApp = (state, action) =>
@@ -161,6 +168,7 @@ export const syncOffline = (state, { lastRequest, status }) =>
 
 export default createReducer(initialState, {
   [Types.PUSH_REQUEST]: pushRequest,
+  [Types.SET_COUNTRY]: setCountry,
   [Types.SET_LATEST_APP]: setLatestApp,
   [Types.SET_LOCATION]: setLocation,
   [Types.SET_MAP_MODE]: setMapMode,
@@ -174,6 +182,7 @@ export default createReducer(initialState, {
 export const autoOpenStopDetails = state => state.device.autoOpenStopDetails;
 export const autoSelectStop = state => state.device.autoSelectStop;
 export const biometrics = state => state.device.biometrics;
+export const country = state => state.device.country;
 export const device = state => state.device;
 export const network = state => state.device.network;
 export const position = state => state.device.position;

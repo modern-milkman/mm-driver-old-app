@@ -26,6 +26,8 @@ const appVersionString = props => {
     : `Version ${Config.APP_VERSION_NAME}`;
 };
 
+const availableCountries = ['fr', 'uk'];
+
 const base64ToHex = base64 => {
   return [...Base64.atob(base64)]
     .map(c => c.charCodeAt(0).toString(16).padStart(2, 0))
@@ -374,6 +376,7 @@ const usePrevious = value => {
 
 export {
   appVersionString,
+  availableCountries,
   base64ToHex,
   blacklists,
   capitalize,
