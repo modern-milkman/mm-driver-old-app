@@ -58,7 +58,6 @@ import {
   setReturnTypes,
   showMustComplyWithTerms,
   showPODRequired,
-  updateChecklistProps,
   updateDriverActivity,
   updateDirectionsPolyline,
   updateProps as updateDeliveryProps,
@@ -160,7 +159,6 @@ export default function* root() {
     ),
     takeEvery(DeliveryTypes.SET_RETURN_TYPES, setReturnTypes),
     takeEvery(DeliveryTypes.SHOW_POD_REQUIRED, showPODRequired),
-    takeEvery(DeliveryTypes.UPDATE_CHECKLIST_PROPS, updateChecklistProps),
     takeEvery(
       DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE,
       updateDirectionsPolyline

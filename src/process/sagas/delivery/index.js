@@ -330,7 +330,7 @@ export const redirectSetSelectedClaimId = function* () {
   NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
 };
 
-export const saveVehicleChecks = function* ({ saveType }) {
+export const saveVehicleChecks = function* () {
   NavigationService.navigate({ routeName: 'CheckIn' });
   const checklist = yield select(checklistSelector);
   const payload = { ...checklist.payload };
@@ -354,13 +354,6 @@ export const saveVehicleChecks = function* ({ saveType }) {
     })
   });
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
-
-  if (checklist.shiftEndVanChecks && checklist.rateMyRound) {
-    yield put({
-      type: DeliveryTypes.UPDATE_PROPS,
-      props: { status: DS.SC }
-    });
-  }
 };
 
 export const setDeliveredOrRejected = function* (
@@ -521,16 +514,6 @@ export const showPODRequired = function* () {
       message: I18n.t('alert:success.delivery.proofOfDeliveryRequired.message')
     }
   });
-};
-
-export const updateChecklistProps = function* () {
-  const checklist = yield select(checklistSelector);
-  if (checklist.shiftEndVanChecks && checklist.rateMyRound) {
-    yield put({
-      type: DeliveryTypes.UPDATE_PROPS,
-      props: { status: DS.SC }
-    });
-  }
 };
 
 export const updateDriverActivity = function* () {

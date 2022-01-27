@@ -527,10 +527,7 @@ export const getForDriverSuccess = (state, { payload }) =>
     }
 
     if (markedOrders === payload.items.length) {
-      if (
-        draft.checklist[state.userId].shiftEndVanChecks &&
-        draft.checklist[state.userId].rateMyRound
-      ) {
+      if (draft.checklist[state.userId].shiftEndVanChecks) {
         draft.status = DS.SC;
       } else {
         draft.status = DS.SEC;
@@ -574,6 +571,9 @@ export const resetChecklistPayload = (state, { resetType }) =>
 export const saveVehicleChecks = (state, { saveType }) =>
   produce(state, draft => {
     draft.checklist[state.userId][saveType] = true;
+    if (draft.checklist[state.userId].shiftEndVanChecks) {
+      draft.status = DS.SC;
+    }
   });
 
 export const setBundleProducts = (state, { payload }) =>
