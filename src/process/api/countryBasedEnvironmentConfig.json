@@ -20,11 +20,11 @@
     },
     "SERVER_SERVICE_URL": {
       "uk": "https://services.themodernmilkman.co.uk",
-      "fr": "https://modernmilkman-poly-apim.azure-api.net"
+      "fr": "https://services.lemarchemoderne.fr"
     },
     "SERVER_URL": {
       "uk": "https://live-adminapi.themodernmilkman.co.uk",
-      "fr": "https://modernmilkman-poly-adminapi.azurewebsites.net"
+      "fr": "https://adminapi.lemarchemoderne.fr"
     }
   },
   "test": {
