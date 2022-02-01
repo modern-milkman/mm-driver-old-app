@@ -290,9 +290,11 @@ const Settings = props => {
             justifyContent={'space-between'}
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.showDoneDeliveries')}
-            </Text.List>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.showDoneDeliveries')}
+              </Text.List>
+            </ColumnView>
             <Switch
               value={showDoneDeliveries}
               onValueChange={toggleDeviceProp.bind(
@@ -310,9 +312,11 @@ const Settings = props => {
             justifyContent={'space-between'}
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.computeDirections')}
-            </Text.List>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.computeDirections')}
+              </Text.List>
+            </ColumnView>
             <Switch
               value={computeDirections}
               onValueChange={toggleDeviceProp.bind(
@@ -332,9 +336,11 @@ const Settings = props => {
                 justifyContent={'space-between'}
                 marginVertical={defaults.marginVertical / 2}
                 width={'auto'}>
-                <Text.List color={colors.secondary}>
-                  {I18n.t('screens:settings.switches.computeShortDirections')}
-                </Text.List>
+                <ColumnView flex={1} alignItems={'flex-start'}>
+                  <Text.List color={colors.secondary}>
+                    {I18n.t('screens:settings.switches.computeShortDirections')}
+                  </Text.List>
+                </ColumnView>
                 <Switch
                   value={computeShortDirections}
                   onValueChange={toggleDeviceProp.bind(
@@ -356,9 +362,11 @@ const Settings = props => {
             justifyContent={'space-between'}
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.showMapControlsOnMovement')}
-            </Text.List>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.showMapControlsOnMovement')}
+              </Text.List>
+            </ColumnView>
             <Switch
               value={showMapControlsOnMovement}
               onValueChange={toggleDeviceProp.bind(
@@ -376,9 +384,11 @@ const Settings = props => {
             justifyContent={'space-between'}
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.foreground')}
-            </Text.List>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.foreground')}
+              </Text.List>
+            </ColumnView>
             <Switch
               value={foregroundSize === 'large'}
               onValueChange={onForegroundSizeChange.bind(
@@ -422,12 +432,14 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             marginHorizontal={defaults.marginHorizontal}
             width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.sliders.mapMarkers')}
-            </Text.List>
-            <Text.Caption color={colors.secondary}>
-              {I18n.t('screens:settings.sliders.drag')}
-            </Text.Caption>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.sliders.mapMarkers')}
+              </Text.List>
+              <Text.Caption color={colors.secondary}>
+                {I18n.t('screens:settings.sliders.drag')}
+              </Text.Caption>
+            </ColumnView>
 
             <Slider
               onSlidingComplete={onSliderChange.bind(
@@ -451,12 +463,14 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             marginHorizontal={defaults.marginHorizontal}
             width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.sliders.buttons')}
-            </Text.List>
-            <Text.Caption color={colors.secondary}>
-              {I18n.t('screens:settings.sliders.drag')}
-            </Text.Caption>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.sliders.buttons')}
+              </Text.List>
+              <Text.Caption color={colors.secondary}>
+                {I18n.t('screens:settings.sliders.drag')}
+              </Text.Caption>
+            </ColumnView>
 
             <Slider
               onSlidingComplete={onSliderChange.bind(
@@ -478,9 +492,11 @@ const Settings = props => {
             justifyContent={'space-between'}
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
-            <Text.List color={colors.secondary}>
-              {I18n.t('screens:settings.switches.vibrations')}
-            </Text.List>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.secondary}>
+                {I18n.t('screens:settings.switches.vibrations')}
+              </Text.List>
+            </ColumnView>
             <Switch
               value={vibrate}
               onValueChange={onVibrateChange.bind(null, updateDeviceProps)}
