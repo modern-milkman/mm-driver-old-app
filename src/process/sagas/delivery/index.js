@@ -11,7 +11,10 @@ import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { base64ToHex, deliveryStates as DS, distance } from 'Helpers';
 import { Types as TransientTypes } from 'Reducers/transient';
-import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
+import {
+  lastRoute as lastRouteSelector,
+  userSessionPresent as userSessionPresentSelector
+} from 'Reducers/application';
 import {
   checklist as checklistSelector,
   completedStopsIds as completedStopsIdsSelector,
@@ -127,10 +130,14 @@ export const foregroundDeliveryActions = function* ({}) {
   // rejectReasons -> productsOrder -> returnTypes -> getForDriver -> getVehicleStockForDriver |
   // cannedContent |
   // bundleProducts |
+  const lastRoute = yield select(lastRouteSelector);
   const status = yield select(statusSelector);
   const user_session = yield select(userSessionPresentSelector);
 
-  yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
+  yield put({
+    type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
+    ...(user_session && { routeName: lastRoute })
+  });
 
   if (status === DS.NCI && user_session) {
     yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });

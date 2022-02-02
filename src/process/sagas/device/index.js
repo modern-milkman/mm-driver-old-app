@@ -47,8 +47,11 @@ export { watchUserLocation } from './extras/watchUserLocation';
 export function* ensureMandatoryPermissions({ routeName }) {
   const { dispatch } = store().store;
   const mandatoryPermissions = Platform.select({
-    android: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION],
-    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]
+    android: [
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      PERMISSIONS.ANDROID.CAMERA
+    ],
+    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.CAMERA]
   });
 
   const biometrics = yield select(biometricsSelector);
@@ -70,10 +73,8 @@ export function* ensureMandatoryPermissions({ routeName }) {
   requestMultiple(mandatoryPermissions)
     .then(statuses => {
       dispatch(DeviceCreators.updateProps({ permissions: statuses }));
-      const statusesArray = Platform.select({
-        android: [statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]],
-        ios: [statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]]
-      });
+      const statusesArray = Object.values(statuses);
+
       if (
         statusesArray.includes(RESULTS.DENIED) ||
         statusesArray.includes(RESULTS.BLOCKED) ||

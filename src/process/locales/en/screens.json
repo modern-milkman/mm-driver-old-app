@@ -157,11 +157,14 @@
     "title": "Permissions missing",
     "description": "Some of the mandatory permissions Driver app needs to work properly haven't been granted. Please see the details below.",
     "instructions": {
+      "camera": {
+        "ios": "Enable from device's Settings > Privacy > Camera screen.",
+        "android": "Enable from device's Settings > Privacy > Permision manager > Camera > Driver screen."
+      },
       "location": {
         "ios": "Enable from device's Settings > Privacy > Location Services screen.",
         "android": "Enable from device's Settings > Location > App permision > Driver screen."
-      },
-      "general": "Restarting the app may be required after all permissions are enabled."
+      }
     }
   },
   "registrationMileage": {
