@@ -51,6 +51,7 @@ import {
   getReturnTypes,
   getVehicleStockForDriverSuccess,
   redirectSetSelectedClaimId,
+  refreshAllData,
   saveVehicleChecks,
   setDeliveredOrRejected,
   setItemOutOfStock,
@@ -140,6 +141,7 @@ export default function* root() {
       DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM_ID,
       redirectSetSelectedClaimId
     ),
+    takeLatest(DeliveryTypes.REFRESH_ALL_DATA, refreshAllData),
     takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getProductsOrder),
     takeLatest(DeliveryTypes.SAVE_VEHICLE_CHECKS, saveVehicleChecks),
     takeLatest(

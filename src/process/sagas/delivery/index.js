@@ -126,12 +126,7 @@ export const driverReply = function* ({
 };
 
 export const foregroundDeliveryActions = function* ({}) {
-  // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
-  // rejectReasons -> productsOrder -> returnTypes -> getForDriver -> getVehicleStockForDriver |
-  // cannedContent |
-  // bundleProducts |
   const lastRoute = yield select(lastRouteSelector);
-  const status = yield select(statusSelector);
   const user_session = yield select(userSessionPresentSelector);
 
   yield put({
@@ -139,11 +134,8 @@ export const foregroundDeliveryActions = function* ({}) {
     ...(user_session && { routeName: lastRoute })
   });
 
-  if (status === DS.NCI && user_session) {
-    yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
-    yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
-    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
-  }
+  yield put({ type: DeliveryTypes.REFRESH_ALL_DATA });
+
   if (user_session) {
     yield put({ type: DeliveryTypes.INIT_CHECKLIST });
   }
@@ -338,6 +330,21 @@ export const getVehicleStockForDriverSuccess = function* ({ payload }) {
 
 export const redirectSetSelectedClaimId = function* () {
   NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
+};
+
+export const refreshAllData = function* () {
+  // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
+  // rejectReasons -> productsOrder -> returnTypes -> getForDriver -> getVehicleStockForDriver |
+  // cannedContent |
+  // bundleProducts |
+  const status = yield select(statusSelector);
+  const user_session = yield select(userSessionPresentSelector);
+
+  if (status === DS.NCI && user_session) {
+    yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
+    yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
+    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
+  }
 };
 
 export const saveVehicleChecks = function* () {

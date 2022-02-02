@@ -137,6 +137,7 @@ export const login = function* ({ isBiometricLogin = false }) {
 };
 
 export const login_completed = function* () {
+  yield put({ type: DeliveryTypes.REFRESH_ALL_DATA });
   NavigationService.navigate({ routeName: defaultRoutes.session });
   Analytics.trackEvent(EVENTS.LOGIN_COMPLETED);
 };
