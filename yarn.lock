@@ -6393,11 +6393,6 @@ react-native-screens@3.7.2:
   dependencies:
     warn-once "^0.1.0"
 
-react-native-share@7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-7.1.1.tgz#99cbba83e2940d6a2ec442c35ecbdbd34dfcbc2f"
-  integrity sha512-pdIr+OUmCP5+t0HHSTy5opbBle+dE7Qw98U8ixSaIGoeQbkyP7vnCDpngxQoOHJ4IdcrbGgSAx+m0OAvvACzXg==
-
 react-native-size-matters@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/react-native-size-matters/-/react-native-size-matters-0.3.1.tgz#24d0cfc335a2c730f6d58bd7b43ea5a41be4b49f"
@@ -6588,10 +6583,10 @@ redux-persist@6.0.0:
   resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-6.0.0.tgz#b4d2972f9859597c130d40d4b146fecdab51b3a8"
   integrity sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==
 
-redux-saga-location@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/redux-saga-location/-/redux-saga-location-1.4.0.tgz#f552d704a2cc08571e1e1df985bae998eee9f389"
-  integrity sha512-6rAo47TVfj8P+0ebQrj2GNURNO6hFe1GSlGqq1ZbcIdCFaj/BZ8jSzrbusRvIXJxZV8vaghDriHqmJmj7nFnug==
+redux-saga-location@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/redux-saga-location/-/redux-saga-location-1.6.0.tgz#f1bdd45956b890411ea41a3404ddb05ca19bc040"
+  integrity sha512-PPyFM9XNmyUgfT07PTzPkj6eXLP00JcuenitmFRlWm26NpP8XDu4BRtDR2OZX4Qh3UeUHJedoj46sQlCyWD92A==
 
 redux-saga@1.1.3:
   version "1.1.3"
