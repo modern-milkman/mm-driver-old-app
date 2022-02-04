@@ -1,3 +1,4 @@
+import Appcenter from 'appcenter';
 import Crashes from 'appcenter-crashes';
 import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
@@ -22,6 +23,7 @@ import {
 import {
   Types as DeviceTypes,
   biometrics as biometricsSelector,
+  country as countrySelector,
   device as deviceSelector,
   processors as processorsSelector
 } from 'Reducers/device';
@@ -164,8 +166,11 @@ export const login_error = function* ({ status, isBiometricLogin }) {
 };
 
 export const login_success = function* ({ payload, isBiometricLogin }) {
+  const country = yield select(countrySelector);
+
   yield call(Api.setToken, payload.jwtToken, payload.refreshToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
+  Appcenter.setUserId(`${payload.driverId}-${country}`);
 
   yield put({ type: UserTypes.GET_DRIVER, isBiometricLogin });
   Analytics.trackEvent(EVENTS.LOGIN_SUCCESSFUL);
@@ -238,6 +243,7 @@ export const rehydrated = function* () {
 export const rehydratedAndMounted = function* () {
   const lastRoute = yield select(lastRouteSelector);
   const user = yield select(userSelector);
+  const country = yield select(countrySelector);
   const user_session = yield select(userSessionPresentSelector);
   const { reloadingDevice } = yield select(processorsSelector);
 
@@ -256,6 +262,7 @@ export const rehydratedAndMounted = function* () {
   }
 
   if (user_session) {
+    Appcenter.setUserId(`${user.driverId}-${country}`);
     if (new Date(user.refreshExpiry) < new Date()) {
       yield call(verifyAutomatedLoginOrLogout);
     } else {

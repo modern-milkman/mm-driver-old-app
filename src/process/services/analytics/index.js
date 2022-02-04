@@ -22,6 +22,7 @@ export const EVENTS = events;
 export default {
   trackEvent: (eventName, eventData) => {
     if (JSON.parse(Config.TRACK_ANALYTICS_EVENTS)) {
+      const { device } = store().store.getState();
       const { device_id = null, user_id = null } = identifiers;
       if (device_id === null || user_id === null) {
         identifiers = getIdentifiers();
@@ -39,7 +40,9 @@ export default {
           os_version: Platform.Version,
           platform: Platform.OS,
           timestamp: new Date(),
-          user_id
+          user_id,
+          location_lat: device.position?.latitude,
+          location_lng: device.position?.longitude
         },
         { min_id_length: 1 }
       );
