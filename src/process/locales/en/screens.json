@@ -119,7 +119,6 @@
     "foreground": {
       "loaderText": {
         "rejectReasons": "Loading Reject Reasons",
-        "productsOrder": "Loading Products",
         "returnTypes": "Loading Return Types",
         "getForDriver": "Loading Route Data",
         "getVehicleStockForDriver": "Loading Stock Info"

@@ -266,18 +266,6 @@ export const getForDriverSuccess = function* ({ payload }) {
   });
 };
 
-export const getProductsOrder = function* () {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.SET_PRODUCTS_ORDER },
-      fail: { type: DeliveryTypes.UPDATE_PROPS }
-    },
-    promise: Api.repositories.delivery.getProductsOrder(),
-    props: { processing: false, loaderInfo: null }
-  });
-};
-
 export const getRejectDeliveryReasons = function* () {
   yield put({
     type: Api.API_CALL,
@@ -302,7 +290,7 @@ export const getReturnTypes = function* () {
   });
 };
 
-export const getVehicleStockForDriverSuccess = function* ({ payload }) {
+export const getVehicleStockForDriverSuccess = function* () {
   const autoSelectStop = yield select(autoSelectStopSelector);
   const checklist = yield select(checklistSelector);
   const isOptimised = yield select(isOptimisedSelector);
@@ -321,8 +309,10 @@ export const getVehicleStockForDriverSuccess = function* ({ payload }) {
     });
   }
   for (const { productId: id, quantity } of orderedStock) {
+    Api.repositories.delivery.getProductImage(id);
     productId[id] = quantity;
   }
+
   Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, {
     productId
   });
@@ -334,7 +324,7 @@ export const redirectSetSelectedClaimId = function* () {
 
 export const refreshAllData = function* () {
   // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
-  // rejectReasons -> productsOrder -> returnTypes -> getForDriver -> getVehicleStockForDriver |
+  // rejectDeliveryReasons -> returnTypes -> getForDriver -> getVehicleStockForDriver |
   // cannedContent |
   // bundleProducts |
   const status = yield select(statusSelector);
@@ -501,12 +491,6 @@ export const setItemOutOfStock = function* ({ id }) {
     promise: Api.repositories.delivery.patchItemOutOfStock(id)
   });
   Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, { id });
-};
-
-export const setProductsOrder = function* ({ payload }) {
-  for (const i of payload) {
-    Api.repositories.delivery.getProductImage(i);
-  }
 };
 
 export const setReturnTypes = function* () {
