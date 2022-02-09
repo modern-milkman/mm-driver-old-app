@@ -44,7 +44,6 @@ const navigationAppList = Platform.select({
 // EXPORTED
 export const biometricDisable = function* () {
   const biometrics = yield select(biometricsSelector);
-
   EncryptedStorage.remove('userCredentials');
   yield put({
     type: DeviceTypes.UPDATE_PROPS,
