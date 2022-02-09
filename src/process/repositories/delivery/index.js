@@ -20,22 +20,20 @@ export default {
   },
   getDriverResponseImage(id) {
     Api.repositories.filesystem.downloadFile({
-      fromUrl: `${Api.SERVER_URL()}${
-        Config.SERVER_URL_BASE
+      fromUrl: `${Api.S_URL()}${
+        Config.S_URL_BASE
       }/Claim/DriverResponseImageFile/${id}`,
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${id}`
     });
   },
   getForDriver() {
     return Api.get(
-      `${Api.SERVER_SERVICE_URL()}/delivery/v1/api/Delivery/GetForDriver`
+      `${Api.SS_URL()}${Api.SS_URL_BASE('delivery')}/Delivery/GetForDriver`
     );
   },
   getProductImage(id) {
     Api.repositories.filesystem.downloadFile({
-      fromUrl: `${Api.SERVER_URL()}${
-        Config.SERVER_URL_BASE
-      }/Product/Image/${id}`,
+      fromUrl: `${Api.S_URL()}${Config.S_URL_BASE}/Product/Image/${id}`,
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${id}`
     });
   },
@@ -91,7 +89,9 @@ export default {
     podImageType = null
   }) {
     return Api.post(
-      `${Api.SERVER_SERVICE_URL()}/delivery/v1/api/Delivery/${orderId}/SetDelivered`,
+      `${Api.SS_URL()}${Api.SS_URL_BASE(
+        'delivery'
+      )}/Delivery/${orderId}/SetDelivered`,
       {
         deliveryLocationLatitude,
         deliveryLocationLongitude,

@@ -1,7 +1,7 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "7.1.0",
-  "versionCode": "99",
+  "version": "7.1.1",
+  "versionCode": "100",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; cd android && ./gradlew clean",
