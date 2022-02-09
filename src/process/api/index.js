@@ -23,16 +23,19 @@ let NETINFO_LISTENER = null;
 const requestCountTimes = [];
 
 // COUNTRY BASED CONFIG
-const COUNTRY_BASED_PROP = prop => {
+const COUNTRY_BASED_PROP = (rootProp, secondaryProp = null) => {
   const country =
     store().store.getState().device.country || Config.DEFAULT_COUNTRY;
-  return countryBasedEnvironmentConfig[Config.ENVIRONMENT][prop][country];
+  if (secondaryProp) {
+    return countryBasedEnvironmentConfig[Config.ENVIRONMENT][rootProp][
+      secondaryProp
+    ][country];
+  }
+  return countryBasedEnvironmentConfig[Config.ENVIRONMENT][rootProp][country];
 };
 
 const configureCountryBaseURL = () => {
-  api.defaults.baseURL = `${COUNTRY_BASED_PROP('SERVER_URL')}${
-    Config.SERVER_URL_BASE
-  }`;
+  api.defaults.baseURL = `${COUNTRY_BASED_PROP('S_URL')}${Config.S_URL_BASE}`;
 
   if (NETINFO_LISTENER) {
     NETINFO_LISTENER();
@@ -316,8 +319,9 @@ api.interceptors.response.use(
 const Api = {
   API_CALL: 'API_CALL',
   RATE_MY_ROUND: COUNTRY_BASED_PROP.bind(null, 'RATE_MY_ROUND'),
-  SERVER_SERVICE_URL: COUNTRY_BASED_PROP.bind(null, 'SERVER_SERVICE_URL'),
-  SERVER_URL: COUNTRY_BASED_PROP.bind(null, 'SERVER_URL'),
+  S_URL: COUNTRY_BASED_PROP.bind(null, 'S_URL'),
+  SS_URL: COUNTRY_BASED_PROP.bind(null, 'SS_URL'),
+  SS_URL_BASE: COUNTRY_BASED_PROP.bind(null, 'SS_URL_BASE'),
 
   configureCountryBaseURL,
   repositories,

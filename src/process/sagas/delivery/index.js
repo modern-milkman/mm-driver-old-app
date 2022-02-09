@@ -242,8 +242,8 @@ export const getForDriverSuccess = function* ({ payload }) {
 
     if (stop.hasImage) {
       Api.repositories.filesystem.downloadFile({
-        fromUrl: `${Api.SERVER_URL()}${
-          Config.SERVER_URL_BASE
+        fromUrl: `${Api.S_URL()}${
+          Config.S_URL_BASE
         }/Customer/CustomerImageFile/${stop.customerId}/${stop.key}`,
         toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${stop.customerId}-${stop.key}`
       });
