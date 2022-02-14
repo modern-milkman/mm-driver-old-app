@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
-
 import com.android.build.OutputFile
 
 /**
@@ -81,19 +80,20 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     bundleInRelease: true,
-    bundleInQatest: true,
-    bundleInUat: true,
+    bundleInReleaseTest: true,
+    bundleInReleaseUat: true,
     enableHermes: false,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
 
 //react-native-config
+project.ext.defaultEnvFile = ".env.development"
 project.ext.envConfigFiles = [
     debug: ".env.development",
     release: ".env.production",
-    qatest: ".env.test",
-    uat: ".env.uat"
+    releaseTest: ".env.test",
+    releaseUat: ".env.uat"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 //react-native-vector-icons
@@ -151,7 +151,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode project.env.get("APP_VERSION_CODE")?.toInteger()
+        versionCode project.env.get("APP_VERSION_CODE").toInteger()
         versionName project.env.get("APP_VERSION_NAME")
         vectorDrawables.useSupportLibrary = true
         if (nativeArchitectures) {
@@ -179,25 +179,25 @@ android {
     }
     buildTypes {
         debug {
-            matchingFallbacks = ['qatest']
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+            matchingFallbacks = ['releaseTest']
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
-        qatest {
+        releaseTest {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
-        uat {
+        releaseUat {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
     }
 
@@ -224,7 +224,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    
+
     implementation "androidx.core:core-splashscreen:1.0.0-alpha02"
 
 
