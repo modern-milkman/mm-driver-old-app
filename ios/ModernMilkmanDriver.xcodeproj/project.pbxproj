@@ -14,7 +14,6 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		6A1325D6EAC950A8079547FA /* libPods-ModernMilkmanDriver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 491FD629F0A2C38F1B6CD7E9 /* libPods-ModernMilkmanDriver.a */; };
 		85317ABB43187D02BE99AFE0 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B286A26C7ABBCC4C4C1B7B4 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
-		9D43E0E725C0459000ABA1BF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */; };
 		9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D9B5EE824B365C80047134F /* BootSplash.storyboard */; };
 		A1A4F4640E25B4CD4E86715E /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07246359CC0B132DD66FCAE5 /* ExpoModulesProvider.swift */; };
 		FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */; };
@@ -47,7 +46,6 @@
 		2D02E4901E0B4A5D006451C7 /* ModernMilkmanDriver-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ModernMilkmanDriver-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B286A26C7ABBCC4C4C1B7B4 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		491FD629F0A2C38F1B6CD7E9 /* libPods-ModernMilkmanDriver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9D9B5EE824B365C80047134F /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = ModernMilkmanDriver/BootSplash.storyboard; sourceTree = "<group>"; };
 		B27518AD49D5D566795A342A /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B34C8A657EC77C913D7E8B6F /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 				9D9B5EE824B365C80047134F /* BootSplash.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */,
-				9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */,
 			);
 			name = ModernMilkmanDriver;
 			sourceTree = "<group>";
@@ -291,7 +288,6 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */,
-				9D43E0E725C0459000ABA1BF /* GoogleService-Info.plist in Resources */,
 				FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */,
 				9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */,
 			);
@@ -548,7 +544,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 104;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -561,7 +557,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.1.1;
+				MARKETING_VERSION = 7.2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -581,7 +577,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 104;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
@@ -590,7 +586,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.1.1;
+				MARKETING_VERSION = 7.2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -635,7 +631,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -699,7 +695,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

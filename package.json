@@ -1,7 +1,7 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "7.1.1",
-  "versionCode": "100",
+  "version": "7.2.0",
+  "versionCode": "101",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; cd android && ./gradlew clean",
@@ -38,7 +38,7 @@
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-bootsplash": "4.0.2",
-    "react-native-camera": "3.44.3",
+    "react-native-camera": "luminos-software/react-native-camera",
     "react-native-config": "1.4.5",
     "react-native-device-info": "8.4.8",
     "react-native-dropdownalert": "4.5.1",
