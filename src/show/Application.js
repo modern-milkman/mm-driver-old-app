@@ -4,6 +4,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import createStore from 'Redux/store';
+import * as SplashScreen from 'expo-splash-screen';
 import { Creators as StartupActions } from 'Reducers/application';
 
 const { store, persistor } = createStore();
@@ -15,6 +16,10 @@ const initApp = () => {
 import ApplicationRootView from './ApplicationRootView';
 
 class Application extends React.Component {
+  componentDidMount = async () => {
+    await SplashScreen.preventAutoHideAsync();
+  };
+
   render = () => (
     <SafeAreaProvider>
       <Provider store={store}>

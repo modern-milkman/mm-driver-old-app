@@ -2,13 +2,13 @@ import Appcenter from 'appcenter';
 import Crashes from 'appcenter-crashes';
 import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
-import RNBootSplash from 'react-native-bootsplash';
 import { call, delay, put, select } from 'redux-saga/effects';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
 import store from 'Redux/store';
+import * as SplashScreen from 'expo-splash-screen';
 import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { defaultRoutes, isAppInstalled } from 'Helpers';
@@ -318,20 +318,20 @@ export const verifyAutomatedLoginOrLogout = function* () {
           ...credentials
         }
       });
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
+      InteractionManager.runAfterInteractions(async () => {
+        await SplashScreen.hideAsync();
       });
       yield call(biometricLogin);
     } else {
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
+      InteractionManager.runAfterInteractions(async () => {
+        await SplashScreen.hideAsync();
       });
     }
   } else {
     Analytics.trackEvent(EVENTS.AUTOMATED_LOG_OUT);
     yield call(logout);
-    InteractionManager.runAfterInteractions(() => {
-      RNBootSplash.hide();
+    InteractionManager.runAfterInteractions(async () => {
+      await SplashScreen.hideAsync();
     });
   }
 };

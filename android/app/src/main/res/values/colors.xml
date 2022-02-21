@@ -1,3 +1,4 @@
 <resources>
-    <color name="bootsplash_background">#50c3d5</color>
+ <color name="splashscreen_background">#AABBCC</color> <!-- #AARRGGBB or #RRGGBB format -->
+  <!-- Other colors defined for your application -->
 </resources>
