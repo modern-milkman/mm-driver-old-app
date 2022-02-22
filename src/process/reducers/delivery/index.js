@@ -784,12 +784,12 @@ export const orderedStock = state => state.delivery.orderedStock;
 export const orderedStopsIds = state =>
   (state.delivery?.stockWithData?.isOptimised &&
     state.device.showAllPendingStops) ||
-    !state.delivery?.stockWithData?.isOptimised
+  !state.delivery?.stockWithData?.isOptimised
     ? state.delivery?.orderedStopsIds
     : state.delivery?.orderedStopsIds.slice(
-      0,
-      state.device.optimisedStopsToShow
-    );
+        0,
+        state.device.optimisedStopsToShow
+      );
 
 export const outOfSequenceIds = state => state.delivery?.outOfSequenceIds;
 
