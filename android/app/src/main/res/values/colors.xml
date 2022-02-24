@@ -1,4 +1,4 @@
 <resources>
- <color name="splashscreen_background">#AABBCC</color> <!-- #AARRGGBB or #RRGGBB format -->
+ <color name="splashscreen_background">#365369</color> <!-- #AARRGGBB or #RRGGBB format -->
   <!-- Other colors defined for your application -->
 </resources>

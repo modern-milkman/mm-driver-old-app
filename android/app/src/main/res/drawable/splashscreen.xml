@@ -2,6 +2,6 @@
   <item android:drawable="@color/splashscreen_background"/>
 
   <item>
-     <bitmap android:gravity="center" android:src="@drawable/splashscreen_image"/>
+     <bitmap android:gravity="center" android:src="@mipmap/splashscreen_image"/>
    </item>
 </layer-list>

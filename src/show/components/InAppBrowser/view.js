@@ -50,7 +50,7 @@ const InAppBrowser = props => {
             name="arrow-left"
             size={defaults.topNavigation.iconSize}
             containerSize={defaults.topNavigation.height}
-            color={canGoBack ? colors.white : colors.primaryLight}
+            color={canGoBack ? colors.white : colors.input}
             disabled={!canGoBack}
             onPress={webview?.current?.goBack}
           />
@@ -66,7 +66,7 @@ const InAppBrowser = props => {
             name="arrow-right"
             size={defaults.topNavigation.iconSize}
             containerSize={defaults.topNavigation.height}
-            color={canGoForward ? colors.white : colors.primaryLight}
+            color={canGoForward ? colors.white : colors.input}
             disabled={!canGoForward}
             onPress={webview?.current?.goForward}
           />
