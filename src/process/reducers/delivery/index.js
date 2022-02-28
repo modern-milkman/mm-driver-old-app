@@ -362,7 +362,7 @@ export const getForDriverSuccess = (state, { payload }) =>
         (address.postcodeOutward ? `, ${address.postcodeOutward}` : '') +
         (address.postcodeInward ? `${address.postcodeInward}` : '');
       const deliveryInstructions =
-        address?.deliveryInstructions?.replaceAll(' ', '').length > 0
+        address?.deliveryInstructions?.replace(/\s/g, '').length > 0
           ? address.deliveryInstructions
           : null;
       draft.serverAddressIds.push(parseInt(address.addressId));

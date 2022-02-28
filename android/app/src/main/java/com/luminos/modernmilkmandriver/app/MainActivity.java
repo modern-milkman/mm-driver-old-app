@@ -1,23 +1,16 @@
 package com.luminos.modernmilkmandriver.app;
-import expo.modules.ReactActivityDelegateWrapper;
-import com.facebook.react.ReactActivityDelegate;
-
-
 import com.facebook.react.ReactActivity;
-import com.zoontek.rnbootsplash.RNBootSplash;
+import com.facebook.react.ReactRootView;
+import com.facebook.react.ReactActivityDelegate;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+import android.os.Bundle;
 
+import expo.modules.ReactActivityDelegateWrapper;
 
 public class MainActivity extends ReactActivity {
   @Override
-  protected ReactActivityDelegate createReactActivityDelegate() {
-    return new ReactActivityDelegate(this, getMainComponentName()) {
-
-      @Override
-      protected void loadApp(String appKey) {
-        RNBootSplash.init(MainActivity.this);
-        super.loadApp(appKey);
-      }
-    };
+  protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(null);
   }
   
   /**
@@ -27,5 +20,17 @@ public class MainActivity extends ReactActivity {
   @Override
   protected String getMainComponentName() {
     return "ModernMilkmanDriver";
+  }
+
+  @Override
+  protected ReactActivityDelegate createReactActivityDelegate() {
+    return new ReactActivityDelegateWrapper(
+      this,
+      new ReactActivityDelegate(this, getMainComponentName()) {
+        @Override
+        protected ReactRootView createRootView() {
+          return new RNGestureHandlerEnabledRootView(MainActivity.this);
+        }
+    });
   }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 
 import I18n from 'Locales/I18n';
-import { CarLogo } from 'Images';
+import { Logo } from 'Images';
 import { colors, defaults } from 'Theme';
 import { ListItem, Text } from 'Components';
 import { ColumnView, FullView } from 'Containers';
@@ -13,12 +13,9 @@ const PermissionsMissing = () => {
   return (
     <FullView bgColor={colors.primary}>
       <ColumnView flex={1} justifyContent={'center'}>
-        <CarLogo
-          width={logoSize}
-          disabled
-          fill={colors.white}
-          primaryFill={colors.primary}
-        />
+        <ColumnView marginVertical={defaults.marginVertical}>
+          <Logo width={logoSize} />
+        </ColumnView>
         <ColumnView height={Text.Heading.height}>
           <Text.Heading color={colors.white}>
             {I18n.t('screens:home.driver')}

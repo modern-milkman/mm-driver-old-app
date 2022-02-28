@@ -131,7 +131,7 @@ export const foregroundDeliveryActions = function* ({}) {
 
   yield put({
     type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
-    ...(user_session && { routeName: lastRoute })
+    routeName: lastRoute
   });
 
   yield put({ type: DeliveryTypes.REFRESH_ALL_DATA });

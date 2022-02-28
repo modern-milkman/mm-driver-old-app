@@ -8,15 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* ModernMilkmanDriverTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ModernMilkmanDriverTests.m */; };
-		06A9F8FD5C390A0A8427CBA1 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34C8A657EC77C913D7E8B6F /* ExpoModulesProvider.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		6A1325D6EAC950A8079547FA /* libPods-ModernMilkmanDriver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 491FD629F0A2C38F1B6CD7E9 /* libPods-ModernMilkmanDriver.a */; };
-		85317ABB43187D02BE99AFE0 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B286A26C7ABBCC4C4C1B7B4 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
-		9D43E0E725C0459000ABA1BF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */; };
-		9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D9B5EE824B365C80047134F /* BootSplash.storyboard */; };
-		A1A4F4640E25B4CD4E86715E /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07246359CC0B132DD66FCAE5 /* ExpoModulesProvider.swift */; };
+		38BDA10D45FF86719D41A225 /* libPods-ModernMilkmanDriver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675FFC1D2DC82F2323222C84 /* libPods-ModernMilkmanDriver.a */; };
+		66004F547A98F4CF074529FF /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C128021C3760E0C1286005 /* ExpoModulesProvider.swift */; };
+		9D1588D8E44DB941782CDA27 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB8AFB512369794CEE553F47 /* ExpoModulesProvider.swift */; };
+		9D867C8727BD6688005E707C /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D867C8627BD6688005E707C /* SplashScreen.storyboard */; };
+		F02D95813C21AA10681CDC1D /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 031A917BEF74380E3EE6A21C /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
 		FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */; };
 		FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
@@ -36,7 +35,7 @@
 		00E356EE1AD99517003FC87E /* ModernMilkmanDriverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModernMilkmanDriverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ModernMilkmanDriverTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModernMilkmanDriverTests.m; sourceTree = "<group>"; };
-		07246359CC0B132DD66FCAE5 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		031A917BEF74380E3EE6A21C /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* ModernMilkmanDriver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModernMilkmanDriver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ModernMilkmanDriver/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ModernMilkmanDriver/AppDelegate.m; sourceTree = "<group>"; };
@@ -45,13 +44,12 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ModernMilkmanDriver/main.m; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* ModernMilkmanDriver-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ModernMilkmanDriver-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* ModernMilkmanDriver-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ModernMilkmanDriver-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3B286A26C7ABBCC4C4C1B7B4 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		491FD629F0A2C38F1B6CD7E9 /* libPods-ModernMilkmanDriver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		9D9B5EE824B365C80047134F /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = ModernMilkmanDriver/BootSplash.storyboard; sourceTree = "<group>"; };
-		B27518AD49D5D566795A342A /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B34C8A657EC77C913D7E8B6F /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		C7E61A2E269CFEE41E8844B6 /* Pods-ModernMilkmanDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.release.xcconfig"; sourceTree = "<group>"; };
+		675FFC1D2DC82F2323222C84 /* libPods-ModernMilkmanDriver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		71C128021C3760E0C1286005 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		9B8C66B6637B4A29FEF77165 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9D867C8627BD6688005E707C /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
+		ACC2E19AC2DBAB6848F9A38E /* Pods-ModernMilkmanDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.release.xcconfig"; sourceTree = "<group>"; };
+		EB8AFB512369794CEE553F47 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F16B52850D15817B7075E8FC /* Pods-ModernMilkmanDriver.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.debug.xcconfig"; sourceTree = "<group>"; };
@@ -65,7 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85317ABB43187D02BE99AFE0 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */,
+				F02D95813C21AA10681CDC1D /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,7 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A1325D6EAC950A8079547FA /* libPods-ModernMilkmanDriver.a in Frameworks */,
+				38BDA10D45FF86719D41A225 /* libPods-ModernMilkmanDriver.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +95,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		039D0153D59FB539ADE15DD7 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				3A9C06CF8EA00629B35565B3 /* ModernMilkmanDriver */,
+				3B9F5D949AB47615208D9D95 /* ModernMilkmanDriverTests */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* ModernMilkmanDriver */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,21 +112,12 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				9D867C8627BD6688005E707C /* SplashScreen.storyboard */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				9D9B5EE824B365C80047134F /* BootSplash.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */,
-				9D43E0E625C0459000ABA1BF /* GoogleService-Info.plist */,
 			);
 			name = ModernMilkmanDriver;
-			sourceTree = "<group>";
-		};
-		27FBDA4263A41626380D3AB3 /* ModernMilkmanDriverTests */ = {
-			isa = PBXGroup;
-			children = (
-				B34C8A657EC77C913D7E8B6F /* ExpoModulesProvider.swift */,
-			);
-			name = ModernMilkmanDriverTests;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -127,19 +125,26 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				491FD629F0A2C38F1B6CD7E9 /* libPods-ModernMilkmanDriver.a */,
-				3B286A26C7ABBCC4C4C1B7B4 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */,
+				675FFC1D2DC82F2323222C84 /* libPods-ModernMilkmanDriver.a */,
+				031A917BEF74380E3EE6A21C /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		5494321E9A8E8E65B2CA5C9B /* ExpoModulesProviders */ = {
+		3A9C06CF8EA00629B35565B3 /* ModernMilkmanDriver */ = {
 			isa = PBXGroup;
 			children = (
-				DC285FF2F47B39100C5F812A /* ModernMilkmanDriver */,
-				27FBDA4263A41626380D3AB3 /* ModernMilkmanDriverTests */,
+				71C128021C3760E0C1286005 /* ExpoModulesProvider.swift */,
 			);
-			name = ExpoModulesProviders;
+			name = ModernMilkmanDriver;
+			sourceTree = "<group>";
+		};
+		3B9F5D949AB47615208D9D95 /* ModernMilkmanDriverTests */ = {
+			isa = PBXGroup;
+			children = (
+				EB8AFB512369794CEE553F47 /* ExpoModulesProvider.swift */,
+			);
+			name = ModernMilkmanDriverTests;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -158,7 +163,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				E54CC72C5AA26491F34CA958 /* Pods */,
-				5494321E9A8E8E65B2CA5C9B /* ExpoModulesProviders */,
+				039D0153D59FB539ADE15DD7 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -176,21 +181,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		DC285FF2F47B39100C5F812A /* ModernMilkmanDriver */ = {
-			isa = PBXGroup;
-			children = (
-				07246359CC0B132DD66FCAE5 /* ExpoModulesProvider.swift */,
-			);
-			name = ModernMilkmanDriver;
-			sourceTree = "<group>";
-		};
 		E54CC72C5AA26491F34CA958 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				F16B52850D15817B7075E8FC /* Pods-ModernMilkmanDriver.debug.xcconfig */,
-				C7E61A2E269CFEE41E8844B6 /* Pods-ModernMilkmanDriver.release.xcconfig */,
-				B27518AD49D5D566795A342A /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */,
 				F313FCAC4216CB8C5C880740 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig */,
+				ACC2E19AC2DBAB6848F9A38E /* Pods-ModernMilkmanDriver.release.xcconfig */,
+				9B8C66B6637B4A29FEF77165 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -290,10 +287,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				9D867C8727BD6688005E707C /* SplashScreen.storyboard in Resources */,
 				FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */,
-				9D43E0E725C0459000ABA1BF /* GoogleService-Info.plist in Resources */,
 				FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */,
-				9D9B5EE924B365C90047134F /* BootSplash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,7 +449,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* ModernMilkmanDriverTests.m in Sources */,
-				06A9F8FD5C390A0A8427CBA1 /* ExpoModulesProvider.swift in Sources */,
+				9D1588D8E44DB941782CDA27 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,7 +459,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				A1A4F4640E25B4CD4E86715E /* ExpoModulesProvider.swift in Sources */,
+				66004F547A98F4CF074529FF /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,7 +487,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B27518AD49D5D566795A342A /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */;
+			baseConfigurationReference = 9B8C66B6637B4A29FEF77165 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -548,7 +544,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 106;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -561,7 +557,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.1.1;
+				MARKETING_VERSION = 7.2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -577,11 +573,11 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C7E61A2E269CFEE41E8844B6 /* Pods-ModernMilkmanDriver.release.xcconfig */;
+			baseConfigurationReference = ACC2E19AC2DBAB6848F9A38E /* Pods-ModernMilkmanDriver.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 106;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
@@ -590,7 +586,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.1.1;
+				MARKETING_VERSION = 7.2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -635,7 +631,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -657,8 +653,8 @@
 					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(SDKROOT)/usr/lib/swift",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -699,7 +695,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -714,8 +710,8 @@
 					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(SDKROOT)/usr/lib/swift",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;

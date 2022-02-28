@@ -3,7 +3,7 @@ import { Animated, Keyboard, Pressable } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 
 import I18n from 'Locales/I18n';
-import { CarLogo } from 'Images';
+import { Logo } from 'Images';
 import { colors, defaults } from 'Theme';
 import Vibration from 'Services/vibration';
 import actionSheet from 'Services/actionSheet';
@@ -29,7 +29,6 @@ const minimumRequiredHeight =
   Text.Label.height +
   Text.Caption.height +
   logoSize +
-  Text.Heading.height +
   defaults.topNavigation.height +
   defaults.marginVertical / 4 +
   defaults.marginVertical * 2; // make things look spacious
@@ -118,12 +117,7 @@ const renderLogo = hasSmallHeight => (
     justifyContent={'center'}
     alignItems={'center'}
     height={logoSize / (82 / 56) + Text.Heading.height}>
-    <CarLogo width={logoSize} disabled />
-    <ColumnView height={Text.Heading.height}>
-      <Text.Heading textAlign={'center'} color={colors.primary}>
-        {I18n.t('screens:home.driver')}
-      </Text.Heading>
-    </ColumnView>
+    <Logo width={logoSize} />
   </ColumnView>
 );
 
