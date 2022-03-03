@@ -26,7 +26,6 @@ export const { Types, Creators } = createActions(
     getDriverReplyImage: ['driverResponses', 'claimIndex', 'stopId'],
     getForDriver: null,
     getForDriverSuccess: ['payload'],
-    getProductsOrder: null,
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
     getRejectDeliveryReasons: null,
@@ -34,6 +33,7 @@ export const { Types, Creators } = createActions(
     incrementDeliveredStock: ['productId', 'quantity'],
     initChecklist: null,
     redirectSetSelectedClaimId: ['claimId'],
+    refreshAllData: null,
     resetChecklistPayload: ['resetType'],
     saveVehicleChecks: ['saveType'],
     setCustomerClaims: ['payload', 'stopId'],
@@ -44,7 +44,6 @@ export const { Types, Creators } = createActions(
     setCannedContent: ['payload'],
     setItemOutOfStock: ['id'],
     setMileage: ['mileage'],
-    setProductsOrder: ['payload'],
     setRegistration: ['reg'],
     setRejected: [
       'id',
@@ -284,8 +283,6 @@ export const getVehicleStockForDriverSuccess = (
   { deliveryDate, payload }
 ) =>
   produce(state, draft => {
-    const misplacedProducts = {};
-
     draft.loaderInfo = null;
     draft.itemCount = 0;
     draft.additionalItemCount = 0;
@@ -305,31 +302,16 @@ export const getVehicleStockForDriverSuccess = (
           productId: item.productId
         };
 
-        if (draft.productsOrder.includes(item.productId)) {
-          const productSortedIndex = draft.productsOrder.indexOf(
-            item.productId
-          );
-
-          if (draft.orderedStock[productSortedIndex]) {
-            draft.orderedStock[productSortedIndex].quantity += item.quantity;
-            if (route.isAdditionalStock) {
-              draft.orderedStock[productSortedIndex].additionalQuantity +=
-                item.quantity;
-            }
-          } else {
-            draft.orderedStock[productSortedIndex] = formattedProduct;
+        if (draft.orderedStock[item.productId]) {
+          draft.orderedStock[item.productId].quantity += item.quantity;
+          if (route.isAdditionalStock) {
+            draft.orderedStock[item.productId].additionalQuantity +=
+              item.quantity;
           }
         } else {
-          if (misplacedProducts[item.productId]) {
-            misplacedProducts[item.productId].quantity += item.quantity;
-            if (route.isAdditionalStock) {
-              misplacedProducts[item.productId].additionalQuantity +=
-                item.quantity;
-            }
-          } else {
-            misplacedProducts[item.productId] = formattedProduct;
-          }
+          draft.orderedStock[item.productId] = formattedProduct;
         }
+
         draft.itemCount += item.quantity;
         if (route.isAdditionalStock) {
           draft.additionalItemCount += item.quantity;
@@ -338,11 +320,6 @@ export const getVehicleStockForDriverSuccess = (
     }
     draft.orderedStock = draft.orderedStock.filter(product => product);
 
-    if (Object.keys(misplacedProducts).length > 0) {
-      for (const misplacedProductKey in misplacedProducts) {
-        draft.orderedStock.push(misplacedProducts[misplacedProductKey]);
-      }
-    }
     draft.processing = false;
   });
 
@@ -385,7 +362,7 @@ export const getForDriverSuccess = (state, { payload }) =>
         (address.postcodeOutward ? `, ${address.postcodeOutward}` : '') +
         (address.postcodeInward ? `${address.postcodeInward}` : '');
       const deliveryInstructions =
-        address?.deliveryInstructions?.length > 0
+        address?.deliveryInstructions?.replace(/\s/g, '').length > 0
           ? address.deliveryInstructions
           : null;
       draft.serverAddressIds.push(parseInt(address.addressId));
@@ -647,11 +624,6 @@ export const setRegistration = (state, { reg }) =>
 export const setRejected = (state, params) =>
   setDeliveredOrRejected(state, 'rejected', params);
 
-export const setProductsOrder = (state, { payload }) =>
-  produce(state, draft => {
-    draft.productsOrder = payload;
-  });
-
 export const setRejectDeliveryReasons = (state, { payload }) =>
   produce(state, draft => {
     draft.rejectReasons = payload;
@@ -759,7 +731,6 @@ export default createReducer(initialState, {
   [Types.GET_FOR_DRIVER]: getForDriver,
   [Types.GET_DRIVER_DATA_FAILURE]: setLoaderInfo.bind(null, null),
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
-  [Types.GET_PRODUCTS_ORDER]: setLoaderInfo.bind(null, 'productsOrder'),
   [Types.GET_REJECT_DELIVERY_REASONS]: setLoaderInfo.bind(
     null,
     'rejectReasons'
@@ -778,7 +749,6 @@ export default createReducer(initialState, {
   [Types.SET_EMPTY]: setEmpty,
   [Types.SET_ITEM_OUT_OF_STOCK]: setItemOutOfStock,
   [Types.SET_MILEAGE]: setMileage,
-  [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
   [Types.SET_REGISTRATION]: setRegistration,
   [Types.SET_REJECT_DELIVERY_REASONS]: setRejectDeliveryReasons,
   [Types.SET_REJECTED]: setRejected,

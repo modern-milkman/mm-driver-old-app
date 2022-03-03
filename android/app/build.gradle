@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
-apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
+apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
 
 import com.android.build.OutputFile
 
@@ -81,18 +80,23 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     bundleInRelease: true,
-    bundleInQatest: true,
+    bundleInQaTest: true,
     bundleInUat: true,
-    enableHermes: false,  // clean and rebuild if changing
+    enableHermes: (findProperty('expo.jsEngine') ?: "jsc") == "hermes",  // clean and rebuild if changing
+    cliPath: "../../node_modules/react-native/cli.js",
+    hermesCommand: "../../node_modules/hermes-engine/%OS-BIN%/hermesc",
+    composeSourceMapsPath: "node_mdoules/react-native/scripts/compose-source-maps.js",
+
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
 
 //react-native-config
+project.ext.defaultEnvFile = ".env.development"
 project.ext.envConfigFiles = [
     debug: ".env.development",
     release: ".env.production",
-    qatest: ".env.test",
+    qaTest: ".env.test",
     uat: ".env.uat"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -130,7 +134,7 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 /**
  * Whether to enable the Hermes VM.
  *
- * This should be set on project.ext.react and mirrored here.  If it is not set
+ * This should be set on project.ext.react and that value will be read here. If it is not set
  * on project.ext.react, JavaScript will not be compiled to Hermes Bytecode
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
@@ -151,7 +155,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode project.env.get("APP_VERSION_CODE")?.toInteger()
+        versionCode project.env.get("APP_VERSION_CODE").toInteger()
         versionName project.env.get("APP_VERSION_NAME")
         vectorDrawables.useSupportLibrary = true
         if (nativeArchitectures) {
@@ -176,28 +180,30 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        uat {
+        }
     }
     buildTypes {
         debug {
-            matchingFallbacks = ['qatest']
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+            matchingFallbacks = ['qaTest']
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
-        qatest {
+        qaTest {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
         uat {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
-            resValue "string", "places_api_key", "\"${project.env.get("GOOGLE_GEOCODING_ANDROID")}\""
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
     }
 
@@ -225,8 +231,6 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
-    addUnimodulesDependencies()
-
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }
@@ -241,9 +245,9 @@ dependencies {
     }
 
     if (enableHermes) {
-        def hermesPath = "../../node_modules/hermes-engine/android/";
-        debugImplementation files(hermesPath + "hermes-debug.aar")
-        releaseImplementation files(hermesPath + "hermes-release.aar")
+        debugImplementation files(new File(["node", "--print", "require.resolve('hermes-engine/package.json')"].execute(null, rootDir).text.trim(), "../android/hermes-debug.aar"))
+        releaseImplementation files(new File(["node", "--print", "require.resolve('hermes-engine/package.json')"].execute(null, rootDir).text.trim(), "../android/hermes-release.aar"))
+
     } else {
         implementation jscFlavor
     }
@@ -259,4 +263,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
+applyNativeModulesAppBuildGradle(project)

@@ -1,6 +1,5 @@
 import ActionSheetAndroid from './ActionSheetAndroid';
 import Button from './Button';
-import CustomBackHandler from './CustomBackHandler';
 import Fab from './Fab';
 import Growl from './Growl';
 import Icon from './Icon';
@@ -21,7 +20,6 @@ import TextInput from './TextInput';
 export {
   ActionSheetAndroid,
   Button,
-  CustomBackHandler,
   Fab,
   Growl,
   Icon,

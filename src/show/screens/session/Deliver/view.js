@@ -484,7 +484,9 @@ const Deliver = props => {
                   : optimizedStopOrders
               }
               hasSections={height > 700}
-              onLongPress={toggleOutOfStock}
+              onLongPress={
+                selectedStop?.proofOfDeliveryRequired ? mock : toggleOutOfStock
+              }
               onPress={toggleConfirmedItem}
             />
           </>

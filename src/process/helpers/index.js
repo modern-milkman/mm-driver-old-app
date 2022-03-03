@@ -51,7 +51,12 @@ const blacklists = {
   ],
   addToStackRoute: ['PermissionsMissing', 'UpgradeApp'],
   resetStackRoutes: ['CheckIn'],
-  transientReset: ['EmptiesCollected', 'Home', 'RegistrationMileage']
+  transientReset: [
+    'EmptiesCollected',
+    'Home',
+    'RegistrationMileage',
+    'CustomerIssueModal'
+  ]
 };
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
@@ -89,8 +94,8 @@ const deliveryStates = {
 const deliveredStatuses = ['completed', 'rejected'];
 
 const deliverProductsDisabled = ({ checklist, status }) =>
-  checklist.shiftStartVanChecks === false ||
-  checklist.loadedVan === false ||
+  checklist?.shiftStartVanChecks === false ||
+  checklist?.loadedVan === false ||
   [deliveryStates.DELC, deliveryStates.SEC, deliveryStates.SC].includes(status);
 
 const deviceFrame = () => {

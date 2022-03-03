@@ -1,6 +1,7 @@
 // DEVICE SAGAS BELOW
 // could be used for offline / online / set position
-import RNBootSplash from 'react-native-bootsplash';
+
+import * as SplashScreen from 'expo-splash-screen';
 import { delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Platform } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
@@ -47,8 +48,11 @@ export { watchUserLocation } from './extras/watchUserLocation';
 export function* ensureMandatoryPermissions({ routeName }) {
   const { dispatch } = store().store;
   const mandatoryPermissions = Platform.select({
-    android: [PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION],
-    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]
+    android: [
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      PERMISSIONS.ANDROID.CAMERA
+    ],
+    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.CAMERA]
   });
 
   const biometrics = yield select(biometricsSelector);
@@ -70,10 +74,8 @@ export function* ensureMandatoryPermissions({ routeName }) {
   requestMultiple(mandatoryPermissions)
     .then(statuses => {
       dispatch(DeviceCreators.updateProps({ permissions: statuses }));
-      const statusesArray = Platform.select({
-        android: [statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]],
-        ios: [statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE]]
-      });
+      const statusesArray = Object.values(statuses);
+
       if (
         statusesArray.includes(RESULTS.DENIED) ||
         statusesArray.includes(RESULTS.BLOCKED) ||
@@ -86,13 +88,13 @@ export function* ensureMandatoryPermissions({ routeName }) {
         }
         dispatch(DeviceCreators.watchUserLocation());
       }
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
+      InteractionManager.runAfterInteractions(async () => {
+        await SplashScreen.hideAsync();
       });
     })
     .catch(() => {
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
+      InteractionManager.runAfterInteractions(async () => {
+        await SplashScreen.hideAsync();
       });
     });
 }

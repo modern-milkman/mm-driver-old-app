@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
+import Analytics, { EVENTS } from 'Services/analytics';
 import React, { useState, useRef, useEffect } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 
@@ -84,13 +85,16 @@ const RegistrationMileage = ({
     for (const text of blocks.textBlocks) {
       let plateWithoutSpace = text.value.replace(/\s/g, '');
       if (typeof text.value === 'string' && UKregex.test(plateWithoutSpace)) {
+        let value = text.value;
         const plateRec = plateRecognition(text.value, plates);
         if (plateRec.length > 0) {
-          setNrPlateAndStop(plateRec);
+          value = plateRec;
           focusMileage();
-        } else {
-          setNrPlateAndStop(text.value);
         }
+        setNrPlateAndStop(value);
+        Analytics.trackEvent(EVENTS.TEXT_RECOGNITION_REGISTRATION, {
+          recognizedText: value
+        });
       }
     }
   };

@@ -21,6 +21,7 @@ export const { Types, Creators } = createActions(
     navigateBack: null,
     recoveringFromCrash: null,
     rehydrated: null,
+    rehydratedAndMounted: null,
     removeLastStackRoute: null,
     resetAndReload: null,
     resetStackRoute: ['routeName'],
@@ -35,6 +36,7 @@ const initialState = {
   lastRouteParams: null,
   mounted: false,
   processing: false,
+  rehydrated: false,
   stackRoute: ['Home'],
   userSessionPresent: false
 };
@@ -72,6 +74,11 @@ export const loginSuccess = (state = initialState) =>
 export const processingOn = (state = initialState) =>
   updateProps(state, { props: { processing: true } });
 
+export const rehydratedAndMounted = (state = initialState) =>
+  produce(state, draft => {
+    draft.rehydrated = true;
+  });
+
 export const removeLastStackRoute = (state = initialState) =>
   produce(state, draft => {
     draft.stackRoute.splice(-1, 1);
@@ -92,6 +99,7 @@ export default createReducer(initialState, {
   [Types.LOGIN_SUCCESS]: loginSuccess,
   [Types.REMOVE_LAST_STACK_ROUTE]: removeLastStackRoute,
   [Types.RESET_STACK_ROUTE]: resetStackRoute,
+  [Types.REHYDRATED_AND_MOUNTED]: rehydratedAndMounted,
   [Types.UPDATE_PROPS]: updateProps
 });
 
@@ -100,3 +108,4 @@ export const lastRoute = state =>
 export const lastRouteParams = state => state.application.lastRouteParams;
 export const mounted = state => state.application.mounted;
 export const userSessionPresent = state => state.application.userSessionPresent;
+export const rehydrated = state => state.application.rehydrated;

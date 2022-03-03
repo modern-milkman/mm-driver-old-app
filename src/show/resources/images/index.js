@@ -1,6 +1,6 @@
-import CarLogo from './CarLogo';
 import CarLogoFlatTire from './CarLogoFlatTire';
 import CustomIcon from './CustomIcon';
 import CurrentLocation from './CurrentLocation';
+import Logo from './Logo';
 
-export { CarLogo, CarLogoFlatTire, CustomIcon, CurrentLocation };
+export { CarLogoFlatTire, CustomIcon, CurrentLocation, Logo };

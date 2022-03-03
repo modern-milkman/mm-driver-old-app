@@ -1,13 +1,14 @@
+import Appcenter from 'appcenter';
 import Crashes from 'appcenter-crashes';
 import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
-import RNBootSplash from 'react-native-bootsplash';
 import { call, delay, put, select } from 'redux-saga/effects';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
 import store from 'Redux/store';
+import * as SplashScreen from 'expo-splash-screen';
 import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { defaultRoutes, isAppInstalled } from 'Helpers';
@@ -22,6 +23,7 @@ import {
 import {
   Types as DeviceTypes,
   biometrics as biometricsSelector,
+  country as countrySelector,
   device as deviceSelector,
   processors as processorsSelector
 } from 'Reducers/device';
@@ -42,7 +44,6 @@ const navigationAppList = Platform.select({
 // EXPORTED
 export const biometricDisable = function* () {
   const biometrics = yield select(biometricsSelector);
-
   EncryptedStorage.remove('userCredentials');
   yield put({
     type: DeviceTypes.UPDATE_PROPS,
@@ -100,7 +101,6 @@ export const init = function* () {
     }
   });
 
-  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
   if (Platform.OS === 'android') {
     yield put({
       type: Api.API_CALL,
@@ -137,8 +137,7 @@ export const login = function* ({ isBiometricLogin = false }) {
 };
 
 export const login_completed = function* () {
-  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
-
+  yield put({ type: DeliveryTypes.REFRESH_ALL_DATA });
   NavigationService.navigate({ routeName: defaultRoutes.session });
   Analytics.trackEvent(EVENTS.LOGIN_COMPLETED);
 };
@@ -165,8 +164,11 @@ export const login_error = function* ({ status, isBiometricLogin }) {
 };
 
 export const login_success = function* ({ payload, isBiometricLogin }) {
+  const country = yield select(countrySelector);
+
   yield call(Api.setToken, payload.jwtToken, payload.refreshToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
+  Appcenter.setUserId(`${payload.driverId}-${country}`);
 
   yield put({ type: UserTypes.GET_DRIVER, isBiometricLogin });
   Analytics.trackEvent(EVENTS.LOGIN_SUCCESSFUL);
@@ -239,6 +241,7 @@ export const rehydrated = function* () {
 export const rehydratedAndMounted = function* () {
   const lastRoute = yield select(lastRouteSelector);
   const user = yield select(userSelector);
+  const country = yield select(countrySelector);
   const user_session = yield select(userSessionPresentSelector);
   const { reloadingDevice } = yield select(processorsSelector);
 
@@ -257,6 +260,7 @@ export const rehydratedAndMounted = function* () {
   }
 
   if (user_session) {
+    Appcenter.setUserId(`${user.driverId}-${country}`);
     if (new Date(user.refreshExpiry) < new Date()) {
       yield call(verifyAutomatedLoginOrLogout);
     } else {
@@ -276,6 +280,8 @@ export const rehydratedAndMounted = function* () {
       yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
     }
   }
+
+  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
 };
 
 export const resetAndReload = function* () {
@@ -313,20 +319,20 @@ export const verifyAutomatedLoginOrLogout = function* () {
           ...credentials
         }
       });
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
+      InteractionManager.runAfterInteractions(async () => {
+        await SplashScreen.hideAsync();
       });
       yield call(biometricLogin);
     } else {
-      InteractionManager.runAfterInteractions(() => {
-        RNBootSplash.hide();
+      InteractionManager.runAfterInteractions(async () => {
+        await SplashScreen.hideAsync();
       });
     }
   } else {
     Analytics.trackEvent(EVENTS.AUTOMATED_LOG_OUT);
     yield call(logout);
-    InteractionManager.runAfterInteractions(() => {
-      RNBootSplash.hide();
+    InteractionManager.runAfterInteractions(async () => {
+      await SplashScreen.hideAsync();
     });
   }
 };

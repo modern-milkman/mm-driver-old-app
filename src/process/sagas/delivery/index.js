@@ -11,7 +11,11 @@ import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { base64ToHex, deliveryStates as DS, distance } from 'Helpers';
 import { Types as TransientTypes } from 'Reducers/transient';
-import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
+import {
+  rehydrated as rehydratedSelector,
+  lastRoute as lastRouteSelector,
+  userSessionPresent as userSessionPresentSelector
+} from 'Reducers/application';
 import {
   checklist as checklistSelector,
   completedStopsIds as completedStopsIdsSelector,
@@ -123,22 +127,21 @@ export const driverReply = function* ({
 };
 
 export const foregroundDeliveryActions = function* ({}) {
-  // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
-  // rejectReasons -> productsOrder -> returnTypes -> getForDriver -> getVehicleStockForDriver |
-  // cannedContent |
-  // bundleProducts |
-  const status = yield select(statusSelector);
-  const user_session = yield select(userSessionPresentSelector);
+  const rehydrated = yield select(rehydratedSelector);
+  if (rehydrated) {
+    const lastRoute = yield select(lastRouteSelector);
+    const user_session = yield select(userSessionPresentSelector);
 
-  yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
+    yield put({
+      type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
+      routeName: lastRoute
+    });
 
-  if (status === DS.NCI && user_session) {
-    yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
-    yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
-    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
-  }
-  if (user_session) {
-    yield put({ type: DeliveryTypes.INIT_CHECKLIST });
+    yield put({ type: DeliveryTypes.REFRESH_ALL_DATA });
+
+    if (user_session) {
+      yield put({ type: DeliveryTypes.INIT_CHECKLIST });
+    }
   }
 };
 
@@ -267,18 +270,6 @@ export const getForDriverSuccess = function* ({ payload }) {
   });
 };
 
-export const getProductsOrder = function* () {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.SET_PRODUCTS_ORDER },
-      fail: { type: DeliveryTypes.UPDATE_PROPS }
-    },
-    promise: Api.repositories.delivery.getProductsOrder(),
-    props: { processing: false, loaderInfo: null }
-  });
-};
-
 export const getRejectDeliveryReasons = function* () {
   yield put({
     type: Api.API_CALL,
@@ -303,7 +294,7 @@ export const getReturnTypes = function* () {
   });
 };
 
-export const getVehicleStockForDriverSuccess = function* ({ payload }) {
+export const getVehicleStockForDriverSuccess = function* () {
   const autoSelectStop = yield select(autoSelectStopSelector);
   const checklist = yield select(checklistSelector);
   const isOptimised = yield select(isOptimisedSelector);
@@ -322,8 +313,10 @@ export const getVehicleStockForDriverSuccess = function* ({ payload }) {
     });
   }
   for (const { productId: id, quantity } of orderedStock) {
+    Api.repositories.delivery.getProductImage(id);
     productId[id] = quantity;
   }
+
   Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, {
     productId
   });
@@ -331,6 +324,21 @@ export const getVehicleStockForDriverSuccess = function* ({ payload }) {
 
 export const redirectSetSelectedClaimId = function* () {
   NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
+};
+
+export const refreshAllData = function* () {
+  // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
+  // rejectDeliveryReasons -> returnTypes -> getForDriver -> getVehicleStockForDriver |
+  // cannedContent |
+  // bundleProducts |
+  const status = yield select(statusSelector);
+  const user_session = yield select(userSessionPresentSelector);
+
+  if (status === DS.NCI && user_session) {
+    yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
+    yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
+    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
+  }
 };
 
 export const saveVehicleChecks = function* () {
@@ -487,12 +495,6 @@ export const setItemOutOfStock = function* ({ id }) {
     promise: Api.repositories.delivery.patchItemOutOfStock(id)
   });
   Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, { id });
-};
-
-export const setProductsOrder = function* ({ payload }) {
-  for (const i of payload) {
-    Api.repositories.delivery.getProductImage(i);
-  }
 };
 
 export const setReturnTypes = function* () {

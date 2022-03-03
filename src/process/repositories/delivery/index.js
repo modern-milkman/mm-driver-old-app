@@ -37,9 +37,6 @@ export default {
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${id}`
     });
   },
-  getProductsOrder() {
-    return Api.get('/Product/GetProductOrder');
-  },
   getAllBundleProducts() {
     return Api.get('/Product/GetAllBundleProducts');
   },

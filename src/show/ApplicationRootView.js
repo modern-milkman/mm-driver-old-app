@@ -22,7 +22,6 @@ import {
 import {
   ActionSheetAndroid,
   Button,
-  CustomBackHandler,
   Growl,
   InAppBrowser,
   Text
@@ -104,7 +103,6 @@ class Root extends React.Component {
       />
       <Growl />
       {Platform.OS === 'android' && <ActionSheetAndroid />}
-      {Platform.OS === 'android' && <CustomBackHandler />}
       <InAppBrowser />
 
       {/* content that should go on top of the app, full view, no safe area bounds */}

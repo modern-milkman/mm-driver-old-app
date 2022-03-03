@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
+import Config from 'react-native-config';
 import React, { useEffect, useRef } from 'react';
 
 import { Fab } from 'Components';
 import { colors, defaults, sizes } from 'Theme';
+
 import { deliveryStates as DS } from 'Helpers';
 import { navigateInSheet } from 'Screens/session/Main/helpers';
 
@@ -184,7 +186,7 @@ const Fabs = props => {
           disabled={network.status !== 0}
         />
       )}
-      {status === DS.DEL && (
+      {(status === DS.DEL || Config.ENVIRONMENT !== 'production') && (
         <Fab
           type={'material-community'}
           iconName={'refresh'}
