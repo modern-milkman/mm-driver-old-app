@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { BackHandler } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { colors } from 'Theme';
 import { deliveryStates as DS } from 'Helpers';
 import NavigationService from 'Services/navigation';
@@ -68,6 +71,19 @@ const Main = props => {
     startDelivering,
     updateDeviceProps
   } = props;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
 
   return (
     <SafeAreaView top={false}>

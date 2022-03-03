@@ -101,7 +101,6 @@ export const init = function* () {
     }
   });
 
-  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
   if (Platform.OS === 'android') {
     yield put({
       type: Api.API_CALL,
@@ -281,6 +280,8 @@ export const rehydratedAndMounted = function* () {
       yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
     }
   }
+
+  yield put({ type: DeliveryTypes.FOREGROUND_DELIVERY_ACTIONS });
 };
 
 export const resetAndReload = function* () {

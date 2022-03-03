@@ -94,8 +94,8 @@ const deliveryStates = {
 const deliveredStatuses = ['completed', 'rejected'];
 
 const deliverProductsDisabled = ({ checklist, status }) =>
-  checklist.shiftStartVanChecks === false ||
-  checklist.loadedVan === false ||
+  checklist?.shiftStartVanChecks === false ||
+  checklist?.loadedVan === false ||
   [deliveryStates.DELC, deliveryStates.SEC, deliveryStates.SC].includes(status);
 
 const deviceFrame = () => {

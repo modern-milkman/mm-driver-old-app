@@ -2,8 +2,9 @@ import React from 'react';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { TouchableOpacity } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
+import { useFocusEffect } from '@react-navigation/native';
+import { BackHandler, TouchableOpacity } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
@@ -251,6 +252,23 @@ const CustomerIssueModal = props => {
   } = props;
 
   const { width, height } = deviceFrame();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        toggleModal('showClaimModal', false);
+        toggleModal('showReplyModal', false);
+        NavigationService.goBack();
+
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [toggleModal])
+  );
 
   let selectedClaimData;
   if (unacknowledgedList?.length > 0) {

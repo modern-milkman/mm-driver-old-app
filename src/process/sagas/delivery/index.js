@@ -12,6 +12,7 @@ import Analytics, { EVENTS } from 'Services/analytics';
 import { base64ToHex, deliveryStates as DS, distance } from 'Helpers';
 import { Types as TransientTypes } from 'Reducers/transient';
 import {
+  rehydrated as rehydratedSelector,
   lastRoute as lastRouteSelector,
   userSessionPresent as userSessionPresentSelector
 } from 'Reducers/application';
@@ -126,18 +127,21 @@ export const driverReply = function* ({
 };
 
 export const foregroundDeliveryActions = function* ({}) {
-  const lastRoute = yield select(lastRouteSelector);
-  const user_session = yield select(userSessionPresentSelector);
+  const rehydrated = yield select(rehydratedSelector);
+  if (rehydrated) {
+    const lastRoute = yield select(lastRouteSelector);
+    const user_session = yield select(userSessionPresentSelector);
 
-  yield put({
-    type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
-    routeName: lastRoute
-  });
+    yield put({
+      type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
+      routeName: lastRoute
+    });
 
-  yield put({ type: DeliveryTypes.REFRESH_ALL_DATA });
+    yield put({ type: DeliveryTypes.REFRESH_ALL_DATA });
 
-  if (user_session) {
-    yield put({ type: DeliveryTypes.INIT_CHECKLIST });
+    if (user_session) {
+      yield put({ type: DeliveryTypes.INIT_CHECKLIST });
+    }
   }
 };
 
