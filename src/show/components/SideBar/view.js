@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { gt as semverGt } from 'semver';
+import { coerce, gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 
 import I18n from 'Locales/I18n';
@@ -125,7 +125,10 @@ const SideBar = props => {
             appcenter &&
             appcenter?.short_version &&
             appcenter?.download_url &&
-            semverGt(appcenter?.short_version, Config.APP_VERSION_NAME) && (
+            semverGt(
+              appcenter?.short_version,
+              coerce(Config.APP_VERSION_NAME)
+            ) && (
               <ListItem
                 title={I18n.t('screens:upgradeApp.download', {
                   version: appcenter.short_version

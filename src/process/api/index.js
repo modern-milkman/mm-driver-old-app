@@ -1,6 +1,6 @@
 import axios from 'axios';
 import EM from 'es-event-emitter';
-import { gt as semverGt } from 'semver';
+import { coerce, gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -368,7 +368,7 @@ const Api = {
     if (headers) {
       if (
         headers['x-app-version'] &&
-        semverGt(headers['x-app-version'], Config.APP_VERSION_NAME)
+        semverGt(headers['x-app-version'], coerce(Config.APP_VERSION_NAME))
       ) {
         NavigationService.navigate({
           routeName: 'UpgradeApp',
