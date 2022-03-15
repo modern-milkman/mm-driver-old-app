@@ -22,6 +22,7 @@ export const colors = {
   inputDark: `rgb(${rgbColors.inputDark})`,
   neutral: `rgb(${rgbColors.neutral})`,
   primary: `rgb(${rgbColors.primary})`,
+  primaryBright: `rgb(${rgbColors.primaryBright})`,
   secondary: `rgb(${rgbColors.secondary})`,
   secondaryDark: `rgb(${rgbColors.secondaryDark})`,
   secondaryLight: `rgb(${rgbColors.secondaryLight})`,
