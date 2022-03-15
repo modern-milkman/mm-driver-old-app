@@ -7,6 +7,7 @@ const rgbColors = {
   inputDark: '54, 83, 105', //'#365369'
   neutral: '248, 249, 253', //#F8F9FD
   primary: '3, 122, 148', //'#B6DCE1'
+  primaryBright: '64, 169, 254', //#40A9FE
   secondary: '54, 83, 105', //'#365369'
   secondaryDark: '7, 5, 48', //'#070530'
   secondaryLight: '137, 134, 171', //'#8986AB'

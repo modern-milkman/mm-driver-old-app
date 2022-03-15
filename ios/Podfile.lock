@@ -138,9 +138,9 @@ PODS:
   - GoogleMaps/Base (5.1.0)
   - GoogleMaps/Maps (5.1.0):
     - GoogleMaps/Base
-  - GoogleMLKit/MLKitCore (2.6.0):
+  - GoogleMLKit/MLKitCore (2.5.0):
     - MLKitCommon (~> 5.0.0)
-  - GoogleMLKit/TextRecognition (2.6.0):
+  - GoogleMLKit/TextRecognition (2.5.0):
     - GoogleMLKit/MLKitCore
     - MLKitTextRecognition (~> 1.4.0-beta3)
   - GoogleToolboxForMac/DebugUtils (2.3.2):
@@ -867,7 +867,7 @@ SPEC CHECKSUMS:
   Google-Maps-iOS-Utils: 95d5ca4d2004314eff88c1819b969db6cac37ab6
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleMaps: 086ae1dab659eaa7339bdb30fc88e2f44e7c597c
-  GoogleMLKit: 755661c46990a85e42278015f26400286d98ad95
+  GoogleMLKit: 0d7f5aa2f8a2f2ea9d849a05abdbe80974b0ec83
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
