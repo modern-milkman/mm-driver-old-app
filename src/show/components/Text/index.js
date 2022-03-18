@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
 
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
 
 import Types from './Types';
 import style from './style';
@@ -56,6 +56,7 @@ Object.values(Types).forEach(type => {
 Text.propTypes = {
   align: PropTypes.string,
   color: PropTypes.any,
+  children: PropTypes.any,
   flex: PropTypes.number,
   lineHeight: PropTypes.number,
   numberOfLines: PropTypes.number,
@@ -65,7 +66,6 @@ Text.propTypes = {
 
 Text.defaultProps = {
   align: 'left',
-  color: colors.white,
   flex: null,
   lineHeight: null,
   type: Types.CAPTION,

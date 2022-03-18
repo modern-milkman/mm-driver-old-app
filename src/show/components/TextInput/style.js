@@ -1,6 +1,7 @@
+import { StyleSheet } from 'react-native';
 import { systemWeights } from 'react-native-typography';
 
-import { colors, defaults, sizes as themeSizes } from 'Theme';
+import { defaults, sizes as themeSizes } from 'Theme';
 
 export const sizes = {
   borderRadius: defaults.borderRadius,
@@ -12,24 +13,23 @@ export const sizes = {
   small: themeSizes.input.small
 };
 
-const style = {
-  inputBorderWrapper: {
-    flex: 1,
-    borderWidth: 2,
-    borderRadius: sizes.borderRadius
-  },
-  inputWrapper: {
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: sizes.borderRadius,
-    backgroundColor: colors.white
-  },
-  input: {
-    flex: 1,
-    fontSize: 18,
-    color: colors.secondary,
-    ...systemWeights.semibold
-  }
-};
-
-export default style;
+export default ({ colors }) =>
+  StyleSheet.create({
+    inputBorderWrapper: {
+      flex: 1,
+      borderWidth: 2,
+      borderRadius: sizes.borderRadius
+    },
+    inputWrapper: {
+      flex: 1,
+      borderWidth: 1,
+      borderRadius: sizes.borderRadius,
+      backgroundColor: colors.white
+    },
+    input: {
+      flex: 1,
+      fontSize: 18,
+      color: colors.inputSecondary,
+      ...systemWeights.semibold
+    }
+  });

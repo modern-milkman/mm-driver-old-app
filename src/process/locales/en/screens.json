@@ -192,6 +192,7 @@
       },
       "autoSelectStop": "Automatically select next stop",
       "biometricsDisabled": "Biometrics can only be setup on login screen",
+      "darkMode": "Dark Mode",
       "deliveriesRemaining": "Deliveries remaining",
       "deliveriesCountDown": "Toggle by tapping delivery bar in main screen",
       "foreground": "Large foreground",

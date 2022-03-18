@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { defaults } from 'Theme';
 import Text from 'Components/Text';
-import { RowView } from 'Containers';
-import { colors, defaults } from 'Theme';
+import { RowView, useTheme } from 'Containers';
 
-const ListHeader = (props) => {
+const ListHeader = props => {
   const { title } = props;
+  const { colors } = useTheme();
 
   return (
     <RowView
@@ -16,7 +17,7 @@ const ListHeader = (props) => {
       marginHorizontal={defaults.marginHorizontal}
       width={'auto'}
       height={Text.Label.height + defaults.marginVertical}>
-      <Text.Label color={colors.inputDark}>{title}</Text.Label>
+      <Text.Label color={colors.inputSecondary}>{title}</Text.Label>
     </RowView>
   );
 };

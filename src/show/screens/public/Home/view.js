@@ -4,12 +4,12 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import I18n from 'Locales/I18n';
 import { Logo } from 'Images';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
 import Vibration from 'Services/vibration';
 import actionSheet from 'Services/actionSheet';
 import EncryptedStorage from 'Services/encryptedStorage';
 import { Button, Icon, Label, Switch, Text } from 'Components';
-import { ColumnView, RowView, SafeAreaView } from 'Containers';
+import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
 import {
   appVersionString,
@@ -64,12 +64,13 @@ const openActionSheet = ({ setCountry }) => {
 const renderBiometrics = ({
   biometrics,
   biometricLogin,
+  colors,
   processing,
   disabledLogin
 }) => (
   <>
     <RowView marginVertical={defaults.marginVertical / 2}>
-      <Text.Label align={'center'} color={colors.inputDark}>
+      <Text.Label align={'center'} color={colors.inputSecondary}>
         {I18n.t('general:or')}
       </Text.Label>
     </RowView>
@@ -93,17 +94,17 @@ const renderBiometrics = ({
   </>
 );
 
-const renderCountrySelector = ({ country, setCountry }) => (
+const renderCountrySelector = ({ colors, country, setCountry }) => (
   <Pressable onPress={openActionSheet.bind(null, { setCountry })}>
     <RowView
       justifyContent={'space-between'}
       height={defaults.topNavigation.height}
       marginVertical={defaults.marginVertical / 2}>
-      <Text.List color={colors.inputDark}>
+      <Text.List color={colors.inputSecondary}>
         {I18n.t('general:country')}
       </Text.List>
       <Label
-        backgroundColor={colors.inputDark}
+        backgroundColor={colors.inputSecondary}
         text={I18n.t(`countries:${country}`)}
       />
     </RowView>
@@ -122,6 +123,7 @@ const renderLogo = hasSmallHeight => (
 );
 
 const renderRememberMe = ({
+  colors,
   rememberMe,
   updateDeviceProps,
   updateTransientProps
@@ -130,7 +132,7 @@ const renderRememberMe = ({
     justifyContent={'space-between'}
     width={'auto'}
     marginVertical={defaults.marginVertical}>
-    <Text.List color={colors.inputDark}>
+    <Text.List color={colors.inputSecondary}>
       {I18n.t('screens:home.rememberMe')}
     </Text.List>
     <Switch
@@ -188,6 +190,7 @@ const Home = props => {
     updateApplicationProps,
     updateTransientProps
   } = props;
+  const { colors } = useTheme();
 
   let hasSmallHeight =
     deviceFrameHeight - minimumKeyboardHeight < minimumRequiredHeight;
@@ -310,15 +313,17 @@ const Home = props => {
                 ? renderBiometrics({
                     biometrics,
                     biometricLogin,
+                    colors,
                     processing,
                     disabledLogin
                   })
                 : renderRememberMe({
+                    colors,
                     rememberMe,
                     updateDeviceProps,
                     updateTransientProps
                   })}
-              {renderCountrySelector({ country, setCountry })}
+              {renderCountrySelector({ colors, country, setCountry })}
             </>
           )}
 
@@ -341,7 +346,7 @@ const Home = props => {
                 disabled={!rememberMe || disabledLogin}
               />
               <RowView marginVertical={defaults.marginVertical / 2}>
-                <Text.Label align={'center'} color={colors.inputDark}>
+                <Text.Label align={'center'} color={colors.inputSecondary}>
                   {I18n.t('general:or')}
                 </Text.Label>
               </RowView>
@@ -349,7 +354,7 @@ const Home = props => {
                 title={I18n.t('screens:home.standard.login')}
                 onPress={setbioSandE.bind(null, !bioSandE)}
               />
-              {renderCountrySelector({ country, setCountry })}
+              {renderCountrySelector({ colors, country, setCountry })}
             </>
           )}
 
@@ -369,7 +374,7 @@ const Home = props => {
           alignItems={'flex-end'}
           height={Text.Caption.height + defaults.marginVertical / 4}
           marginVertical={defaults.marginVertical / 4}>
-          <Text.Caption textAlign={'center'} color={colors.secondary}>
+          <Text.Caption textAlign={'center'} color={colors.inputSecondary}>
             {appVersionString()}
           </Text.Caption>
         </RowView>

@@ -6,10 +6,10 @@ import React, { useEffect, useState } from 'react';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
-import { colors, defaults, sizes } from 'Theme';
+import { defaults, sizes } from 'Theme';
 import NavigationService from 'Services/navigation';
-import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import { deliveredStatuses, deviceFrame, mock, preopenPicker } from 'Helpers';
+import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
 import {
   Button,
   Image,
@@ -22,7 +22,7 @@ import {
   TextInput
 } from 'Components';
 
-import { renderImageTextModal } from 'Renders';
+import { ImageTextModal } from 'Renders';
 
 import style from './style';
 
@@ -97,6 +97,7 @@ const renderFallbackCustomerImage = width => (
 );
 
 const renderSkipModal = ({
+  colors,
   outOfStockIds,
   reasonMessage,
   rejectReasons,
@@ -213,6 +214,7 @@ const Deliver = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
 
+  const { colors } = useTheme();
   const {
     allItemsDone,
     confirmedItem,
@@ -313,6 +315,7 @@ const Deliver = props => {
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
         {modalType === 'skip' &&
           renderSkipModal({
+            colors,
             ...props,
             setModalImageSrc,
             setModalText,
@@ -320,7 +323,7 @@ const Deliver = props => {
             width
           })}
         {modalType === 'image' &&
-          renderImageTextModal({
+          ImageTextModal({
             imageSource: {
               uri: modalImageSrc
             },
@@ -369,7 +372,7 @@ const Deliver = props => {
           marginHorizontal={defaults.marginHorizontal}
           marginVertical={defaults.marginVertical / 2}>
           <Text.Heading
-            color={colors.secondary}
+            color={colors.inputSecondary}
             numberOfLines={2}
             testID={'deliver-title'}>
             {selectedStop.title}
@@ -382,7 +385,7 @@ const Deliver = props => {
                 width={sizes.list.image}
                 containerWidth={sizes.list.image}
                 icon={'coolbox'}
-                iconColor={colors.secondary}
+                iconColor={colors.inputSecondary}
                 disabled
               />
             </RowView>
@@ -399,13 +402,13 @@ const Deliver = props => {
           marginHorizontal={defaults.marginHorizontal}
           marginVertical={defaults.marginVertical / 2}
           justifyContent={'space-between'}>
-          <Text.Caption color={colors.secondary} testID={'deliver-userId'}>
+          <Text.Caption color={colors.inputSecondary} testID={'deliver-userId'}>
             {I18n.t('screens:deliver.userId', {
               userId: selectedStop?.userId
             })}
           </Text.Caption>
           <Text.Caption
-            color={colors.secondary}
+            color={colors.inputSecondary}
             testID={'deliver-routeDescription'}>
             {I18n.t('screens:deliver.routeDescription', {
               routeDescription
@@ -459,7 +462,7 @@ const Deliver = props => {
                     width={'auto'}
                     marginLeft={defaults.marginHorizontal / 2}>
                     <Text.Input
-                      color={colors.secondary}
+                      color={colors.inputSecondary}
                       numberOfLines={4}
                       testID={'deliver-deliveryInstructions'}>
                       {selectedStop.deliveryInstructions}

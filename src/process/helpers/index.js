@@ -11,7 +11,6 @@ import {
   StatusBar
 } from 'react-native';
 
-import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import actionSheet from 'Services/actionSheet';
@@ -60,21 +59,6 @@ const blacklists = {
 };
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
-
-const customerSatisfactionColor = satisfactionStatus => {
-  switch (satisfactionStatus) {
-    case 1:
-      return colors.success;
-    case 2:
-      return colors.primaryBright;
-    case 3:
-      return colors.warning;
-    case 4:
-      return colors.error;
-    default:
-      return colors.primary;
-  }
-};
 
 const defaultRoutes = {
   public: 'Home',
@@ -385,7 +369,6 @@ export {
   base64ToHex,
   blacklists,
   capitalize,
-  customerSatisfactionColor,
   deliverProductsDisabled,
   deliveredStatuses,
   deliveryStates,

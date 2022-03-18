@@ -5,10 +5,10 @@ import Config from 'react-native-config';
 
 import I18n from 'Locales/I18n';
 import { formatDate, mock } from 'Helpers';
-import { renderImageTextModal } from 'Renders';
-import { defaults, colors, sizes } from 'Theme';
+import { ImageTextModal } from 'Renders';
+import { defaults, sizes } from 'Theme';
 import NavigationService from 'Services/navigation';
-import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
+import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
 import { Button, Label, List, ListItem, NavBar, Separator } from 'Components';
 
 const showReplyModal = toggleModal => {
@@ -37,6 +37,8 @@ const CustomerIssueDetails = props => {
   const [replyDetailsModal, setReplyDetailsModal] = useState({});
   const [replyDetailsModalVisible, setReplyDetailsModalVisible] =
     useState(false);
+
+  const { colors } = useTheme();
 
   const {
     claimItem,
@@ -146,7 +148,7 @@ const CustomerIssueDetails = props => {
         visible={replyDetailsModalVisible}
         transparent={true}
         animationType={'fade'}>
-        {renderImageTextModal({
+        {ImageTextModal({
           imageSource: {
             uri: replyDetailsModal.image
           },

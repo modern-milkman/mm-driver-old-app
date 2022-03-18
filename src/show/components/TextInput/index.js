@@ -6,15 +6,21 @@ import { Platform, TextInput as RNTextInput, View } from 'react-native';
 
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
+import { shadows } from 'Theme';
 import Text from 'Components/Text';
 import Icon from 'Components/Icon';
 import { CustomIcon } from 'Images';
-import { ColumnView, RowView } from 'Containers';
-import { alphaColor, colors, shadows } from 'Theme';
+import { ColumnView, RowView, useTheme, useThemedStyles } from 'Containers';
 
-import style, { sizes } from './style';
+import unthemedStyle, { sizes } from './style';
 
-const borderColor = (error = false, focused = false, alpha = false) => {
+const borderColor = (
+  alphaColor,
+  colors,
+  error = false,
+  focused = false,
+  alpha = false
+) => {
   if (alpha) {
     return alphaColor(error ? 'error' : focused ? 'primary' : 'input', 0.15);
   } else {
@@ -66,6 +72,9 @@ const TextInput = forwardRef((props, ref) => {
   );
   const [showPassword, setShowPassword] = useState(false);
 
+  const { alphaColor, colors } = useTheme();
+  const style = useThemedStyles(unthemedStyle);
+
   const height = inputHeight(size, disableErrors, multiline, multilineHeight);
   const onFocusChangedInternalEvent = focus => {
     setFocus(focus);
@@ -82,7 +91,7 @@ const TextInput = forwardRef((props, ref) => {
           style.inputBorderWrapper,
           {
             ...(shadow && shadows.hintLower),
-            borderColor: borderColor(error, focused, true)
+            borderColor: borderColor(alphaColor, colors, error, focused, true)
           }
         ]}>
         <InsetShadow
@@ -90,12 +99,12 @@ const TextInput = forwardRef((props, ref) => {
             ...style.inputWrapper,
             minHeight: sizes[size],
             borderRadius: sizes.borderRadius,
-            borderColor: borderColor(error, focused)
+            borderColor: borderColor(alphaColor, colors, error, focused)
           }}
           {...Platform.select({
             android: { elevation: 2 },
             ios: {
-              shadowColor: alphaColor('secondaryDark', focused ? 0.25 : 0.1),
+              shadowColor: alphaColor('inputSecondary', focused ? 0.25 : 0.1),
               shadowOffset: 3,
               shadowOpacity: 1,
               shadowRadius: 3
@@ -139,7 +148,7 @@ const TextInput = forwardRef((props, ref) => {
               (secureTextEntry ? (
                 <Icon
                   name={'eye'}
-                  color={colors.secondary}
+                  color={colors.inputSecondary}
                   onPress={setShowPassword.bind(null, !showPassword)}
                   size={24}
                 />

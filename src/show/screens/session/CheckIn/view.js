@@ -4,9 +4,9 @@ import { View } from 'react-native';
 
 import Api from 'Api';
 import I18n from 'Locales/I18n';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
 import NavigationService from 'Services/navigation';
-import { ColumnView, RowView, SafeAreaView } from 'Containers';
+import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import { deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 
@@ -20,7 +20,7 @@ const openRateMyRound = ({ updateChecklistProps, updateInAppBrowserProps }) => {
   });
 };
 
-const renderButtonTitle = ({ checklist, status }) => {
+const renderButtonTitle = ({ status }) => {
   switch (status) {
     default:
       return I18n.t('screens:checkIn.go');
@@ -31,7 +31,7 @@ const renderButtonTitle = ({ checklist, status }) => {
   }
 };
 
-const renderHelperMessage = ({ checklist, status }) => {
+const renderHelperMessage = ({ checklist, colors, status }) => {
   const helperIcon = 'information-outline';
   let helperMessage = I18n.t('screens:checkIn.helperMessages.checkLoadVan');
   switch (status) {
@@ -61,10 +61,10 @@ const renderHelperMessage = ({ checklist, status }) => {
         size={15}
         containerSize={15}
         name={helperIcon}
-        color={colors.secondary}
+        color={colors.inputSecondary}
         style={{ marginRight: defaults.marginHorizontal / 3 }}
       />
-      <Text.Caption align={'center'} color={colors.secondary}>
+      <Text.Caption align={'center'} color={colors.inputSecondary}>
         {helperMessage}
       </Text.Caption>
     </RowView>
@@ -89,6 +89,7 @@ const navigationSideEffect = ({
 };
 
 const CheckIn = props => {
+  const { colors } = useTheme();
   const {
     autoSelectStop,
     checklist,
@@ -216,7 +217,7 @@ const CheckIn = props => {
           disabled={disabled}
           enforceLayout
           suffixBottom={suffixBottom}
-          suffixColor={colors.secondary}
+          suffixColor={colors.inputSecondary}
           onPress={onPress}
           customIcon={customIcon}
           rightIcon={rightIcon}
@@ -249,7 +250,7 @@ const CheckIn = props => {
               width={'auto'}
               marginHorizontal={defaults.marginHorizontal}>
               <Button.Primary
-                title={renderButtonTitle({ checklist, status })}
+                title={renderButtonTitle({ status })}
                 disabled={
                   ([DS.NCI, DS.LV, DS.SSC].includes(status) &&
                     (checklist.loadedVan === false ||
@@ -266,7 +267,7 @@ const CheckIn = props => {
                       : null
                 })}
               />
-              {renderHelperMessage({ checklist, status })}
+              {renderHelperMessage({ checklist, colors, status })}
             </ColumnView>
           </View>
         </ColumnView>

@@ -28,9 +28,11 @@ import {
 
 const Stack = createStackNavigator();
 
-const Navigator = ({ userSessionPresent }) => {
+const Navigator = ({ theme, userSessionPresent }) => {
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      ref={navigationRef}
+      theme={{ colors: { background: theme.colors.background } }}>
       <Stack.Navigator initialRouteName={!userSessionPresent ? 'Home' : 'Main'}>
         {!userSessionPresent ? (
           <Stack.Group
@@ -119,6 +121,7 @@ const ModalNavigator = () => (
 );
 
 Navigator.propTypes = {
+  theme: PropTypes.object,
   userSessionPresent: PropTypes.bool
 };
 

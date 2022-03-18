@@ -3,14 +3,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
-import { colors } from 'Theme';
-import { RowView } from 'Containers';
+import { RowView, useTheme } from 'Containers';
 import Separator from 'Components/Separator';
 
 import style from './style';
 
 const ProgressBar = props => {
   const { height, progress, testID, total } = props;
+  const { colors } = useTheme();
 
   return (
     <RowView flex={1} testID={testID}>

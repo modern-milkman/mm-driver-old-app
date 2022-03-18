@@ -11,6 +11,7 @@ export const alert = function* ({
   const dropdownAlertWithTypeInstance = yield select(
     dropdownAlertInstanceSelector
   );
+
   const device = yield select(deviceSelector);
   if (dropdownAlertWithTypeInstance && (device.growl || type === 'error')) {
     dropdownAlertWithTypeInstance(type, title, message, payload, interval);

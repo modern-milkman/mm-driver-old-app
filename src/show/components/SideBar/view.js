@@ -5,15 +5,14 @@ import Config from 'react-native-config';
 
 import I18n from 'Locales/I18n';
 import Text from 'Components/Text';
-import { defaults, colors } from 'Theme';
+import { defaults } from 'Theme';
 import { ListItem } from 'Components/List';
 import Separator from 'Components/Separator';
 import NavigationService from 'Services/navigation';
-import { ColumnView, SafeAreaView, RowView } from 'Containers';
+import { ColumnView, SafeAreaView, RowView, useTheme } from 'Containers';
 import { navigateInSheet } from 'Screens/session/Main/helpers';
 import {
   appVersionString,
-  deviceFrame,
   deliveryStates as DS,
   triggerDriverUpdate
 } from 'Helpers';
@@ -28,6 +27,7 @@ const navigateAndClose = (closeDrawer, callback) => {
 };
 
 const SideBar = props => {
+  const { colors } = useTheme();
   const {
     appcenter,
     availableNavApps,
@@ -39,8 +39,6 @@ const SideBar = props => {
     status,
     updateInAppBrowserProps
   } = props;
-  const { width } = deviceFrame();
-  const sidebarWidth = 0.8 * width;
 
   return (
     <SafeAreaView style={styles.flex1}>
@@ -50,14 +48,14 @@ const SideBar = props => {
             alignItems={'flex-start'}
             paddingHorizontal={defaults.marginHorizontal}
             marginVertical={defaults.marginVertical}>
-            <Text.List color={colors.secondary}>{`${name}`}</Text.List>
-            <Text.Caption color={colors.secondary}>
+            <Text.List color={colors.inputSecondary}>{`${name}`}</Text.List>
+            <Text.Caption color={colors.inputSecondary}>
               {I18n.t('screens:panel.driverID', { driverId })}
             </Text.Caption>
           </ColumnView>
           <Separator
             marginHorizontal={defaults.marginHorizontal}
-            width={sidebarWidth - 2 * defaults.marginHorizontal}
+            width={'100%'}
           />
           <ColumnView alignItems={'stretch'}>
             <ListItem
@@ -145,7 +143,9 @@ const SideBar = props => {
           <RowView
             justifyContent={'flex-start'}
             marginHorizontal={defaults.marginHorizontal}>
-            <Text.List color={colors.inputDark}>{appVersionString()}</Text.List>
+            <Text.List color={colors.inputSecondary}>
+              {appVersionString()}
+            </Text.List>
           </RowView>
         </ColumnView>
       </ColumnView>

@@ -3,13 +3,14 @@ import { Platform } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { Logo } from 'Images';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
 import { ListItem, Text } from 'Components';
-import { ColumnView, FullView } from 'Containers';
+import { ColumnView, FullView, useTheme } from 'Containers';
 
 const logoSize = 100;
 
 const PermissionsMissing = () => {
+  const { colors } = useTheme();
   return (
     <FullView bgColor={colors.primary}>
       <ColumnView flex={1} justifyContent={'center'}>
@@ -43,7 +44,7 @@ const PermissionsMissing = () => {
           )} ${I18n.t(
             `screens:permissionsMissing.instructions.location.${Platform.OS}`
           )}`}
-          descriptionColor={colors.secondaryDark}
+          descriptionColor={colors.inputDarkDark}
           disabled
           title={I18n.t('general:location')}
           titleColor={colors.white}
@@ -54,7 +55,7 @@ const PermissionsMissing = () => {
           description={`${I18n.t('ios:NSCameraUsageDescription')} ${I18n.t(
             `screens:permissionsMissing.instructions.camera.${Platform.OS}`
           )}`}
-          descriptionColor={colors.secondaryDark}
+          descriptionColor={colors.inputDarkDark}
           disabled
           title={I18n.t('general:camera')}
           titleColor={colors.white}

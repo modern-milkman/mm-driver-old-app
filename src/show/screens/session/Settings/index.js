@@ -17,6 +17,7 @@ export default connect(
     computeShortDirections: state.device.computeShortDirections,
     countDown: state.device.countDown,
     currentLocation: state.device.position,
+    darkMode: state.device.darkMode,
     foregroundSize: state.device.foregroundSize,
     isOptimised: state.delivery?.stockWithData?.isOptimised || false,
     mapMarkerSize: state.device.mapMarkerSize,

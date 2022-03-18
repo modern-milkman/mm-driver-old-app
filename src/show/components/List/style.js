@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { defaults, sizes } from 'Theme';
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   image: {
     height: sizes.list.image,
     maxHeight: sizes.list.image,
@@ -20,5 +20,3 @@ const styles = StyleSheet.create({
     width: '100%'
   }
 });
-
-export default styles;

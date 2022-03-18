@@ -4,28 +4,43 @@ import React, { useEffect, useState } from 'react';
 import { Marker as RNMMarker } from 'react-native-maps';
 
 import { Text } from 'Components';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
+import { useTheme, useThemedStyles } from 'Containers';
 
-import {
-  mock,
-  customerSatisfactionColor as getCustomerSatisfactionColor
-} from 'Helpers';
+import { mock } from 'Helpers';
 
-import style from './style';
+import unthemedStyle from './style';
+
+const getCustomerSatisfactionColor = (colors, satisfactionStatus) => {
+  switch (satisfactionStatus) {
+    case 1:
+      return colors.success;
+    case 2:
+      return colors.primaryBright;
+    case 3:
+      return colors.warning;
+    case 4:
+      return colors.error;
+    default:
+      return colors.primary;
+  }
+};
 
 const markerOnPress = ({ updateProps, updateSelectedStop, id }) => {
   updateSelectedStop(id);
 };
 
-const renderSequence = ({ id, selectedStopId, sequence }) => {
+const renderSequence = ({ colors, id, selectedStopId, sequence }) => {
   return sequence && selectedStopId !== id ? (
     <View style={{ transform: [{ rotateZ: '45deg' }] }}>
-      <Text.Input color={colors.secondary}>{sequence}</Text.Input>
+      <Text.Input color={colors.inputSecondary}>{sequence}</Text.Input>
     </View>
   ) : null;
 };
 
 const Marker = props => {
+  const { colors } = useTheme();
+  const style = useThemedStyles(unthemedStyle);
   const {
     completedStopsIds,
     disabled,
@@ -42,11 +57,13 @@ const Marker = props => {
   const completed = completedStopsIds.includes(id);
 
   const customerSatisfactionColor = getCustomerSatisfactionColor(
+    colors,
     selectedStop?.satisfactionStatus
   );
+
   const mapMarkerBackgroundColor =
     selectedStopId === id
-      ? colors.secondary
+      ? colors.inputSecondary
       : completed
       ? colors.input
       : customerSatisfactionColor;
@@ -141,7 +158,7 @@ const Marker = props => {
               ]}
             />
           )}
-          {renderSequence({ id, selectedStopId, sequence })}
+          {renderSequence({ colors, id, selectedStopId, sequence })}
         </View>
         {selectedStopId === id && (
           <View

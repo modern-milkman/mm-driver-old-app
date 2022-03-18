@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
+import { defaults, sizes } from 'Theme';
 import Vibration from 'Services/vibration';
-import { colors, defaults, sizes } from 'Theme';
 import { deliverProductsDisabled } from 'Helpers';
 import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
-import { ColumnView, RowView, SafeAreaView } from 'Containers';
+import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import {
   Button,
   ListHeader,
@@ -58,10 +58,10 @@ const performLogout = logout => {
   logout();
 };
 
-const toggleDeviceProp = (updateDeviceProps, prop, value) => {
+const toggleProp = (updateProps, prop, value) => {
   const updateProp = {};
   updateProp[prop] = value;
-  updateDeviceProps({ ...updateProp });
+  updateProps({ ...updateProp });
 };
 
 const triggerLogout = ({ logout, network }) => {
@@ -109,6 +109,7 @@ const onOptimization = (
 };
 
 const Settings = props => {
+  const { colors } = useTheme();
   const {
     autoOpenStopDetails,
     autoSelectStop,
@@ -120,6 +121,7 @@ const Settings = props => {
     computeShortDirections,
     continueDelivering,
     countDown,
+    darkMode,
     foregroundSize,
     isOptimised,
     logout,
@@ -163,18 +165,18 @@ const Settings = props => {
             width={'auto'}>
             <RowView justifyContent={'space-between'}>
               <ColumnView flex={1} alignItems={'flex-start'}>
-                <Text.List color={colors.secondary}>
+                <Text.List color={colors.inputSecondary}>
                   {I18n.t('screens:settings.sliders.optimisedStopsToShow')}
                 </Text.List>
                 {!isOptimised && (
-                  <Text.Caption color={colors.secondary}>
+                  <Text.Caption color={colors.inputSecondary}>
                     {I18n.t(
                       'screens:settings.switches.optimisedRoutingUnavailable'
                     )}
                   </Text.Caption>
                 )}
               </ColumnView>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {optimisedStopsToShow}
               </Text.List>
             </RowView>
@@ -199,11 +201,11 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.showAllPendingStops.title')}
               </Text.List>
 
-              <Text.Caption color={colors.secondary}>
+              <Text.Caption color={colors.inputSecondary}>
                 {I18n.t(
                   isOptimised
                     ? 'screens:settings.switches.showAllPendingStops.description'
@@ -214,7 +216,7 @@ const Settings = props => {
 
             <Switch
               value={showAllPendingStops}
-              onValueChange={toggleDeviceProp.bind(
+              onValueChange={toggleProp.bind(
                 null,
                 updateDeviceProps,
                 'showAllPendingStops'
@@ -231,11 +233,11 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.autoSelectStop')}
               </Text.List>
               {!isOptimised && (
-                <Text.Caption color={colors.secondary}>
+                <Text.Caption color={colors.inputSecondary}>
                   {I18n.t(
                     'screens:settings.switches.optimisedRoutingUnavailable'
                   )}
@@ -263,10 +265,10 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.autoOpenStopDetails.title')}
               </Text.List>
-              <Text.Caption color={colors.secondary}>
+              <Text.Caption color={colors.inputSecondary}>
                 {I18n.t(
                   'screens:settings.switches.autoOpenStopDetails.description'
                 )}
@@ -275,7 +277,7 @@ const Settings = props => {
 
             <Switch
               value={autoOpenStopDetails}
-              onValueChange={toggleDeviceProp.bind(
+              onValueChange={toggleProp.bind(
                 null,
                 updateDeviceProps,
                 'autoOpenStopDetails'
@@ -291,13 +293,13 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.showDoneDeliveries')}
               </Text.List>
             </ColumnView>
             <Switch
               value={showDoneDeliveries}
-              onValueChange={toggleDeviceProp.bind(
+              onValueChange={toggleProp.bind(
                 null,
                 updateDeviceProps,
                 'showDoneDeliveries'
@@ -313,13 +315,13 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.computeDirections')}
               </Text.List>
             </ColumnView>
             <Switch
               value={computeDirections}
-              onValueChange={toggleDeviceProp.bind(
+              onValueChange={toggleProp.bind(
                 null,
                 updateDeviceProps,
                 'computeDirections'
@@ -337,13 +339,13 @@ const Settings = props => {
                 marginVertical={defaults.marginVertical / 2}
                 width={'auto'}>
                 <ColumnView flex={1} alignItems={'flex-start'}>
-                  <Text.List color={colors.secondary}>
+                  <Text.List color={colors.inputSecondary}>
                     {I18n.t('screens:settings.switches.computeShortDirections')}
                   </Text.List>
                 </ColumnView>
                 <Switch
                   value={computeShortDirections}
-                  onValueChange={toggleDeviceProp.bind(
+                  onValueChange={toggleProp.bind(
                     null,
                     updateDeviceProps,
                     'computeShortDirections'
@@ -363,13 +365,13 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.showMapControlsOnMovement')}
               </Text.List>
             </ColumnView>
             <Switch
               value={showMapControlsOnMovement}
-              onValueChange={toggleDeviceProp.bind(
+              onValueChange={toggleProp.bind(
                 null,
                 updateDeviceProps,
                 'showMapControlsOnMovement'
@@ -385,7 +387,7 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.foreground')}
               </Text.List>
             </ColumnView>
@@ -407,17 +409,17 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.deliveriesRemaining')}
               </Text.List>
-              <Text.Caption color={colors.secondary}>
+              <Text.Caption color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.deliveriesCountDown')}
               </Text.Caption>
             </ColumnView>
             <Switch
               disabled={true}
               value={countDown}
-              onValueChange={toggleDeviceProp.bind(
+              onValueChange={toggleProp.bind(
                 null,
                 updateDeviceProps,
                 'countDown'
@@ -433,10 +435,10 @@ const Settings = props => {
             marginHorizontal={defaults.marginHorizontal}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.sliders.mapMarkers')}
               </Text.List>
-              <Text.Caption color={colors.secondary}>
+              <Text.Caption color={colors.inputSecondary}>
                 {I18n.t('screens:settings.sliders.drag')}
               </Text.Caption>
             </ColumnView>
@@ -464,10 +466,10 @@ const Settings = props => {
             marginHorizontal={defaults.marginHorizontal}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.sliders.buttons')}
               </Text.List>
-              <Text.Caption color={colors.secondary}>
+              <Text.Caption color={colors.inputSecondary}>
                 {I18n.t('screens:settings.sliders.drag')}
               </Text.Caption>
             </ColumnView>
@@ -493,13 +495,34 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.vibrations')}
               </Text.List>
             </ColumnView>
             <Switch
               value={vibrate}
               onValueChange={onVibrateChange.bind(null, updateDeviceProps)}
+            />
+          </RowView>
+
+          <Separator />
+          <RowView
+            marginHorizontal={defaults.marginHorizontal}
+            justifyContent={'space-between'}
+            marginVertical={defaults.marginVertical / 2}
+            width={'auto'}>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.inputSecondary}>
+                {I18n.t('screens:settings.switches.darkMode')}
+              </Text.List>
+            </ColumnView>
+            <Switch
+              value={darkMode}
+              onValueChange={toggleProp.bind(
+                null,
+                updateDeviceProps,
+                'darkMode'
+              )}
             />
           </RowView>
 
@@ -517,10 +540,10 @@ const Settings = props => {
                 marginVertical={defaults.marginVertical / 2}
                 width={'auto'}>
                 <ColumnView flex={1} alignItems={'flex-start'}>
-                  <Text.List color={colors.secondary}>
+                  <Text.List color={colors.inputSecondary}>
                     {I18n.t('screens:home.biometrics.login')}
                   </Text.List>
-                  <Text.Caption color={colors.secondary}>
+                  <Text.Caption color={colors.inputSecondary}>
                     {I18n.t('screens:settings.switches.biometricsDisabled')}
                   </Text.Caption>
                 </ColumnView>
@@ -563,6 +586,7 @@ Settings.propTypes = {
   continueDelivering: PropTypes.func,
   countDown: PropTypes.bool,
   currentLocation: PropTypes.object,
+  darkMode: PropTypes.bool,
   foregroundSize: PropTypes.string,
   isOptimised: PropTypes.bool,
   logout: PropTypes.func,

@@ -4,9 +4,9 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
-import { defaults, colors } from 'Theme';
+import { defaults } from 'Theme';
 import NavigationService from 'Services/navigation';
-import { ColumnView, SafeAreaView, RowView } from 'Containers';
+import { ColumnView, SafeAreaView, RowView, useTheme } from 'Containers';
 import { Button, ListHeader, NavBar, Text, TextInput } from 'Components';
 
 import { renderProgressBar, triggerDriverConfirmations } from '../shared';
@@ -24,10 +24,7 @@ const nextStep = ({ payload, saveVehicleChecks, showMustComplyWithTerms }) => {
   }
 };
 
-const updateEmpty = (
-  { description, id, setEmpty, updateTransientProps },
-  value
-) => {
+const updateEmpty = ({ id, setEmpty, updateTransientProps }, value) => {
   const update = {};
   update[`empty${id}`] = value;
   updateTransientProps(update);
@@ -61,7 +58,6 @@ const renderEmpty = (
         errorMessage={empties[`empty${id}ErrorMessage`]}
         autoCapitalize={'none'}
         onChangeText={updateEmpty.bind(null, {
-          description,
           id,
           setEmpty,
           updateTransientProps
@@ -105,6 +101,7 @@ const EmptiesCollected = ({
   updateTransientProps,
   ...empties
 }) => {
+  const { colors } = useTheme();
   const { emptiesCollected } = payload;
   let disabled = false;
   const emptiesArray = Object.values(emptiesCollected);
@@ -141,7 +138,7 @@ const EmptiesCollected = ({
         <NavBar
           leftIcon={'chevron-left'}
           leftIconAction={NavigationService.goBack}
-          {...(processing && { leftIconColor: colors.inputDark })}
+          {...(processing && { leftIconColor: colors.inputSecondary })}
           title={I18n.t('screens:emptiesCollected.title')}
           rightText={payload.shiftStart && !processing ? mainActionTitle : null}
           rightAction={
@@ -153,7 +150,7 @@ const EmptiesCollected = ({
                   showMustComplyWithTerms
                 })
           }
-          {...(disabled && { rightColor: colors.inputDark })}
+          {...(disabled && { rightColor: colors.inputSecondary })}
           testID="empties-navbar"
         />
         {renderProgressBar(2, payload)}
@@ -163,7 +160,7 @@ const EmptiesCollected = ({
             width={'auto'}
             marginTop={defaults.marginVertical / 2}
             marginHorizontal={defaults.marginHorizontal}>
-            <Text.Caption align={'left'} flex={1} color={colors.secondary}>
+            <Text.Caption align={'left'} flex={1} color={colors.inputSecondary}>
               {I18n.t(
                 `screens:emptiesCollected.subHeading.${
                   payload.shiftStart ? 'start' : 'end'

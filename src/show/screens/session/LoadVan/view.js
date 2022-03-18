@@ -5,10 +5,9 @@ import Config from 'react-native-config';
 
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
-import { colors } from 'Theme';
 import { List, NavBar } from 'Components';
 import NavigationService from 'Services/navigation';
-import { ColumnView, SafeAreaView } from 'Containers';
+import { ColumnView, SafeAreaView, useTheme } from 'Containers';
 
 const doneLoadedVan = (updateChecklistProps, updateDriverActivity) => {
   updateChecklistProps({ loadedVan: true });
@@ -16,6 +15,7 @@ const doneLoadedVan = (updateChecklistProps, updateDriverActivity) => {
 };
 
 const LoadVan = props => {
+  const { colors } = useTheme();
   const {
     additionalItemCount,
     deliveredStock,

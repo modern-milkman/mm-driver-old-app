@@ -40,6 +40,7 @@ const initialState = {
   countDown: false,
   country: Config.DEFAULT_COUNTRY,
   crashCount: 0,
+  darkMode: true,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info,
 

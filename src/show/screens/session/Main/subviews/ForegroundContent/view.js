@@ -5,8 +5,8 @@ import { ActivityIndicator, Pressable, View } from 'react-native';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import translationStrings from 'Locales/en';
-import { ColumnView, RowView } from 'Containers';
-import { colors, defaults, shadows, sizes } from 'Theme';
+import { ColumnView, RowView, useTheme } from 'Containers';
+import { defaults, shadows, sizes } from 'Theme';
 import { Button, Icon, Text, ProgressBar } from 'Components';
 import { deliveryStates as DS, deviceFrame, ukTimeNow } from 'Helpers';
 
@@ -101,6 +101,7 @@ const promptDeliverLater = ({ deliverLater, selectedStopId }) => {
 };
 
 const ForegroundContent = props => {
+  const { colors } = useTheme();
   const {
     buttonAccessibility,
     checklist,
@@ -210,7 +211,7 @@ const ForegroundContent = props => {
           : MIN_FOREGROUND_HEIGHT
       }
       backgroundColor={
-        foregroundSize === 'large' ? colors.white : colors.primary
+        foregroundSize === 'large' ? colors.neutral : colors.primary
       }
       width={'100%'}>
       {processing ? (
@@ -222,7 +223,7 @@ const ForegroundContent = props => {
           </ColumnView>
           {foregroundSize === 'large' && loaderInfo && (
             <>
-              <Text.Caption color={colors.secondaryLight} align={'center'}>
+              <Text.Caption color={colors.inputSecondary} align={'center'}>
                 {I18n.t(`screens:main.foreground.loaderText.${loaderInfo}`)}
               </Text.Caption>
 
@@ -281,7 +282,7 @@ const ForegroundContent = props => {
                     <Text.Heading
                       color={
                         foregroundSize === 'large'
-                          ? colors.secondary
+                          ? colors.inputSecondary
                           : colors.white
                       }
                       align={'center'}
@@ -295,7 +296,7 @@ const ForegroundContent = props => {
                 <RowView
                   width={'auto'}
                   paddingVertical={defaults.marginVertical / 2}>
-                  <Text.Caption color={colors.inputDark} align={'center'}>
+                  <Text.Caption color={colors.inputSecondary} align={'center'}>
                     {subHeadingText(foregroundState, props)}
                   </Text.Caption>
                 </RowView>

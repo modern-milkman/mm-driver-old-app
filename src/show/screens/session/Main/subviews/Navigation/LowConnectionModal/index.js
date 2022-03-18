@@ -1,17 +1,18 @@
 import React from 'react';
 
 import I18n from 'Locales/I18n';
-import { ColumnView, RowView } from 'Containers';
-import NavigationService from 'Services/navigation';
 import { deviceFrame } from 'Helpers';
-import { alphaColor, colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
+import NavigationService from 'Services/navigation';
 import { Button, Text, Icon, Separator } from 'Components';
+import { ColumnView, RowView, useTheme } from 'Containers';
 
 const { height } = deviceFrame();
 
 const LowConnectionModal = () => {
+  const { alphaColor, colors } = useTheme();
   return (
-    <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
+    <ColumnView flex={1} backgroundColor={alphaColor('input', 0.85)}>
       <ColumnView
         backgroundColor={'transparent'}
         marginHorizontal={defaults.marginHorizontal}
@@ -35,7 +36,7 @@ const LowConnectionModal = () => {
                 color={colors.warning}
                 disabled
               />
-              <Text.Heading color={colors.secondary}>
+              <Text.Heading color={colors.inputSecondary}>
                 {I18n.t('screens:main.lowConnectionModal.title')}
               </Text.Heading>
             </RowView>
@@ -49,7 +50,7 @@ const LowConnectionModal = () => {
             maxHeight={height * 0.4}
             paddingVertical={defaults.marginVertical / 2}
             paddingHorizontal={defaults.marginVertical / 2}>
-            <Text.Caption color={colors.secondary}>
+            <Text.Caption color={colors.inputSecondary}>
               {I18n.t('screens:main.lowConnectionModal.description')}
             </Text.Caption>
 
@@ -58,19 +59,19 @@ const LowConnectionModal = () => {
               paddingTop={defaults.marginVertical}
               paddingBottom={defaults.marginVertical / 4}
               alignItems={'flex-start'}>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:main.lowConnectionModal.whatToExpect')}
               </Text.List>
             </RowView>
 
-            <Text.Caption color={colors.secondary} textAlign={'left'}>
+            <Text.Caption color={colors.inputSecondary} textAlign={'left'}>
               {I18n.t('screens:main.lowConnectionModal.images')}
             </Text.Caption>
 
-            <Text.Caption color={colors.secondary}>
+            <Text.Caption color={colors.inputSecondary}>
               {I18n.t('screens:main.lowConnectionModal.directions')}
             </Text.Caption>
-            <Text.Caption color={colors.secondary}>
+            <Text.Caption color={colors.inputSecondary}>
               {I18n.t('screens:main.lowConnectionModal.pins')}
             </Text.Caption>
           </ColumnView>
