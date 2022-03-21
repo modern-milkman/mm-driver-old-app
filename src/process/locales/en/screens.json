@@ -1,8 +1,8 @@
 {
   "appCrash": {
-    "title": "Driver has a problem",
+    "crashCode": "Tap to copy Error CODE: {{crashCode}}",
     "description": "Unfortunately Driver app has encountered an error that couldn't be handled. The error was reported to the developers and will be addressed in an app update. If the issue persists, contact your supervisor.",
-    "crashCode": "Tap to copy Error CODE: {{crashCode}}"
+    "title": "Driver has a problem"
   },
   "checkIn": {
     "checkIn": "Check In",
@@ -26,11 +26,11 @@
   },
   "checklist": {
     "driverPrompts": {
-      "title": "Consent required",
       "messages": {
         "fit": "I confirm I am in a fit and proper state to fulfil my shift",
         "license": "I confirm my license is currently in date and complies with company requirements"
-      }
+      },
+      "title": "Consent required"
     },
     "title": "Checklist"
   },
@@ -39,6 +39,20 @@
       "instructions": "Customer instructions"
     },
     "customerIssue": {
+      "details": {
+        "dateTime": "{{date}} at {{time}}",
+        "driverReplies": "Driver Replies",
+        "noReplies": "No replies"
+      },
+      "list": {
+        "clientIdIssues": "Client ID #{{cId}} Issues",
+        "dateOrTime": "{{value}}",
+        "empty": "No claims",
+        "new": "New",
+        "nrReplies": "{{nr}} Replies",
+        "previous": "Previous",
+        "title": "Customer issue #{{issueNr}}"
+      },
       "modal": {
         "customerComment": "Comment: ",
         "customerIssue": "Customer Issue",
@@ -50,20 +64,6 @@
         "reply": "Reply",
         "send": "Send",
         "title": "Reply to customer issue"
-      },
-      "list": {
-        "clientIdIssues": "Client ID #{{cId}} Issues",
-        "dateOrTime": "{{value}}",
-        "empty": "No claims",
-        "nrReplies": "{{nr}} Replies",
-        "new": "New",
-        "previous": "Previous",
-        "title": "Customer issue #{{issueNr}}"
-      },
-      "details": {
-        "noReplies": "No replies",
-        "dateTime": "{{date}} at {{time}}",
-        "driverReplies": "Driver Replies"
       }
     },
     "deliveryItems": "Delivery items",
@@ -80,34 +80,34 @@
     "viewClaims": "View claims ({{claimNo}})"
   },
   "emptiesCollected": {
-    "title": "Empties Collected",
     "subHeading": {
-      "start": "Dropping any empties tonight? Type 0 if not.",
-      "end": "Dropping any empties this morning? Type 0 if you want to drop them when starting your next round!"
-    }
+      "end": "Dropping any empties this morning? Type 0 if you want to drop them when starting your next round!",
+      "start": "Dropping any empties tonight? Type 0 if not."
+    },
+    "title": "Empties Collected"
   },
   "home": {
+    "biometrics": {
+      "login": "Login with biometrics",
+      "setup": "Setup biometrics"
+    },
     "driver": "Driver",
     "rememberMe": "Remember me",
-    "biometrics": {
-      "setup": "Setup biometrics",
-      "login": "Login with biometrics"
-    },
     "standard": {
       "login": "Login with email / password"
     }
   },
   "loadVan": {
-    "title": "items",
-    "done": "Done"
+    "done": "Done",
+    "title": "items"
   },
   "main": {
-    "activeDeliveryFor": {
-      "singular": "View {{itemCount}} item",
-      "plural": "View {{itemCount}} items"
-    },
     "actions": {
       "openIn": "Open in {{appName}}"
+    },
+    "activeDeliveryFor": {
+      "plural": "View {{itemCount}} items",
+      "singular": "View {{itemCount}} item"
     },
     "autoSelectStop": "Select next optimised stop",
     "descriptions": {
@@ -118,19 +118,19 @@
     },
     "foreground": {
       "loaderText": {
-        "rejectReasons": "Loading Reject Reasons",
-        "returnTypes": "Loading Return Types",
         "getForDriver": "Loading Route Data",
-        "getVehicleStockForDriver": "Loading Stock Info"
+        "getVehicleStockForDriver": "Loading Stock Info",
+        "rejectReasons": "Loading Reject Reasons",
+        "returnTypes": "Loading Return Types"
       }
     },
     "lowConnectionModal": {
-      "title": "Slow connection to server",
       "description": "You might experience lags while the app connects to the server, which means you might see that loading icons stay on longer than usual. There’s no need to log out and the longest you have to wait is 30 seconds.",
-      "whatToExpect": "What else to expect:",
-      "images": "Images not loading",
       "directions": "Directions not showing, even if enabled",
-      "pins": "Pins being marked as completed with lag"
+      "images": "Images not loading",
+      "pins": "Pins being marked as completed with lag",
+      "title": "Slow connection to server",
+      "whatToExpect": "What else to expect:"
     },
     "navigation": {
       "deliveries": "Deliveries",
@@ -153,26 +153,30 @@
     "suggestions": "Suggest a change"
   },
   "permissionsMissing": {
-    "title": "Permissions missing",
     "description": "Some of the mandatory permissions Driver app needs to work properly haven't been granted. Please see the details below.",
     "instructions": {
       "camera": {
-        "ios": "Enable from device's Settings > Privacy > Camera screen.",
-        "android": "Enable from device's Settings > Privacy > Permision manager > Camera > Driver screen."
+        "android": "Enable from device's Settings > Privacy > Permision manager > Camera > Driver screen.",
+        "ios": "Enable from device's Settings > Privacy > Camera screen."
       },
       "location": {
-        "ios": "Enable from device's Settings > Privacy > Location Services screen.",
-        "android": "Enable from device's Settings > Location > App permision > Driver screen."
+        "android": "Enable from device's Settings > Location > App permision > Driver screen.",
+        "ios": "Enable from device's Settings > Privacy > Location Services screen."
       }
-    }
+    },
+    "title": "Permissions missing"
   },
   "registrationMileage": {
-    "title": "Registration & Mileage",
-    "registration": "Registration",
+    "mileage": "Mileage",
     "or": "OR",
-    "mileage": "Mileage"
+    "registration": "Registration",
+    "title": "Registration & Mileage"
   },
   "settings": {
+    "misc": {
+      "language": "Language",
+      "languageRestart": "App will restart if language is changed"
+    },
     "sections": {
       "authentication": "Authentication",
       "device": "Device",
@@ -187,31 +191,31 @@
     },
     "switches": {
       "autoOpenStopDetails": {
-        "title": "Automatically open delivery",
-        "description": "Opens delivery details screen when you get to the location"
+        "description": "Opens delivery details screen when you get to the location",
+        "title": "Automatically open delivery"
       },
       "autoSelectStop": "Automatically select next stop",
       "biometricsDisabled": "Biometrics can only be setup on login screen",
-      "darkMode": "Dark Mode",
-      "deliveriesRemaining": "Deliveries remaining",
-      "deliveriesCountDown": "Toggle by tapping delivery bar in main screen",
-      "foreground": "Large foreground",
-      "optimisedRoutingUnavailable": "Unavailable for current route at this time",
       "computeDirections": "Compute delivery directions",
       "computeShortDirections": "Compute delivery directions within 500m",
+      "darkMode": "Dark Mode",
+      "deliveriesCountDown": "Toggle by tapping delivery bar in main screen",
+      "deliveriesRemaining": "Deliveries remaining",
+      "foreground": "Large foreground",
+      "optimisedRoutingUnavailable": "Unavailable for current route at this time",
+      "showAllPendingStops": {
+        "description": "Showing large number of stops might affect app's performance",
+        "title": "Show all pending stops"
+      },
       "showDoneDeliveries": "Show done deliveries",
       "showMapControlsOnMovement": "Show controls on manual movement",
-      "showAllPendingStops": {
-        "title": "Show all pending stops",
-        "description": "Showing large number of stops might affect app's performance"
-      },
       "vibrations": "Vibrations"
     }
   },
   "upgradeApp": {
     "description": "Unfortunately this version of Modern Milkman Driver is no longer supported. To continue using Modern Milkman Driver, please update at your earliest convenience.",
-    "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}",
     "download": "Download Driver {{version}}",
+    "minimumVersion": "The minimum required Modern Milkman Driver version is {{minimumVersion}}",
     "other": "or try another version"
   }
 }

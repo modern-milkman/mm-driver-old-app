@@ -1,0 +1,103 @@
+{
+  "appInstalled": {
+    "message": "Assurez-vous que l’application {{type}} est installée",
+    "noAppMessage": "Plase assurez-vous d’avoir au moins un de Google Maps, Apple Maps ou Waze installé",
+    "title": "Application manquante"
+  },
+  "cannotOpenUrl": {
+    "message": "Un problème est survenu lors de l'ouverture du fichier.",
+    "title": "Lien échoué"
+  },
+  "cannotUpgrade": {
+    "message": "Un problème est survenu lors du téléchargement de l’application. Veuillez réessayer ou sélectionner manuellement une version à l’aide du lien ci-dessous.",
+    "title": "Échec du téléchargement"
+  },
+  "clipboard": {
+    "description": "Collez simplement l’application de votre choix et envoyez le code de plantage à votre superviseur. Merci!",
+    "title": "Code copié dans le presse-papiers"
+  },
+  "errors": {
+    "api": {
+      "driverData": {
+        "message": "Essayez à nouveau d’actualiser les données d’itinéraire. Si le problème persiste, communiquez avec votre superviseur.",
+        "refreshMessage": "Appuyez sur ce message pour recharger les données d’itinéraire. Si le problème persiste, communiquez avec votre superviseur.",
+        "title": "Erreur lors de l’obtention des données d’itinéraire"
+      }
+    },
+    "shareOfflineData": {
+      "failed": {
+        "message": "Touchez Pour réessayer",
+        "title": "Des erreurs ont empêché la synchronisation des données !"
+      }
+    },
+    "syncOffline": {
+      "failed": {
+        "message": "Votre travail peut être perdu à moins qu’il ne soit poussé vers le serveur ou envoyé au support. Appuyez pour réessayer",
+        "title": "Erreur lors de la synchronisation des données"
+      }
+    },
+    "vanChecks": {
+      "mustComplyWithTerms": {
+        "message": "Vous devez vous conformer à toutes les conditions pour commencer votre quart de travail",
+        "title": "Exigences manquantes"
+      }
+    }
+  },
+  "success": {
+    "delivery": {
+      "proofOfDeliveryRequired": {
+        "message": "Veuillez prendre votre téléphone avec vous et prendre une photo une fois que vous avez livré les produits.",
+        "title": "Preuve de livraison requise!"
+      }
+    },
+    "main": {
+      "deliverLater": {
+        "confirmation": "Les gouttes non optimisées et « Livrer plus tard » seront toujours visibles sur la carte. Sélectionnez-les manuellement lorsque vous êtes à proximité.",
+        "description": "L'épingle sera supprimée de la séquence",
+        "title": "Livrer plus tard ?"
+      }
+    },
+    "network": {
+      "online": {
+        "message": "Tout travail que vous avez effectué hors ligne est désormais synchronisé avec le serveur.",
+        "title": "Retour en ligne!"
+      }
+    },
+    "settings": {
+      "biometrics": {
+        "message": "En désactivant l'authentification biométrique, vous devrez vous connecter avec votre e-mail et votre mot de passe à l'avenir.",
+        "title": "Désactiver la biométrie ?"
+      },
+      "logout": {
+        "message": "Il n'est pas nécessaire de se déconnecter de l'application Driver. ",
+        "title": "Pourquoi se déconnecter ?"
+      },
+      "offline": {
+        "directions": {
+          "message": "Vous avez activé les instructions de livraison. La fonctionnalité s'activera automatiquement chaque fois que vous reviendrez en ligne.",
+          "title": "Instructions de livraison indisponibles !"
+        },
+        "logout": {
+          "message": "La déconnexion hors ligne effacera toutes les données d'itinéraire sur l'appareil et vous ne pourrez plus continuer à travailler jusqu'à ce que l'appareil soit de nouveau en ligne.",
+          "title": "Procéder avec prudence"
+        }
+      }
+    },
+    "shareOfflineData": {
+      "completed": {
+        "message": "Votre travail a été enregistré avec succès. Bonne nuit!",
+        "title": "Données poussées à l'appui !"
+      },
+      "start": {
+        "message": "Une partie de votre travail n'a pas été enregistrée avec succès. S'il vous plaît, attendez...",
+        "title": "Synchronisation des données ayant échoué pour prendre en charge !"
+      }
+    },
+    "syncOffline": {
+      "completed": {
+        "message": "Toutes les données de travail ont été transmises avec succès au serveur. Appuyez pour ignorer.",
+        "title": "Poussé avec succès toutes vos données hors ligne !"
+      }
+    }
+  }
+}

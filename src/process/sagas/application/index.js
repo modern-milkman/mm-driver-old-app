@@ -8,10 +8,11 @@ import { InteractionManager, Keyboard, Platform } from 'react-native';
 
 import Api from 'Api';
 import store from 'Redux/store';
+import I18n from 'Locales/I18n';
 import * as SplashScreen from 'expo-splash-screen';
 import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
-import { defaultRoutes, isAppInstalled } from 'Helpers';
+import { defaultRoutes, isAppInstalled, systemLanguage } from 'Helpers';
 import EncryptedStorage from 'Services/encryptedStorage';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
 import { user as userSelector, Types as UserTypes } from 'Reducers/user';
@@ -235,6 +236,15 @@ export const rehydrated = function* () {
     Analytics.trackEvent(EVENTS.DEVICE_ID_UNINITIALIZED_GET_UNIQUE, {
       deviceUniqueId
     });
+  }
+
+  if (device.language === 'uninitialized') {
+    yield put({
+      type: DeviceTypes.SET_LANGUAGE,
+      language: systemLanguage()
+    });
+  } else {
+    I18n.changeLanguage(device.language);
   }
 };
 

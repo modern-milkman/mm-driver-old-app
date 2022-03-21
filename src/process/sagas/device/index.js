@@ -128,6 +128,10 @@ export function* setCountry() {
   Api.configureCountryBaseURL();
 }
 
+export function* setLanguage({ language }) {
+  I18n.changeLanguage(language);
+}
+
 export function* setLocation({ position }) {
   const autoOpenStopDetails = yield select(autoOpenStopDetailsSelector);
   const lastRoute = yield select(lastRouteSelector);

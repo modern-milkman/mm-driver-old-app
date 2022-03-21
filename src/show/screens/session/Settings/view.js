@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Pressable } from 'react-native';
+import RNRestart from 'react-native-restart';
 
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import { defaults, sizes } from 'Theme';
 import Vibration from 'Services/vibration';
-import { deliverProductsDisabled } from 'Helpers';
 import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import {
   Button,
+  Label,
   ListHeader,
   NavBar,
   Text,
@@ -18,6 +20,16 @@ import {
   Slider,
   Switch
 } from 'Components';
+import {
+  actionSheetSwitch,
+  availableLanguages,
+  deliverProductsDisabled
+} from 'Helpers';
+
+const changeLanguageAndRestartApp = ({ setLanguage }, language) => {
+  setLanguage(language);
+  NavigationService.goBack({ afterCallback: RNRestart.Restart });
+};
 
 const disableBiometrics = biometricDisable => {
   Alert({
@@ -124,10 +136,12 @@ const Settings = props => {
     darkMode,
     foregroundSize,
     isOptimised,
+    language,
     logout,
     mapMarkerSize,
     optimisedStopsToShow,
     network,
+    setLanguage,
     showDoneDeliveries,
     showMapControlsOnMovement,
     showAllPendingStops,
@@ -465,6 +479,39 @@ const Settings = props => {
             marginVertical={defaults.marginVertical / 2}
             marginHorizontal={defaults.marginHorizontal}
             width={'auto'}>
+            <Pressable
+              onPress={actionSheetSwitch.bind(null, {
+                label: 'languages',
+                list: availableLanguages,
+                method: changeLanguageAndRestartApp.bind(null, { setLanguage })
+              })}>
+              <RowView
+                justifyContent={'space-between'}
+                height={defaults.topNavigation.height}
+                marginVertical={defaults.marginVertical / 2}>
+                <ColumnView flex={1} alignItems={'flex-start'}>
+                  <Text.List color={colors.secondary}>
+                    {I18n.t('screens:settings.misc.language')}
+                  </Text.List>
+                  <Text.Caption color={colors.secondary}>
+                    {I18n.t('screens:settings.misc.languageRestart')}
+                  </Text.Caption>
+                </ColumnView>
+                <Label
+                  backgroundColor={colors.inputDark}
+                  text={I18n.t(`languages:${language}`)}
+                />
+              </RowView>
+            </Pressable>
+          </ColumnView>
+
+          <Separator marginLeft={defaults.marginHorizontal} />
+
+          <ColumnView
+            alignItems={'flex-start'}
+            marginVertical={defaults.marginVertical / 2}
+            marginHorizontal={defaults.marginHorizontal}
+            width={'auto'}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.sliders.buttons')}
@@ -589,10 +636,12 @@ Settings.propTypes = {
   darkMode: PropTypes.bool,
   foregroundSize: PropTypes.string,
   isOptimised: PropTypes.bool,
+  language: PropTypes.string,
   logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
   optimisedStopsToShow: PropTypes.number,
   network: PropTypes.object,
+  setLanguage: PropTypes.func,
   showDoneDeliveries: PropTypes.bool,
   showMapControlsOnMovement: PropTypes.bool,
   showAllPendingStops: PropTypes.bool,

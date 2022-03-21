@@ -2,16 +2,16 @@ import PropTypes from 'prop-types';
 import { Animated, Keyboard, Pressable } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 
-import I18n from 'Locales/I18n';
 import { Logo } from 'Images';
+import I18n from 'Locales/I18n';
 import { defaults } from 'Theme';
 import Vibration from 'Services/vibration';
-import actionSheet from 'Services/actionSheet';
 import EncryptedStorage from 'Services/encryptedStorage';
 import { Button, Icon, Label, Switch, Text } from 'Components';
 import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
 import {
+  actionSheetSwitch,
   appVersionString,
   availableCountries,
   jiggleAnimation,
@@ -53,14 +53,6 @@ const focusEmail = () => {
   }, 0);
 };
 
-const openActionSheet = ({ setCountry }) => {
-  const options = [];
-  for (const country of availableCountries) {
-    options[I18n.t(`countries:${country}`)] = setCountry.bind(null, country);
-  }
-  actionSheet(options);
-};
-
 const renderBiometrics = ({
   biometrics,
   biometricLogin,
@@ -95,7 +87,12 @@ const renderBiometrics = ({
 );
 
 const renderCountrySelector = ({ colors, country, setCountry }) => (
-  <Pressable onPress={openActionSheet.bind(null, { setCountry })}>
+  <Pressable
+    onPress={actionSheetSwitch.bind(null, {
+      label: 'countries',
+      list: availableCountries,
+      method: setCountry
+    })}>
     <RowView
       justifyContent={'space-between'}
       height={defaults.topNavigation.height}

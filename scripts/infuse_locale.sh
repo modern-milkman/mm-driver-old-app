@@ -20,7 +20,7 @@ printf -v var "%s, " "${namespaces[@]}"
 var="${var%, }"
 echo "export default { $var };" >> $CUR_FOLDER/en/index.js
 
-#cp $CUR_FOLDER/en/index.js $CUR_FOLDER/{lng}/index.js
+cp $CUR_FOLDER/en/index.js $CUR_FOLDER/fr/index.js
 
 echo "Infusing locize translations from src/process/locales/__/ios to strings files";
 CUR_IOS_STRINGS_FOLDER=./ios
@@ -28,3 +28,7 @@ CUR_IOS_STRINGS_FOLDER=./ios
 cp $CUR_FOLDER/en/ios.json $CUR_IOS_STRINGS_FOLDER/en.lproj/InfoPlist.strings
 sed -i .bak 's/{//g; s/}//g; s/:/=/g; s/,//g; /^$/d; s/$/;/;' $CUR_IOS_STRINGS_FOLDER/en.lproj/InfoPlist.strings
 rm -rf $CUR_IOS_STRINGS_FOLDER/en.lproj/InfoPlist.strings.bak
+
+cp $CUR_FOLDER/fr/ios.json $CUR_IOS_STRINGS_FOLDER/fr.lproj/InfoPlist.strings
+sed -i .bak 's/{//g; s/}//g; s/:/=/g; s/,//g; /^$/d; s/$/;/;' $CUR_IOS_STRINGS_FOLDER/fr.lproj/InfoPlist.strings
+rm -rf $CUR_IOS_STRINGS_FOLDER/fr.lproj/InfoPlist.strings.bak
