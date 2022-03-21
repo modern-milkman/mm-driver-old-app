@@ -812,6 +812,8 @@ export const serverAddressIds = state => state.delivery?.serverAddressIds;
 
 export const status = state => state.delivery?.status;
 
+export const stock = state => state.delivery?.stock;
+
 export const stops = state => state.delivery?.stops;
 
 export const stopCount = state =>
