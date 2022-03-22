@@ -15,7 +15,9 @@ const ColumnRowView = ({
   animated,
   animatedStyle,
   backgroundColor,
+  borderColor,
   borderRadius,
+  borderWidth,
   children,
   flex,
   flexDirection,
@@ -49,7 +51,9 @@ const ColumnRowView = ({
 
   const composeScrollableStyles = {
     alignItems: alignItems,
+    borderColor: borderColor,
     borderRadius: borderRadius,
+    borderWidth: borderWidth,
     justifyContent: justifyContent,
     flex: flex,
     flexDirection: flexDirection,
@@ -99,7 +103,9 @@ ColumnRowView.propTypes = {
   animated: PropTypes.bool,
   animatedStyle: PropTypes.any,
   backgroundColor: PropTypes.string,
+  borderColor: PropTypes.string,
   borderRadius: PropTypes.number,
+  borderWidth: PropTypes.number,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -135,7 +141,9 @@ ColumnRowView.defaultProps = {
   alignItems: 'center',
   animated: false,
   animatedStyle: null,
+  borderColor: undefined,
   borderRadius: 0,
+  borderWidth: 0,
   children: null,
   flex: 0,
   flexDirection: 'column',

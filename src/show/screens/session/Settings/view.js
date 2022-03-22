@@ -498,7 +498,7 @@ const Settings = props => {
                   </Text.Caption>
                 </ColumnView>
                 <Label
-                  backgroundColor={colors.inputDark}
+                  backgroundColor={colors.inputSecondary}
                   text={I18n.t(`languages:${language}`)}
                 />
               </RowView>

@@ -118,7 +118,9 @@ const renderSkipModal = ({
       alignItems={'flex-start'}
       backgroundColor={colors.neutral}
       overflow={'hidden'}
-      borderRadius={defaults.borderRadius}>
+      borderRadius={defaults.borderRadius}
+      borderWidth={1}
+      borderColor={colors.input}>
       <ColumnView paddingHorizontal={defaults.marginHorizontal}>
         <Picker
           items={rejectReasons}

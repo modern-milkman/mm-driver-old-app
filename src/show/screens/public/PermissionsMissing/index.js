@@ -44,7 +44,7 @@ const PermissionsMissing = () => {
           )} ${I18n.t(
             `screens:permissionsMissing.instructions.location.${Platform.OS}`
           )}`}
-          descriptionColor={colors.inputDarkDark}
+          descriptionColor={colors.inputSecondary}
           disabled
           title={I18n.t('general:location')}
           titleColor={colors.white}
@@ -55,7 +55,7 @@ const PermissionsMissing = () => {
           description={`${I18n.t('ios:NSCameraUsageDescription')} ${I18n.t(
             `screens:permissionsMissing.instructions.camera.${Platform.OS}`
           )}`}
-          descriptionColor={colors.inputDarkDark}
+          descriptionColor={colors.inputSecondary}
           disabled
           title={I18n.t('general:camera')}
           titleColor={colors.white}

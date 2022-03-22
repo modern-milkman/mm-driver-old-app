@@ -17,7 +17,7 @@ export default ({ colors }) =>
     },
     markerShadow: {
       position: 'absolute',
-      backgroundColor: colors.inputDarkDark,
+      backgroundColor: colors.inputSecondary,
       opacity: 0.3,
       transform: [{ rotateX: '55deg' }]
     }
