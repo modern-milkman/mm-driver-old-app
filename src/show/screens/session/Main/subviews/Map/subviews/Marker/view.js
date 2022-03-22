@@ -43,6 +43,7 @@ const Marker = props => {
   const style = useThemedStyles(unthemedStyle);
   const {
     completedStopsIds,
+    darkMode,
     disabled,
     id,
     mapMarkerSize,
@@ -68,6 +69,7 @@ const Marker = props => {
       ? colors.input
       : customerSatisfactionColor;
 
+  const [previousDarkMode, setPreviousDarkMode] = useState(darkMode);
   const [previousMarkerSize, setPreviousMarkerSize] = useState(mapMarkerSize);
   const [previousSequence, setPreviousSequence] = useState(sequence);
   const [tracksViewChanges, setTracksViewChanges] = useState(
@@ -78,9 +80,13 @@ const Marker = props => {
     setTracksViewChanges(
       selectedStopId === id ||
         previousStopId === id ||
+        previousDarkMode !== darkMode ||
         previousMarkerSize !== mapMarkerSize ||
         previousSequence !== sequence
     );
+    if (previousDarkMode !== darkMode) {
+      setPreviousDarkMode(darkMode);
+    }
     if (previousMarkerSize !== mapMarkerSize) {
       setPreviousMarkerSize(mapMarkerSize);
     }
@@ -91,8 +97,10 @@ const Marker = props => {
       setTracksViewChanges(false);
     }, 125);
   }, [
+    darkMode,
     id,
     mapMarkerSize,
+    previousDarkMode,
     previousMarkerSize,
     previousSequence,
     previousStopId,
@@ -189,6 +197,7 @@ Marker.defaultProps = {
 Marker.propTypes = {
   completed: PropTypes.bool,
   completedStopsIds: PropTypes.array,
+  darkMode: PropTypes.bool,
   disabled: PropTypes.bool,
   id: PropTypes.number,
   mapMarkerSize: PropTypes.number,
@@ -202,6 +211,7 @@ Marker.propTypes = {
 
 const areEqual = (prevProps, nextProps) => {
   return (
+    prevProps.darkMode === nextProps.darkMode &&
     prevProps.disabled === nextProps.disabled &&
     prevProps.completed === nextProps.completed &&
     prevProps.mapMarkerSize === nextProps.mapMarkerSize &&
