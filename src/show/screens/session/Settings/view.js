@@ -490,10 +490,10 @@ const Settings = props => {
                 height={defaults.topNavigation.height}
                 marginVertical={defaults.marginVertical / 2}>
                 <ColumnView flex={1} alignItems={'flex-start'}>
-                  <Text.List color={colors.secondary}>
+                  <Text.List color={colors.inputSecondary}>
                     {I18n.t('screens:settings.misc.language')}
                   </Text.List>
-                  <Text.Caption color={colors.secondary}>
+                  <Text.Caption color={colors.inputSecondary}>
                     {I18n.t('screens:settings.misc.languageRestart')}
                   </Text.Caption>
                 </ColumnView>
