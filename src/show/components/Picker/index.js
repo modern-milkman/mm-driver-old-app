@@ -33,6 +33,7 @@ const renderItems = (items, colors) => {
   return items.map(item => (
     <PickerRN.Item
       key={item}
+      style={{ backgroundColor: colors.neutral, color: colors.inputSecondary }}
       color={colors.inputSecondary}
       label={item.description}
       value={item.id}
