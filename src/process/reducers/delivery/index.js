@@ -371,7 +371,6 @@ export const getForDriverSuccess = (state, { payload }) =>
       if (!draft.stops[address.addressId]) {
         // stop doesn't exist, create it
         // info cannot change during delivery night
-
         draft.stops[address.addressId] = {
           ...address,
           claims: {
@@ -396,12 +395,6 @@ export const getForDriverSuccess = (state, { payload }) =>
       }
       draft.stops[address.addressId].satisfactionStatus =
         address.satisfactionStatus || 0;
-
-      // TODO: Remove the below if statement when code change has been done on BE.
-      // https://themodernmilkman.atlassian.net/browse/DAT-935
-      if (draft.stops[address.addressId].satisfactionStatus === 1) {
-        draft.stops[address.addressId].proofOfDeliveryRequired = true;
-      }
 
       // check order items and update
       for (const {
