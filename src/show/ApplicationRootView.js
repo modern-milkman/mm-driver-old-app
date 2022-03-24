@@ -9,12 +9,13 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import I18n from 'Locales/I18n';
 import Navigator from 'Navigator';
 import Alert from 'Services/alert';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
 import { CarLogoFlatTire } from 'Images';
-import { ColumnView, FullView } from 'Containers';
 import NavigationService from 'Services/navigation';
 import { Types as DeviceTypes } from 'Reducers/device';
 import { appVersionString, formatDateTime } from 'Helpers';
+import { ColumnView, FullView, withThemedHOC } from 'Containers';
+
 import {
   Creators as applicationActions,
   Types as ApplicationTypes
@@ -91,28 +92,33 @@ class Root extends React.Component {
 
   render = () => {
     const { hasError } = this.state;
+
     return hasError ? this.renderCrash() : this.renderApp();
   };
 
-  renderApp = () => (
-    <FullView>
-      <StatusBar
-        translucent
-        backgroundColor={'transparent'}
-        barStyle={'dark-content'}
-      />
-      <Growl />
-      {Platform.OS === 'android' && <ActionSheetAndroid />}
-      <InAppBrowser />
+  renderApp = () => {
+    const { theme } = this.props;
+    return (
+      <FullView>
+        <StatusBar
+          translucent
+          backgroundColor={'transparent'}
+          barStyle={theme.theme === 'dark' ? 'light-content' : 'dark-content'}
+        />
+        <Growl theme={theme} />
+        {Platform.OS === 'android' && <ActionSheetAndroid />}
+        <InAppBrowser theme={theme} />
 
-      {/* content that should go on top of the app, full view, no safe area bounds */}
+        {/* content that should go on top of the app, full view, no safe area bounds */}
 
-      <Navigator />
-    </FullView>
-  );
+        <Navigator theme={theme} />
+      </FullView>
+    );
+  };
 
   renderCrash = () => {
     const {
+      colors,
       device: {
         crashCount,
         crashCode,
@@ -121,6 +127,7 @@ class Root extends React.Component {
       dispatch,
       resetAndReload
     } = this.props;
+
     return (
       <FullView bgColor={colors.primary}>
         <ColumnView flex={1} justifyContent={'center'}>
@@ -201,8 +208,10 @@ class Root extends React.Component {
 }
 
 Root.propTypes = {
+  colors: PropTypes.object,
   device: PropTypes.object,
   dispatch: PropTypes.func,
+  theme: PropTypes.object,
   resetAndReload: PropTypes.func,
   sendCrashLog: PropTypes.func,
   user: PropTypes.object
@@ -219,4 +228,7 @@ const mapDispatchToProps = dispatch => ({
   resetAndReload: applicationActions.resetAndReload
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Root);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withThemedHOC(Root));

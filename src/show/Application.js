@@ -1,10 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import * as SplashScreen from 'expo-splash-screen';
 import { PersistGate } from 'redux-persist/integration/react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import createStore from 'Redux/store';
-import * as SplashScreen from 'expo-splash-screen';
+import { ThemeProvider } from './containers';
 import { Creators as StartupActions } from 'Reducers/application';
 
 const { store, persistor } = createStore();
@@ -27,7 +28,9 @@ class Application extends React.Component {
           loading={null}
           persistor={persistor}
           onBeforeLift={initApp()}>
-          <ApplicationRootView />
+          <ThemeProvider>
+            <ApplicationRootView />
+          </ThemeProvider>
         </PersistGate>
       </Provider>
     </SafeAreaProvider>

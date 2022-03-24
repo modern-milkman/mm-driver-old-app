@@ -4,11 +4,10 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 
 import { mock } from 'Helpers';
-import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import List from 'Components/List';
 import Separator from 'Components/Separator';
-import { ColumnView, Modal } from 'Containers';
+import { ColumnView, Modal, withThemedHOC } from 'Containers';
 
 import style from './style';
 
@@ -24,7 +23,13 @@ class ActionSheetAndroid extends React.Component {
   };
 
   render = () => {
-    const { destructiveButtonIndex, optionKeys, visible, testID } = this.props;
+    const {
+      destructiveButtonIndex,
+      optionKeys,
+      visible,
+      testID,
+      theme: { colors }
+    } = this.props;
 
     const data = optionKeys.map((optK, idx) =>
       idx !== destructiveButtonIndex - 1
@@ -35,7 +40,7 @@ class ActionSheetAndroid extends React.Component {
     data.push({
       onPress: this.dismissSheet,
       title: I18n.t('general:cancel'),
-      titleColor: colors.secondaryLight
+      titleColor: colors.inputSecondary
     });
 
     return (
@@ -78,9 +83,10 @@ ActionSheetAndroid.propTypes = {
   destructiveButtonIndex: PropTypes.number,
   options: PropTypes.object,
   optionKeys: PropTypes.array,
+  theme: PropTypes.object,
   testID: PropTypes.string,
   updateProps: PropTypes.func.isRequired,
   visible: PropTypes.bool
 };
 
-export default ActionSheetAndroid;
+export default withThemedHOC(ActionSheetAndroid);

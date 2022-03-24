@@ -6,6 +6,7 @@ module.exports = {
   rules: {
     'comma-dangle': ['error', 'never'],
     radix: ['error', 'as-needed'],
-    'no-console': ['error']
+    'no-console': ['error'],
+    'react/display-name': 'off'
   }
 };

@@ -1,32 +1,66 @@
-export const alphaColor = (color = 'primary', opacity = '1') =>
-  `rgba(${rgbColors[color]},${opacity})`;
+export const alphaColors = (theme = 'dark', color = 'primary', opacity = '1') =>
+  `rgba(${RGB_COLORS[color][theme]},${opacity})`;
 
-const rgbColors = {
-  error: '252, 138, 131', //#FC8A83,
-  input: '221, 236, 239', //#DDECEF
-  inputDark: '54, 83, 105', //'#365369'
-  neutral: '248, 249, 253', //#F8F9FD
-  primary: '3, 122, 148', //'#B6DCE1'
-  primaryBright: '64, 169, 254', //#40A9FE
-  secondary: '54, 83, 105', //'#365369'
-  secondaryDark: '7, 5, 48', //'#070530'
-  secondaryLight: '137, 134, 171', //'#8986AB'
-  success: '115, 208, 61', //#73D03D
-  warning: '240, 189, 151', //#F0DF97
-  white: '255, 255, 255' //#FFFFFF
+export const RGB_COLORS = {
+  blackOnly: {
+    light: '0, 0, 0', //#FFFFFF
+    dark: '0, 0, 0' //#FFFFFF
+  },
+  error: {
+    light: '252, 138, 131', //#FC8A83,
+    dark: '252, 138, 131' //#FC8A83,
+  },
+  input: {
+    light: '221, 236, 239', //#DDECEF
+    dark: '54, 83, 105' //#365369
+  },
+  inputSecondary: {
+    light: '54, 83, 105', //#365369
+    dark: '221, 236, 239' //#DDECEF
+  },
+  neutral: {
+    light: '248, 249, 253', //#F8F9FD
+    dark: '18, 18, 18' //#121212
+  },
+  primary: {
+    light: '3, 122, 148', //#037A94
+    dark: '3, 122, 148' //#037A94
+  },
+  primaryBright: {
+    light: '64, 169, 254', //#40A9FE
+    dark: '64, 169, 254' //#40A9FE
+  },
+  success: {
+    light: '115, 208, 61', //#73D03D
+    dark: '115, 208, 61' //#73D03D
+  },
+  warning: {
+    light: '240, 189, 151', //#F0DF97
+    dark: '240, 189, 151' //#F0DF97
+  },
+  white: {
+    light: '255, 255, 255', //#FFFFFF
+    dark: '0, 0, 0' //#000000
+  },
+  whiteOnly: {
+    light: '255, 255, 255', //#FFFFFF
+    dark: '255, 255, 255' //#FFFFFF
+  }
 };
 
-export const colors = {
-  error: `rgb(${rgbColors.error})`,
-  input: `rgb(${rgbColors.input})`,
-  inputDark: `rgb(${rgbColors.inputDark})`,
-  neutral: `rgb(${rgbColors.neutral})`,
-  primary: `rgb(${rgbColors.primary})`,
-  primaryBright: `rgb(${rgbColors.primaryBright})`,
-  secondary: `rgb(${rgbColors.secondary})`,
-  secondaryDark: `rgb(${rgbColors.secondaryDark})`,
-  secondaryLight: `rgb(${rgbColors.secondaryLight})`,
-  success: `rgb(${rgbColors.success})`,
-  warning: `rgb(${rgbColors.warning})`,
-  white: `rgb(${rgbColors.white})`
+export const colors = theme => {
+  return {
+    background: `rgb(${RGB_COLORS.neutral[theme]})`,
+    error: `rgb(${RGB_COLORS.error[theme]})`,
+    blackOnly: `rgb(${RGB_COLORS.blackOnly[theme]})`,
+    input: `rgb(${RGB_COLORS.input[theme]})`,
+    inputSecondary: `rgb(${RGB_COLORS.inputSecondary[theme]})`,
+    neutral: `rgb(${RGB_COLORS.neutral[theme]})`,
+    primary: `rgb(${RGB_COLORS.primary[theme]})`,
+    primaryBright: `rgb(${RGB_COLORS.primaryBright[theme]})`,
+    success: `rgb(${RGB_COLORS.success[theme]})`,
+    warning: `rgb(${RGB_COLORS.warning[theme]})`,
+    white: `rgb(${RGB_COLORS.white[theme]})`,
+    whiteOnly: `rgb(${RGB_COLORS.whiteOnly[theme]})`
+  };
 };

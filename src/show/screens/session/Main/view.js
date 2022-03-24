@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { colors } from 'Theme';
 import { deliveryStates as DS } from 'Helpers';
 import NavigationService from 'Services/navigation';
-import { ColumnView, SafeAreaView } from 'Containers';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { ColumnView, SafeAreaView, useTheme } from 'Containers';
 
 import { ForegroundContent, Navigation, Map, Search } from './subviews';
 
@@ -60,6 +58,7 @@ const mainForegroundAction = ({
 };
 
 const Main = props => {
+  const { colors } = useTheme();
   const {
     autoSelectStop,
     checklist,

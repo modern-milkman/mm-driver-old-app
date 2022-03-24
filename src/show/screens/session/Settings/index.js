@@ -17,8 +17,10 @@ export default connect(
     computeShortDirections: state.device.computeShortDirections,
     countDown: state.device.countDown,
     currentLocation: state.device.position,
+    darkMode: state.device.darkMode,
     foregroundSize: state.device.foregroundSize,
     isOptimised: state.delivery?.stockWithData?.isOptimised || false,
+    language: state.device.language,
     mapMarkerSize: state.device.mapMarkerSize,
     optimisedStopsToShow: state.device.optimisedStopsToShow,
     network: state.device.network,
@@ -32,6 +34,7 @@ export default connect(
     biometricDisable: applicationActions.biometricDisable,
     logout: applicationActions.logout,
     continueDelivering: deliveryActions.continueDelivering,
-    updateDeviceProps: deviceActions.updateProps
+    updateDeviceProps: deviceActions.updateProps,
+    setLanguage: deviceActions.setLanguage
   }
 )(Settings);

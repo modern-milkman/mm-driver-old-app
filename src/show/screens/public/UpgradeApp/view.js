@@ -4,16 +4,17 @@ import { Pressable } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { Logo } from 'Images';
+import { defaults, sizes } from 'Theme';
 import { Button, Text } from 'Components';
-import { colors, defaults, sizes } from 'Theme';
-import { ColumnView, FullView, RowView } from 'Containers';
 import { openDriverUpdate, triggerDriverUpdate } from 'Helpers';
+import { ColumnView, FullView, RowView, useTheme } from 'Containers';
 
 import style from './style';
 
 const logoSize = 100;
 
 const UpgradeApp = props => {
+  const { colors } = useTheme();
   const {
     appcenter,
     navigation: {

@@ -3,21 +3,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Text from 'Components/Text';
-import { RowView } from 'Containers';
-import { colors, defaults } from 'Theme';
+import { RowView, useTheme } from 'Containers';
+import { defaults } from 'Theme';
 
 const Label = props => {
   const { backgroundColor, color, testID, text } = props;
+  const { colors } = useTheme();
 
   return (
     <RowView
       borderRadius={defaults.borderRadius / 2}
-      backgroundColor={backgroundColor}
+      backgroundColor={backgroundColor || colors.error}
       height={Text.Label.height + defaults.marginVertical / 4}
       paddingHorizontal={defaults.marginHorizontal / 4}
       shadow
       width={'auto'}>
-      <Text.Label color={color} testID={testID}>
+      <Text.Label color={color || colors.white} testID={testID}>
         {text}
       </Text.Label>
     </RowView>
@@ -33,8 +34,6 @@ Label.propTypes = {
 };
 
 Label.defaultProps = {
-  backgroundColor: colors.error,
-  color: colors.white,
   shadow: false,
   text: null
 };

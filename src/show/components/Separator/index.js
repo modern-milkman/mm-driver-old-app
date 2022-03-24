@@ -3,12 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
-import { colors } from 'Theme';
+import { useTheme } from 'Containers';
 
 const Separator = props => {
+  const { colors } = useTheme();
   const {
     borderRadius,
-    color,
+    color = colors.input,
     height,
     marginHorizontal,
     marginLeft,
@@ -54,7 +55,7 @@ Separator.propTypes = {
 
 Separator.defaultProps = {
   borderRadius: undefined,
-  color: colors.input,
+
   height: undefined,
   marginHorizontal: 0,
   marginLeft: 0,

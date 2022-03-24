@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
-import { colors } from 'Theme';
+import { useTheme } from 'Containers';
 
-const Logo = (props) => {
+const Logo = props => {
+  const { colors } = useTheme();
   const {
     disabled,
-    fill,
+    fill = colors.primary,
     marginBottom,
     marginTop,
     onPress,
-    primaryFill,
+    primaryFill = colors.white,
     width
   } = props;
   const ratio = 272 / 113;
@@ -110,11 +111,9 @@ Logo.propTypes = {
 
 Logo.defaultProps = {
   disabled: false,
-  fill: colors.primary,
   marginBottom: 0,
   marginTop: 0,
   onPress: () => {},
-  primaryFill: colors.white,
   width: 77
 };
 

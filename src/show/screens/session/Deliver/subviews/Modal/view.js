@@ -9,10 +9,10 @@ import { BackHandler, TouchableOpacity } from 'react-native';
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import actionSheet from 'Services/actionSheet';
-import { ColumnView, RowView } from 'Containers';
 import NavigationService from 'Services/navigation';
 import { deviceFrame, formatDate, mock } from 'Helpers';
-import { alphaColor, colors, defaults, sizes } from 'Theme';
+import { defaults, sizes } from 'Theme';
+import { ColumnView, RowView, useTheme, useThemedStyles } from 'Containers';
 import {
   Button,
   Text,
@@ -24,7 +24,7 @@ import {
   Separator
 } from 'Components';
 
-import style from './style';
+import unthemedStyle from './style';
 
 const hideClaimsModal = toggleModal => {
   toggleModal('showClaimModal', false);
@@ -83,9 +83,11 @@ const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
 };
 
 const renderReplyBody = ({
+  cannedContent,
+  colors,
   driverResponse,
   updateDriverResponse,
-  cannedContent
+  style
 }) => {
   return (
     <ColumnView
@@ -159,7 +161,7 @@ const renderReplyBody = ({
               justifyContent={'flex-start'}
               width={sizes.list.image}
               height={sizes.list.image}
-              backgroundColor={colors.secondary}
+              backgroundColor={colors.inputSecondary}
               borderRadius={defaults.borderRadius}>
               <Icon
                 name={'quickreply'}
@@ -179,6 +181,7 @@ const renderReplyBody = ({
 
 const renderCustomerIssueBody = ({
   customerComment = '',
+  colors,
   reason = '',
   sectionData = [],
   height
@@ -190,11 +193,11 @@ const renderCustomerIssueBody = ({
         paddingHorizontal={defaults.marginHorizontal}
         justifyContent={'flex-start'}
         alignItems={'flex-start'}>
-        <Text.List color={colors.secondaryLight}>
+        <Text.List color={colors.inputSecondary}>
           {I18n.t('screens:deliver.customerIssue.modal.reason')}
         </Text.List>
 
-        <Text.List color={colors.secondary} flex={1}>
+        <Text.List color={colors.inputSecondary} flex={1}>
           {reason}
         </Text.List>
       </RowView>
@@ -207,11 +210,11 @@ const renderCustomerIssueBody = ({
             paddingVertical={defaults.marginVertical / 2}
             justifyContent={'flex-start'}
             alignItems={'flex-start'}>
-            <Text.List color={colors.secondaryLight}>
+            <Text.List color={colors.inputSecondary}>
               {I18n.t('screens:deliver.customerIssue.modal.customerComment')}
             </Text.List>
 
-            <Text.List color={colors.secondary} flex={1}>
+            <Text.List color={colors.inputSecondary} flex={1}>
               {customerComment}
             </Text.List>
           </RowView>
@@ -234,6 +237,8 @@ const updateText = (updateDriverResponse, driverResponse, text) => {
 };
 
 const CustomerIssueModal = props => {
+  const style = useThemedStyles(unthemedStyle);
+  const { alphaColor, colors } = useTheme();
   const {
     cannedContent,
     claims: {
@@ -299,7 +304,7 @@ const CustomerIssueModal = props => {
   ];
 
   return (
-    <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
+    <ColumnView flex={1} backgroundColor={alphaColor('blackOnly', 0.85)}>
       <ColumnView
         backgroundColor={'transparent'}
         marginHorizontal={defaults.marginHorizontal}
@@ -327,7 +332,7 @@ const CustomerIssueModal = props => {
                 bgColor={'transparent'}
                 disabled
               />
-              <Text.Heading color={colors.secondary}>
+              <Text.Heading color={colors.inputSecondary}>
                 {showReplyModal
                   ? I18n.t('screens:deliver.customerIssue.modal.title')
                   : I18n.t('screens:deliver.customerIssue.modal.customerIssue')}
@@ -337,7 +342,7 @@ const CustomerIssueModal = props => {
             {!showReplyModal && (
               <Text.Heading
                 color={
-                  colors.secondaryLight
+                  colors.inputSecondary
                 }>{` ${showCount} / ${unacknowledgedListNr}`}</Text.Heading>
             )}
           </RowView>
@@ -349,10 +354,10 @@ const CustomerIssueModal = props => {
             paddingHorizontal={defaults.marginHorizontal}
             justifyContent={'space-between'}>
             <RowView flex={1} justifyContent={'flex-start'}>
-              <Text.List color={colors.secondaryLight}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:deliver.customerIssue.modal.date')}
               </Text.List>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {formatDate(new Date(selectedClaimData?.claimDateTime))}
               </Text.List>
             </RowView>
@@ -369,13 +374,16 @@ const CustomerIssueModal = props => {
 
           {showReplyModal
             ? renderReplyBody({
+                cannedContent,
+                colors,
                 driverResponse,
                 updateDriverResponse,
-                cannedContent
+                style
               })
             : renderCustomerIssueBody({
                 customerComment: selectedClaimData?.customerComment,
                 reason: selectedClaimData?.reason,
+                colors,
                 sectionData,
                 height
               })}

@@ -8,15 +8,23 @@ import {
   Dimensions,
   Linking,
   NativeModules,
+  Platform,
   StatusBar
 } from 'react-native';
 
-import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import actionSheet from 'Services/actionSheet';
 
 import slack from './slack';
+
+const actionSheetSwitch = ({ label, list, method }) => {
+  const options = [];
+  for (const element of list) {
+    options[I18n.t(`${label}:${element}`)] = method.bind(null, element);
+  }
+  actionSheet(options);
+};
 
 const addZero = i => (i < 10 ? `0${i}` : i);
 
@@ -27,6 +35,7 @@ const appVersionString = props => {
 };
 
 const availableCountries = ['fr', 'uk'];
+const availableLanguages = ['en', 'fr'];
 
 const base64ToHex = base64 => {
   return [...Base64.atob(base64)]
@@ -60,21 +69,6 @@ const blacklists = {
 };
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
-
-const customerSatisfactionColor = satisfactionStatus => {
-  switch (satisfactionStatus) {
-    case 1:
-      return colors.success;
-    case 2:
-      return colors.primaryBright;
-    case 3:
-      return colors.warning;
-    case 4:
-      return colors.error;
-    default:
-      return colors.primary;
-  }
-};
 
 const defaultRoutes = {
   public: 'Home',
@@ -328,6 +322,27 @@ const statusBarHeight = () => {
   return StatusBarManager.HEIGHT;
 };
 
+const systemLanguage = () => {
+  let language;
+  if (Platform.OS === 'ios') {
+    language = NativeModules.SettingsManager.settings.AppleLocale; // "fr_FR"
+    if (language === undefined) {
+      // iOS 13 workaround, take first of AppleLanguages array  ["en", "en-NZ"]
+      language = NativeModules.SettingsManager.settings.AppleLanguages[0];
+    }
+  } else {
+    if (NativeModules.I18nManager) {
+      language = NativeModules.I18nManager.localeIdentifier;
+    }
+  }
+
+  if (typeof language === 'undefined') {
+    language = Config.DEFAULT_LANGUAGE;
+  }
+
+  return language.substring(0, 2);
+};
+
 const timeoutResponseStatuses = ['TIMEOUT', 502, 503, 504, 507];
 
 const timeToHMArray = time => time.split(':').map(hm => parseInt(hm));
@@ -380,12 +395,13 @@ const usePrevious = value => {
 };
 
 export {
+  actionSheetSwitch,
   appVersionString,
   availableCountries,
+  availableLanguages,
   base64ToHex,
   blacklists,
   capitalize,
-  customerSatisfactionColor,
   deliverProductsDisabled,
   deliveredStatuses,
   deliveryStates,
@@ -405,6 +421,7 @@ export {
   randomKey,
   slack,
   statusBarHeight,
+  systemLanguage,
   timeToHMArray,
   timeoutResponseStatuses,
   toggle,

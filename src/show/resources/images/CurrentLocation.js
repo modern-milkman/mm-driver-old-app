@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Svg, { Polygon } from 'react-native-svg';
 
-import { colors } from 'Theme';
+import { useTheme } from 'Containers';
 
 const CurrentLocation = props => {
+  const { colors } = useTheme();
   const {
-    borderColor,
+    borderColor = colors.white,
     heading,
-    iconColor,
+    iconColor = colors.primary,
     mapNoTrackingHeading,
     shouldTrackHeading,
     width
@@ -51,9 +52,7 @@ CurrentLocation.propTypes = {
 };
 
 CurrentLocation.defaultProps = {
-  borderColor: colors.white,
   heading: 0,
-  iconColor: colors.primary,
   mapNoTrackingHeading: 0,
   shouldTrackHeading: false,
   width: 33

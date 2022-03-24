@@ -10,6 +10,7 @@ export const { Types, Creators } = createActions(
     lowConnectionUpdate: ['lowConnection'],
     pushRequest: ['queue', 'payload'],
     setCountry: ['country'],
+    setLanguage: ['language'],
     setLatestApp: ['payload'],
     setLocation: ['position'],
     setMapMode: ['mode'],
@@ -40,9 +41,10 @@ const initialState = {
   countDown: false,
   country: Config.DEFAULT_COUNTRY,
   crashCount: 0,
+  darkMode: true,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info,
-
+  language: 'uninitialized',
   lowConnection: false,
   mapMarkerSize: sizes.marker.normal,
   mapMode: 'auto',
@@ -92,6 +94,11 @@ export const pushRequest = (state, { queue, payload }) =>
 export const setCountry = (state, { country }) =>
   produce(state, draft => {
     draft.country = country;
+  });
+
+export const setLanguage = (state, { language }) =>
+  produce(state, draft => {
+    draft.language = language;
   });
 
 export const setLatestApp = (state, action) =>
@@ -169,6 +176,7 @@ export const syncOffline = (state, { lastRequest, status }) =>
 export default createReducer(initialState, {
   [Types.PUSH_REQUEST]: pushRequest,
   [Types.SET_COUNTRY]: setCountry,
+  [Types.SET_LANGUAGE]: setLanguage,
   [Types.SET_LATEST_APP]: setLatestApp,
   [Types.SET_LOCATION]: setLocation,
   [Types.SET_MAP_MODE]: setMapMode,

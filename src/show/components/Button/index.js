@@ -11,11 +11,11 @@ import {
 
 import Icon from 'Components/Icon';
 import Text from 'Components/Text';
-import { RowView } from 'Containers';
+import { RowView, useThemedStyles } from 'Containers';
 import { sizes } from 'Theme';
 
 import Types from './Types';
-import { style } from './style';
+import unthemedStyle from './style';
 
 const wrapButtonComponent = (props, type) => <Button {...props} type={type} />;
 
@@ -50,6 +50,7 @@ const Button = props => {
     width,
     noBorderRadius
   } = props;
+  const style = useThemedStyles(unthemedStyle);
   const computedTitleColor = disabled
     ? style.disabled.textStyle.color
     : titleColor

@@ -1,12 +1,13 @@
-import { colors } from 'Theme';
+import { StyleSheet } from 'react-native';
 
 const flex = {
   flex: 1
 };
 
-export default {
-  inappwrapper: {
-    ...flex,
-    backgroundColor: colors.primary
-  }
-};
+export default ({ colors }) =>
+  StyleSheet.create({
+    inappwrapper: {
+      ...flex,
+      backgroundColor: colors.primary
+    }
+  });

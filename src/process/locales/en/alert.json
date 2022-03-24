@@ -1,102 +1,102 @@
 {
   "appInstalled": {
-    "title": "Application missing",
     "message": "Please make sure you have {{type}} app installed",
-    "noAppMessage": "Plase make sure you have at least one of Google Maps, Apple Maps or Waze installed"
-  },
-  "cannotUpgrade": {
-    "title": "Download failed",
-    "message": "There was a problem downloading the app. Please try again or manually select a version using the link below."
+    "noAppMessage": "Plase make sure you have at least one of Google Maps, Apple Maps or Waze installed",
+    "title": "Application missing"
   },
   "cannotOpenUrl": {
-    "title": "Link failed",
-    "message": "There was a problem opening the link."
+    "message": "There was a problem opening the link.",
+    "title": "Link failed"
+  },
+  "cannotUpgrade": {
+    "message": "There was a problem downloading the app. Please try again or manually select a version using the link below.",
+    "title": "Download failed"
   },
   "clipboard": {
-    "title": "Error code copied to clipboard",
-    "description": "Simply paste in the app of your choosing and send the crashcode to your supervisor. Thanks!"
+    "description": "Simply paste in the app of your choosing and send the crashcode to your supervisor. Thanks!",
+    "title": "Error code copied to clipboard"
   },
   "errors": {
     "api": {
       "driverData": {
-        "title": "Error getting route data",
         "message": "Try refreshing route data again. If the problem persists, contact your supervisor.",
-        "refreshMessage": "Tap this message to reload route data. If the problem persists, contact your supervisor."
+        "refreshMessage": "Tap this message to reload route data. If the problem persists, contact your supervisor.",
+        "title": "Error getting route data"
       }
     },
     "shareOfflineData": {
       "failed": {
-        "title": "Errors prevented data sync!",
-        "message": "Tap to retry sync"
+        "message": "Tap to retry sync",
+        "title": "Errors prevented data sync!"
       }
     },
     "syncOffline": {
       "failed": {
-        "title": "Error synchronising data",
-        "message": "Your work may be lost unless it is pushed to the server or sent to support. Tap to retry"
+        "message": "Your work may be lost unless it is pushed to the server or sent to support. Tap to retry",
+        "title": "Error synchronising data"
       }
     },
     "vanChecks": {
       "mustComplyWithTerms": {
-        "title": "Missing requirements",
-        "message": "You need to comply with all terms to start your shift"
+        "message": "You need to comply with all terms to start your shift",
+        "title": "Missing requirements"
       }
     }
   },
   "success": {
     "delivery": {
       "proofOfDeliveryRequired": {
-        "title": "Proof of delivery required!",
-        "message": "Please take your phone with you and take a picture once you've delivered the products."
+        "message": "Please take your phone with you and take a picture once you've delivered the products.",
+        "title": "Proof of delivery required!"
       }
     },
     "main": {
       "deliverLater": {
-        "title": "Deliver later?",
+        "confirmation": "Unoptimised and \"Deliver later\" drops will always be visible on the map. Manually select them when you're close by.",
         "description": "Pin will be removed from sequence",
-        "confirmation": "Unoptimised and \"Deliver later\" drops will always be visible on the map. Manually select them when you're close by."
+        "title": "Deliver later?"
       }
     },
     "network": {
       "online": {
-        "title": "Back online!",
-        "message": "Any work that you’ve done while offline is now being synced with the server."
+        "message": "Any work that you’ve done while offline is now being synced with the server.",
+        "title": "Back online!"
       }
     },
     "settings": {
       "biometrics": {
-        "title": "Disable biometrics?",
-        "message": "By disabling biometric authentication you will need to login with your email and password in the future."
+        "message": "By disabling biometric authentication you will need to login with your email and password in the future.",
+        "title": "Disable biometrics?"
       },
       "logout": {
-        "title": "Why log out?",
-        "message": "There's no need to log out of the Driver app. Simply open the app later on to check on updated or new routes assigned to you."
+        "message": "There's no need to log out of the Driver app. Simply open the app later on to check on updated or new routes assigned to you.",
+        "title": "Why log out?"
       },
       "offline": {
         "directions": {
-          "title": "Delivery directions unavailable!",
-          "message": "You’ve turned on delivery directions. The feature will automatically turn on whenever you come back online."
+          "message": "You’ve turned on delivery directions. The feature will automatically turn on whenever you come back online.",
+          "title": "Delivery directions unavailable!"
         },
         "logout": {
-          "title": "Proceed with caution",
-          "message": "Logging out while offline will clear all route data on the device and you will no longer be able to continue working until the device is back online."
+          "message": "Logging out while offline will clear all route data on the device and you will no longer be able to continue working until the device is back online.",
+          "title": "Proceed with caution"
         }
       }
     },
     "shareOfflineData": {
-      "start": {
-        "title": "Synchronising failed data to support!",
-        "message": "Some of your work wasn't saved successfully. Please wait..."
-      },
       "completed": {
-        "title": "Data pushed to support!",
-        "message": "Your work has been successfully saved. Good night!"
+        "message": "Your work has been successfully saved. Good night!",
+        "title": "Data pushed to support!"
+      },
+      "start": {
+        "message": "Some of your work wasn't saved successfully. Please wait...",
+        "title": "Synchronising failed data to support!"
       }
     },
     "syncOffline": {
       "completed": {
-        "title": "Successfully pushed all your offline data!",
-        "message": "All work data has been successfully pushed to the server. Tap to dismiss."
+        "message": "All work data has been successfully pushed to the server. Tap to dismiss.",
+        "title": "Successfully pushed all your offline data!"
       }
     }
   }

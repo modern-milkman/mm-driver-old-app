@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { colors } from 'Theme';
 import I18n from 'Locales/I18n';
-import { SafeAreaView } from 'Containers';
 import { formatDate, mock } from 'Helpers';
 import NavigationService from 'Services/navigation';
+import { SafeAreaView, useTheme } from 'Containers';
 import { List, ListHeader, NavBar, Text } from 'Components';
 
 const CustomerIssueList = props => {
+  const { colors } = useTheme();
   const { claims, selectedStop, setSelectedClaimId } = props;
 
   const newList = {

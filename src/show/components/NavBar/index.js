@@ -7,24 +7,27 @@ import Text from 'Components/Text';
 import Icon from 'Components/Icon';
 import { CustomIcon } from 'Images';
 
-import { ColumnView, RowView } from 'Containers';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
+import { ColumnView, RowView, useTheme } from 'Containers';
 
-const NavBar = ({
-  LeftComponent,
-  leftIcon,
-  leftIconAction,
-  leftIconColor,
-  marginHorizontal,
-  RightComponent,
-  rightAction,
-  rightText,
-  rightIcon,
-  rightCustomIcon,
-  rightColor,
-  testID,
-  title
-}) => {
+const NavBar = props => {
+  const { colors } = useTheme();
+  const {
+    LeftComponent,
+    leftIcon,
+    leftIconAction,
+    leftIconColor = colors.inputSecondary,
+    marginHorizontal,
+    RightComponent,
+    rightAction,
+    rightText,
+    rightIcon,
+    rightCustomIcon,
+    rightColor = colors.primary,
+    testID,
+    title
+  } = props;
+
   return (
     <RowView
       justifyContent={'space-between'}
@@ -42,7 +45,7 @@ const NavBar = ({
         />
       )}
 
-      <Text.Input color={colors.secondary}>{title}</Text.Input>
+      <Text.Input color={colors.inputSecondary}>{title}</Text.Input>
       {RightComponent || rightText || rightIcon || rightCustomIcon ? (
         renderRight(
           RightComponent,
@@ -135,9 +138,7 @@ NavBar.propTypes = {
 
 NavBar.defaultProps = {
   leftIconAction: mock,
-  leftIconColor: colors.secondary,
-  marginHorizontal: defaults.marginHorizontal,
-  rightColor: colors.primary
+  marginHorizontal: defaults.marginHorizontal
 };
 
 export default NavBar;

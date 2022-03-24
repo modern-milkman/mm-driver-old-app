@@ -26,6 +26,7 @@ import {
   selectedStopId as selectedStopIdSelector,
   serverAddressIds as serverAddressIdsSelector,
   status as statusSelector,
+  stock as stockSelector,
   stops as stopsSelector,
   Types as DeliveryTypes
 } from 'Reducers/delivery';
@@ -528,8 +529,9 @@ export const showPODRequired = function* () {
 
 export const updateDriverActivity = function* () {
   const user = yield select(userSelector);
+  const stock = yield select(stockSelector);
 
-  for (const i of user.routes) {
+  for (const i of stock) {
     yield put({
       type: Api.API_CALL,
       promise: Api.repositories.delivery.postDriverActivity({

@@ -4,7 +4,8 @@ import Config from 'react-native-config';
 import React, { useEffect, useRef } from 'react';
 
 import { Fab } from 'Components';
-import { colors, defaults, sizes } from 'Theme';
+import { useTheme } from 'Containers';
+import { defaults, sizes } from 'Theme';
 
 import { deliveryStates as DS } from 'Helpers';
 import { navigateInSheet } from 'Screens/session/Main/helpers';
@@ -22,6 +23,7 @@ const toggleProp = ({ callback, mapIsInteracting, setMapMode }) => {
 };
 
 const Fabs = props => {
+  const { colors } = useTheme();
   const {
     availableNavApps,
     mapIsInteracting,
@@ -123,7 +125,7 @@ const Fabs = props => {
         type={'entypo'}
         iconName={'direction'}
         containerSize={fabContainerSize}
-        color={shouldTrackHeading ? colors.primary : colors.secondary}
+        color={shouldTrackHeading ? colors.primary : colors.inputSecondary}
         rotate={
           shouldTrackHeading
             ? new Animated.Value(-50)
@@ -144,7 +146,7 @@ const Fabs = props => {
         type={'material'}
         iconName={'3d-rotation'}
         containerSize={fabContainerSize}
-        color={shouldPitchMap ? colors.primary : colors.secondary}
+        color={shouldPitchMap ? colors.primary : colors.inputSecondary}
         right={right.interpolate(mapControlInterpolations.position.second)}
         opacity={right.interpolate(mapControlInterpolations.opacity.second)}
         bottom={defaults.paddingHorizontal / 2}
@@ -160,7 +162,7 @@ const Fabs = props => {
         type={'material'}
         iconName={shouldTrackLocation ? 'my-location' : 'location-searching'}
         containerSize={fabContainerSize}
-        color={shouldTrackLocation ? colors.primary : colors.secondary}
+        color={shouldTrackLocation ? colors.primary : colors.inputSecondary}
         right={right.interpolate(mapControlInterpolations.position.third)}
         bottom={defaults.paddingHorizontal / 2}
         onPress={toggleProp.bind(null, {
@@ -175,7 +177,7 @@ const Fabs = props => {
           type="material-community"
           iconName="directions"
           containerSize={fabContainerSize}
-          color={network.status === 0 ? colors.primary : colors.inputDark}
+          color={network.status === 0 ? colors.primary : colors.inputSecondary}
           right={fabMargin}
           bottom={fabContainerSize + defaults.marginVertical}
           onPress={navigateInSheet.bind(null, {
@@ -191,7 +193,7 @@ const Fabs = props => {
           type={'material-community'}
           iconName={'refresh'}
           containerSize={fabContainerSize}
-          color={network.status === 0 ? colors.primary : colors.inputDark}
+          color={network.status === 0 ? colors.primary : colors.inputSecondary}
           left={fabMargin}
           bottom={defaults.paddingHorizontal / 2}
           processing={processing}

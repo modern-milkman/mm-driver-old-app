@@ -8,6 +8,7 @@ import MapView, {
 } from 'react-native-maps';
 
 import { sizes } from 'Theme';
+import { useTheme } from 'Containers';
 import { CurrentLocation } from 'Images';
 
 import styles from './style';
@@ -79,6 +80,7 @@ const triggerManualMove = ({
 };
 
 const Map = props => {
+  const { theme } = useTheme();
   const {
     centerMapLocation,
     clearCenterMapLocation,
@@ -180,7 +182,7 @@ const Map = props => {
   return (
     <View style={styles.map}>
       <MapView
-        customMapStyle={mapStyle}
+        customMapStyle={mapStyle[theme]}
         initialCamera={initialCamera.current}
         minZoomLevel={parseInt(Config.MIN_MAP_ZOOM_LEVEL)}
         moveOnMarkerPress={false}

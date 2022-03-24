@@ -49,6 +49,7 @@ export function* ensureMandatoryPermissions({ routeName }) {
   const { dispatch } = store().store;
   const mandatoryPermissions = Platform.select({
     android: [
+      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
       PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
       PERMISSIONS.ANDROID.CAMERA
     ],
@@ -126,6 +127,10 @@ export function* reduxSagaNetstatChange({ netStatProps }) {
 
 export function* setCountry() {
   Api.configureCountryBaseURL();
+}
+
+export function* setLanguage({ language }) {
+  I18n.changeLanguage(language);
 }
 
 export function* setLocation({ position }) {

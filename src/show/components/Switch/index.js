@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import { Platform, Switch as RNSwitch } from 'react-native';
 
 import { mock } from 'Helpers';
-import { colors } from 'Theme';
+import { useTheme } from 'Containers';
 
 const Switch = props => {
+  const { colors } = useTheme();
   const { disabled, onValueChange, testID, value } = props;
   const trackColor = {
     false: Platform.select({
