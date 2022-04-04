@@ -1,12 +1,5 @@
 import I18n from 'Locales/I18n';
 
-const requiredValidation = {
-  isValid: value => {
-    return !(value === null || value === undefined || value.length === 0);
-  },
-  message: I18n.t('validations:invalid.requiredValidation')
-};
-
 const numericValidation = {
   isValid: value => {
     const numberRegex = new RegExp(/^0$|^[1-9][0-9]*$/);
@@ -18,6 +11,13 @@ const numericValidation = {
     );
   },
   message: I18n.t('validations:invalid.numericValidation')
+};
+
+const requiredValidation = {
+  isValid: value => {
+    return !(value === null || value === undefined || value.length === 0);
+  },
+  message: I18n.t('validations:invalid.requiredValidation')
 };
 
 export const regex = {
@@ -44,5 +44,6 @@ export const standard = {
       },
       message: I18n.t('validations:invalid.email')
     }
-  ]
+  ],
+  vehicleRegistration: [requiredValidation]
 };
