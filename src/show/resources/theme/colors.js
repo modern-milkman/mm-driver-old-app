@@ -10,6 +10,10 @@ export const RGB_COLORS = {
     light: '252, 138, 131', //#FC8A83,
     dark: '252, 138, 131' //#FC8A83,
   },
+  freddiesFlowers: {
+    light: '151,125,183', // #977DB7
+    dark: '151,125,183' // #977DB7
+  },
   input: {
     light: '221, 236, 239', //#DDECEF
     dark: '54, 83, 105' //#365369
@@ -52,6 +56,7 @@ export const colors = theme => {
   return {
     background: `rgb(${RGB_COLORS.neutral[theme]})`,
     error: `rgb(${RGB_COLORS.error[theme]})`,
+    freddiesFlowers: `rgb(${RGB_COLORS.freddiesFlowers[theme]})`,
     blackOnly: `rgb(${RGB_COLORS.blackOnly[theme]})`,
     input: `rgb(${RGB_COLORS.input[theme]})`,
     inputSecondary: `rgb(${RGB_COLORS.inputSecondary[theme]})`,
