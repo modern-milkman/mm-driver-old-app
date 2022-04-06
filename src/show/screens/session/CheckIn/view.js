@@ -211,7 +211,7 @@ const CheckIn = props => {
       testID
     } = checkinRows[index];
     return (
-      <View style={style.fullWidth}>
+      <View key={index} style={style.fullWidth}>
         <Separator />
         <ListItem
           disabled={disabled}
