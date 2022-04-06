@@ -15,9 +15,21 @@ const numericValidation = {
 
 const requiredValidation = {
   isValid: value => {
-    return !(value === null || value === undefined || value.length === 0);
+    return !(
+      value === null ||
+      value === undefined ||
+      value.length === 0 ||
+      value.trim().length === 0
+    );
   },
   message: I18n.t('validations:invalid.requiredValidation')
+};
+
+const textValidation = {
+  isValid: value => {
+    return value.length === 0 || value?.trim().length > 0;
+  },
+  message: I18n.t('validations:invalid.textValidation')
 };
 
 export const regex = {
@@ -45,5 +57,6 @@ export const standard = {
       message: I18n.t('validations:invalid.email')
     }
   ],
-  vehicleRegistration: [requiredValidation]
+  vehicleRegistration: [requiredValidation],
+  text: [textValidation]
 };

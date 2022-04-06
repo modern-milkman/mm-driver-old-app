@@ -101,6 +101,8 @@ const renderReplyBody = ({
           updateDriverResponse,
           driverResponse
         )}
+        error={driverResponse?.textHasError}
+        errorMessage={driverResponse?.textErrorMessage}
         multiline
         value={driverResponse?.text}
         multilineHeight={100}
@@ -258,6 +260,11 @@ const CustomerIssueModal = props => {
 
   const { width, height } = deviceFrame();
 
+  const disabled =
+    showReplyModal &&
+    ((!driverResponse?.text && !driverResponse?.image) ||
+      driverResponse.textHasError);
+
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
@@ -405,11 +412,7 @@ const CustomerIssueModal = props => {
                   ? 'screens:deliver.customerIssue.modal.send'
                   : 'screens:deliver.customerIssue.modal.reply'
               )}
-              disabled={
-                showReplyModal &&
-                !driverResponse?.image &&
-                !driverResponse?.text
-              }
+              disabled={disabled}
               width={'50%'}
               noBorderRadius
               onPress={
