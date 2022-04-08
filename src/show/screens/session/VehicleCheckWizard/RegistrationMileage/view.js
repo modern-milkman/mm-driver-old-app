@@ -188,7 +188,7 @@ const RegistrationMileage = ({
               marginHorizontal={defaults.marginHorizontal}
               marginVertical={defaults.marginVertical / 2}>
               <TextInput
-                autoCapitalize={'none'}
+                autoCapitalize={'characters'}
                 error={vehicleRegistrationHasError}
                 errorMessage={vehicleRegistrationErrorMessage}
                 onChangeText={updateReducerAndTransient.bind(null, {

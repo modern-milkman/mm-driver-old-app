@@ -490,7 +490,7 @@ const Deliver = props => {
               }
               hasSections={height > 700}
               onLongPress={
-                selectedStop?.proofOfDeliveryRequired ? mock : toggleOutOfStock
+                selectedStop?.satisfactionStatus === 5 ? mock : toggleOutOfStock
               }
               onPress={toggleConfirmedItem}
             />

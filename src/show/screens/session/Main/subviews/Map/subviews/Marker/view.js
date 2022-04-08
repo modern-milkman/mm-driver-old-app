@@ -21,6 +21,8 @@ const getCustomerSatisfactionColor = (colors, satisfactionStatus) => {
       return colors.warning;
     case 4:
       return colors.error;
+    case 5:
+      return colors.freddiesFlowers;
     default:
       return colors.primary;
   }

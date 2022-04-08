@@ -2,6 +2,7 @@
   "invalid": {
     "email": "Email is invalid",
     "numericValidation": "Has to be a number",
-    "requiredValidation": "Cannot be empty"
+    "requiredValidation": "Cannot be empty",
+    "textValidation": "Text entries must contain characters"
   }
 }

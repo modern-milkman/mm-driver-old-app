@@ -5,7 +5,6 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { deliveryStates as DS } from 'Helpers';
 import NavigationService from 'Services/navigation';
-import Analytics, { EVENTS } from 'Services/analytics';
 import { ColumnView, SafeAreaView, useTheme } from 'Containers';
 
 import { ForegroundContent, Navigation, Map, Search } from './subviews';
@@ -54,7 +53,6 @@ const mainForegroundAction = ({
       }
       break;
   }
-  Analytics.trackEvent(EVENTS.MAIN_FOREGROUND_ACTION);
 };
 
 const Main = props => {

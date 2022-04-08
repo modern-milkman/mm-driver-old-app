@@ -163,7 +163,7 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilitiesComponents (1.1.0):
     - GoogleUtilities/Logger
-  - GTMSessionFetcher/Core (1.7.0)
+  - GTMSessionFetcher/Core (1.7.1)
   - libevent (2.1.12)
   - MLImage (1.0.0-beta2)
   - MLKitCommon (5.0.0):
@@ -200,7 +200,7 @@ PODS:
   - Permission-LocationWhenInUse (3.2.0):
     - RNPermissions
   - PromisesObjC (2.0.0)
-  - Protobuf (3.19.4)
+  - Protobuf (3.20.0)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -871,7 +871,7 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
-  GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+  GTMSessionFetcher: 4577a4cc914a5a07c40a8a0ad0acc22080418c2d
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
   MLKitCommon: 3bc17c6f7d25ce3660f030350b46ae7ec9ebca6e
@@ -883,7 +883,7 @@ SPEC CHECKSUMS:
   Permission-Camera: 53efcbb755b0e8bdf253dbb27cc7559ccfce8480
   Permission-LocationWhenInUse: 13de9a01e006cb53a6ac3c9f8d1ab6cc98318d9c
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
-  Protobuf: 235750e4696ff59fb07d949a9dbbc92b3c0700fe
+  Protobuf: 66e2f3b26a35e4cc379831f4ced538274ee4b923
   RCT-Folly: 803a9cfd78114b2ec0f140cfa6fa2a6bafb2d685
   RCTRequired: cd47794163052d2b8318c891a7a14fcfaccc75ab
   RCTTypeSafety: 393bb40b3e357b224cde53d3fec26813c52428b1

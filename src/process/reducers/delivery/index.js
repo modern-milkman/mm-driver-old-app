@@ -55,7 +55,6 @@ export const { Types, Creators } = createActions(
     setSelectedClaimId: ['claim'],
     setRejectDeliveryReasons: ['payload'],
     setReturnTypes: ['payload'],
-
     startDelivering: null,
     showMustComplyWithTerms: null,
     showPODRequired: null,
@@ -91,6 +90,7 @@ const initialVehicleChecks = {
 export const initialChecklist = {
   deliveryComplete: false,
   loadedVan: false,
+  loadedVanItems: [],
   rateMyRound: false,
   shiftEndVanChecks: false,
   shiftStartVanChecks: false,
@@ -216,6 +216,7 @@ const incrementDeliveredStock = (draft, { productId, quantity }) => {
 const resetChecklistFlags = checklist => {
   checklist.deliveryComplete = false;
   checklist.loadedVan = false;
+  checklist.loadedVanItems = [];
   checklist.payloadAltered = false;
   checklist.rateMyRound = false;
   checklist.shiftStartVanChecks = false;
@@ -512,10 +513,12 @@ export const getForDriverSuccess = (state, { payload }) =>
       draft.checklist[state.userId].deliveryComplete = true;
       draft.checklist[state.userId].shiftStartVanChecks = true;
       draft.checklist[state.userId].loadedVan = true;
+      draft.checklist[state.userId].loadedVanItems = [];
     } else if (hasNonPendingOrders) {
       draft.status = DS.DEL;
       draft.checklist[state.userId].shiftStartVanChecks = true;
       draft.checklist[state.userId].loadedVan = true;
+      draft.checklist[state.userId].loadedVanItems = [];
     }
   });
 
@@ -778,6 +781,9 @@ export const failedItems = state => state.delivery?.failedItems;
 export const itemCount = state => state.delivery?.itemCount || 0;
 
 export const isOptimised = state => state.delivery?.stockWithData?.isOptimised;
+
+export const loadedVanItems = state =>
+  state.delivery?.checklist?.[state.delivery?.userId].loadedVanItems;
 
 export const orderedStock = state => state.delivery.orderedStock;
 
