@@ -27,7 +27,7 @@ const requiredValidation = {
 
 const textValidation = {
   isValid: value => {
-    return value.length === 0 || value?.trim().length > 0;
+    return value && (value.length === 0 || value.trim().length > 0);
   },
   message: I18n.t('validations:invalid.textValidation')
 };
