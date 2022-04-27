@@ -5,6 +5,7 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
 import { defaults } from 'Theme';
+import { openRateMyRound } from 'SessionShared';
 import NavigationService from 'Services/navigation';
 import { ColumnView, SafeAreaView, RowView, useTheme } from 'Containers';
 import { Button, ListHeader, NavBar, Text, TextInput } from 'Components';
@@ -16,11 +17,21 @@ const emptiesReference = [];
 const focusNext = index => {
   emptiesReference[index + 1]?.current?.focus();
 };
-const nextStep = ({ payload, saveVehicleChecks, showMustComplyWithTerms }) => {
+const nextStep = ({
+  payload,
+  saveVehicleChecks,
+  showMustComplyWithTerms,
+  updateChecklistProps,
+  updateInAppBrowserProps
+}) => {
   if (payload.shiftStart) {
     triggerDriverConfirmations({ saveVehicleChecks, showMustComplyWithTerms });
   } else {
     saveVehicleChecks('shiftEndVanChecks');
+    openRateMyRound({
+      updateChecklistProps,
+      updateInAppBrowserProps
+    });
   }
 };
 
@@ -39,6 +50,8 @@ const renderEmpty = (
     saveVehicleChecks,
     setEmpty,
     showMustComplyWithTerms,
+    updateChecklistProps,
+    updateInAppBrowserProps,
     updateTransientProps,
     ...empties
   },
@@ -69,7 +82,9 @@ const renderEmpty = (
               : nextStep.bind(null, {
                   payload,
                   saveVehicleChecks,
-                  showMustComplyWithTerms
+                  showMustComplyWithTerms,
+                  updateChecklistProps,
+                  updateInAppBrowserProps
                 })
             : focusNext.bind(null, index)
         }
@@ -98,6 +113,8 @@ const EmptiesCollected = ({
   setEmpty,
   processing,
   showMustComplyWithTerms,
+  updateChecklistProps,
+  updateInAppBrowserProps,
   updateTransientProps,
   ...empties
 }) => {
@@ -147,7 +164,9 @@ const EmptiesCollected = ({
               : nextStep.bind(null, {
                   payload,
                   saveVehicleChecks,
-                  showMustComplyWithTerms
+                  showMustComplyWithTerms,
+                  updateChecklistProps,
+                  updateInAppBrowserProps
                 })
           }
           {...(disabled && { rightColor: colors.inputSecondary })}
@@ -177,6 +196,8 @@ const EmptiesCollected = ({
                 saveVehicleChecks,
                 setEmpty,
                 showMustComplyWithTerms,
+                updateChecklistProps,
+                updateInAppBrowserProps,
                 updateTransientProps,
                 ...empties
               })
@@ -195,7 +216,9 @@ const EmptiesCollected = ({
             onPress={nextStep.bind(null, {
               payload,
               saveVehicleChecks,
-              showMustComplyWithTerms
+              showMustComplyWithTerms,
+              updateChecklistProps,
+              updateInAppBrowserProps
             })}
             testID="empties-mainNext-btn"
           />
@@ -212,6 +235,8 @@ EmptiesCollected.propTypes = {
   saveVehicleChecks: PropTypes.func,
   setEmpty: PropTypes.func,
   showMustComplyWithTerms: PropTypes.func,
+  updateChecklistProps: PropTypes.func,
+  updateInAppBrowserProps: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
 
