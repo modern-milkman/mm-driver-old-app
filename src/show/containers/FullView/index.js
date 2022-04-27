@@ -38,6 +38,9 @@ FullView.defaultProps = {
     ...Platform.select({
       ios: {
         behavior: 'padding'
+      },
+      android: {
+        behavior: 'height'
       }
     })
   },
