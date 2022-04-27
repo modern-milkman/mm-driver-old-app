@@ -72,6 +72,7 @@ const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
   ImagePicker[method]({
     width: 1000,
     height: 1000,
+    compressImageQuality: 0.6,
     cropping: true
   }).then(img => {
     updateDriverResponse({
