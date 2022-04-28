@@ -21,7 +21,14 @@
     },
     "itemsLeft": "{{items}} items left",
     "loadVan": "Load Van",
-    "rateMyRound": "Rate My Round",
+    "rateMyRound": {
+      "title": "Rate My Round",
+      "alert": {
+        "title": "Did your round go well today?",
+        "happy": "Great! Please add anything you'd like to share with us on Rate my Round",
+        "sad": "We're sorry to hear that. Please explain what went wrong in 'rate my round' so that we can find a solution for you"
+      }
+    },
     "title": "Your Route Checklist"
   },
   "checklist": {

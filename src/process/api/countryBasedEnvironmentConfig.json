@@ -1,8 +1,8 @@
 {
   "development": {
     "RATE_MY_ROUND": {
-      "uk": "https://forms.office.com/r/GUBhiL1Dhm",
-      "fr": "https://forms.office.com/r/gG2t9i0kHM"
+      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
+      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
     },
     "S_URL": {
       "uk": "https://driver-adminapi.themodernmilkman.co.uk",
@@ -21,8 +21,8 @@
   },
   "production": {
     "RATE_MY_ROUND": {
-      "uk": "https://forms.office.com/r/GUBhiL1Dhm",
-      "fr": "https://forms.office.com/r/gG2t9i0kHM"
+      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
+      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
     },
     "S_URL": {
       "uk": "https://live-adminapi.themodernmilkman.co.uk",
@@ -41,8 +41,8 @@
   },
   "test": {
     "RATE_MY_ROUND": {
-      "uk": "https://forms.office.com/r/GUBhiL1Dhm",
-      "fr": "https://forms.office.com/r/gG2t9i0kHM"
+      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
+      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
     },
     "S_URL": {
       "uk": "https://driver-adminapi.themodernmilkman.co.uk",
@@ -61,8 +61,8 @@
   },
   "uat": {
     "RATE_MY_ROUND": {
-      "uk": "https://forms.office.com/r/GUBhiL1Dhm",
-      "fr": "https://forms.office.com/r/gG2t9i0kHM"
+      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
+      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
     },
     "S_URL": {
       "uk": "https://uat-adminapi.themodernmilkman.co.uk",

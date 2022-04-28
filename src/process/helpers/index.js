@@ -268,6 +268,7 @@ const openPicker = ({ addImage, key, method }) => {
   ImagePicker[method]({
     width: 1000,
     height: 1000,
+    compressImageQuality: 0.6,
     cropping: true,
     includeBase64: true
   }).then(img => {

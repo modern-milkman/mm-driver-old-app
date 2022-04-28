@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
   extends: ['@react-native-community', 'plugin:react/recommended'],
+  ignorePatterns: ['!.prettierrc.js'],
   parser: '@babel/eslint-parser',
   plugins: ['react', 'react-native'],
   rules: {

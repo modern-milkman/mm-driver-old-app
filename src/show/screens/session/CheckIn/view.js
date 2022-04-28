@@ -2,23 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
-import Api from 'Api';
 import I18n from 'Locales/I18n';
 import { defaults } from 'Theme';
+
+import { openRateMyRound } from 'SessionShared';
 import NavigationService from 'Services/navigation';
 import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import { deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 
 import style from './style';
-
-const openRateMyRound = ({ updateChecklistProps, updateInAppBrowserProps }) => {
-  updateChecklistProps({ rateMyRound: true });
-  updateInAppBrowserProps({
-    visible: true,
-    url: Api.RATE_MY_ROUND()
-  });
-};
 
 const renderButtonTitle = ({ status }) => {
   switch (status) {
@@ -172,7 +165,7 @@ const CheckIn = props => {
         : checklist.rateMyRound
         ? 'check'
         : 'chevron-right',
-      title: I18n.t('screens:checkIn.rateMyRound'),
+      title: I18n.t('screens:checkIn.rateMyRound.title'),
       testID: 'checkIn-checkVanEnd-listItem'
     },
     {
