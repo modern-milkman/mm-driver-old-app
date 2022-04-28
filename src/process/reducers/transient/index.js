@@ -27,9 +27,13 @@ export const updateProps = (state, { props }) => {
       if (standard[prop]) {
         validations.push(...standard[prop]);
       }
-      if (regex.empties.tester.test(prop)) {
-        validations.push(...regex.empties.validations);
+
+      for (const regexValidation of Object.values(regex)) {
+        if (regexValidation.tester.test(prop)) {
+          validations.push(...regexValidation.validations);
+        }
       }
+
       for (const validation of validations) {
         if (validation) {
           if (validation.isValid(value)) {

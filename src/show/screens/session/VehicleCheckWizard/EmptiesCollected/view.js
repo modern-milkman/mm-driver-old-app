@@ -17,8 +17,10 @@ const emptiesReference = [];
 const focusNext = index => {
   emptiesReference[index + 1]?.current?.focus();
 };
+
 const nextStep = ({
   payload,
+  rateMyRound,
   saveVehicleChecks,
   showMustComplyWithTerms,
   updateChecklistProps,
@@ -28,16 +30,22 @@ const nextStep = ({
     triggerDriverConfirmations({ saveVehicleChecks, showMustComplyWithTerms });
   } else {
     saveVehicleChecks('shiftEndVanChecks');
-    openRateMyRound({
-      updateChecklistProps,
-      updateInAppBrowserProps
-    });
+
+    if (!rateMyRound) {
+      openRateMyRound({
+        updateChecklistProps,
+        updateInAppBrowserProps
+      });
+    }
   }
 };
 
-const updateEmpty = ({ id, setEmpty, updateTransientProps }, value) => {
+const updateEmpty = (
+  { id, setEmpty, updateTransientProps, emptiesRequired },
+  value
+) => {
   const update = {};
-  update[`empty${id}`] = value;
+  update[`${emptiesRequired ? 'requiredEmpty' : 'empty'}${id}`] = value;
   updateTransientProps(update);
   setEmpty(id, value);
 };
@@ -45,8 +53,11 @@ const updateEmpty = ({ id, setEmpty, updateTransientProps }, value) => {
 const renderEmpty = (
   {
     disabled,
+    emptiesRequired,
+    emptiesScreenDirty,
     length,
     payload,
+    rateMyRound,
     saveVehicleChecks,
     setEmpty,
     showMustComplyWithTerms,
@@ -57,58 +68,77 @@ const renderEmpty = (
   },
   { id, description },
   index
-) => (
-  <>
-    <ListHeader title={description} />
+) => {
+  return (
+    <>
+      <ListHeader title={description} />
 
-    <RowView
-      width={'auto'}
-      marginHorizontal={defaults.marginHorizontal}
-      marginTop={defaults.marginVertical / 2}>
-      <TextInput
-        keyboardType={'numeric'}
-        error={empties[`empty${id}HasError`]}
-        errorMessage={empties[`empty${id}ErrorMessage`]}
-        autoCapitalize={'none'}
-        onChangeText={updateEmpty.bind(null, {
-          id,
-          setEmpty,
-          updateTransientProps
-        })}
-        onSubmitEditing={
-          index === length - 1
-            ? disabled
-              ? mock
-              : nextStep.bind(null, {
-                  payload,
-                  saveVehicleChecks,
-                  showMustComplyWithTerms,
-                  updateChecklistProps,
-                  updateInAppBrowserProps
-                })
-            : focusNext.bind(null, index)
-        }
-        placeholder={I18n.t('input:placeholder.number')}
-        value={empties[`empty${id}`]}
-        ref={emptiesReference[index]}
-        returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-        testID={`empties-textInput-${id}`}
-      />
-    </RowView>
-  </>
-);
+      <RowView
+        width={'auto'}
+        marginHorizontal={defaults.marginHorizontal}
+        marginTop={defaults.marginVertical / 2}>
+        <TextInput
+          keyboardType={'numeric'}
+          error={
+            empties[
+              `${emptiesRequired ? 'requiredEmpty' : 'empty'}${id}HasError`
+            ]
+          }
+          errorMessage={
+            empties[
+              `${emptiesRequired ? 'requiredEmpty' : 'empty'}${id}ErrorMessage`
+            ]
+          }
+          autoCapitalize={'none'}
+          onChangeText={updateEmpty.bind(null, {
+            id,
+            setEmpty,
+            updateTransientProps,
+            emptiesRequired
+          })}
+          onSubmitEditing={
+            index === length - 1
+              ? disabled
+                ? mock
+                : nextStep.bind(null, {
+                    payload,
+                    rateMyRound,
+                    saveVehicleChecks,
+                    showMustComplyWithTerms,
+                    updateChecklistProps,
+                    updateInAppBrowserProps
+                  })
+              : focusNext.bind(null, index)
+          }
+          placeholder={I18n.t('input:placeholder.number')}
+          value={empties[`${emptiesRequired ? 'requiredEmpty' : 'empty'}${id}`]}
+          ref={emptiesReference[index]}
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+          testID={`empties-textInput-${id}`}
+        />
+      </RowView>
+    </>
+  );
+};
 
-const updateTransientEmpties = ({ emptiesCollected, updateTransientProps }) => {
+const updateTransientEmpties = ({
+  emptiesCollected,
+  updateTransientProps,
+  emptiesRequired
+}) => {
   const update = {};
   for (const { id, value } of Object.values(emptiesCollected)) {
-    update[`empty${id}`] = value;
+    update[`${emptiesRequired ? 'requiredEmpty' : 'empty'}${id}`] = value;
   }
   updateTransientProps(update);
 };
 
 const EmptiesCollected = ({
+  emptiesRequired,
+  emptiesScreenDirty,
   navigation,
   payload,
+  rateMyRound,
   saveVehicleChecks,
   setEmpty,
   processing,
@@ -122,15 +152,21 @@ const EmptiesCollected = ({
   const { emptiesCollected } = payload;
   let disabled = false;
   const emptiesArray = Object.values(emptiesCollected);
-  for (const { id, value } of emptiesArray) {
-    if (!value || empties[`empty${id}HasError`]) {
+
+  for (const { id } of emptiesArray) {
+    if (
+      empties[`${emptiesRequired ? 'requiredEmpty' : 'empty'}${id}HasError`]
+    ) {
       disabled = true;
     }
+
     emptiesReference.push(React.createRef());
   }
 
   const mainActionTitle = payload.shiftStart
-    ? I18n.t('general:next')
+    ? emptiesScreenDirty
+      ? I18n.t('general:next')
+      : I18n.t('general:skip')
     : I18n.t('general:done');
 
   useEffect(() => {
@@ -138,7 +174,8 @@ const EmptiesCollected = ({
       'focus',
       updateTransientEmpties.bind(null, {
         emptiesCollected: payload.emptiesCollected,
-        updateTransientProps
+        updateTransientProps,
+        emptiesRequired
       })
     );
 
@@ -163,13 +200,16 @@ const EmptiesCollected = ({
               ? mock
               : nextStep.bind(null, {
                   payload,
+                  rateMyRound,
                   saveVehicleChecks,
                   showMustComplyWithTerms,
                   updateChecklistProps,
                   updateInAppBrowserProps
                 })
           }
-          {...(disabled && { rightColor: colors.inputSecondary })}
+          {...(disabled && {
+            rightColor: colors.input
+          })}
           testID="empties-navbar"
         />
         {renderProgressBar(2, payload)}
@@ -191,8 +231,10 @@ const EmptiesCollected = ({
             {emptiesArray.map(
               renderEmpty.bind(null, {
                 disabled,
+                emptiesRequired,
                 length: emptiesArray.length,
                 payload,
+                rateMyRound,
                 saveVehicleChecks,
                 setEmpty,
                 showMustComplyWithTerms,
@@ -215,6 +257,7 @@ const EmptiesCollected = ({
             processing={processing}
             onPress={nextStep.bind(null, {
               payload,
+              rateMyRound,
               saveVehicleChecks,
               showMustComplyWithTerms,
               updateChecklistProps,
@@ -229,8 +272,11 @@ const EmptiesCollected = ({
 };
 
 EmptiesCollected.propTypes = {
+  emptiesRequired: PropTypes.bool,
+  emptiesScreenDirty: PropTypes.bool,
   navigation: PropTypes.object,
   payload: PropTypes.object,
+  rateMyRound: PropTypes.bool,
   processing: PropTypes.bool,
   saveVehicleChecks: PropTypes.func,
   setEmpty: PropTypes.func,

@@ -38,6 +38,10 @@ const textValidation = {
 export const regex = {
   empties: {
     tester: new RegExp(/^empty[0-9]+$/),
+    validations: [numericValidation]
+  },
+  requiredEmpties: {
+    tester: new RegExp(/^requiredEmpty[0-9]+$/),
     validations: [requiredValidation, numericValidation]
   }
 };

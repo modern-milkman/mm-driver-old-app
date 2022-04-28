@@ -348,8 +348,11 @@ export const saveVehicleChecks = function* () {
   const payload = { ...checklist.payload };
 
   const returns = [];
+
   for (const { id, value } of Object.values(payload.emptiesCollected)) {
-    returns.push({ returnTypeId: id, quantity: parseInt(value) });
+    if (parseInt(value) >= 0) {
+      returns.push({ returnTypeId: id, quantity: parseInt(value) });
+    }
   }
   delete payload.emptiesCollected;
 
@@ -364,6 +367,10 @@ export const saveVehicleChecks = function* () {
         })
       }
     })
+  });
+  yield put({
+    type: DeliveryTypes.UPDATE_PROPS,
+    props: { emptiesRequired: !checklist.emptiesScreenDirty }
   });
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
 };

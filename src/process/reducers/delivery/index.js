@@ -89,6 +89,8 @@ const initialVehicleChecks = {
 
 export const initialChecklist = {
   deliveryComplete: false,
+  emptiesRequired: false,
+  emptiesScreenDirty: false,
   loadedVan: false,
   loadedVanItems: [],
   rateMyRound: false,
@@ -215,6 +217,8 @@ const incrementDeliveredStock = (draft, { productId, quantity }) => {
 
 const resetChecklistFlags = checklist => {
   checklist.deliveryComplete = false;
+  checklist.emptiesRequired = false;
+  checklist.emptiesScreenDirty = false;
   checklist.loadedVan = false;
   checklist.loadedVanItems = [];
   checklist.payloadAltered = false;
@@ -603,10 +607,17 @@ export const setDelivered = (state, params) =>
 
 export const setEmpty = (state, { prop, value }) =>
   produce(state, draft => {
-    draft.checklist[draft.userId].payload.emptiesCollected[prop] = {
-      ...draft.checklist[draft.userId].payload.emptiesCollected[prop],
+    const emptiesCollected =
+      draft.checklist[draft.userId].payload.emptiesCollected;
+
+    emptiesCollected[prop] = {
+      ...emptiesCollected[prop],
       value
     };
+
+    draft.checklist[draft.userId].emptiesScreenDirty =
+      Object.values(emptiesCollected).filter(el => parseInt(el.value) >= 0)
+        .length > 0;
   });
 
 export const setItemOutOfStock = state =>
