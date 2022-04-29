@@ -1,6 +1,7 @@
 import Api from 'Api';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 const rateMyRound = ({ updateChecklistProps, updateInAppBrowserProps }) => {
   updateChecklistProps({ rateMyRound: true });
@@ -15,6 +16,10 @@ const rateMyRoundSecondAlert = ({
   updateInAppBrowserProps,
   goodRate
 }) => {
+  Analytics.trackEvent(
+    goodRate ? EVENTS.RATE_MY_ROUND_GOOD : EVENTS.RATE_MY_ROUND_BAD
+  );
+
   Alert({
     message: I18n.t(
       `screens:checkIn.rateMyRound.alert.${goodRate ? 'happy' : 'sad'}`
