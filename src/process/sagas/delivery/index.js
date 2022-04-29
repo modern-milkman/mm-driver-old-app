@@ -369,7 +369,7 @@ export const saveVehicleChecks = function* () {
     })
   });
   yield put({
-    type: DeliveryTypes.UPDATE_PROPS,
+    type: DeliveryTypes.UPDATE_CHECKLIST_PROPS,
     props: { emptiesRequired: !checklist.emptiesScreenDirty }
   });
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
