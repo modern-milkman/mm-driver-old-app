@@ -9,12 +9,12 @@
       "fr": "https://modernmilkman-poly-adminapi.azurewebsites.net"
     },
     "SS_URL": {
-      "uk": "https://driver-services.themodernmilkman.co.uk",
+      "uk": "https://tst-services.themodernmilkman.co.uk",
       "fr": "https://modernmilkman-poly-apim.azure-api.net"
     },
     "SS_URL_BASE": {
       "delivery": {
-        "uk": "/delivery/v1/api",
+        "uk": "/dat-delivery/v1/api",
         "fr": "/delivery/v1/api"
       }
     }
