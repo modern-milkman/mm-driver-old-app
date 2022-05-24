@@ -75,7 +75,9 @@
     },
     "deliveryItems": "Delivery items",
     "modal": {
-      "inputPlaceholder": "Type your reason here"
+      "actionSheetPlaceholder": "Please select a reason",
+      "inputPlaceholder": "Add more info here",
+      "rejectTitle": "Rejection Reason"
     },
     "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",

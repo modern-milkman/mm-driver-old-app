@@ -4,6 +4,7 @@ import Config from 'react-native-config';
 import { Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
+import actionSheet from 'Services/actionSheet';
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { defaults, sizes } from 'Theme';
@@ -16,7 +17,6 @@ import {
   List,
   ListHeader,
   NavBar,
-  Picker,
   Separator,
   Text,
   TextInput
@@ -28,8 +28,26 @@ import style from './style';
 
 const reasonMessageRef = React.createRef();
 
+const focusReasonMessage = () => {
+  reasonMessageRef?.current?.focus();
+};
+
 const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
+};
+
+const openActionSheet = ({ rejectReasons, updateTransientProps }) => {
+  const options = [];
+  for (const reason of rejectReasons) {
+    options[reason.description] = handleChangeSkip.bind(
+      null,
+      updateTransientProps,
+      'reasonType',
+      reason
+    );
+  }
+  actionSheet(options);
+  focusReasonMessage();
 };
 
 const podPrompt = ({
@@ -106,7 +124,7 @@ const renderSkipModal = ({
   setModalText,
   setModalVisible,
   setRejected,
-  reasonType = rejectReasons[2].id,
+  reasonType,
   updateTransientProps,
   width
 }) => (
@@ -118,19 +136,38 @@ const renderSkipModal = ({
       alignItems={'flex-start'}
       backgroundColor={colors.neutral}
       overflow={'hidden'}
-      borderRadius={defaults.borderRadius}
-      borderWidth={1}
-      borderColor={colors.input}>
+      borderRadius={defaults.borderRadius}>
       <ColumnView paddingHorizontal={defaults.marginHorizontal}>
-        <Picker
-          items={rejectReasons}
-          selected={reasonType}
-          onChange={handleChangeSkip.bind(
-            null,
-            updateTransientProps,
-            'reasonType'
-          )}
-        />
+        <RowView
+          justifyContent={'flex-start'}
+          marginTop={defaults.marginVertical}
+          marginBottom={defaults.marginVertical / 2}>
+          <Text.Label
+            align={'left'}
+            width={'100%'}
+            color={colors.inputSecondary}>
+            {I18n.t('screens:deliver.modal.rejectTitle')}
+          </Text.Label>
+        </RowView>
+
+        <RowView paddingBottom={defaults.marginVertical}>
+          <Button.Outline
+            borderColor={!reasonType ? colors.error : colors.primary}
+            shadow
+            title={
+              !reasonType
+                ? I18n.t('screens:deliver.modal.actionSheetPlaceholder')
+                : reasonType.description
+            }
+            titleColor={colors.inputSecondary}
+            onPress={openActionSheet.bind(null, {
+              rejectReasons,
+              updateTransientProps
+            })}
+            testID={'deliver-skip'}
+          />
+        </RowView>
+
         <RowView paddingBottom={defaults.marginVertical}>
           <TextInput
             disableErrors
@@ -160,7 +197,7 @@ const renderSkipModal = ({
           <Button.Primary
             title={I18n.t('general:skip')}
             width={'50%'}
-            disabled={reasonMessage === ''}
+            disabled={reasonMessage === '' || !reasonType}
             onPress={rejectAndNavigateBack.bind(
               null,
               setRejected.bind(

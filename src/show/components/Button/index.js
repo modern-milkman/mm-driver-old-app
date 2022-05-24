@@ -32,6 +32,7 @@ const onPressHandler = ({ internallyDisabled, onPress }) => {
 const Button = props => {
   const {
     backgroundOpacity,
+    borderColor,
     buttonAccessibility,
     disabled,
     icon,
@@ -78,7 +79,8 @@ const Button = props => {
             },
           { height: buttonAccessibility },
           noBorderRadius && { ...style.noBorderRadius },
-          backgroundOpacity && { opacity: backgroundOpacity }
+          backgroundOpacity && { opacity: backgroundOpacity },
+          borderColor && { borderColor }
         ]}
       />
 
@@ -125,6 +127,7 @@ const Button = props => {
 
 Button.propTypes = {
   backgroundOpacity: PropTypes.object,
+  borderColor: PropTypes.string,
   buttonAccessibility: PropTypes.number,
   disabled: PropTypes.bool,
   icon: PropTypes.bool,
@@ -138,7 +141,7 @@ Button.propTypes = {
   textAlign: PropTypes.string,
   textFlex: PropTypes.number,
   title: PropTypes.string.isRequired,
-  titleColor: PropTypes.object,
+  titleColor: PropTypes.string,
   type: PropTypes.string,
   weight: PropTypes.string,
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
