@@ -242,6 +242,7 @@ const CheckIn = props => {
             <ColumnView
               width={'auto'}
               marginHorizontal={defaults.marginHorizontal}>
+              {renderHelperMessage({ checklist, colors, status })}
               <Button.Primary
                 title={renderButtonTitle({ status })}
                 disabled={
@@ -260,7 +261,6 @@ const CheckIn = props => {
                       : null
                 })}
               />
-              {renderHelperMessage({ checklist, colors, status })}
             </ColumnView>
           </View>
         </ColumnView>
