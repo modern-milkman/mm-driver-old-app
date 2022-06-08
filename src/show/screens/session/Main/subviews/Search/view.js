@@ -78,8 +78,8 @@ const Search = props => {
       title: I18n.t('general:upNext'),
       data: dataSearched.filter(
         item =>
-          (orderedStopsIds.includes(item.key) ||
-            outOfSequenceIds.includes(item.key)) &&
+          orderedStopsIds.includes(item.key) &&
+          !outOfSequenceIds.includes(item.key) &&
           !completedStopsIds.includes(item.key)
       )
     },
@@ -89,8 +89,7 @@ const Search = props => {
       disabled: true,
       data: dataSearched.filter(
         item =>
-          !orderedStopsIds.includes(item.key) &&
-          !outOfSequenceIds.includes(item.key) &&
+          outOfSequenceIds.includes(item.key) &&
           !completedStopsIds.includes(item.key)
       )
     },
