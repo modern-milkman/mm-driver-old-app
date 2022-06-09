@@ -296,9 +296,9 @@ const ForegroundContent = props => {
                 <RowView
                   width={'auto'}
                   paddingVertical={defaults.marginVertical / 2}>
-                  <Text.Caption color={colors.inputSecondary} align={'center'}>
+                  <Text.List color={colors.inputSecondary} align={'center'}>
                     {subHeadingText(foregroundState, props)}
-                  </Text.Caption>
+                  </Text.List>
                 </RowView>
               )}
             </ColumnView>
