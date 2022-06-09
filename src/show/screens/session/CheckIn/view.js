@@ -241,6 +241,7 @@ const CheckIn = props => {
           <View style={style.fullWidth}>
             <ColumnView
               width={'auto'}
+              marginVertical={defaults.marginVertical}
               marginHorizontal={defaults.marginHorizontal}>
               {renderHelperMessage({ checklist, colors, status })}
               <Button.Primary
