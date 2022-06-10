@@ -130,7 +130,7 @@ const TextInput = forwardRef((props, ref) => {
               onFocus={onFocusChangedInternalEvent.bind(null, true)}
               onSubmitEditing={onSubmitEditing}
               placeholder={placeholder}
-              placeholderTextColor={colors.input}
+              placeholderTextColor={alphaColor('inputSecondary', 0.4)}
               ref={ref}
               returnKeyType={returnKeyType}
               secureTextEntry={!showPassword && secureTextEntry}

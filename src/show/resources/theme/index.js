@@ -16,6 +16,7 @@ export * from './colors';
 
 export const defaults = {
   borderRadius: 10,
+  inputBorderRadius: 16,
   marginHorizontal: 24,
   marginVertical: 24,
   paddingHorizontal: 16,

@@ -4,7 +4,7 @@ import { systemWeights } from 'react-native-typography';
 import { defaults, sizes as themeSizes } from 'Theme';
 
 export const sizes = {
-  borderRadius: defaults.borderRadius,
+  borderRadius: defaults.inputBorderRadius,
   defaultPadding: defaults.paddingHorizontal,
   doubleBorderWidth: 4,
   errorsHeight: 28,

@@ -97,9 +97,9 @@ const renderCountrySelector = ({ colors, country, setCountry }) => (
       justifyContent={'space-between'}
       height={defaults.topNavigation.height}
       marginVertical={defaults.marginVertical / 2}>
-      <Text.List color={colors.inputSecondary}>
+      <Text.Tab color={colors.inputSecondary}>
         {I18n.t('general:country')}
-      </Text.List>
+      </Text.Tab>
       <Label
         backgroundColor={colors.inputSecondary}
         text={I18n.t(`countries:${country}`)}
@@ -129,9 +129,9 @@ const renderRememberMe = ({
     justifyContent={'space-between'}
     width={'auto'}
     marginVertical={defaults.marginVertical}>
-    <Text.List color={colors.inputSecondary}>
+    <Text.Tab color={colors.inputSecondary}>
       {I18n.t('screens:home.rememberMe')}
-    </Text.List>
+    </Text.Tab>
     <Switch
       value={rememberMe}
       onValueChange={updateRememberMe.bind(
