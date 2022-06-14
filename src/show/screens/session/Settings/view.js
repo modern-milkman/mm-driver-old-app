@@ -218,7 +218,8 @@ const Settings = props => {
               'showAllPendingStops',
               !showAllPendingStops
             )}
-            style={style.pressableRow}>
+            style={style.pressableRow}
+            disabled={!isOptimised}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.showAllPendingStops.title')}
@@ -257,7 +258,8 @@ const Settings = props => {
               },
               !autoSelectStop
             )}
-            style={style.pressableRow}>
+            style={style.pressableRow}
+            disabled={!isOptimised}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.autoSelectStop')}
