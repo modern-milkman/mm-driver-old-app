@@ -7,14 +7,14 @@ import { RowView, useTheme } from 'Containers';
 import { defaults } from 'Theme';
 
 const Label = props => {
-  const { backgroundColor, color, testID, text } = props;
+  const { backgroundColor, color, height, testID, text } = props;
   const { colors } = useTheme();
 
   return (
     <RowView
       borderRadius={defaults.borderRadius / 2}
       backgroundColor={backgroundColor || colors.error}
-      height={Text.Label.height + defaults.marginVertical / 4}
+      height={height}
       paddingHorizontal={defaults.marginHorizontal / 4}
       shadow
       width={'auto'}>
@@ -28,12 +28,14 @@ const Label = props => {
 Label.propTypes = {
   backgroundColor: PropTypes.any,
   color: PropTypes.any,
+  height: PropTypes.number,
   shadow: PropTypes.bool,
   testID: PropTypes.string,
   text: PropTypes.string
 };
 
 Label.defaultProps = {
+  height: Text.Label.height + defaults.marginVertical / 4,
   shadow: false,
   text: null
 };

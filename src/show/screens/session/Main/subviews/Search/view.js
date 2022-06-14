@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import I18n from 'Locales/I18n';
-import { defaults } from 'Theme';
+import { defaults, sizes } from 'Theme';
 import List from 'Components/List';
 import Label from 'Components/Label';
 import { RowView, useTheme, useThemedStyles } from 'Containers';
@@ -171,6 +171,7 @@ const Search = props => {
               <Label
                 backgroundColor={isOptimised ? colors.success : colors.error}
                 shadow
+                height={sizes.input.small}
                 text={I18n.t('general:RO')}
               />
             </RowView>
