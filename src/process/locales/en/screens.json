@@ -81,6 +81,7 @@
     },
     "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",
+    "skipDelivery": "Skip Delivery",
     "status": {
       "completed": "Completed",
       "rejected": "Skipped"

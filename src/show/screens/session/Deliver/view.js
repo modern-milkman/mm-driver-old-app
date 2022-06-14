@@ -256,6 +256,7 @@ const Deliver = props => {
   const { colors } = useTheme();
   const {
     allItemsDone,
+    buttonAccessibility,
     confirmedItem,
     navigation,
     outOfStockIds,
@@ -563,15 +564,14 @@ const Deliver = props => {
                       setModalVisible,
                       updateProps
                     })}
-                    containerWidth={sizes.list.image}
-                    width={sizes.list.image}
+                    containerWidth={buttonAccessibility}
+                    width={buttonAccessibility}
                     icon={'addPhoto'}
                     iconColor={
                       selectedStop.proofOfDeliveryRequired
                         ? colors.error
                         : colors.primary
                     }
-                    style={style.addPhotoIcon}
                   />
                 )}
                 {podImage && (
@@ -593,8 +593,8 @@ const Deliver = props => {
                         uri: podImage.path
                       }}
                       style={{ borderRadius: defaults.borderRadius }}
-                      width={sizes.list.image}
-                      height={sizes.list.image}
+                      width={buttonAccessibility}
+                      height={buttonAccessibility}
                     />
                   </Pressable>
                 )}
@@ -614,14 +614,16 @@ const Deliver = props => {
                     (selectedStop.proofOfDeliveryRequired && !podImage)
                   }
                   width={
-                    width - sizes.list.image - defaults.marginHorizontal * 2.5
+                    width -
+                    buttonAccessibility -
+                    defaults.marginHorizontal * 2.5
                   }
                   testID={'deliver-done'}
                 />
               </RowView>
               <RowView marginVertical={defaults.marginVertical}>
                 <Button.Outline
-                  title={I18n.t('general:skip')}
+                  title={I18n.t('screens:deliver.skipDelivery')}
                   onPress={showModal.bind(null, {
                     type: 'skip',
                     setModalType,
@@ -640,6 +642,7 @@ const Deliver = props => {
 
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
+  buttonAccessibility: PropTypes.number,
   confirmedItem: PropTypes.array,
   navigation: PropTypes.object,
   outOfStockIds: PropTypes.array,
