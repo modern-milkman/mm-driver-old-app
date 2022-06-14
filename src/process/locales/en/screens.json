@@ -177,6 +177,7 @@
     "title": "Permissions missing"
   },
   "registrationMileage": {
+    "manualRegistration": "Manually enter registration",
     "mileage": "Mileage",
     "or": "OR",
     "registration": "Registration",

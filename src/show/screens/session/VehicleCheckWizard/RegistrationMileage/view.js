@@ -183,6 +183,9 @@ const RegistrationMileage = ({
               {I18n.t('screens:registrationMileage.or')}
             </Text.Label>
 
+            <ListHeader
+              title={I18n.t('screens:registrationMileage.manualRegistration')}
+            />
             <RowView
               width={'auto'}
               marginHorizontal={defaults.marginHorizontal}
