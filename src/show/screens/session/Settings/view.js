@@ -26,6 +26,8 @@ import {
   deliverProductsDisabled
 } from 'Helpers';
 
+import style from './style';
+
 const changeLanguageAndRestartApp = ({ setLanguage }, language) => {
   setLanguage(language);
   NavigationService.goBack({ afterCallback: RNRestart.Restart });
@@ -209,11 +211,14 @@ const Settings = props => {
             />
           </ColumnView>
 
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+          <Pressable
+            onPress={toggleProp.bind(
+              null,
+              updateDeviceProps,
+              'showAllPendingStops',
+              !showAllPendingStops
+            )}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.showAllPendingStops.title')}
@@ -237,15 +242,22 @@ const Settings = props => {
               )}
               disabled={!isOptimised}
             />
-          </RowView>
+          </Pressable>
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+          <Pressable
+            onPress={onOptimization.bind(
+              null,
+              {
+                checklist,
+                continueDelivering,
+                status,
+                updateDeviceProps
+              },
+              !autoSelectStop
+            )}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.autoSelectStop')}
@@ -269,15 +281,18 @@ const Settings = props => {
               })}
               disabled={!isOptimised}
             />
-          </RowView>
+          </Pressable>
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+          <Pressable
+            onPress={toggleProp.bind(
+              null,
+              updateDeviceProps,
+              'autoOpenStopDetails',
+              !autoOpenStopDetails
+            )}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.autoOpenStopDetails.title')}
@@ -297,15 +312,18 @@ const Settings = props => {
                 'autoOpenStopDetails'
               )}
             />
-          </RowView>
+          </Pressable>
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+          <Pressable
+            onPress={toggleProp.bind(
+              null,
+              updateDeviceProps,
+              'showDoneDeliveries',
+              !showDoneDeliveries
+            )}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.showDoneDeliveries')}
@@ -319,15 +337,18 @@ const Settings = props => {
                 'showDoneDeliveries'
               )}
             />
-          </RowView>
+          </Pressable>
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+          <Pressable
+            onPress={toggleProp.bind(
+              null,
+              updateDeviceProps,
+              'computeDirections',
+              !computeDirections
+            )}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.computeDirections')}
@@ -341,17 +362,20 @@ const Settings = props => {
                 'computeDirections'
               )}
             />
-          </RowView>
+          </Pressable>
 
           {computeDirections && (
             <>
               <Separator marginLeft={defaults.marginHorizontal} />
 
-              <RowView
-                marginHorizontal={defaults.marginHorizontal}
-                justifyContent={'space-between'}
-                marginVertical={defaults.marginVertical / 2}
-                width={'auto'}>
+              <Pressable
+                onPress={toggleProp.bind(
+                  null,
+                  updateDeviceProps,
+                  'computeShortDirections',
+                  !computeShortDirections
+                )}
+                style={style.pressableRow}>
                 <ColumnView flex={1} alignItems={'flex-start'}>
                   <Text.List color={colors.inputSecondary}>
                     {I18n.t('screens:settings.switches.computeShortDirections')}
@@ -365,7 +389,7 @@ const Settings = props => {
                     'computeShortDirections'
                   )}
                 />
-              </RowView>
+              </Pressable>
             </>
           )}
 
@@ -373,11 +397,14 @@ const Settings = props => {
 
           <ListHeader title={I18n.t('screens:settings.sections.map')} />
 
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+          <Pressable
+            onPress={toggleProp.bind(
+              null,
+              updateDeviceProps,
+              'showMapControlsOnMovement',
+              !showMapControlsOnMovement
+            )}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.showMapControlsOnMovement')}
@@ -391,15 +418,17 @@ const Settings = props => {
                 'showMapControlsOnMovement'
               )}
             />
-          </RowView>
+          </Pressable>
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+          <Pressable
+            onPress={onForegroundSizeChange.bind(
+              null,
+              updateDeviceProps,
+              foregroundSize !== 'large'
+            )}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.foreground')}
@@ -412,7 +441,7 @@ const Settings = props => {
                 updateDeviceProps
               )}
             />
-          </RowView>
+          </Pressable>
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
@@ -536,11 +565,9 @@ const Settings = props => {
 
           <Separator marginLeft={defaults.marginHorizontal} />
 
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+          <Pressable
+            onPress={onVibrateChange.bind(null, updateDeviceProps, !vibrate)}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.vibrations')}
@@ -550,14 +577,18 @@ const Settings = props => {
               value={vibrate}
               onValueChange={onVibrateChange.bind(null, updateDeviceProps)}
             />
-          </RowView>
+          </Pressable>
 
           <Separator />
-          <RowView
-            marginHorizontal={defaults.marginHorizontal}
-            justifyContent={'space-between'}
-            marginVertical={defaults.marginVertical / 2}
-            width={'auto'}>
+
+          <Pressable
+            onPress={toggleProp.bind(
+              null,
+              updateDeviceProps,
+              'darkMode',
+              !darkMode
+            )}
+            style={style.pressableRow}>
             <ColumnView flex={1} alignItems={'flex-start'}>
               <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:settings.switches.darkMode')}
@@ -571,7 +602,7 @@ const Settings = props => {
                 'darkMode'
               )}
             />
-          </RowView>
+          </Pressable>
 
           <Separator />
 
@@ -581,11 +612,14 @@ const Settings = props => {
                 title={I18n.t('screens:settings.sections.authentication')}
               />
 
-              <RowView
-                marginHorizontal={defaults.marginHorizontal}
-                justifyContent={'space-between'}
-                marginVertical={defaults.marginVertical / 2}
-                width={'auto'}>
+              <Pressable
+                disabled={!biometrics.active}
+                onPress={disableBiometrics.bind(
+                  null,
+                  biometricDisable,
+                  !biometrics.active
+                )}
+                style={style.pressableRow}>
                 <ColumnView flex={1} alignItems={'flex-start'}>
                   <Text.List color={colors.inputSecondary}>
                     {I18n.t('screens:home.biometrics.login')}
@@ -599,7 +633,7 @@ const Settings = props => {
                   onValueChange={disableBiometrics.bind(null, biometricDisable)}
                   disabled={!biometrics.active}
                 />
-              </RowView>
+              </Pressable>
 
               <Separator />
             </>
