@@ -10,12 +10,12 @@
     },
     "SS_URL": {
       "uk": "https://tst-services.themodernmilkman.co.uk",
-      "fr": "https://modernmilkman-poly-apim.azure-api.net"
+      "fr": "https://tst-services.themodernmilkman.co.uk"
     },
     "SS_URL_BASE": {
       "delivery": {
         "uk": "/dat-delivery/v1/api",
-        "fr": "/delivery/v1/api"
+        "fr": "/poly-delivery/v1/api"
       }
     }
   },
@@ -50,32 +50,12 @@
     },
     "SS_URL": {
       "uk": "https://tst-services.themodernmilkman.co.uk",
-      "fr": "https://modernmilkman-poly-apim.azure-api.net"
+      "fr": "https://tst-services.themodernmilkman.co.uk"
     },
     "SS_URL_BASE": {
       "delivery": {
         "uk": "/dat-delivery/v1/api",
-        "fr": "/delivery/v1/api"
-      }
-    }
-  },
-  "uat": {
-    "RATE_MY_ROUND": {
-      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
-      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
-    },
-    "S_URL": {
-      "uk": "https://uat-adminapi.themodernmilkman.co.uk",
-      "fr": "https://fr-preprod-adminapi.themodernmilkman.co.uk"
-    },
-    "SS_URL": {
-      "uk": "https://uat-services.themodernmilkman.co.uk",
-      "fr": "https://fr-preprod-services.themodernmilkman.co.uk"
-    },
-    "SS_URL_BASE": {
-      "delivery": {
-        "uk": "/delivery/v1/api",
-        "fr": "/delivery/v1/api"
+        "fr": "/poly-delivery/v1/api"
       }
     }
   }
