@@ -34,6 +34,7 @@ const focusReasonMessage = () => {
 
 const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
+  focusReasonMessage();
 };
 
 const openActionSheet = ({ rejectReasons, updateTransientProps }) => {
@@ -47,7 +48,6 @@ const openActionSheet = ({ rejectReasons, updateTransientProps }) => {
     );
   }
   actionSheet(options);
-  focusReasonMessage();
 };
 
 const podPrompt = ({
