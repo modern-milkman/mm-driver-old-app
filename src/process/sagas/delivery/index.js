@@ -403,6 +403,7 @@ export const setDeliveredOrRejected = function* (
   } = device;
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
+  const rejectReasonId = reasonType.id;
 
   const promisePayload = {
     orderId: id,
@@ -437,7 +438,7 @@ export const setDeliveredOrRejected = function* (
     promise: promise({
       ...promisePayload,
       ...(requestType === 'rejected' && {
-        reasonType,
+        reasonType: rejectReasonId,
         description: reasonMessage
       }),
       ...(requestType === 'delivered' &&
