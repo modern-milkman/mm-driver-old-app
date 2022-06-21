@@ -437,7 +437,7 @@ export const setDeliveredOrRejected = function* (
     promise: promise({
       ...promisePayload,
       ...(requestType === 'rejected' && {
-        reasonType,
+        reasonType: reasonType.id,
         description: reasonMessage
       }),
       ...(requestType === 'delivered' &&
