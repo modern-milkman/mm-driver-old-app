@@ -172,6 +172,10 @@
       "location": {
         "android": "Enable from device's Settings > Location > App permision > Driver screen.",
         "ios": "Enable from device's Settings > Privacy > Location Services screen."
+      },
+      "photoLibrary": {
+        "android": "Enable from device's Settings > Location > Permision manager > Files > Driver screen.",
+        "ios": "Enable from device's Settings > Driver > Photos."
       }
     },
     "title": "Permissions missing"
