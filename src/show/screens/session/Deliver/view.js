@@ -134,6 +134,8 @@ const renderSkipModal = ({
     flex={1}>
     <ColumnView
       alignItems={'flex-start'}
+      borderColor={colors.input}
+      borderWidth={1}
       backgroundColor={colors.neutral}
       overflow={'hidden'}
       borderRadius={defaults.borderRadius}>
@@ -577,7 +579,7 @@ const Deliver = props => {
                 {podImage && (
                   <Pressable
                     key={'pod'}
-                    style={style.photoWrapper}
+                    style={[style.photoWrapper, { width: buttonAccessibility }]}
                     onPress={podPrompt.bind(null, {
                       podImage,
                       proofOfDeliveryRequired:
@@ -594,7 +596,6 @@ const Deliver = props => {
                       }}
                       style={{ borderRadius: defaults.borderRadius }}
                       width={buttonAccessibility}
-                      height={buttonAccessibility}
                     />
                   </Pressable>
                 )}
