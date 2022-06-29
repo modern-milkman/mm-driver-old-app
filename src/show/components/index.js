@@ -14,6 +14,7 @@ import Separator from './Separator';
 import SideBar from './SideBar';
 import Slider from './Slider';
 import Switch from './Switch';
+import SegmentedControl from './SegmentedControl';
 import Text from './Text';
 import TextInput from './TextInput';
 
@@ -32,6 +33,7 @@ export {
   NavBar,
   Picker,
   ProgressBar,
+  SegmentedControl,
   Separator,
   SideBar,
   Slider,

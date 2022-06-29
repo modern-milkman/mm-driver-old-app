@@ -377,7 +377,15 @@ export const saveVehicleChecks = function* () {
 
 export const setDeliveredOrRejected = function* (
   requestType,
-  { id, podImage, outOfStockIds, selectedStopId, reasonType, reasonMessage }
+  {
+    hasCollectedEmpties,
+    id,
+    podImage,
+    outOfStockIds,
+    selectedStopId,
+    reasonType,
+    reasonMessage
+  }
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
   const country = yield select(countrySelector);
@@ -440,14 +448,16 @@ export const setDeliveredOrRejected = function* (
         reasonType: reasonType.id,
         description: reasonMessage
       }),
-      ...(requestType === 'delivered' &&
-        podImage && {
+      ...(requestType === 'delivered' && {
+        emptiesCollected: hasCollectedEmpties,
+        ...(podImage && {
           podImage: yield Repositories.filesystem.readFile(
             podImage.path,
             'base64'
           ),
           podImageType: podImage.mime
         })
+      })
     })
   });
 

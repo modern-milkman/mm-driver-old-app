@@ -74,6 +74,7 @@
       }
     },
     "deliveryItems": "Delivery items",
+    "emptiesCollected": "Empties Collected?",
     "modal": {
       "actionSheetPlaceholder": "Please select a reason",
       "inputPlaceholder": "Add more info here",

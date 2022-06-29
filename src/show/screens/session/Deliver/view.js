@@ -17,6 +17,7 @@ import {
   List,
   ListHeader,
   NavBar,
+  SegmentedControl,
   Separator,
   Text,
   TextInput
@@ -116,6 +117,7 @@ const renderFallbackCustomerImage = width => (
 
 const renderSkipModal = ({
   colors,
+  hasCollectedEmpties,
   outOfStockIds,
   reasonMessage,
   rejectReasons,
@@ -208,7 +210,8 @@ const renderSkipModal = ({
                 selectedStop.key,
                 outOfStockIds,
                 reasonType,
-                reasonMessage
+                reasonMessage,
+                hasCollectedEmpties
               ),
               setModalImageSrc,
               setModalText,
@@ -254,6 +257,8 @@ const Deliver = props => {
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
+
+  const [hasCollectedEmpties, setHasCollectedEmpties] = useState(null);
 
   const { colors } = useTheme();
   const {
@@ -358,6 +363,7 @@ const Deliver = props => {
         {modalType === 'skip' &&
           renderSkipModal({
             colors,
+            hasCollectedEmpties,
             ...props,
             setModalImageSrc,
             setModalText,
@@ -538,10 +544,33 @@ const Deliver = props => {
         )}
       </ColumnView>
       {selectedStop && selectedStop.status === 'pending' && (
-        <ColumnView
-          width={'auto'}
-          marginHorizontal={defaults.marginHorizontal}
-          marginTop={defaults.marginVertical / 2}>
+        <ColumnView width={'auto'} marginHorizontal={defaults.marginHorizontal}>
+          <Separator width={'100%'} />
+          <RowView
+            width={'100%'}
+            marginHorizontal={defaults.marginHorizontal}
+            marginVertical={defaults.marginVertical / 2}
+            justifyContent={'space-between'}>
+            <Text.List color={colors.inputSecondary}>
+              {I18n.t('screens:deliver.emptiesCollected')}
+            </Text.List>
+
+            <SegmentedControl
+              buttons={[
+                {
+                  label: I18n.t('general:yes'),
+                  value: true
+                },
+                {
+                  label: I18n.t('general:no'),
+                  value: false
+                }
+              ]}
+              onPress={setHasCollectedEmpties}
+              selected={hasCollectedEmpties}
+            />
+          </RowView>
+
           {unacknowledgedList.length > 0 && (
             <RowView marginVertical={defaults.marginVertical}>
               <Button.Secondary
@@ -607,12 +636,14 @@ const Deliver = props => {
                       selectedStop.orderId,
                       selectedStop.key,
                       outOfStockIds,
-                      podImage
+                      podImage,
+                      hasCollectedEmpties
                     )
                   })}
                   disabled={
                     !allItemsDone ||
-                    (selectedStop.proofOfDeliveryRequired && !podImage)
+                    (selectedStop.proofOfDeliveryRequired && !podImage) ||
+                    hasCollectedEmpties === null
                   }
                   width={
                     width -

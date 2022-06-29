@@ -37,7 +37,13 @@ export const { Types, Creators } = createActions(
     resetChecklistPayload: ['resetType'],
     saveVehicleChecks: ['saveType'],
     setCustomerClaims: ['payload', 'stopId'],
-    setDelivered: ['id', 'selectedStopId', 'outOfStockIds', 'podImage'],
+    setDelivered: [
+      'id',
+      'selectedStopId',
+      'outOfStockIds',
+      'podImage',
+      'hasCollectedEmpties'
+    ],
     setEmpty: ['prop', 'value'],
     setDirectionsPolyline: ['payload'],
     setBundleProducts: ['payload'],
@@ -50,7 +56,8 @@ export const { Types, Creators } = createActions(
       'selectedStopId',
       'outOfStockIds',
       'reasonType',
-      'reasonMessage'
+      'reasonMessage',
+      'hasCollectedEmpties'
     ],
     setSelectedClaimId: ['claim'],
     setRejectDeliveryReasons: ['payload'],

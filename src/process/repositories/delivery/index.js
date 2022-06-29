@@ -82,6 +82,7 @@ export default {
     orderId,
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null,
+    emptiesCollected = false,
     podImage = null,
     podImageType = null
   }) {
@@ -92,6 +93,7 @@ export default {
       {
         deliveryLocationLatitude,
         deliveryLocationLongitude,
+        emptiesCollected,
         ...(podImage &&
           podImageType && {
             proofOfDelivery: {
