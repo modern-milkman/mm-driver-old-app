@@ -19,7 +19,7 @@ if (global.location && global.location.pathname.includes('/debugger-ui')) {
 if (Config.ENVIRONMENT === 'development') {
   Crashes.setEnabled(false);
   Analytics.setEnabled(false);
-} else if (['test', 'uat'].includes(Config.ENVIRONMENT)) {
+} else if (['test', 'core'].includes(Config.ENVIRONMENT)) {
   Analytics.setEnabled(false);
 }
 

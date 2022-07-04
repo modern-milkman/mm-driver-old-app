@@ -1,4 +1,24 @@
 {
+  "core": {
+    "RATE_MY_ROUND": {
+      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
+      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
+    },
+    "S_URL": {
+      "uk": "https://driver-adminapi.themodernmilkman.co.uk",
+      "fr": "https://modernmilkman-poly-adminapi.azurewebsites.net"
+    },
+    "SS_URL": {
+      "uk": "https://tst-services.themodernmilkman.co.uk",
+      "fr": "https://tst-services.themodernmilkman.co.uk"
+    },
+    "SS_URL_BASE": {
+      "delivery": {
+        "uk": "/tmm-adminapi/v1",
+        "fr": "/poly-delivery/v1/api"
+      }
+    }
+  },
   "development": {
     "RATE_MY_ROUND": {
       "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",

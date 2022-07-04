@@ -79,9 +79,9 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
+    bundleInCore: true,
     bundleInRelease: true,
     bundleInQaTest: true,
-    bundleInUat: true,
     enableHermes: (findProperty('expo.jsEngine') ?: "jsc") == "hermes",  // clean and rebuild if changing
     cliPath: "../../node_modules/react-native/cli.js",
     hermesCommand: "../../node_modules/hermes-engine/%OS-BIN%/hermesc",
@@ -97,7 +97,7 @@ project.ext.envConfigFiles = [
     debug: ".env.development",
     release: ".env.production",
     qaTest: ".env.test",
-    uat: ".env.uat"
+    core: ".env.core"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 //react-native-vector-icons
@@ -237,10 +237,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        uat {
-        }
+        
     }
     buildTypes {
+        core {
+            initWith(buildTypes.release)
+            matchingFallbacks = ['release']
+            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
+        }
         debug {
             matchingFallbacks = ['qaTest']
             resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
@@ -253,11 +257,6 @@ android {
             resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
         qaTest {
-            initWith(buildTypes.release)
-            matchingFallbacks = ['release']
-            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
-        }
-        uat {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
             resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
