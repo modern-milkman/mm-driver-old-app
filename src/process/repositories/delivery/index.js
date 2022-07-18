@@ -49,17 +49,6 @@ export default {
   getVehicleStockForDriver() {
     return Api.get('/Delivery/GetVehicleStockForDriver');
   },
-  patchFRDelivered({
-    orderId,
-    deliveryLocationLatitude = null,
-    deliveryLocationLongitude = null
-  }) {
-    return Api.patch('/Delivery/SetDelivered', {
-      orderId,
-      deliveryLocationLatitude,
-      deliveryLocationLongitude
-    });
-  },
   patchItemOutOfStock(itemId) {
     return Api.patch(`/Delivery/SetOutfStock/${itemId}`);
   },

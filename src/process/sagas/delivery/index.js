@@ -33,7 +33,6 @@ import {
 import {
   Types as DeviceTypes,
   autoSelectStop as autoSelectStopSelector,
-  country as countrySelector,
   device as deviceSelector
 } from 'Reducers/device';
 
@@ -388,7 +387,6 @@ export const setDeliveredOrRejected = function* (
   }
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
-  const country = yield select(countrySelector);
   const device = yield select(deviceSelector);
   const isOptimised = yield select(isOptimisedSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
@@ -412,20 +410,16 @@ export const setDeliveredOrRejected = function* (
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
+  const promise =
+    requestType === 'delivered'
+      ? Api.repositories.delivery.postDelivered
+      : Api.repositories.delivery.patchRejected;
+
   const promisePayload = {
     orderId: id,
     deliveryLocationLatitude: position?.latitude,
     deliveryLocationLongitude: position?.longitude
   };
-
-  // TODO once microservices are deployed into FR env, remove the country check / patchFRDelivered
-  // also remove country export from reducer as this is the sole place it is used
-  const promise =
-    requestType === 'delivered'
-      ? country === 'uk'
-        ? Api.repositories.delivery.postDelivered
-        : Api.repositories.delivery.patchFRDelivered
-      : Api.repositories.delivery.patchRejected;
 
   if (isOptimised && autoSelectStop) {
     yield put({
