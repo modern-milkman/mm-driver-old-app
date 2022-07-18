@@ -15,6 +15,7 @@ import {
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import actionSheet from 'Services/actionSheet';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 import slack from './slack';
 
@@ -265,6 +266,15 @@ const openDriverUpdate = () => {
 };
 
 const openPicker = ({ addImage, key, method }) => {
+  const event =
+    method === 'openCamera'
+      ? EVENTS.IMAGE_PICKER_FROM_CAMERA
+      : 'openPicker'
+      ? EVENTS.IMAGE_PICKER_FROM_PHOTO_LIBRARY
+      : EVENTS.IMAGE_PICKER_FROM_NULL;
+
+  Analytics.trackEvent(event);
+
   ImagePicker[method]({
     width: 1000,
     height: 1000,

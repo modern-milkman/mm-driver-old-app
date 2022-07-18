@@ -10,6 +10,7 @@ import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import actionSheet from 'Services/actionSheet';
 import NavigationService from 'Services/navigation';
+import Analytics, { EVENTS } from 'Services/analytics';
 import { deviceFrame, formatDate, mock } from 'Helpers';
 import { defaults, sizes } from 'Theme';
 import { ColumnView, RowView, useTheme, useThemedStyles } from 'Containers';
@@ -69,6 +70,14 @@ const openCannedContent = ({
 };
 
 const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
+  const event =
+    method === 'openCamera'
+      ? EVENTS.IMAGE_PICKER_FROM_CAMERA
+      : 'openPicker'
+      ? EVENTS.IMAGE_PICKER_FROM_PHOTO_LIBRARY
+      : EVENTS.IMAGE_PICKER_FROM_NULL;
+  Analytics.trackEvent(event);
+
   ImagePicker[method]({
     width: 1000,
     height: 1000,
