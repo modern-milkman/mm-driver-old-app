@@ -459,7 +459,8 @@ const Deliver = props => {
             color={colors.inputSecondary}
             testID={'deliver-routeDescription'}>
             {I18n.t('screens:deliver.routeDescription', {
-              routeDescription
+              routeDescription,
+              interpolation: { escapeValue: false }
             })}
           </Text.Caption>
         </RowView>
