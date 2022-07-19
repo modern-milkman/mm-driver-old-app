@@ -59,7 +59,7 @@ const blacklists = {
     `${Config.SLACK_CRASH_WEBHOOK}`,
     `${Config.SLACK_FAILED_WEBHOOK}`
   ],
-  addToStackRoute: ['PermissionsMissing', 'UpgradeApp'],
+  addToStackRoute: ['PermissionsMissing', 'UpgradeApp', 'CustomerIssueModal'],
   resetStackRoutes: ['CheckIn'],
   transientReset: [
     'EmptiesCollected',
