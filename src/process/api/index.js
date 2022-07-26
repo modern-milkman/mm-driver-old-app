@@ -35,7 +35,7 @@ const COUNTRY_BASED_PROP = (rootProp, secondaryProp = null) => {
 };
 
 const configureCountryBaseURL = () => {
-  api.defaults.baseURL = `${COUNTRY_BASED_PROP('S_URL')}${Config.S_URL_BASE}`;
+  api.defaults.baseURL = `${COUNTRY_BASED_PROP('S_URL')}`;
 
   if (NETINFO_LISTENER) {
     NETINFO_LISTENER();
@@ -331,7 +331,8 @@ const Api = {
   RATE_MY_ROUND: RMR_COUNTRY_BASED_PROP,
   S_URL: COUNTRY_BASED_PROP.bind(null, 'S_URL'),
   SS_URL: COUNTRY_BASED_PROP.bind(null, 'SS_URL'),
-  SS_URL_BASE: COUNTRY_BASED_PROP.bind(null, 'SS_URL_BASE'),
+  S_URL_SUFFIX: COUNTRY_BASED_PROP.bind(null, 'SS_URL'),
+  SS_URL_SUFFIX: COUNTRY_BASED_PROP.bind(null, 'SS_URL_SUFFIX'),
 
   configureCountryBaseURL,
   repositories,

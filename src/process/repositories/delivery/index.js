@@ -5,7 +5,7 @@ import Api from 'Api';
 
 export default {
   driverReply({ claimId, comment, image, imageType }) {
-    return Api.post('/Claim/DriverResponse', {
+    return Api.post(`${Api.SS_URL_SUFFIX('admin')}/Claim/DriverResponse`, {
       claimId,
       comment,
       image,
@@ -13,44 +13,54 @@ export default {
     });
   },
   getCannedContent() {
-    return Api.get('/CannedContent/GetByContentType/2');
+    return Api.get(
+      `${Api.SS_URL_SUFFIX('admin')}/CannedContent/GetByContentType/2`
+    );
   },
   getCustomerClaims({ customerId }) {
-    return Api.get(`/Claim/GetDriverClaims/${customerId}`);
+    return Api.get(
+      `${Api.SS_URL_SUFFIX('admin')}/Claim/GetDriverClaims/${customerId}`
+    );
   },
   getDriverResponseImage(id) {
     Api.repositories.filesystem.downloadFile({
       fromUrl: `${Api.S_URL()}${
-        Config.S_URL_BASE
+        Api.S_URL_SUFFIX
       }/Claim/DriverResponseImageFile/${id}`,
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${id}`
     });
   },
   getForDriver() {
     return Api.get(
-      `${Api.SS_URL()}${Api.SS_URL_BASE('delivery')}/Delivery/GetForDriver`
+      `${Api.SS_URL()}${Api.SS_URL_SUFFIX('delivery')}/Delivery/GetForDriver`
     );
   },
   getProductImage(id) {
     Api.repositories.filesystem.downloadFile({
-      fromUrl: `${Api.S_URL()}${Config.S_URL_BASE}/Product/Image/${id}`,
+      fromUrl: `${Api.S_URL()}${Api.S_URL_SUFFIX}/Product/Image/${id}`,
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${id}`
     });
   },
   getAllBundleProducts() {
-    return Api.get('/Product/GetAllBundleProducts');
+    return Api.get(
+      `${Api.SS_URL_SUFFIX('admin')}/Product/GetAllBundleProducts`
+    );
   },
   getReasons() {
-    return Api.get('/RejectReason');
+    return Api.get(`${Api.SS_URL_SUFFIX('admin')}/RejectReason`);
   },
   getReturnTypes() {
-    return Api.get('/ReturnType');
+    return Api.get(`${Api.SS_URL_SUFFIX('admin')}/ReturnType`);
   },
   getVehicleStockForDriver() {
-    return Api.get('/Delivery/GetVehicleStockForDriver');
+    return Api.get(
+      `${Api.SS_URL_SUFFIX('admin')}/Delivery/GetVehicleStockForDriver`
+    );
   },
   patchItemOutOfStock(itemId) {
-    return Api.patch(`/Delivery/SetOutfStock/${itemId}`);
+    return Api.patch(
+      `${Api.SS_URL_SUFFIX('admin')}/Delivery/SetOutfStock/${itemId}`
+    );
   },
   patchRejected({
     orderId,
@@ -59,7 +69,7 @@ export default {
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null
   }) {
-    return Api.patch('/Delivery/SetRejected', {
+    return Api.patch(`${Api.SS_URL_SUFFIX('admin')}/Delivery/SetRejected`, {
       orderId,
       reasonType,
       description,
@@ -76,7 +86,7 @@ export default {
     podImageType = null
   }) {
     return Api.post(
-      `${Api.SS_URL()}${Api.SS_URL_BASE(
+      `${Api.SS_URL()}${Api.SS_URL_SUFFIX(
         'delivery'
       )}/Delivery/${orderId}/SetDelivered`,
       {
@@ -94,12 +104,12 @@ export default {
     );
   },
   postDriverActivity(payload) {
-    return Api.post('/Driver/DriverActivity', {
+    return Api.post(`${Api.SS_URL_SUFFIX('admin')}/Driver/DriverActivity`, {
       ...payload
     });
   },
   postVechicleChecks({ payload }) {
-    return Api.post('/Driver/VehicleCheck', {
+    return Api.post(`${Api.SS_URL_SUFFIX('admin')}/Driver/VehicleCheck`, {
       ...payload
     });
   },
