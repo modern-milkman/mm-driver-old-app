@@ -118,7 +118,7 @@ class Root extends React.Component {
 
   renderCrash = () => {
     const {
-      colors,
+      theme: { colors },
       device: {
         crashCount,
         crashCode,

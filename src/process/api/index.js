@@ -377,17 +377,22 @@ const Api = {
 
   testCustomHeaders({ headers }) {
     if (headers) {
+      const { dispatch } = store().store;
       if (
         headers['x-app-version'] &&
         semverGt(headers['x-app-version'], coerce(Config.APP_VERSION_NAME))
       ) {
+        dispatch(
+          DeviceActions.updateProps({
+            minimumVersion: headers['x-app-version']
+          })
+        );
         NavigationService.navigate({
           routeName: 'UpgradeApp',
           params: { minimumVersion: headers['x-app-version'] }
         });
       }
       if (headers['x-route-time']) {
-        const { dispatch } = store().store;
         const [h, m] = timeToHMArray(headers['x-route-time']);
         dispatch(
           DeviceActions.updateProps({

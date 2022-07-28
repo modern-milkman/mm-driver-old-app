@@ -15,12 +15,7 @@ const logoSize = 100;
 
 const UpgradeApp = props => {
   const { colors } = useTheme();
-  const {
-    appcenter,
-    navigation: {
-      state: { params }
-    }
-  } = props;
+  const { appcenter, minimumVersion } = props;
 
   return (
     <FullView bgColor={colors.primary}>
@@ -41,11 +36,11 @@ const UpgradeApp = props => {
             {I18n.t('screens:upgradeApp.description')}
           </Text.List>
 
-          {params?.minimumVersion && (
+          {minimumVersion && (
             <ColumnView marginTop={defaults.marginVertical}>
               <Text.Caption align={'center'}>
                 {I18n.t('screens:upgradeApp.minimumVersion', {
-                  minimumVersion: params.minimumVersion
+                  minimumVersion
                 })}
               </Text.Caption>
             </ColumnView>
@@ -86,11 +81,7 @@ const UpgradeApp = props => {
 
 UpgradeApp.propTypes = {
   appcenter: PropTypes.object,
-  navigation: PropTypes.object
-};
-
-UpgradeApp.defaultProps = {
-  navigation: {}
+  minimumVersion: PropTypes.string
 };
 
 export default UpgradeApp;

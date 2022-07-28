@@ -5,6 +5,7 @@ import { Types as ApplicationTypes } from 'Reducers/application';
 import { createNavigationContainerRef } from '@react-navigation/native';
 
 export const navigationRef = createNavigationContainerRef();
+
 const config = {
   goBackDisabled: false
 };
@@ -42,17 +43,25 @@ const NavigationService = {
   },
   navigate: navigationParams => {
     const { routeName, params, action = [], key = '' } = navigationParams;
-    if (navigationRef.isReady() && routeName) {
-      navigationRef.navigate(routeName, params);
 
-      if (config.storeDispatcher) {
-        config.storeDispatcher({
-          type: ApplicationTypes.NAVIGATE,
-          routeName,
-          params,
-          action,
-          key
-        });
+    if (navigationRef.isReady() && routeName) {
+      const currentRoute = navigationRef?.current?.getCurrentRoute().name;
+
+      if (
+        currentRoute !== 'UpgradeApp' ||
+        (currentRoute === 'UpgradeApp' && params?.forceUpgradeRedirect)
+      ) {
+        navigationRef.navigate(routeName, params);
+
+        if (config.storeDispatcher) {
+          config.storeDispatcher({
+            type: ApplicationTypes.NAVIGATE,
+            routeName,
+            params,
+            action,
+            key
+          });
+        }
       }
     }
   }
