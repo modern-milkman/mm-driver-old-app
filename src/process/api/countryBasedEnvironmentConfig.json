@@ -55,7 +55,7 @@
       "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
     },
     "S_URL": {
-      "uk": "https://live-adminapi.themodernmilkman.co.uk",
+      "uk": "https://services.themodernmilkman.co.uk",
       "fr": "https://adminapi.lemarchemoderne.fr"
     },
     "SS_URL": {
@@ -69,7 +69,7 @@
         "fr": "/delivery/fr-v1/api"
       },
       "admin": {
-        "uk": "",
+        "uk": "/adminapi/api",
         "fr": ""
       }
     }
