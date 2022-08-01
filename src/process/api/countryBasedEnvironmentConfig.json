@@ -5,7 +5,7 @@
       "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
     },
     "S_URL": {
-      "uk": "https://driver-adminapi.themodernmilkman.co.uk",
+      "uk": "https://tst-services.themodernmilkman.co.uk",
       "fr": "https://modernmilkman-poly-adminapi.azurewebsites.net"
     },
     "SS_URL": {
@@ -15,12 +15,12 @@
     "S_URL_SUFFIX": { "uk": "/api", "fr": "/api" },
     "SS_URL_SUFFIX": {
       "delivery": {
-        "uk": "/dat-delivery/v1/api",
+        "uk": "/tmm-delivery/v1/api",
         "fr": "/poly-delivery/v1/api"
       },
       "admin": {
-        "uk": "",
-        "fr": ""
+        "uk": "/tmm-adminapi/v1/api",
+        "fr": "/api"
       }
     }
   },
@@ -45,7 +45,7 @@
       },
       "admin": {
         "uk": "/dat-adminapi/v1/api",
-        "fr": ""
+        "fr": "/api"
       }
     }
   },
