@@ -70,7 +70,7 @@
       },
       "admin": {
         "uk": "/adminapi/api",
-        "fr": ""
+        "fr": "/api"
       }
     }
   },
@@ -95,7 +95,7 @@
       },
       "admin": {
         "uk": "/dat-adminapi/v1/api",
-        "fr": ""
+        "fr": "/api"
       }
     }
   }
