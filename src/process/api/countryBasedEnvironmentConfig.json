@@ -69,7 +69,7 @@
         "fr": "/delivery/fr-v1/api"
       },
       "admin": {
-        "uk": "/adminapi/api",
+        "uk": "/adminapi/v1/api",
         "fr": "/api"
       }
     }
