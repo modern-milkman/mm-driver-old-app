@@ -78,6 +78,8 @@ export default {
     });
   },
   postDelivered({
+    routeId,
+    driverId,
     orderId,
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null,
@@ -90,6 +92,8 @@ export default {
         'delivery'
       )}/Delivery/${orderId}/SetDelivered`,
       {
+        routeId,
+        driverId,
         deliveryLocationLatitude,
         deliveryLocationLongitude,
         emptiesCollected,

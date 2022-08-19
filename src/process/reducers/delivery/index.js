@@ -820,6 +820,9 @@ export const outOfSequenceIds = state => state.delivery?.outOfSequenceIds;
 export const routeDescription = state =>
   state.delivery?.stockWithData?.routeDescription;
 
+//REMIND ME Theoretically it should not have multiple routes/night, BE informed
+export const routeId = state => state.delivery?.stock[0]?.routeId;
+
 export const selectedStop = state => {
   const todaysDelivery = state.delivery;
   return todaysDelivery &&

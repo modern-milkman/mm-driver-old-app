@@ -25,6 +25,7 @@ import {
   selectedStop as selectedStopSelector,
   selectedStopId as selectedStopIdSelector,
   serverAddressIds as serverAddressIdsSelector,
+  routeId as routeIdSelector,
   status as statusSelector,
   stock as stockSelector,
   stops as stopsSelector,
@@ -393,6 +394,7 @@ export const setDeliveredOrRejected = function* (
   const status = yield select(statusSelector);
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
+  const routeId = yield select(routeIdSelector);
 
   const {
     autoOpenStopDetails,
@@ -443,6 +445,8 @@ export const setDeliveredOrRejected = function* (
         description: reasonMessage
       }),
       ...(requestType === 'delivered' && {
+        driverId: user.driverId,
+        routeId: routeId,
         emptiesCollected: hasCollectedEmpties,
         ...(podImage && {
           podImage: yield Repositories.filesystem.readFile(
