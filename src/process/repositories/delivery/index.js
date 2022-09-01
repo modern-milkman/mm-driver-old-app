@@ -124,7 +124,9 @@ export default {
     destinationLongitude
   }) {
     return Api.get(
-      `/Routing/GetDirections/${originLatitude}/${originLongitude}/${destinationLatitude}/${destinationLongitude}`
+      `${Api.SS_URL_SUFFIX(
+        'admin'
+      )}/Routing/GetDirections/${originLatitude}/${originLongitude}/${destinationLatitude}/${destinationLongitude}`
     );
   }
 };
