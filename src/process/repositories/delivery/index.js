@@ -5,7 +5,7 @@ import Api from 'Api';
 
 export default {
   driverReply({ claimId, comment, image, imageType }) {
-    return Api.post(`${Api.SS_URL_SUFFIX('admin')}/Claim/DriverResponse`, {
+    return Api.post('/Claim/DriverResponse', {
       claimId,
       comment,
       image,
@@ -13,54 +13,40 @@ export default {
     });
   },
   getCannedContent() {
-    return Api.get(
-      `${Api.SS_URL_SUFFIX('admin')}/CannedContent/GetByContentType/2`
-    );
+    return Api.get('/CannedContent/GetByContentType/2');
   },
   getCustomerClaims({ customerId }) {
-    return Api.get(
-      `${Api.SS_URL_SUFFIX('admin')}/Claim/GetDriverClaims/${customerId}`
-    );
+    return Api.get(`/Claim/GetDriverClaims/${customerId}`);
   },
   getDriverResponseImage(id) {
     Api.repositories.filesystem.downloadFile({
-      fromUrl: `${Api.S_URL()}${
-        Api.S_URL_SUFFIX
-      }/Claim/DriverResponseImageFile/${id}`,
+      fromUrl: `/Claim/DriverResponseImageFile/${id}`,
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${id}`
     });
   },
   getForDriver() {
-    return Api.get(
-      `${Api.SS_URL()}${Api.SS_URL_SUFFIX('delivery')}/Delivery/GetForDriver`
-    );
+    return Api.get(`${Api.DELIVERY_URL()}/Delivery/GetForDriver`);
   },
   getProductImage(id) {
     Api.repositories.filesystem.downloadFile({
-      fromUrl: `${Api.S_URL()}${Api.S_URL_SUFFIX}/Product/Image/${id}`,
+      fromUrl: `/Product/Image/${id}`,
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${id}`
     });
   },
   getAllBundleProducts() {
-    return Api.get(
-      `${Api.SS_URL_SUFFIX('admin')}/Product/GetAllBundleProducts`
-    );
+    return Api.get('/Product/GetAllBundleProducts');
   },
   getReasons() {
-    return Api.get(`${Api.SS_URL_SUFFIX('admin')}/RejectReason`);
+    return Api.get('/RejectReason');
   },
   getReturnTypes() {
-    return Api.get(`${Api.SS_URL_SUFFIX('admin')}/ReturnType`);
+    return Api.get('/ReturnType');
   },
   getVehicleStockForDriver() {
-    return Api.get(
-      `${Api.SS_URL_SUFFIX('admin')}/Delivery/GetVehicleStockForDriver`
-    );
+    return Api.get('/Delivery/GetVehicleStockForDriver');
   },
   patchItemOutOfStock(itemId) {
-    return Api.patch(
-      `${Api.SS_URL_SUFFIX('admin')}/Delivery/SetOutfStock/${itemId}`
-    );
+    return Api.patch(`/Delivery/SetOutfStock/${itemId}`);
   },
   patchRejected({
     orderId,
@@ -69,7 +55,7 @@ export default {
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null
   }) {
-    return Api.patch(`${Api.SS_URL_SUFFIX('admin')}/Delivery/SetRejected`, {
+    return Api.patch('/Delivery/SetRejected', {
       orderId,
       reasonType,
       description,
@@ -87,33 +73,28 @@ export default {
     podImage = null,
     podImageType = null
   }) {
-    return Api.post(
-      `${Api.SS_URL()}${Api.SS_URL_SUFFIX(
-        'delivery'
-      )}/Delivery/${orderId}/SetDelivered`,
-      {
-        routeId,
-        driverId,
-        deliveryLocationLatitude,
-        deliveryLocationLongitude,
-        emptiesCollected,
-        ...(podImage &&
-          podImageType && {
-            proofOfDelivery: {
-              imageData: podImage,
-              mimeType: podImageType
-            }
-          })
-      }
-    );
+    return Api.post(`${Api.DELIVERY_URL()}/Delivery/${orderId}/SetDelivered`, {
+      routeId,
+      driverId,
+      deliveryLocationLatitude,
+      deliveryLocationLongitude,
+      emptiesCollected,
+      ...(podImage &&
+        podImageType && {
+          proofOfDelivery: {
+            imageData: podImage,
+            mimeType: podImageType
+          }
+        })
+    });
   },
   postDriverActivity(payload) {
-    return Api.post(`${Api.SS_URL_SUFFIX('admin')}/Driver/DriverActivity`, {
+    return Api.post('/Driver/DriverActivity', {
       ...payload
     });
   },
   postVechicleChecks({ payload }) {
-    return Api.post(`${Api.SS_URL_SUFFIX('admin')}/Driver/VehicleCheck`, {
+    return Api.post('/Driver/VehicleCheck', {
       ...payload
     });
   },
@@ -124,9 +105,7 @@ export default {
     destinationLongitude
   }) {
     return Api.get(
-      `${Api.SS_URL_SUFFIX(
-        'admin'
-      )}/Routing/GetDirections/${originLatitude}/${originLongitude}/${destinationLatitude}/${destinationLongitude}`
+      `/Routing/GetDirections/${originLatitude}/${originLongitude}/${destinationLatitude}/${destinationLongitude}`
     );
   }
 };

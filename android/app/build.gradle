@@ -79,7 +79,6 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    bundleInCore: true,
     bundleInRelease: true,
     bundleInQaTest: true,
     enableHermes: (findProperty('expo.jsEngine') ?: "jsc") == "hermes",  // clean and rebuild if changing
@@ -97,7 +96,6 @@ project.ext.envConfigFiles = [
     debug: ".env.development",
     release: ".env.production",
     qaTest: ".env.test",
-    core: ".env.core"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 //react-native-vector-icons
@@ -240,7 +238,7 @@ android {
         
     }
     buildTypes {
-        core {
+        qaTest {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
             resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
@@ -254,11 +252,6 @@ android {
             // see https://reactnative.dev/docs/signed-apk-android.
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
-        }
-        qaTest {
-            initWith(buildTypes.release)
-            matchingFallbacks = ['release']
             resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
     }

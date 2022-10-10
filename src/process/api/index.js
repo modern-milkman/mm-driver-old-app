@@ -35,7 +35,7 @@ const COUNTRY_BASED_PROP = (rootProp, secondaryProp = null) => {
 };
 
 const configureCountryBaseURL = () => {
-  api.defaults.baseURL = `${COUNTRY_BASED_PROP('S_URL')}`;
+  api.defaults.baseURL = `${COUNTRY_BASED_PROP('ADMIN')}`;
 
   if (NETINFO_LISTENER) {
     NETINFO_LISTENER();
@@ -329,10 +329,8 @@ api.interceptors.response.use(
 const Api = {
   API_CALL: 'API_CALL',
   RATE_MY_ROUND: RMR_COUNTRY_BASED_PROP,
-  S_URL: COUNTRY_BASED_PROP.bind(null, 'S_URL'),
-  SS_URL: COUNTRY_BASED_PROP.bind(null, 'SS_URL'),
-  S_URL_SUFFIX: COUNTRY_BASED_PROP.bind(null, 'SS_URL'),
-  SS_URL_SUFFIX: COUNTRY_BASED_PROP.bind(null, 'SS_URL_SUFFIX'),
+  ADMIN_URL: COUNTRY_BASED_PROP.bind(null, 'ADMIN'),
+  DELIVERY_URL: COUNTRY_BASED_PROP.bind(null, 'DELIVERY'),
 
   configureCountryBaseURL,
   repositories,

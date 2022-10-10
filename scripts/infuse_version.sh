@@ -4,12 +4,10 @@ version=`grep -E "\"version\":\s?\".*\"" package.json | sed s/[^0-9.]//g`;
 versionCode=`grep -E "\"versionCode\":\s?\".*\"" package.json | sed s/[^0-9.]//g`;
 echo "Infusing version $version-$versionCode to environment files & ios project.pbxproj";
 
-sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.core
 sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.development
 sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.production
 sed -i -e 's/APP_VERSION_NAME=.*/APP_VERSION_NAME='$version'/' $CUR_SPACE/.env.test
 
-sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.core
 sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.development
 sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.production
 sed -i -e 's/APP_VERSION_CODE=.*/APP_VERSION_CODE='$versionCode'/' $CUR_SPACE/.env.test
