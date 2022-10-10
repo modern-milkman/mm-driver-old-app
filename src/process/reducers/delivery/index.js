@@ -206,13 +206,14 @@ const getForDriver = state =>
 
 const incrementDeliveredStock = (draft, { productId, quantity }) => {
   if (draft.bundledProducts[productId]) {
-    for (const [bundledProductId, bundledQuantity] of Object.entries(
+    for (const [bundledProductId, bundledProduct] of Object.entries(
       draft.bundledProducts[productId]
     )) {
       if (!draft.deliveredStock[bundledProductId]) {
         draft.deliveredStock[bundledProductId] = 0;
       }
-      draft.deliveredStock[bundledProductId] += quantity * bundledQuantity;
+      draft.deliveredStock[bundledProductId] +=
+        quantity * bundledProduct.quantity;
     }
   } else {
     if (!draft.deliveredStock[productId]) {
@@ -425,7 +426,8 @@ export const getForDriverSuccess = (state, { payload }) =>
             productId,
             quantity,
             status,
-            title
+            title,
+            isBundle: !!state.bundledProducts[productId]
           };
           draft.stops[
             address.addressId
@@ -569,14 +571,13 @@ export const saveVehicleChecks = (state, { saveType }) =>
 
 export const setBundleProducts = (state, { payload }) =>
   produce(state, draft => {
-    for (const bundledProduct of payload) {
-      draft.bundledProducts[bundledProduct.productId] = {};
-      for (const bundleProduct of bundledProduct.bundledProducts) {
-        draft.bundledProducts[bundledProduct.productId][
-          bundleProduct.productId
-        ] = bundleProduct.quantity;
-      }
-    }
+    draft.bundledProducts = payload.reduce((bundledProduct, item) => {
+      bundledProduct[item.productId] = item.bundledProducts.reduce((bp, el) => {
+        bp[el.productId] = el;
+        return bp;
+      }, {});
+      return bundledProduct;
+    }, {});
   });
 
 export const setCannedContent = (state, { payload }) =>

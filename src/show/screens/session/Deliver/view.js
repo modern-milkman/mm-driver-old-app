@@ -251,6 +251,18 @@ const showModal = ({
 
 const { width, height } = deviceFrame();
 
+const orderTitle = (order, bundledProducts) => {
+  if (!order.isBundle) {
+    return `${order.quantity} x ${order.title}`;
+  }
+
+  const title = Object.values(bundledProducts[order.productId]).map(
+    el => `${order.quantity * el.quantity} x ${el.name}`
+  );
+
+  return title;
+};
+
 const Deliver = props => {
   const [modalImageSrc, setModalImageSrc] = useState(null);
   const [modalText, setModalText] = useState(null);
@@ -263,6 +275,7 @@ const Deliver = props => {
   const { colors } = useTheme();
   const {
     allItemsDone,
+    bundledProducts,
     buttonAccessibility,
     confirmedItem,
     navigation,
@@ -287,9 +300,9 @@ const Deliver = props => {
         const isOutOfStock = outOfStockIds.includes(order.key);
         return {
           ...order,
+          description: null,
           testID: `deliver-deliveryItemRow-${order.productId}`,
-          prefix: order.quantity,
-          title: order.title,
+          title: orderTitle(order, bundledProducts),
           customIcon: 'productPlaceholder',
           disabled:
             deliveredStatuses.includes(selectedStop.status) ||
@@ -302,10 +315,13 @@ const Deliver = props => {
               ? 'check'
               : null,
           enforceLayout: true,
-          ...((isOutOfStock || order.status === 3) && {
-            rightIconColor: colors.error,
-            suffixColor: colors.error
-          })
+          ...(isOutOfStock || order.status === 3
+            ? {
+                rightIconColor: colors.error,
+                suffixColor: colors.error
+              }
+            : { rightIconColor: colors.success }),
+          isDeliveryItem: true
         };
       })
     : null;
@@ -540,13 +556,15 @@ const Deliver = props => {
                 selectedStop?.satisfactionStatus === 5 ? mock : toggleOutOfStock
               }
               onPress={toggleConfirmedItem}
+              renderItemSeparator={null}
+              renderSectionFooter={null}
             />
           </>
         )}
       </ColumnView>
+      <Separator width={'100%'} />
       {selectedStop && selectedStop.status === 'pending' && (
         <ColumnView width={'auto'} marginHorizontal={defaults.marginHorizontal}>
-          <Separator width={'100%'} />
           <RowView
             width={'100%'}
             marginHorizontal={defaults.marginHorizontal}
@@ -675,6 +693,7 @@ const Deliver = props => {
 
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
+  bundledProducts: PropTypes.object,
   buttonAccessibility: PropTypes.number,
   confirmedItem: PropTypes.array,
   navigation: PropTypes.object,
@@ -695,6 +714,7 @@ Deliver.propTypes = {
 
 Deliver.defaultProps = {
   allItemsDone: false,
+  bundledProducts: {},
   confirmedItem: [],
   outOfStockIds: [],
   podImage: null,

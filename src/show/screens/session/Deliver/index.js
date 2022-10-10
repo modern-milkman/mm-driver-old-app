@@ -9,13 +9,14 @@ export default connect(
   state => {
     return {
       allItemsDone: state.delivery?.allItemsDone,
+      bundledProducts: state.delivery.bundledProducts,
       buttonAccessibility: state.device.buttonAccessibility,
-      selectedStop: selectedStop(state),
       confirmedItem: state.delivery?.confirmedItem,
       outOfStockIds: state.delivery?.outOfStockIds,
       podImage: state.delivery?.podImage,
-      routeDescription: state.delivery?.stockWithData?.routeDescription,
       rejectReasons: state.delivery?.rejectReasons,
+      routeDescription: state.delivery?.stockWithData?.routeDescription,
+      selectedStop: selectedStop(state),
       ...state.transient
     };
   },

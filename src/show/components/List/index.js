@@ -144,6 +144,7 @@ const renderItemInterface = (
     description,
     descriptionColor = colors.inputSecondary,
     disabled: listItemDisabled,
+    isDeliveryItem,
     enforceLayout = false,
     icon,
     iconColor = colors.inputSecondary,
@@ -191,6 +192,10 @@ const renderItemInterface = (
       {...(key && { key })}
       testID={testID}>
       <RowView
+        backgroundColor={isDeliveryItem && colors.input}
+        borderRadius={isDeliveryItem && defaults.borderRadius}
+        paddingHorizontal={isDeliveryItem && defaults.marginHorizontal / 4}
+        paddingVertical={isDeliveryItem && defaults.marginVertical / 4}
         minHeight={sizes.list.height - defaults.marginVertical / 2}
         justifyContent={'space-between'}
         alignItems={'center'}>
@@ -224,13 +229,26 @@ const renderItemInterface = (
             flex={4}
             justifyContent={title && description ? 'space-between' : 'center'}
             alignItems={'flex-start'}>
-            <Text.List
-              align={'left'}
-              color={titleColor}
-              {...(titleExpands && { numberOfLines: 2 })}
-              testID={`${testID}-title`}>
-              {title}
-            </Text.List>
+            {Array.isArray(title) ? (
+              title.map(el => (
+                <Text.List
+                  key={el}
+                  align={'left'}
+                  color={titleColor}
+                  {...(titleExpands && { numberOfLines: 2 })}
+                  testID={`${testID}-title`}>
+                  {el}
+                </Text.List>
+              ))
+            ) : (
+              <Text.List
+                align={'left'}
+                color={titleColor}
+                {...(titleExpands && { numberOfLines: 2 })}
+                testID={`${testID}-title`}>
+                {title}
+              </Text.List>
+            )}
             <Text.Caption
               color={descriptionColor}
               testID={`${testID}-description`}>
