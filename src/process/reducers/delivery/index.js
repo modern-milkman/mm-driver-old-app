@@ -7,17 +7,11 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
+    addPodImageToDriverClaim: ['image', 'handledClaims', 'stopId'],
     clearCenterMapLocation: null,
     continueDelivering: null,
     deliverLater: ['selectedStopId'],
-    driverReply: [
-      'claimId',
-      'comment',
-      'image',
-      'imageType',
-      'acknowledgedClaim',
-      'index'
-    ],
+    driverReply: ['claimId', 'comment', 'acknowledgedClaim', 'index'],
     foregroundDeliveryActions: null,
     getBundleProducts: null,
     getCannedContent: null,
@@ -137,6 +131,26 @@ export const initialState = {
   userId: null
 };
 
+const addPodImageToDriverClaim = (state, { image, handledClaims, stopId }) =>
+  produce(state, draft => {
+    handledClaims.forEach(claimId => {
+      const claimIdx = state.stops[stopId].claims.acknowledgedList.findIndex(
+        cl => cl.claimId === claimId
+      );
+
+      if (claimIdx !== -1) {
+        draft.stops[stopId].claims.acknowledgedList[claimIdx].driverResponses =
+          state.stops[stopId].claims.acknowledgedList[
+            claimIdx
+          ].driverResponses.map(dr => ({
+            ...dr,
+            isLocalImage: true,
+            localImage: image
+          }));
+      }
+    });
+  });
+
 const deliverLater = (state, { selectedStopId }) =>
   produce(state, draft => {
     const selectedStopIndex = draft.orderedStopsIds.indexOf(selectedStopId);
@@ -151,19 +165,14 @@ const deliverLater = (state, { selectedStopId }) =>
     }
   });
 
-const driverReply = (
-  state,
-  { claimId, comment, image, imageType, acknowledgedClaim, index }
-) =>
+const driverReply = (state, { claimId, comment, acknowledgedClaim, index }) =>
   produce(state, draft => {
     const selectedStopId = state.selectedStopId;
     const response = {
       driverAcknowledged: true,
       claimId,
       comment,
-      hasImage: image && imageType ? true : false,
-      responseDateTime: new Date(),
-      localImage: image
+      responseDateTime: new Date()
     };
 
     if (!acknowledgedClaim) {
@@ -389,6 +398,7 @@ export const getForDriverSuccess = (state, { payload }) =>
           claims: {
             acknowledgedList: [],
             unacknowledgedList: [],
+            unacknowledgedListIds: [],
             showClaimModal: false
           },
           deliveryInstructions,
@@ -406,6 +416,10 @@ export const getForDriverSuccess = (state, { payload }) =>
           title: computedAddress
         };
       }
+
+      draft.stops[address.addressId].proofOfDeliveryRequired =
+        address.proofOfDeliveryRequired;
+
       draft.stops[address.addressId].satisfactionStatus =
         address.satisfactionStatus || 0;
 
@@ -589,10 +603,12 @@ export const setCustomerClaims = (state, { payload, stopId }) =>
   produce(state, draft => {
     const unacknowledgedList = [];
     const acknowledgedList = [];
+    const unacknowledgedListIds = [];
 
     payload.forEach(claim => {
       if (claim.driverAcknowledged === false) {
         unacknowledgedList.push(claim);
+        unacknowledgedListIds.push(claim.claimId);
         draft.stops[stopId].claims.showClaimModal = true;
       } else {
         acknowledgedList.push({ ...claim, index: acknowledgedList.length + 1 });
@@ -608,6 +624,7 @@ export const setCustomerClaims = (state, { payload, stopId }) =>
     }
     draft.stops[stopId].claims.acknowledgedList = acknowledgedList;
     draft.stops[stopId].claims.unacknowledgedList = unacknowledgedList;
+    draft.stops[stopId].claims.unacknowledgedListIds = unacknowledgedListIds;
   });
 
 export const setDelivered = (state, params) =>
@@ -746,6 +763,7 @@ export const updateStopAutoSelectTimestamp = (state, { sID }) =>
   });
 
 export default createReducer(initialState, {
+  [Types.ADD_POD_IMAGE_TO_DRIVER_CLAIM]: addPodImageToDriverClaim,
   [Types.CLEAR_CENTER_MAP_LOCATION]: clearCenterMapLocation,
   [Types.CONTINUE_DELIVERING]: startDelivering,
   [Types.DELIVER_LATER]: deliverLater,

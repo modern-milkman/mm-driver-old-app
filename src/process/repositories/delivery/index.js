@@ -4,12 +4,10 @@ import Config from 'react-native-config';
 import Api from 'Api';
 
 export default {
-  driverReply({ claimId, comment, image, imageType }) {
+  driverReply({ claimId, comment }) {
     return Api.post('/Claim/DriverResponse', {
       claimId,
-      comment,
-      image,
-      imageType
+      comment
     });
   },
   getCannedContent() {
@@ -20,7 +18,7 @@ export default {
   },
   getDriverResponseImage(id) {
     Api.repositories.filesystem.downloadFile({
-      fromUrl: `/Claim/DriverResponseImageFile/${id}`,
+      fromUrl: `${Api.ADMIN_URL()}/Claim/DriverResponseImageFile/${id}`,
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${id}`
     });
   },
@@ -29,7 +27,7 @@ export default {
   },
   getProductImage(id) {
     Api.repositories.filesystem.downloadFile({
-      fromUrl: `/Product/Image/${id}`,
+      fromUrl: `${Api.ADMIN_URL()}/Product/Image/${id}`,
       toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${id}`
     });
   },
@@ -71,7 +69,8 @@ export default {
     deliveryLocationLongitude = null,
     emptiesCollected = false,
     podImage = null,
-    podImageType = null
+    podImageType = null,
+    handledClaims
   }) {
     return Api.post(`${Api.DELIVERY_URL()}/Delivery/${orderId}/SetDelivered`, {
       routeId,
@@ -79,6 +78,7 @@ export default {
       deliveryLocationLatitude,
       deliveryLocationLongitude,
       emptiesCollected,
+      handledClaims,
       ...(podImage &&
         podImageType && {
           proofOfDelivery: {

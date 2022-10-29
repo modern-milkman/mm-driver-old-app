@@ -83,7 +83,9 @@ const CustomerIssueDetails = props => {
         interpolation: { escapeValue: false }
       }),
       moreInfo: item.comment,
-      image: item.hasImage
+      image: item.isLocalImage
+        ? item.localImage
+        : item.hasImage
         ? item.localImage
           ? `file://${item.localImage}`
           : `file://${RNFS.DocumentDirectoryPath}/${Config.FS_DRIVER_REPLY_IMAGES}/${item.claimDriverResponseId}`

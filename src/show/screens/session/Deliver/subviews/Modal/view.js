@@ -2,7 +2,6 @@ import React from 'react';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import ImagePicker from 'react-native-image-crop-picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { BackHandler, TouchableOpacity } from 'react-native';
 
@@ -10,7 +9,6 @@ import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import actionSheet from 'Services/actionSheet';
 import NavigationService from 'Services/navigation';
-import Analytics, { EVENTS } from 'Services/analytics';
 import { deviceFrame, formatDate, mock } from 'Helpers';
 import { defaults, sizes } from 'Theme';
 import { ColumnView, RowView, useTheme, useThemedStyles } from 'Containers';
@@ -19,7 +17,6 @@ import {
   Text,
   TextInput,
   Icon,
-  Image,
   Label,
   List,
   Separator
@@ -33,26 +30,7 @@ const hideClaimsModal = toggleModal => {
   //prevents flicker when canceling from reply modal
 };
 
-const openActionSheet = ({ driverResponse, updateDriverResponse }) => {
-  actionSheet({
-    [I18n.t('general:takePhoto')]: openPicker.bind(null, {
-      driverResponse,
-      method: 'openCamera',
-      updateDriverResponse
-    }),
-    [I18n.t('general:openGalery')]: openPicker.bind(null, {
-      driverResponse,
-      method: 'openPicker',
-      updateDriverResponse
-    })
-  });
-};
-
-const openCannedContent = ({
-  driverResponse,
-  updateDriverResponse,
-  cannedContent
-}) => {
+const openCannedContent = ({ updateDriverResponse, cannedContent }) => {
   if (cannedContent.length <= 0) {
     return;
   }
@@ -60,36 +38,11 @@ const openCannedContent = ({
 
   for (let cc of cannedContent) {
     actions[cc.name] = updateDriverResponse.bind(null, {
-      text: cc.description,
-      image: driverResponse.image,
-      imageType: driverResponse.imageType
+      text: cc.description
     });
   }
 
   actionSheet(actions);
-};
-
-const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
-  const event =
-    method === 'openCamera'
-      ? EVENTS.IMAGE_PICKER_FROM_CAMERA
-      : 'openPicker'
-      ? EVENTS.IMAGE_PICKER_FROM_PHOTO_LIBRARY
-      : EVENTS.IMAGE_PICKER_FROM_NULL;
-  Analytics.trackEvent(event);
-
-  ImagePicker[method]({
-    width: 1000,
-    height: 1000,
-    compressImageQuality: 0.6,
-    cropping: true
-  }).then(img => {
-    updateDriverResponse({
-      text: driverResponse?.text,
-      image: img.path,
-      imageType: img.mime
-    });
-  });
 };
 
 const renderReplyBody = ({
@@ -119,52 +72,9 @@ const renderReplyBody = ({
         placeholder={I18n.t('input:placeholder.customerIssueModal')}
       />
       <RowView justifyContent={'flex-start'}>
-        {driverResponse.image && driverResponse.image !== '' ? (
-          <TouchableOpacity
-            onPress={updateDriverResponse.bind(null, {
-              text: driverResponse?.text,
-              image: null,
-              imageType: null
-            })}
-            style={style.photoWrapper}>
-            <Image
-              source={{
-                uri: driverResponse?.image
-              }}
-              style={{ borderRadius: defaults.borderRadius }}
-              width={sizes.list.image}
-              height={sizes.list.image}
-            />
-            <CustomIcon
-              icon={'close'}
-              containerWidth={sizes.list.image / 2}
-              style={style.closeIcon}
-              onPress={updateDriverResponse.bind(null, {
-                text: driverResponse?.text,
-                image: null,
-                imageType: null
-              })}
-            />
-          </TouchableOpacity>
-        ) : (
-          <CustomIcon
-            containerWidth={sizes.list.image}
-            width={sizes.list.image}
-            icon={'addPhoto'}
-            iconColor={colors.input}
-            bgColor={colors.primary}
-            style={style.addPhotoIcon}
-            onPress={openActionSheet.bind(null, {
-              driverResponse,
-              updateDriverResponse
-            })}
-          />
-        )}
-
         {cannedContent.length > 0 && (
           <TouchableOpacity
             onPress={openCannedContent.bind(null, {
-              driverResponse,
               updateDriverResponse,
               cannedContent
             })}>
@@ -242,8 +152,6 @@ const renderCustomerIssueBody = ({
 
 const updateText = (updateDriverResponse, driverResponse, text) => {
   updateDriverResponse({
-    image: driverResponse?.image,
-    imageType: driverResponse?.imageType,
     text
   });
 };
@@ -271,9 +179,7 @@ const CustomerIssueModal = props => {
   const { width, height } = deviceFrame();
 
   const disabled =
-    showReplyModal &&
-    ((!driverResponse?.text && !driverResponse?.image) ||
-      driverResponse.textHasError);
+    showReplyModal && (!driverResponse?.text || driverResponse.textHasError);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -431,8 +337,6 @@ const CustomerIssueModal = props => {
                       null,
                       selectedClaimData?.claimId,
                       driverResponse?.text,
-                      driverResponse?.image,
-                      driverResponse?.imageType,
                       !showClaimModal,
                       selectedClaimData.index - 1
                     )

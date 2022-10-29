@@ -9,7 +9,7 @@ import NavigationService from 'Services/navigation';
 import { Types as GrowlTypes } from 'Reducers/growl';
 import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
-import { base64ToHex, deliveryStates as DS, distance } from 'Helpers';
+import { deliveryStates as DS, distance } from 'Helpers';
 import { Types as TransientTypes } from 'Reducers/transient';
 import {
   rehydrated as rehydratedSelector,
@@ -90,30 +90,18 @@ export const deliverLater = function* () {
 export const driverReply = function* ({
   claimId,
   comment,
-  image,
-  imageType,
   acknowledgedClaim,
   index
 }) {
   const sID = yield select(selectedStopIdSelector);
   const stops = yield select(stopsSelector);
 
-  let imageHex = null;
-  if (image) {
-    let base64Image = yield Repositories.filesystem.readFile(image, 'base64');
-
-    imageHex = base64ToHex(base64Image);
-  }
-
   yield put({
     type: Api.API_CALL,
     promise: Api.repositories.delivery.driverReply({
       claimId,
-      comment,
-      image: imageHex,
-      imageType
+      comment
     }),
-    image,
     index,
     acknowledgedClaim,
     selectedStopId: sID
@@ -395,6 +383,8 @@ export const setDeliveredOrRejected = function* (
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
   const routeId = yield select(routeIdSelector);
+  const selectedStop = stops[selectedStopId];
+  const handledClaims = selectedStop.claims?.unacknowledgedListIds || [];
 
   const {
     autoOpenStopDetails,
@@ -436,6 +426,19 @@ export const setDeliveredOrRejected = function* (
     });
   }
 
+  let baseImage = '';
+
+  if (podImage && requestType === 'delivered') {
+    baseImage = yield Repositories.filesystem.readFile(podImage.path, 'base64');
+
+    yield put({
+      type: DeliveryTypes.ADD_POD_IMAGE_TO_DRIVER_CLAIM,
+      image: `data:${podImage.mime};base64,${baseImage}`,
+      handledClaims,
+      stopId: selectedStopId
+    });
+  }
+
   yield put({
     type: Api.API_CALL,
     promise: promise({
@@ -445,14 +448,12 @@ export const setDeliveredOrRejected = function* (
         description: reasonMessage
       }),
       ...(requestType === 'delivered' && {
+        handledClaims: handledClaims,
         driverId: user.driverId,
         routeId: routeId,
         emptiesCollected: hasCollectedEmpties,
         ...(podImage && {
-          podImage: yield Repositories.filesystem.readFile(
-            podImage.path,
-            'base64'
-          ),
+          podImage: baseImage,
           podImageType: podImage.mime
         })
       })
