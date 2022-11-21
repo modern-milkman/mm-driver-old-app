@@ -94,11 +94,12 @@ export const init = function* () {
       availableNavApps.push(appName);
     }
   }
-
+  changeIcon('regular');
   //XMAS icon auto change from 1st of Deccember to 1st of January
   getIcon().then(icon => {
     const today = new Date();
-    if (today > new Date('1 December ' + today.getFullYear())) {
+
+    if (today < new Date('1 December ' + today.getFullYear())) {
       if (icon === 'xmas') {
         changeIcon('regular');
       }
