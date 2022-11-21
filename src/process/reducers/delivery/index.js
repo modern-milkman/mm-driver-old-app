@@ -769,6 +769,7 @@ export default createReducer(initialState, {
   [Types.DELIVER_LATER]: deliverLater,
   [Types.DRIVER_REPLY]: driverReply,
   [Types.GET_FOR_DRIVER]: getForDriver,
+  [Types.GET_BUNDLE_PRODUCTS]: setLoaderInfo.bind(null, 'bundles'),
   [Types.GET_DRIVER_DATA_FAILURE]: setLoaderInfo.bind(null, null),
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
   [Types.GET_REJECT_DELIVERY_REASONS]: setLoaderInfo.bind(

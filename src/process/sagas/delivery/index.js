@@ -317,7 +317,7 @@ export const redirectSetSelectedClaimId = function* () {
 
 export const refreshAllData = function* () {
   // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
-  // rejectDeliveryReasons -> returnTypes -> getForDriver -> getVehicleStockForDriver |
+  // rejectDeliveryReasons -> bundle products list -> returnTypes -> getForDriver -> getVehicleStockForDriver |
   // cannedContent |
   // bundleProducts |
   const status = yield select(statusSelector);
@@ -326,7 +326,6 @@ export const refreshAllData = function* () {
   if (status === DS.NCI && user_session) {
     yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
     yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
-    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
   }
 };
 

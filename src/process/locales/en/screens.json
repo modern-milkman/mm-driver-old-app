@@ -129,6 +129,7 @@
     },
     "foreground": {
       "loaderText": {
+        "bundles": "Loading bundle information",
         "getForDriver": "Loading Route Data",
         "getVehicleStockForDriver": "Loading Stock Info",
         "rejectReasons": "Loading Reject Reasons",

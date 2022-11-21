@@ -147,7 +147,8 @@ export default function* root() {
       setDeliveredOrRejected.bind(null, 'delivered')
     ),
     takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
-    takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getReturnTypes),
+    takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getBundleProducts),
+    takeLatest(DeliveryTypes.SET_BUNDLE_PRODUCTS, getReturnTypes),
     takeLatest(
       DeliveryTypes.SET_REJECTED,
       setDeliveredOrRejected.bind(null, 'rejected')
