@@ -27,7 +27,6 @@
   </intent>
 </queries>
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -45,24 +44,47 @@
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
+      android:icon="@mipmap/regular"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
       <!-- Ensure that 'android:theme' property is pointing to the style containing native splash screen reference - see 'styles.xml' -->
-      <activity
-        android:name=".MainActivity"
+      <activity android:name=".MainActivity" />
+
+      <activity-alias
+        android:name="com.luminos.modernmilkmandriver.app.MainActivityregular"
+        android:enabled="true"
         android:theme="@style/AppTheme"
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
         android:launchMode="singleTask"
         android:exported="true"
-        android:screenOrientation="portrait">
+        android:screenOrientation="portrait"
+        android:icon="@mipmap/regular"
+        android:targetActivity=".MainActivity">
         <intent-filter>
           <action android:name="android.intent.action.MAIN" />
           <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-      </activity>
+      </activity-alias>
+
+      <activity-alias
+        android:name="com.luminos.modernmilkmandriver.app.MainActivityxmas"
+        android:enabled="false"
+        android:theme="@style/AppTheme"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:launchMode="singleTask"
+        android:exported="true"
+        android:screenOrientation="portrait"
+        android:icon="@mipmap/xmas"
+        android:targetActivity=".MainActivity">
+        <intent-filter>
+          <action android:name="android.intent.action.MAIN" />
+          <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+      </activity-alias>
+
+
 
       <meta-data
         android:name="com.google.android.geo.API_KEY"

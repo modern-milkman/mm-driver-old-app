@@ -69,5 +69,13 @@ target 'ModernMilkmanDriver' do
         end
       end
     end
+
+    installer.generated_projects.each do |project|
+      project.targets.each do |target|
+          target.build_configurations.each do |config|
+              config.build_settings["DEVELOPMENT_TEAM"] = "HHZUS5J79B"
+           end
+      end
+    end
   end
 end

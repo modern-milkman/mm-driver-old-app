@@ -2,10 +2,10 @@ import Appcenter from 'appcenter';
 import Crashes from 'appcenter-crashes';
 import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
+import { changeIcon, getIcon } from 'react-native-change-icon';
 import { call, delay, put, select } from 'redux-saga/effects';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { InteractionManager, Keyboard, Platform } from 'react-native';
-
 import Api from 'Api';
 import store from 'Redux/store';
 import I18n from 'Locales/I18n';
@@ -94,6 +94,20 @@ export const init = function* () {
       availableNavApps.push(appName);
     }
   }
+
+  //XMAS icon auto change from 1st of Deccember to 1st of January
+  getIcon().then(icon => {
+    const today = new Date();
+    if (today > new Date('1 December ' + today.getFullYear())) {
+      if (icon === 'xmas') {
+        changeIcon('regular');
+      }
+    } else {
+      if (icon === 'default' || icon === 'regular') {
+        changeIcon('xmas');
+      }
+    }
+  });
 
   yield put({
     type: DeviceTypes.UPDATE_PROPS,

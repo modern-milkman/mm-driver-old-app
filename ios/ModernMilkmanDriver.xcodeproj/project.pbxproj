@@ -15,6 +15,10 @@
 		66004F547A98F4CF074529FF /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C128021C3760E0C1286005 /* ExpoModulesProvider.swift */; };
 		9D1588D8E44DB941782CDA27 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB8AFB512369794CEE553F47 /* ExpoModulesProvider.swift */; };
 		9D867C8727BD6688005E707C /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D867C8627BD6688005E707C /* SplashScreen.storyboard */; };
+		9DE8E43A291BD298003EE32F /* regular@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9DE8E436291BD298003EE32F /* regular@2x.png */; };
+		9DE8E43B291BD298003EE32F /* xmas@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9DE8E437291BD298003EE32F /* xmas@3x.png */; };
+		9DE8E43C291BD298003EE32F /* regular@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9DE8E438291BD298003EE32F /* regular@3x.png */; };
+		9DE8E43D291BD298003EE32F /* xmas@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9DE8E439291BD298003EE32F /* xmas@2x.png */; };
 		F02D95813C21AA10681CDC1D /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 031A917BEF74380E3EE6A21C /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
 		FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */; };
 		FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */; };
@@ -48,6 +52,10 @@
 		71C128021C3760E0C1286005 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		9B8C66B6637B4A29FEF77165 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9D867C8627BD6688005E707C /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
+		9DE8E436291BD298003EE32F /* regular@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "regular@2x.png"; sourceTree = "<group>"; };
+		9DE8E437291BD298003EE32F /* xmas@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xmas@3x.png"; sourceTree = "<group>"; };
+		9DE8E438291BD298003EE32F /* regular@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "regular@3x.png"; sourceTree = "<group>"; };
+		9DE8E439291BD298003EE32F /* xmas@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xmas@2x.png"; sourceTree = "<group>"; };
 		ACC2E19AC2DBAB6848F9A38E /* Pods-ModernMilkmanDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.release.xcconfig"; sourceTree = "<group>"; };
 		EB8AFB512369794CEE553F47 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -108,6 +116,7 @@
 		13B07FAE1A68108700A75B9A /* ModernMilkmanDriver */ = {
 			isa = PBXGroup;
 			children = (
+				9DE8E435291BC02C003EE32F /* AppIcons */,
 				FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -180,6 +189,17 @@
 				2D02E4901E0B4A5D006451C7 /* ModernMilkmanDriver-tvOSTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9DE8E435291BC02C003EE32F /* AppIcons */ = {
+			isa = PBXGroup;
+			children = (
+				9DE8E436291BD298003EE32F /* regular@2x.png */,
+				9DE8E438291BD298003EE32F /* regular@3x.png */,
+				9DE8E439291BD298003EE32F /* xmas@2x.png */,
+				9DE8E437291BD298003EE32F /* xmas@3x.png */,
+			);
+			path = AppIcons;
 			sourceTree = "<group>";
 		};
 		E54CC72C5AA26491F34CA958 /* Pods */ = {
@@ -290,8 +310,12 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				9D867C8727BD6688005E707C /* SplashScreen.storyboard in Resources */,
+				9DE8E43B291BD298003EE32F /* xmas@3x.png in Resources */,
 				FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */,
 				FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */,
+				9DE8E43D291BD298003EE32F /* xmas@2x.png in Resources */,
+				9DE8E43A291BD298003EE32F /* regular@2x.png in Resources */,
+				9DE8E43C291BD298003EE32F /* regular@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

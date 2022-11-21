@@ -40,6 +40,7 @@
     "react": "17.0.2",
     "react-native": "0.68.0",
     "react-native-camera": "luminos-software/react-native-camera",
+    "react-native-change-icon": "4.0.0",
     "react-native-config": "1.4.5",
     "react-native-device-info": "8.7.0",
     "react-native-dropdownalert": "4.5.1",
