@@ -409,10 +409,16 @@ const Deliver = props => {
           rightCustomIcon={
             acknowledgedList?.length > 0 ? 'customerIssue' : null
           }
-          rightColor={colors.error}
-          rightAction={NavigationService.navigate.bind(null, {
-            routeName: 'CustomerIssueList'
-          })}
+          rightColor={
+            unacknowledgedList.length === 0 ? colors.error : colors.input
+          }
+          rightAction={
+            unacknowledgedList.length === 0
+              ? NavigationService.navigate.bind(null, {
+                  routeName: 'CustomerIssueList'
+                })
+              : mock
+          }
           testID={'deliver-navbar'}
         />
         {selectedStop && selectedStop.status !== 'pending' && (
