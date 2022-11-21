@@ -47,6 +47,7 @@ import {
   getForDriver,
   getForDriverSuccess,
   getRejectDeliveryReasons,
+  getRegistrationPlates,
   getReturnTypes,
   getVehicleStockForDriverSuccess,
   redirectSetSelectedClaimId,
@@ -148,7 +149,8 @@ export default function* root() {
     ),
     takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
     takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getBundleProducts),
-    takeLatest(DeliveryTypes.SET_BUNDLE_PRODUCTS, getReturnTypes),
+    takeLatest(DeliveryTypes.SET_BUNDLE_PRODUCTS, getRegistrationPlates),
+    takeLatest(DeliveryTypes.SET_REGISTRATION_PLATES, getReturnTypes),
     takeLatest(
       DeliveryTypes.SET_REJECTED,
       setDeliveredOrRejected.bind(null, 'rejected')
