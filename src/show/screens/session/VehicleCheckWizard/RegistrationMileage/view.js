@@ -199,7 +199,7 @@ const RegistrationMileage = ({
                   registrationPlates.filter(
                     reg =>
                       reg.registration ===
-                      vehicleRegistration?.replaceAll(' ', '')
+                      vehicleRegistration?.replace(/ /g, '')
                   ).length <= 0
                 }
                 errorMessage={
