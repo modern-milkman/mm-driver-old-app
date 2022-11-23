@@ -183,7 +183,6 @@
     "title": "Permissions missing"
   },
   "registrationMileage": {
-    "invalidPlate": "Invalid registration plate",
     "manualRegistration": "Manually enter registration",
     "mileage": "Mileage",
     "or": "OR",

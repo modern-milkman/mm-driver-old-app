@@ -43,7 +43,6 @@ const RegistrationMileage = ({
   currentMileageHasError,
   navigation,
   payload,
-  registrationPlates,
   setMileage,
   setRegistration,
   updateTransientProps,
@@ -187,25 +186,14 @@ const RegistrationMileage = ({
             <ListHeader
               title={I18n.t('screens:registrationMileage.manualRegistration')}
             />
-
             <RowView
               width={'auto'}
               marginHorizontal={defaults.marginHorizontal}
               marginVertical={defaults.marginVertical / 2}>
               <TextInput
                 autoCapitalize={'characters'}
-                error={
-                  vehicleRegistrationHasError ||
-                  registrationPlates.filter(
-                    reg =>
-                      reg.registration ===
-                      vehicleRegistration?.replace(/ /g, '')
-                  ).length <= 0
-                }
-                errorMessage={
-                  vehicleRegistrationErrorMessage ||
-                  I18n.t('screens:registrationMileage.invalidPlate')
-                }
+                error={vehicleRegistrationHasError}
+                errorMessage={vehicleRegistrationErrorMessage}
                 onChangeText={updateReducerAndTransient.bind(null, {
                   updateTransientProps,
                   reducerMethod: setRegistration,
@@ -276,7 +264,6 @@ RegistrationMileage.propTypes = {
   currentMileageHasError: PropTypes.bool,
   navigation: PropTypes.object,
   payload: PropTypes.object,
-  registrationPlates: PropTypes.array,
   setMileage: PropTypes.func,
   setRegistration: PropTypes.func,
   updateTransientProps: PropTypes.func,

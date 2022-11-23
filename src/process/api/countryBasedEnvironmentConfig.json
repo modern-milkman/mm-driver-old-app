@@ -11,10 +11,6 @@
     "DELIVERY": {
       "uk": "https://tst-services.themodernmilkman.co.uk/tmm-delivery/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-delivery/v1/api"
-    },
-    "OPERATIONS": {
-      "uk": "https://tst-services.themodernmilkman.co.uk/tmm-operations/v1/api",
-      "fr": "https://tst-services.themodernmilkman.co.uk/poly-operations/v1/api"
     }
   },
   "production": {
@@ -29,10 +25,6 @@
     "DELIVERY": {
       "uk": "https://services.themodernmilkman.co.uk/delivery/v1/api",
       "fr": "https://services.themodernmilkman.co.uk/delivery/fr-v1/api"
-    },
-    "OPERATIONS": {
-      "uk": "https://services.themodernmilkman.co.uk/operations/v1/api",
-      "fr": "https://services.themodernmilkman.co.uk/operations/f1-v1/api"
     }
   },
   "test": {
@@ -47,10 +39,6 @@
     "DELIVERY": {
       "uk": "https://tst-services.themodernmilkman.co.uk/tmm-delivery/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-delivery/v1/api"
-    },
-    "OPERATIONS": {
-      "uk": "https://tst-services.themodernmilkman.co.uk/tmm-operations/v1/api",
-      "fr": "https://tst-services.themodernmilkman.co.uk/poly-operations/v1/api"
     }
   }
 }

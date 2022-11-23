@@ -331,7 +331,6 @@ const Api = {
   RATE_MY_ROUND: RMR_COUNTRY_BASED_PROP,
   ADMIN_URL: COUNTRY_BASED_PROP.bind(null, 'ADMIN'),
   DELIVERY_URL: COUNTRY_BASED_PROP.bind(null, 'DELIVERY'),
-  OPERATIONS_URL: COUNTRY_BASED_PROP.bind(null, 'OPERATIONS'),
 
   configureCountryBaseURL,
   repositories,

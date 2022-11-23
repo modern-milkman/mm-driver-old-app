@@ -20,11 +20,10 @@ export const { Types, Creators } = createActions(
     getDriverReplyImage: ['driverResponses', 'claimIndex', 'stopId'],
     getForDriver: null,
     getForDriverSuccess: ['payload'],
-    getRegistrationPlates: null,
-    getRejectDeliveryReasons: null,
-    getReturnTypes: null,
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
+    getRejectDeliveryReasons: null,
+    getReturnTypes: null,
     incrementDeliveredStock: ['productId', 'quantity'],
     initChecklist: null,
     redirectSetSelectedClaimId: ['claimId'],
@@ -54,19 +53,18 @@ export const { Types, Creators } = createActions(
       'reasonMessage',
       'hasCollectedEmpties'
     ],
-    setRegistrationPlates: ['payload'],
+    setSelectedClaimId: ['claim'],
     setRejectDeliveryReasons: ['payload'],
     setReturnTypes: ['payload'],
-    setSelectedClaimId: ['claim'],
+    startDelivering: null,
     showMustComplyWithTerms: null,
     showPODRequired: null,
-    startDelivering: null,
     toggleConfirmedItem: ['id'],
-    toggleModal: ['modal', 'show'],
     toggleOutOfStock: ['id'],
+    toggleModal: ['modal', 'show'],
+    updateDriverActivity: null,
     updateChecklistProps: ['props'],
     updateDirectionsPolyline: null,
-    updateDriverActivity: null,
     updateProps: ['props'],
     updateSelectedStop: ['sID'],
     updateStopAutoSelectTimestamp: ['sID']
@@ -662,11 +660,6 @@ export const setRegistration = (state, { reg }) =>
     draft.checklist[draft.userId].payload.vehicleRegistration = reg;
   });
 
-export const setRegistrationPlates = (state, { payload }) =>
-  produce(state, draft => {
-    draft.registrationPlates = payload;
-  });
-
 export const setRejected = (state, params) =>
   setDeliveredOrRejected(state, 'rejected', params);
 
@@ -779,10 +772,6 @@ export default createReducer(initialState, {
   [Types.GET_BUNDLE_PRODUCTS]: setLoaderInfo.bind(null, 'bundles'),
   [Types.GET_DRIVER_DATA_FAILURE]: setLoaderInfo.bind(null, null),
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
-  [Types.GET_REGISTRATION_PLATES]: setLoaderInfo.bind(
-    null,
-    'registrationPlates'
-  ),
   [Types.GET_REJECT_DELIVERY_REASONS]: setLoaderInfo.bind(
     null,
     'rejectReasons'
@@ -802,7 +791,6 @@ export default createReducer(initialState, {
   [Types.SET_ITEM_OUT_OF_STOCK]: setItemOutOfStock,
   [Types.SET_MILEAGE]: setMileage,
   [Types.SET_REGISTRATION]: setRegistration,
-  [Types.SET_REGISTRATION_PLATES]: setRegistrationPlates,
   [Types.SET_REJECT_DELIVERY_REASONS]: setRejectDeliveryReasons,
   [Types.SET_REJECTED]: setRejected,
   [Types.SET_RETURN_TYPES]: setReturnTypes,

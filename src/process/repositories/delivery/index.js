@@ -34,9 +34,6 @@ export default {
   getAllBundleProducts() {
     return Api.get('/Product/GetAllBundleProducts');
   },
-  getRegistrationPlates() {
-    return Api.get(`${Api.OPERATIONS_URL()}/Driver/GetVehicleRegistration`);
-  },
   getReasons() {
     return Api.get('/RejectReason');
   },
