@@ -3,8 +3,8 @@ export const alphaColors = (theme = 'dark', color = 'primary', opacity = '1') =>
 
 export const RGB_COLORS = {
   blackOnly: {
-    light: '0, 0, 0', //#FFFFFF
-    dark: '0, 0, 0' //#FFFFFF
+    light: '0, 0, 0', //#000000
+    dark: '0, 0, 0' //#000000
   },
   error: {
     light: '252, 138, 131', //#FC8A83,

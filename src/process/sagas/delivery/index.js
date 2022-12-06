@@ -271,6 +271,17 @@ export const getRejectDeliveryReasons = function* () {
   });
 };
 
+export const getRegistrationPlates = function* () {
+  yield put({
+    type: Api.API_CALL,
+    actions: {
+      success: { type: DeliveryTypes.SET_REGISTRATION_PLATES },
+      fail: { type: DeliveryTypes.GET_DRIVER_DATA_FAILURE }
+    },
+    promise: Api.repositories.delivery.getRegistrationPlates()
+  });
+};
+
 export const getReturnTypes = function* () {
   yield put({
     type: Api.API_CALL,

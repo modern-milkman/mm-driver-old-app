@@ -16,8 +16,17 @@ import style from './style';
 const wrapTextComponent = (props, type) => <Text {...props} type={type} />;
 
 const Text = props => {
-  const { align, color, flex, lineHeight, type, weight, children, ...rest } =
-    props;
+  const {
+    align,
+    children,
+    color,
+    flex,
+    lineHeight,
+    type,
+    underline,
+    weight,
+    ...rest
+  } = props;
   let humanoidMaterialStyles = null;
 
   return (
@@ -37,7 +46,8 @@ const Text = props => {
               })
           },
           flex && style.flex,
-          lineHeight && { lineHeight }
+          lineHeight && { lineHeight },
+          underline && style.underline
         ]}>
         {children}
       </Animated.Text>
@@ -61,6 +71,7 @@ Text.propTypes = {
   lineHeight: PropTypes.number,
   numberOfLines: PropTypes.number,
   type: PropTypes.string,
+  underline: PropTypes.bool,
   weight: PropTypes.string
 };
 
@@ -69,6 +80,7 @@ Text.defaultProps = {
   flex: null,
   lineHeight: null,
   type: Types.CAPTION,
+  underline: false,
   weight: null
 };
 

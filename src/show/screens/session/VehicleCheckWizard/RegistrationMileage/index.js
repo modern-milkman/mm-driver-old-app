@@ -8,10 +8,12 @@ import RegistrationMileage from './view';
 export default connect(
   state => ({
     payload: checklist(state)?.payload,
+    registrationPlates: state.delivery.registrationPlates,
     ...state.transient
   }),
   {
     setMileage: deliveryActions.setMileage,
+    setValidNumberPlate: deliveryActions.setValidNumberPlate,
     setRegistration: deliveryActions.setRegistration,
     updateTransientProps: transientActions.updateProps
   }

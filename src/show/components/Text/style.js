@@ -11,7 +11,7 @@ bold: sanFranciscoWeights.bold // 800
 */
 
 export default {
-  fontWeight: (weight) => ({
+  fontWeight: weight => ({
     ...systemWeights[weight]
   }),
   [Types.BUTTON]: {
@@ -80,5 +80,8 @@ export default {
   },
   flex: {
     flex: 1
+  },
+  underline: {
+    textDecorationLine: 'underline'
   }
 };

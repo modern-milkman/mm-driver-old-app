@@ -8,8 +8,16 @@ import I18n from 'Locales/I18n';
 import { defaults } from 'Theme';
 import NavigationService from 'Services/navigation';
 import { deviceFrame, mock, plateRecognition } from 'Helpers';
-import { ColumnView, SafeAreaView, RowView, useTheme } from 'Containers';
-import { Button, ListHeader, NavBar, Text, TextInput, Image } from 'Components';
+import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
+import {
+  Button,
+  ListHeader,
+  NavBar,
+  Text,
+  TextInput,
+  Image,
+  Separator
+} from 'Components';
 
 import styles from './style';
 import plates from './plates';
@@ -27,6 +35,24 @@ const UKregex = RegExp(
 
 const { width } = deviceFrame();
 
+const handleNextAction = (navigation, isRegPlateValid, setVisible) => {
+  if (isRegPlateValid) {
+    navigation();
+  } else {
+    setVisible(true);
+  }
+};
+
+const handleYesAction = (setVisible, navigation) => {
+  setVisible(false);
+  navigation();
+};
+
+const handleGoBack = (setVisible, setSecondAttempt) => {
+  setVisible(false);
+  setSecondAttempt(true);
+};
+
 const updateReducerAndTransient = (
   { updateTransientProps, reducerMethod, prop },
   value
@@ -37,14 +63,45 @@ const updateReducerAndTransient = (
   reducerMethod(value);
 };
 
+const handleRegistration = (
+  updateTransientProps,
+  setValidNumberPlate,
+  registrationPlates,
+  setRegistration,
+  registration
+) => {
+  updateReducerAndTransient(
+    {
+      updateTransientProps,
+      reducerMethod: setRegistration,
+      prop: 'vehicleRegistration'
+    },
+    registration
+  );
+
+  updateReducerAndTransient(
+    {
+      updateTransientProps,
+      reducerMethod: setValidNumberPlate,
+      prop: 'registrationCheckOverride'
+    },
+
+    registrationPlates?.filter(
+      reg => reg.registration === registration?.replaceAll(' ', '')
+    ).length <= 0
+  );
+};
+
 const RegistrationMileage = ({
   currentMileage,
   currentMileageErrorMessage,
   currentMileageHasError,
   navigation,
   payload,
+  registrationPlates,
   setMileage,
   setRegistration,
+  setValidNumberPlate,
   updateTransientProps,
   vehicleRegistration,
   vehicleRegistrationErrorMessage,
@@ -59,8 +116,15 @@ const RegistrationMileage = ({
   } = payload;
   const camera = useRef();
   const [plateImage, setPlateImage] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [secondAttempt, setSecondAttempt] = useState(false);
   const routeName = 'EmptiesCollected';
   const disabled = currentMileageHasError || vehicleRegistrationHasError;
+
+  const isRegPlateValid =
+    registrationPlates?.filter(
+      reg => reg.registration === vehicleRegistration?.replaceAll(' ', '')
+    ).length > 0;
 
   const setNrPlateAndStop = async plate => {
     const data = await camera.current.takePictureAsync({
@@ -68,12 +132,13 @@ const RegistrationMileage = ({
     });
 
     setPlateImage(data.uri);
-    updateReducerAndTransient(
-      {
-        updateTransientProps,
-        reducerMethod: setRegistration,
-        prop: 'vehicleRegistration'
-      },
+
+    handleRegistration.bind(
+      null,
+      updateTransientProps,
+      setValidNumberPlate,
+      registrationPlates,
+      setRegistration,
       plate
     );
   };
@@ -114,6 +179,66 @@ const RegistrationMileage = ({
 
   return (
     <SafeAreaView>
+      <Modal visible={visible} transparent={true} animationType={'fade'}>
+        <ColumnView
+          marginHorizontal={defaults.marginHorizontal}
+          width={width - defaults.marginHorizontal * 2}
+          flex={1}>
+          <ColumnView
+            alignItems={'flex-start'}
+            borderColor={colors.input}
+            borderWidth={1}
+            backgroundColor={colors.neutral}
+            overflow={'hidden'}
+            borderRadius={defaults.borderRadius}>
+            <ColumnView paddingHorizontal={defaults.marginHorizontal}>
+              <RowView
+                justifyContent={'flex-start'}
+                marginTop={defaults.marginVertical}
+                marginBottom={defaults.marginVertical / 2}>
+                <Text.Heading align={'left'} color={colors.inputSecondary}>
+                  {I18n.t('screens:registrationMileage.modal.title')}
+                </Text.Heading>
+              </RowView>
+            </ColumnView>
+
+            <Separator width={'100%'} />
+            <ColumnView
+              paddingHorizontal={defaults.marginHorizontal}
+              paddingVertical={defaults.marginVertical}>
+              <Text.List width={'100%'} color={colors.inputSecondary}>
+                {I18n.t('screens:registrationMileage.modal.body')}
+              </Text.List>
+            </ColumnView>
+
+            {secondAttempt && (
+              <ColumnView
+                marginBottom={defaults.marginVertical}
+                paddingHorizontal={defaults.marginHorizontal}>
+                <Pressable
+                  onPress={handleYesAction.bind(
+                    null,
+                    setVisible,
+                    NavigationService.navigate.bind(null, {
+                      routeName
+                    })
+                  )}>
+                  <Text.List color="white" underline>
+                    {I18n.t('screens:registrationMileage.modal.proceedAnyway')}
+                  </Text.List>
+                </Pressable>
+              </ColumnView>
+            )}
+
+            <Button.Primary
+              title={I18n.t('general:tryAgain')}
+              onPress={handleGoBack.bind(null, setVisible, setSecondAttempt)}
+              noBorderRadius
+            />
+          </ColumnView>
+        </ColumnView>
+      </Modal>
+
       <ColumnView
         backgroundColor={colors.neutral}
         flex={1}
@@ -186,19 +311,25 @@ const RegistrationMileage = ({
             <ListHeader
               title={I18n.t('screens:registrationMileage.manualRegistration')}
             />
+
             <RowView
               width={'auto'}
               marginHorizontal={defaults.marginHorizontal}
               marginVertical={defaults.marginVertical / 2}>
               <TextInput
                 autoCapitalize={'characters'}
-                error={vehicleRegistrationHasError}
-                errorMessage={vehicleRegistrationErrorMessage}
-                onChangeText={updateReducerAndTransient.bind(null, {
+                error={vehicleRegistrationHasError || !isRegPlateValid}
+                errorMessage={
+                  vehicleRegistrationErrorMessage ||
+                  I18n.t('screens:registrationMileage.invalidPlate')
+                }
+                onChangeText={handleRegistration.bind(
+                  null,
                   updateTransientProps,
-                  reducerMethod: setRegistration,
-                  prop: 'vehicleRegistration'
-                })}
+                  setValidNumberPlate,
+                  registrationPlates,
+                  setRegistration
+                )}
                 onSubmitEditing={focusMileage}
                 placeholder={I18n.t('input:placeholder.registration')}
                 value={vehicleRegistration}
@@ -223,13 +354,14 @@ const RegistrationMileage = ({
                   reducerMethod: setMileage,
                   prop: 'currentMileage'
                 })}
-                onSubmitEditing={
-                  disabled
-                    ? mock
-                    : NavigationService.navigate.bind(null, {
-                        routeName
-                      })
-                }
+                onSubmitEditing={handleNextAction.bind(
+                  null,
+                  NavigationService.navigate.bind(null, {
+                    routeName
+                  }),
+                  isRegPlateValid,
+                  setVisible
+                )}
                 placeholder={I18n.t('input:placeholder.mileage')}
                 value={currentMileage}
                 ref={mileageReference}
@@ -245,9 +377,14 @@ const RegistrationMileage = ({
           paddingHorizontal={defaults.marginHorizontal}
           marginBottom={defaults.marginVertical}>
           <Button.Primary
-            onPress={NavigationService.navigate.bind(null, {
-              routeName
-            })}
+            onPress={handleNextAction.bind(
+              null,
+              NavigationService.navigate.bind(null, {
+                routeName
+              }),
+              isRegPlateValid,
+              setVisible
+            )}
             title={I18n.t('general:next')}
             disabled={disabled}
             testID={'checkVan-next-btn'}
@@ -258,12 +395,29 @@ const RegistrationMileage = ({
   );
 };
 
+RegistrationMileage.defaults = {
+  currentMileage: '',
+  currentMileageErrorMessage: '',
+  currentMileageHasError: false,
+  navigation: {},
+  payload: {},
+  registrationPlates: [],
+  setValidNumberPlate: mock,
+  setMileage: mock,
+  setRegistration: mock,
+  updateTransientProps: mock,
+  vehicleRegistration: '',
+  vehicleRegistrationErrorMessage: '',
+  vehicleRegistrationHasError: false
+};
 RegistrationMileage.propTypes = {
   currentMileage: PropTypes.string,
   currentMileageErrorMessage: PropTypes.string,
   currentMileageHasError: PropTypes.bool,
   navigation: PropTypes.object,
   payload: PropTypes.object,
+  registrationPlates: PropTypes.array,
+  setValidNumberPlate: PropTypes.func,
   setMileage: PropTypes.func,
   setRegistration: PropTypes.func,
   updateTransientProps: PropTypes.func,

@@ -36,8 +36,7 @@ const SideBar = props => {
     navigation,
     network,
     source,
-    status,
-    updateInAppBrowserProps
+    status
   } = props;
 
   return (
@@ -76,20 +75,6 @@ const SideBar = props => {
           justifyContent={'flex-start'}
           alignItems={'flex-start'}
           marginVertical={defaults.marginVertical}>
-          <ListItem
-            title={I18n.t('screens:panel.suggestions')}
-            icon={'lightbulb-outline'}
-            rightIcon={'chevron-right'}
-            onPress={navigateAndClose.bind(
-              null,
-              navigation.closeDrawer,
-              updateInAppBrowserProps.bind(null, {
-                visible: true,
-                url: Config.SUGGESTION_URL
-              })
-            )}
-          />
-
           {status === DS.DEL && (
             <ListItem
               title={I18n.t('screens:checkIn.loadVan')}
@@ -161,8 +146,7 @@ SideBar.propTypes = {
   navigation: PropTypes.object,
   network: PropTypes.object,
   source: PropTypes.object,
-  status: PropTypes.string,
-  updateInAppBrowserProps: PropTypes.func
+  status: PropTypes.string
 };
 
 export default SideBar;

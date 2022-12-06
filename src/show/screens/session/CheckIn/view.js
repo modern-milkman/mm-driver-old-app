@@ -103,7 +103,7 @@ const CheckIn = props => {
   const checkinRows = [
     {
       customIcon: 'vanCheck',
-      disabled: checklist.shiftStartVanChecks,
+      // disabled: checklist.shiftStartVanChecks,
       suffixBottom: null,
       onPress: NavigationService.navigate.bind(null, {
         beforeCallback: navigationSideEffect.bind(null, {
