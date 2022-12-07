@@ -87,7 +87,7 @@ const handleRegistration = (
     },
 
     registrationPlates?.filter(
-      reg => reg.registration === registration?.replaceAll(' ', '')
+      reg => reg.registration === registration?.replace(/ /g, '')
     ).length <= 0
   );
 };
@@ -123,7 +123,7 @@ const RegistrationMileage = ({
 
   const isRegPlateValid =
     registrationPlates?.filter(
-      reg => reg.registration === vehicleRegistration?.replaceAll(' ', '')
+      reg => reg.registration === vehicleRegistration?.replace(/ /g, '')
     ).length > 0;
 
   const setNrPlateAndStop = async plate => {
@@ -133,8 +133,7 @@ const RegistrationMileage = ({
 
     setPlateImage(data.uri);
 
-    handleRegistration.bind(
-      null,
+    handleRegistration(
       updateTransientProps,
       setValidNumberPlate,
       registrationPlates,
