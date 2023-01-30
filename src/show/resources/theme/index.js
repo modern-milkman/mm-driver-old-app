@@ -51,6 +51,12 @@ export const sizes = {
   fab: {
     container: 56,
     icon: 24
+  },
+  sidebar: {
+    icon: {
+      default: 24,
+      small: 16
+    }
   }
 };
 

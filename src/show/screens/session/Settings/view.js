@@ -8,10 +8,8 @@ import Alert from 'Services/alert';
 import { defaults, sizes } from 'Theme';
 import Vibration from 'Services/vibration';
 import NavigationService from 'Services/navigation';
-import Analytics, { EVENTS } from 'Services/analytics';
 import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import {
-  Button,
   Label,
   ListHeader,
   NavBar,
@@ -67,49 +65,10 @@ const onVibrateChange = (updateDeviceProps, vibrate) => {
   }
 };
 
-const performLogout = logout => {
-  Analytics.trackEvent(EVENTS.TAP_LOGOUT);
-  logout();
-};
-
 const toggleProp = (updateProps, prop, value) => {
   const updateProp = {};
   updateProp[prop] = value;
   updateProps({ ...updateProp });
-};
-
-const triggerLogout = ({ logout, network }) => {
-  if (network.status === 0) {
-    Alert({
-      title: I18n.t('alert:success.settings.logout.title'),
-      message: I18n.t('alert:success.settings.logout.message'),
-      buttons: [
-        {
-          text: I18n.t('general:cancel'),
-          style: 'cancel'
-        },
-        {
-          text: I18n.t('general:logout'),
-          onPress: performLogout.bind(null, logout)
-        }
-      ]
-    });
-  } else {
-    Alert({
-      title: I18n.t('alert:success.settings.offline.logout.title'),
-      message: I18n.t('alert:success.settings.offline.logout.message'),
-      buttons: [
-        {
-          text: I18n.t('general:cancel'),
-          style: 'cancel'
-        },
-        {
-          text: I18n.t('general:logout'),
-          onPress: performLogout.bind(null, logout)
-        }
-      ]
-    });
-  }
 };
 
 const onOptimization = (
@@ -139,10 +98,8 @@ const Settings = props => {
     foregroundSize,
     isOptimised,
     language,
-    logout,
     mapMarkerSize,
     optimisedStopsToShow,
-    network,
     setLanguage,
     showDoneDeliveries,
     showMapControlsOnMovement,
@@ -641,17 +598,6 @@ const Settings = props => {
             </>
           )}
         </ColumnView>
-        <RowView
-          alignItems={'stretch'}
-          width={'auto'}
-          height={buttonAccessibility}
-          marginHorizontal={defaults.marginHorizontal}
-          marginVertical={defaults.marginVertical}>
-          <Button.Error
-            title={I18n.t('general:logout')}
-            onPress={triggerLogout.bind(null, { logout, network })}
-          />
-        </RowView>
       </ColumnView>
     </SafeAreaView>
   );
@@ -673,10 +619,8 @@ Settings.propTypes = {
   foregroundSize: PropTypes.string,
   isOptimised: PropTypes.bool,
   language: PropTypes.string,
-  logout: PropTypes.func,
   mapMarkerSize: PropTypes.number,
   optimisedStopsToShow: PropTypes.number,
-  network: PropTypes.object,
   setLanguage: PropTypes.func,
   showDoneDeliveries: PropTypes.bool,
   showMapControlsOnMovement: PropTypes.bool,

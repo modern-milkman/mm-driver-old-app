@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { coerce, gt as semverGt } from 'semver';
 import Config from 'react-native-config';
+import { coerce, gt as semverGt } from 'semver';
 
 import I18n from 'Locales/I18n';
 import Text from 'Components/Text';
-import { defaults } from 'Theme';
+import Alert from 'Services/alert';
+import { defaults, sizes } from 'Theme';
 import { ListItem } from 'Components/List';
 import Separator from 'Components/Separator';
 import NavigationService from 'Services/navigation';
-import { ColumnView, SafeAreaView, RowView, useTheme } from 'Containers';
+import Analytics, { EVENTS } from 'Services/analytics';
 import { navigateInSheet } from 'Screens/session/Main/helpers';
+import { ColumnView, SafeAreaView, RowView, useTheme } from 'Containers';
 import {
   appVersionString,
   deliveryStates as DS,
@@ -26,12 +28,52 @@ const navigateAndClose = (closeDrawer, callback) => {
   }
 };
 
+const performLogout = logout => {
+  Analytics.trackEvent(EVENTS.TAP_LOGOUT);
+  logout();
+};
+
+const triggerLogout = ({ logout, network }) => {
+  if (network.status === 0) {
+    Alert({
+      title: I18n.t('alert:success.settings.logout.title'),
+      message: I18n.t('alert:success.settings.logout.message'),
+      buttons: [
+        {
+          text: I18n.t('general:cancel'),
+          style: 'cancel'
+        },
+        {
+          text: I18n.t('general:logout'),
+          onPress: performLogout.bind(null, logout)
+        }
+      ]
+    });
+  } else {
+    Alert({
+      title: I18n.t('alert:success.settings.offline.logout.title'),
+      message: I18n.t('alert:success.settings.offline.logout.message'),
+      buttons: [
+        {
+          text: I18n.t('general:cancel'),
+          style: 'cancel'
+        },
+        {
+          text: I18n.t('general:logout'),
+          onPress: performLogout.bind(null, logout)
+        }
+      ]
+    });
+  }
+};
+
 const SideBar = props => {
   const { colors } = useTheme();
   const {
     appcenter,
     availableNavApps,
     driverId,
+    logout,
     name,
     navigation,
     network,
@@ -58,7 +100,11 @@ const SideBar = props => {
           />
           <ColumnView alignItems={'stretch'}>
             <ListItem
-              icon={null}
+              customIconProps={{
+                containerSize: sizes.sidebar.icon.default,
+                width: sizes.sidebar.icon.default
+              }}
+              icon={'cog'}
               onPress={navigateAndClose.bind(
                 null,
                 navigation.closeDrawer,
@@ -75,6 +121,19 @@ const SideBar = props => {
           justifyContent={'flex-start'}
           alignItems={'flex-start'}
           marginVertical={defaults.marginVertical}>
+          <ColumnView alignItems={'flex-start'}>
+            <ListItem
+              customIconProps={{
+                containerSize: sizes.sidebar.icon.default,
+                width: sizes.sidebar.icon.default
+              }}
+              icon={'logout'}
+              title={I18n.t('general:logout')}
+              onPress={triggerLogout.bind(null, { logout, network })}
+            />
+            <Separator width={'100%'} />
+          </ColumnView>
+
           {status === DS.DEL && (
             <ListItem
               title={I18n.t('screens:checkIn.loadVan')}
@@ -92,16 +151,29 @@ const SideBar = props => {
           )}
 
           {network.status !== 2 && (
-            <ListItem
-              customIcon={'gas'}
-              title={I18n.t('screens:panel.gasStation')}
-              rightIcon={'chevron-right'}
-              onPress={navigateInSheet.bind(null, {
-                availableNavApps,
-                source,
-                lookForGasStation: true
-              })}
-            />
+            <ColumnView
+              alignItems={'flex-start'}
+              marginBottom={defaults.marginVertical}>
+              <ListItem
+                customIcon={'gas'}
+                customIconProps={{
+                  containerWidth: sizes.sidebar.icon.default,
+                  width: sizes.sidebar.icon.default
+                }}
+                title={I18n.t('screens:panel.gasStation')}
+                secondaryCustomRightIcon={'expand'}
+                secondaryCustomRightIconProps={{
+                  containerWidth: sizes.sidebar.icon.small,
+                  width: sizes.sidebar.icon.small
+                }}
+                onPress={navigateInSheet.bind(null, {
+                  availableNavApps,
+                  source,
+                  lookForGasStation: true
+                })}
+              />
+              <Separator width={'100%'} />
+            </ColumnView>
           )}
 
           {network.status !== 2 &&
@@ -142,6 +214,7 @@ SideBar.propTypes = {
   appcenter: PropTypes.object,
   availableNavApps: PropTypes.array,
   driverId: PropTypes.number,
+  logout: PropTypes.func,
   name: PropTypes.string,
   navigation: PropTypes.object,
   network: PropTypes.object,

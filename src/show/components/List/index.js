@@ -32,12 +32,20 @@ const renderCustomIcon = ({ customIcon, customIconProps, testID }) => (
   />
 );
 
-const renderIcon = ({ icon, iconColor, testID }) => (
+const renderIcon = ({ customIconProps, icon, iconColor, testID }) => (
   <Icon
     name={icon}
     color={iconColor}
-    size={style.image.width * widthReducer}
-    containerSize={style.image.width}
+    size={
+      customIconProps?.width
+        ? customIconProps.width
+        : style.image.width * widthReducer
+    }
+    containerSize={
+      customIconProps?.containerSize
+        ? customIconProps.containerSize
+        : style.image.width
+    }
     disabled
     testID={`${testID}-icon-${icon}`}
   />
@@ -77,7 +85,7 @@ const renderMedia = ({
     return renderCustomIcon({ customIcon, customIconProps, testID });
   }
   if (icon) {
-    return renderIcon({ icon, iconColor, testID });
+    return renderIcon({ icon, iconColor, customIconProps, testID });
   }
 };
 
@@ -201,7 +209,10 @@ const renderItemInterface = (
         alignItems={'center'}>
         {(customIcon || image || icon || enforceLayout) && (
           <RowView
-            width={style.image.width + defaults.marginHorizontal / 2}
+            width={
+              (customIconProps ? customIconProps.width : style.image.width) +
+              defaults.marginHorizontal / 2
+            }
             justifyContent={'flex-start'}>
             {(customIcon || image || icon) &&
               renderMedia({

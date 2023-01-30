@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 
 import { Creators as deviceActions } from 'Reducers/device';
-import { Creators as deliveryActions, checklist } from 'Reducers/delivery';
 import { Creators as applicationActions } from 'Reducers/application';
+import { Creators as deliveryActions, checklist } from 'Reducers/delivery';
 
 import Settings from './view';
 
@@ -23,7 +23,6 @@ export default connect(
     language: state.device.language,
     mapMarkerSize: state.device.mapMarkerSize,
     optimisedStopsToShow: state.device.optimisedStopsToShow,
-    network: state.device.network,
     showDoneDeliveries: state.device.showDoneDeliveries,
     showMapControlsOnMovement: state.device.showMapControlsOnMovement,
     showAllPendingStops: state.device.showAllPendingStops,
@@ -32,7 +31,6 @@ export default connect(
   }),
   {
     biometricDisable: applicationActions.biometricDisable,
-    logout: applicationActions.logout,
     continueDelivering: deliveryActions.continueDelivering,
     updateDeviceProps: deviceActions.updateProps,
     setLanguage: deviceActions.setLanguage

@@ -160,7 +160,7 @@
   },
   "panel": {
     "driverID": "Driver ID #{{driverId}}",
-    "gasStation": "Find a nearby gas station",
+    "gasStation": "Find fuel nearby",
     "loadedStock": "Loaded Stock",
     "suggestions": "Suggest a change"
   },
