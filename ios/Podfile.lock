@@ -1,4 +1,21 @@
 PODS:
+  - Appboy-iOS-SDK (4.5.1):
+    - Appboy-iOS-SDK/UI (= 4.5.1)
+  - Appboy-iOS-SDK/ContentCards (4.5.1):
+    - Appboy-iOS-SDK/Core
+    - SDWebImage (< 6, >= 5.8.2)
+  - Appboy-iOS-SDK/Core (4.5.1)
+  - Appboy-iOS-SDK/InAppMessage (4.5.1):
+    - Appboy-iOS-SDK/Core
+    - SDWebImage (< 6, >= 5.8.2)
+  - Appboy-iOS-SDK/NewsFeed (4.5.1):
+    - Appboy-iOS-SDK/Core
+    - SDWebImage (< 6, >= 5.8.2)
+  - Appboy-iOS-SDK/UI (4.5.1):
+    - Appboy-iOS-SDK/ContentCards
+    - Appboy-iOS-SDK/Core
+    - Appboy-iOS-SDK/InAppMessage
+    - Appboy-iOS-SDK/NewsFeed
   - appcenter-analytics (4.4.3):
     - AppCenter/Analytics (~> 4.0)
     - AppCenterReactNativeShared (~> 4.0)
@@ -411,6 +428,9 @@ PODS:
   - React-jsinspector (0.68.0)
   - React-logger (0.68.0):
     - glog
+  - react-native-appboy-sdk (1.41.0):
+    - Appboy-iOS-SDK (~> 4.5.1)
+    - React-Core
   - react-native-camera (4.2.1):
     - React-Core
     - react-native-camera/RCT (= 4.2.1)
@@ -574,6 +594,9 @@ PODS:
     - React-Core
   - RNVectorIcons (9.1.0):
     - React-Core
+  - SDWebImage (5.14.2):
+    - SDWebImage/Core (= 5.14.2)
+  - SDWebImage/Core (5.14.2)
   - SocketRocket (0.6.0)
   - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
@@ -640,6 +663,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-appboy-sdk (from `../node_modules/react-native-appboy-sdk`)
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-camera/TextDetector (from `../node_modules/react-native-camera`)
   - react-native-change-icon (from `../node_modules/react-native-change-icon`)
@@ -681,6 +705,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Appboy-iOS-SDK
     - AppCenter
     - AppCenterReactNativeShared
     - CocoaAsyncSocket
@@ -712,6 +737,7 @@ SPEC REPOS:
     - OpenSSL-Universal
     - PromisesObjC
     - Protobuf
+    - SDWebImage
     - SocketRocket
     - TOCropViewController
     - YogaKit
@@ -783,6 +809,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-appboy-sdk:
+    :path: "../node_modules/react-native-appboy-sdk"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
   react-native-change-icon:
@@ -859,6 +887,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  Appboy-iOS-SDK: 93f8c7e0820a79b4ef5367fae32406f03a30ca97
   AppCenter: 3fd04aa1b166e16fdb03ec81dabe488aece83fbd
   appcenter-analytics: 1b32062da2e250c5e1396c678df8c6011ccbcf5a
   appcenter-core: 6ea4754df4a3d8917a5803e2681a58179d7f7a21
@@ -923,6 +952,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 010a66edf644339f6da72b34208b070089680415
   React-jsinspector: 90f0bfd5d04e0b066c29216a110ffb9a6c34f23f
   React-logger: 8474fefa09d05f573a13c044cb0dfd751d4e52e3
+  react-native-appboy-sdk: 7fc3141f4843a1de05e22d530ac3cc87c24b9bee
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-change-icon: ea9bb7255b09e89f41cbf282df16eade91ab1833
   react-native-config: 6502b1879f97ed5ac570a029961fc35ea606cd14
@@ -959,6 +989,7 @@ SPEC CHECKSUMS:
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
   RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
+  SDWebImage: b9a731e1d6307f44ca703b3976d18c24ca561e84
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: 6671cf077f614314c22fd09ddf87d7abeee64e96

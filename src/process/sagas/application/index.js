@@ -2,10 +2,11 @@ import Appcenter from 'appcenter';
 import Crashes from 'appcenter-crashes';
 import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
-import { changeIcon, getIcon } from 'react-native-change-icon';
 import { call, delay, put, select } from 'redux-saga/effects';
+import { changeIcon, getIcon } from 'react-native-change-icon';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { InteractionManager, Keyboard, Platform } from 'react-native';
+
 import Api from 'Api';
 import store from 'Redux/store';
 import I18n from 'Locales/I18n';
@@ -180,11 +181,8 @@ export const login_error = function* ({ status, isBiometricLogin }) {
 };
 
 export const login_success = function* ({ payload, isBiometricLogin }) {
-  const country = yield select(countrySelector);
-
   yield call(Api.setToken, payload.jwtToken, payload.refreshToken);
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
-  Appcenter.setUserId(`${payload.driverId}-${country}`);
 
   yield put({ type: UserTypes.GET_DRIVER, isBiometricLogin });
   Analytics.trackEvent(EVENTS.LOGIN_SUCCESSFUL);

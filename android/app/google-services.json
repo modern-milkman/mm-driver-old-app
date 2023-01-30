@@ -1,0 +1,130 @@
+{
+  "project_info": {
+    "project_number": "109478460518",
+    "firebase_url": "https://modern-milkman.firebaseio.com",
+    "project_id": "modern-milkman",
+    "storage_bucket": "modern-milkman.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109478460518:android:65dbb09e279cef97a9c1a7",
+        "android_client_info": {
+          "package_name": "com.luminos.modernmilkmandriver.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109478460518-h4v2nnrn46516uguhudi9i8fpis1uil4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpdse8MAJ5n9ZuXAiG7ecohVJhcFIrFUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109478460518-h4v2nnrn46516uguhudi9i8fpis1uil4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "109478460518-igvdjitrm2pjiv61mv5j6hcv18fjgak5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.MilkMan.app",
+                "app_store_id": "1448349321"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109478460518:android:a264f4a9571c0608",
+        "android_client_info": {
+          "package_name": "com.mobile.modernmilkmanuser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109478460518-tn1ok1bdto9hb2219ng3c6t4ia02ot0p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobile.modernmilkmanuser",
+            "certificate_hash": "e16c3d5c27fd8668b3a54f5b21899db2e1db803f"
+          }
+        },
+        {
+          "client_id": "109478460518-h4v2nnrn46516uguhudi9i8fpis1uil4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpdse8MAJ5n9ZuXAiG7ecohVJhcFIrFUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109478460518-h4v2nnrn46516uguhudi9i8fpis1uil4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "109478460518-igvdjitrm2pjiv61mv5j6hcv18fjgak5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.MilkMan.app",
+                "app_store_id": "1448349321"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109478460518:android:ce9f3fbbc6c6a0fda9c1a7",
+        "android_client_info": {
+          "package_name": "com.mobile.modernmilkmanuser.tst"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109478460518-h4v2nnrn46516uguhudi9i8fpis1uil4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpdse8MAJ5n9ZuXAiG7ecohVJhcFIrFUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109478460518-h4v2nnrn46516uguhudi9i8fpis1uil4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "109478460518-igvdjitrm2pjiv61mv5j6hcv18fjgak5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.MilkMan.app",
+                "app_store_id": "1448349321"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

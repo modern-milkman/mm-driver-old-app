@@ -20,6 +20,10 @@ import com.luminos.modernmilkmandriver.app.newarchitecture.MainApplicationReactN
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
 
+import android.util.Log;
+import com.braze.Braze;
+import com.braze.BrazeActivityLifecycleCallbackListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainApplication extends Application implements ReactApplication {
   private final ReactNativeHost mReactNativeHost = new ReactNativeHostWrapper(
@@ -60,7 +64,20 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+
+    final Context applicationContext = this;
+    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+      if (!task.isSuccessful()) {
+        Log.w("", "Exception while registering FCM token with Braze.", task.getException());
+        return;
+      }
+
+      final String token = task.getResult();
+      Braze.getInstance(applicationContext).setRegisteredPushToken(token);
+    });
+
     // If you opted-in for the New Architecture, we enable the TurboModule system
+    registerActivityLifecycleCallbacks(new BrazeActivityLifecycleCallbackListener());
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
