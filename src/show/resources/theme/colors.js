@@ -7,8 +7,8 @@ export const RGB_COLORS = {
     dark: '0, 0, 0' //#000000
   },
   error: {
-    light: '252, 138, 131', //#FC8A83,
-    dark: '252, 138, 131' //#FC8A83,
+    light: '232, 25, 73', //#E81949,
+    dark: '232, 25, 73' //#E81949,
   },
   freddiesFlowers: {
     light: '151,125,183', // #977DB7
@@ -23,24 +23,24 @@ export const RGB_COLORS = {
     dark: '221, 236, 239' //#DDECEF
   },
   neutral: {
-    light: '248, 249, 253', //#F8F9FD
-    dark: '18, 18, 18' //#121212
+    light: '244, 244, 244', //#F4F4F4
+    dark: '22, 22, 22' //#161616
   },
   primary: {
-    light: '3, 122, 148', //#037A94
-    dark: '3, 122, 148' //#037A94
+    light: '0, 127, 174', //#007FAE
+    dark: '0, 127, 174' //#007FAE
   },
   primaryBright: {
-    light: '64, 169, 254', //#40A9FE
-    dark: '64, 169, 254' //#40A9FE
+    light: '92, 205, 247', //#5CCDF7
+    dark: '92, 205, 247' //#5CCDF7
   },
   success: {
-    light: '115, 208, 61', //#73D03D
-    dark: '115, 208, 61' //#73D03D
+    light: '69, 177, 74', //#45B14A
+    dark: '69, 177, 74' //#45B14A
   },
   warning: {
-    light: '240, 189, 151', //#F0DF97
-    dark: '240, 189, 151' //#F0DF97
+    light: '255, 167, 38', //#ffa726
+    dark: '255, 167, 38' //#ffa726
   },
   white: {
     light: '255, 255, 255', //#FFFFFF

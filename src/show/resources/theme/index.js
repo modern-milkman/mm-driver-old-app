@@ -54,6 +54,7 @@ export const sizes = {
   },
   sidebar: {
     icon: {
+      large: 30,
       default: 24,
       small: 16
     }

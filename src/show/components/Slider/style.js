@@ -1,15 +1,16 @@
 import { StyleSheet } from 'react-native';
 
-export default ({ colors }) =>
+export default ({ theme, alphaColor, colors }) =>
   StyleSheet.create({
     containerStyle: {
       width: '100%'
     },
     disabled: {
+      backgroundColor: colors.white,
       borderColor: colors.input
     },
     thumbStyle: {
-      backgroundColor: colors.white,
+      backgroundColor: colors.primary,
       borderWidth: 2,
       borderColor: colors.primary,
       width: 22,
@@ -17,6 +18,7 @@ export default ({ colors }) =>
       borderRadius: 11
     },
     trackStyle: {
-      height: 2
+      backgroundColor: alphaColor('primary', theme === 'dark' ? 0.4 : 0.2),
+      height: 4
     }
   });

@@ -242,10 +242,12 @@ android {
         qaTest {
             initWith(buildTypes.release)
             matchingFallbacks = ['release']
+            resValue "string", "braze_api_key", project.env.get("BRAZE_API_KEY_ANDROID")
             resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
         debug {
             matchingFallbacks = ['qaTest']
+            resValue "string", "braze_api_key", project.env.get("BRAZE_API_KEY_ANDROID")
             resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
         release {
@@ -253,6 +255,7 @@ android {
             // see https://reactnative.dev/docs/signed-apk-android.
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            resValue "string", "braze_api_key", project.env.get("BRAZE_API_KEY_ANDROID")
             resValue "string", "places_api_key", project.env.get("GOOGLE_GEOCODING_ANDROID")
         }
     }

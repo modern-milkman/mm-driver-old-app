@@ -146,7 +146,11 @@ const SideBar = props => {
                   params: { readOnly: true }
                 })
               )}
-              customIcon={'van'}
+              customIcon={'loadVan'}
+              customIconProps={{
+                containerSize: sizes.sidebar.icon.default,
+                width: sizes.sidebar.icon.large
+              }}
             />
           )}
 
@@ -157,7 +161,7 @@ const SideBar = props => {
               <ListItem
                 customIcon={'gas'}
                 customIconProps={{
-                  containerWidth: sizes.sidebar.icon.default,
+                  containerSize: sizes.sidebar.icon.default,
                   width: sizes.sidebar.icon.default
                 }}
                 title={I18n.t('screens:panel.gasStation')}

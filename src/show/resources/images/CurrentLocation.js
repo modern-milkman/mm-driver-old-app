@@ -10,7 +10,7 @@ const CurrentLocation = props => {
   const {
     borderColor = colors.white,
     heading,
-    iconColor = colors.primary,
+    iconColor = colors.inputSecondary,
     mapNoTrackingHeading,
     shouldTrackHeading,
     width

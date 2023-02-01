@@ -118,7 +118,7 @@ const CheckIn = props => {
       testID: 'checkIn-checkVan-listItem'
     },
     {
-      customIcon: 'cart',
+      customIcon: 'loadVanWithBackground',
       disabled: checklist.deliveryComplete,
       suffixBottom: I18n.t('screens:checkIn.itemsLeft', {
         items: checklist.loadedVan ? 0 : itemCount

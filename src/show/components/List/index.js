@@ -23,7 +23,7 @@ const widthReducer = 0.8;
 const renderCustomIcon = ({ customIcon, customIconProps, testID }) => (
   <CustomIcon
     width={customIconProps?.width || style.image.width}
-    containerWidth={customIconProps?.containerWidth || style.image.width}
+    containerWidth={customIconProps?.containerSize || style.image.width}
     icon={customIcon}
     iconColor={customIconProps?.color}
     bgColor={customIconProps?.bgColor}
@@ -200,7 +200,6 @@ const renderItemInterface = (
       {...(key && { key })}
       testID={testID}>
       <RowView
-        backgroundColor={isDeliveryItem && colors.input}
         borderRadius={isDeliveryItem && defaults.borderRadius}
         paddingHorizontal={isDeliveryItem && defaults.marginHorizontal / 4}
         paddingVertical={isDeliveryItem && defaults.marginVertical / 4}
@@ -210,7 +209,9 @@ const renderItemInterface = (
         {(customIcon || image || icon || enforceLayout) && (
           <RowView
             width={
-              (customIconProps ? customIconProps.width : style.image.width) +
+              (customIconProps
+                ? customIconProps.containerSize
+                : style.image.width) +
               defaults.marginHorizontal / 2
             }
             justifyContent={'flex-start'}>
