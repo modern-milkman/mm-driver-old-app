@@ -56,6 +56,7 @@
 		9DE8E437291BD298003EE32F /* xmas@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xmas@3x.png"; sourceTree = "<group>"; };
 		9DE8E438291BD298003EE32F /* regular@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "regular@3x.png"; sourceTree = "<group>"; };
 		9DE8E439291BD298003EE32F /* xmas@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xmas@2x.png"; sourceTree = "<group>"; };
+		9DEA5F132991428700F0D86D /* ModernMilkmanDriver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ModernMilkmanDriver.entitlements; path = ModernMilkmanDriver/ModernMilkmanDriver.entitlements; sourceTree = "<group>"; };
 		ACC2E19AC2DBAB6848F9A38E /* Pods-ModernMilkmanDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.release.xcconfig"; sourceTree = "<group>"; };
 		EB8AFB512369794CEE553F47 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -116,6 +117,7 @@
 		13B07FAE1A68108700A75B9A /* ModernMilkmanDriver */ = {
 			isa = PBXGroup;
 			children = (
+				9DEA5F132991428700F0D86D /* ModernMilkmanDriver.entitlements */,
 				9DE8E435291BC02C003EE32F /* AppIcons */,
 				FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -571,6 +573,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ModernMilkmanDriver/ModernMilkmanDriver.entitlements;
 				CURRENT_PROJECT_VERSION = 172;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
@@ -608,6 +611,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ModernMilkmanDriver/ModernMilkmanDriver.entitlements;
 				CURRENT_PROJECT_VERSION = 172;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
