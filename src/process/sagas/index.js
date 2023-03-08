@@ -78,7 +78,6 @@ import {
   shareOfflineDataSuccess,
   syncOffline,
   updateDeviceProps,
-  updateNetworkProps,
   watchUserLocation
 } from './device';
 
@@ -182,7 +181,6 @@ export default function* root() {
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA_SUCCESS, shareOfflineDataSuccess),
     takeLatest(DeviceTypes.SYNC_OFFLINE, syncOffline),
     takeLatest(DeviceTypes.UPDATE_PROPS, updateDeviceProps),
-    takeLatest(DeviceTypes.UPDATE_NETWORK_PROPS, updateNetworkProps),
     takeLatest(DeviceTypes.WATCH_USER_LOCATION, watchUserLocation),
 
     takeEvery(GrowlTypes.ALERT, alert),

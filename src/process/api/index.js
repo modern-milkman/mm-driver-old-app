@@ -4,12 +4,14 @@ import { coerce, gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 import NetInfo from '@react-native-community/netinfo';
 
+import I18n from 'Locales/I18n';
 import store from 'Redux/store';
 import repositories from 'Repositories';
 import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as UserActions } from 'Reducers/user';
 import EncryptedStorage from 'Services/encryptedStorage';
+import { Creators as GrowlActions } from 'Reducers/growl';
 import { Creators as DeviceActions } from 'Reducers/device';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Creators as ApplicationActions } from 'Reducers/application';
@@ -149,10 +151,31 @@ const interceptors = {
   },
   responseSuccess: response => {
     const { dispatch, getState } = store().store;
-    const { device } = getState();
+    const {
+      application: { userSessionPresent },
+      device
+    } = getState();
+    const {
+      processors: { syncData },
+      requestQueues: { offline }
+    } = device;
+
     if (device.network.status !== 0) {
       dispatch(DeviceActions.updateNetworkProps({ status: 0 }));
     }
+
+    if (userSessionPresent && !syncData && offline.length > 0) {
+      dispatch(
+        GrowlActions.alert({
+          type: 'info',
+          title: I18n.t('alert:success.network.online.title'),
+          message: I18n.t('alert:success.network.online.message')
+        })
+      );
+
+      dispatch(DeviceActions.syncOffline());
+    }
+
     interceptors.getRequestTime(response);
     return response;
   },

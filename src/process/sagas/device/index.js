@@ -29,7 +29,6 @@ import {
   autoOpenStopDetails as autoOpenStopDetailsSelector,
   biometrics as biometricsSelector,
   network as networkSelector,
-  processors as processorsSelector,
   requestQueues as requestQueuesSelector
 } from 'Reducers/device';
 import {
@@ -357,24 +356,5 @@ export function* updateDeviceProps({ props }) {
         message: I18n.t('alert:success.settings.offline.directions.message')
       }
     });
-  }
-}
-
-export function* updateNetworkProps() {
-  const { status } = yield select(networkSelector);
-  const { offline } = yield select(requestQueuesSelector);
-  const { syncData } = yield select(processorsSelector);
-  const user_session = yield select(userSessionPresentSelector);
-
-  if (user_session && !syncData && status === 0 && offline.length > 0) {
-    yield put({
-      type: GrowlTypes.ALERT,
-      props: {
-        type: 'info',
-        title: I18n.t('alert:success.network.online.title'),
-        message: I18n.t('alert:success.network.online.message')
-      }
-    });
-    yield put({ type: DeviceTypes.SYNC_OFFLINE });
   }
 }
