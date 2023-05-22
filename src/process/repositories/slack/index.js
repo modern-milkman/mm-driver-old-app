@@ -13,7 +13,7 @@ const postToSlack = ({ payload, url }) => {
 };
 
 export default {
-  sendCrashLog({ device, error, user }) {
+  sendCrashLog({ delivery, device, error, user }) {
     const payload = { blocks: [] };
     payload.blocks.push(slack.title(error.toString()));
     payload.blocks.push(
@@ -26,14 +26,16 @@ export default {
           position: device.position,
           uniqueID: device.uniqueID
         },
+        delivery: {
+          routeDescription: delivery?.stockWithData?.routeDescription
+        },
         user: {
           driverId: user?.driverId,
           jwtExpiry: user?.jwtExpiry,
           refreshExpiry: user?.refreshExpiry,
           jwtTokenPresent: user?.jwtToken ? 'yes' : 'no',
           refreshTokenPresent: user?.refreshToken ? 'yes' : 'no',
-          roles: user?.roles,
-          routes: user?.routes
+          roles: user?.roles
         }
       })
     );

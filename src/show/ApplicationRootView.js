@@ -59,7 +59,7 @@ class Root extends React.Component {
   });
 
   componentDidCatch = (error, info) => {
-    const { device, dispatch, sendCrashLog, user } = this.props;
+    const { delivery, device, dispatch, sendCrashLog, user } = this.props;
     const { crashCount } = device;
     const props = {
       crashCount: crashCount + 1,
@@ -72,6 +72,7 @@ class Root extends React.Component {
     if (JSON.parse(Config.SEND_SLACK_CRASHLOGS)) {
       dispatch(
         sendCrashLog({
+          delivery,
           device: {
             ...device,
             ...props
@@ -209,6 +210,7 @@ class Root extends React.Component {
 
 Root.propTypes = {
   colors: PropTypes.object,
+  delivery: PropTypes.object,
   device: PropTypes.object,
   dispatch: PropTypes.func,
   theme: PropTypes.object,
@@ -218,6 +220,7 @@ Root.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  delivery: state.delivery,
   device: state.device,
   user: state.user
 });
