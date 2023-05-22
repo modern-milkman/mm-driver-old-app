@@ -190,8 +190,8 @@
     "registration": "Registration",
     "title": "Registration & Mileage",
     "modal": {
-      "title": "Number Plate not recognized",
-      "body": "This number plate does not exist in our records, pleasy try again.",
+      "title": "Number Plate not recognised",
+      "body": "This number plate does not exist in our records, please try again.",
       "proceedAnyway": "Proceed anyway, this will be flagged"
     }
   },
