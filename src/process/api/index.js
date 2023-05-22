@@ -82,7 +82,8 @@ const defaultConfig = {
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'x-api-version': Config.X_API_VERSION
+    'x-api-version': Config.X_API_VERSION,
+    'x-app-version': Config.APP_VERSION_NAME
   }
 };
 
