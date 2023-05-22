@@ -11,7 +11,6 @@ import com.facebook.soloader.SoLoader;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactApplication;
-import org.reactnative.camera.RNCameraPackage;
 import com.facebook.react.ReactInstanceManager;
 import java.lang.reflect.InvocationTargetException;
 import com.facebook.react.config.ReactFeatureFlags;

@@ -40,10 +40,6 @@ target 'ModernMilkmanDriver' do
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
 
-  # ignore console warning, below required for text recognition
-  pod 'react-native-camera', path: '../node_modules/react-native-camera', subspecs: [
-    'TextDetector'
-  ]
 
   # Enables Flipper.
   #

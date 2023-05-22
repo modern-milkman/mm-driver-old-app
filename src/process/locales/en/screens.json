@@ -184,9 +184,7 @@
   },
   "registrationMileage": {
     "invalidPlate": "Invalid registration plate",
-    "manualRegistration": "Manually enter registration",
     "mileage": "Mileage",
-    "or": "OR",
     "registration": "Registration",
     "title": "Registration & Mileage",
     "modal": {

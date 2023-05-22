@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
 
 import com.android.build.OutputFile
 
@@ -160,7 +159,6 @@ android {
         versionCode project.env.get("APP_VERSION_CODE").toInteger()
         versionName project.env.get("APP_VERSION_NAME")
         vectorDrawables.useSupportLibrary = true
-        missingDimensionStrategy 'react-native-camera', 'mlkit'
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
         if (isNewArchitectureEnabled()) {
             // We configure the NDK build only if you decide to opt-in for the New Architecture.
