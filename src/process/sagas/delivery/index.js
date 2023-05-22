@@ -449,6 +449,7 @@ export const setDeliveredOrRejected = function* (
     });
   }
 
+  // deliveryDateLocal may be altered if drivers change their device time.
   yield put({
     type: Api.API_CALL,
     promise: promise({
@@ -458,6 +459,7 @@ export const setDeliveredOrRejected = function* (
         description: reasonMessage
       }),
       ...(requestType === 'delivered' && {
+        deliveryDateLocal: new Date(),
         handledClaims: handledClaims,
         driverId: user.driverId,
         routeId: routeId,

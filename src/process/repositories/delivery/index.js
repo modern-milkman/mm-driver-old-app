@@ -68,6 +68,7 @@ export default {
     routeId,
     driverId,
     orderId,
+    deliveryDateLocal = null,
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null,
     emptiesCollected = false,
@@ -77,6 +78,7 @@ export default {
   }) {
     return Api.post(`${Api.DELIVERY_URL()}/Delivery/${orderId}/SetDelivered`, {
       routeId,
+      deliveryDateLocal,
       driverId,
       deliveryLocationLatitude,
       deliveryLocationLongitude,
