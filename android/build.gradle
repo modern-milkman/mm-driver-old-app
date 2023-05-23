@@ -2,22 +2,23 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "31.0.0"
+        buildToolsVersion = "33.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 31
-        targetSdkVersion = 31
-        ndkVersion = "24.0.8215888"
-        playServicesVersion = "17.0.0"
+        compileSdkVersion = 33
+        targetSdkVersion = 33
+        ndkVersion = "23.1.7779620"
+        playServicesVersion = "18.1.0"
         androidMapsUtilsVersion = "2.2.3"
-        kotlin_version = '1.6.0'
+        kotlin_version = '1.8.10'
+        kotlinVersion = '1.8.10'
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.4")
-        classpath('com.google.gms:google-services:4.3.13')
+        classpath("com.android.tools.build:gradle:7.4.1")
+        classpath('com.google.gms:google-services:4.3.15')
         classpath("de.undercouch:gradle-download-task:4.1.2")
         classpath("com.facebook.react:react-native-gradle-plugin")
         // NOTE: Do not place your application dependencies here; they belong
@@ -26,28 +27,11 @@ buildscript {
 
     }
 }
-
 allprojects {
     repositories {
-        maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url(new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), "../android"))
-
-        }
-        maven {
-            // Android JSC is installed from npm
-            url(new File(["node", "--print", "require.resolve('jsc-android/package.json')"].execute(null, rootDir).text.trim(), "../dist"))
-        }
-       mavenCentral {
-            // We don't want to fetch react-native from Maven Central as there are
-            // older versions over there.
-            content {
-                excludeGroup "com.facebook.react"
-            }
-        }
-        google()  
-        maven { url "https://appboy.github.io/appboy-android-sdk/sdk" }
-        maven { url 'https://maven.google.com' }
-        maven { url 'https://www.jitpack.io' }  
+          // Make sure that you have the following two repositories
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository
+        maven { url "https://braze-inc.github.io/braze-android-sdk/sdk" }
     }
 }

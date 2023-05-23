@@ -54,7 +54,7 @@ const configureCountryBaseURL = () => {
     reachabilityTest: async response => response.status === 200
   });
   NETINFO_LISTENER = NetInfo.addEventListener(handleNetStatChange);
-  NetInfo.fetch().done(handleNetStatChange);
+  NetInfo.fetch().then(handleNetStatChange);
 };
 
 const RMR_COUNTRY_BASED_PROP = () => {

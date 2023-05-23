@@ -1,10 +1,12 @@
 // DEVICE SAGAS BELOW
 // could be used for offline / online / set position
 
+import DeviceInfo from 'react-native-device-info';
 import * as SplashScreen from 'expo-splash-screen';
 import { delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Platform } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
+
 import {
   requestMultiple,
   PERMISSIONS,
@@ -14,11 +16,12 @@ import {
 import Api from 'Api';
 import store from 'Redux/store';
 import I18n from 'Locales/I18n';
+import { deleteObjectKey } from 'Helpers';
 import NavigationService from 'Services/navigation';
 import { user as userSelector } from 'Reducers/user';
+import { Types as GrowlTypes } from 'Reducers/growl';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { deliveryStates as DS, distance } from 'Helpers';
-import { Types as GrowlTypes } from 'Reducers/growl';
 import {
   lastRoute as lastRouteSelector,
   userSessionPresent as userSessionPresentSelector
@@ -51,6 +54,9 @@ export function* ensureMandatoryPermissions({ routeName }) {
       PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
       PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
       PERMISSIONS.ANDROID.CAMERA,
+      PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
+      PERMISSIONS.ANDROID.READ_MEDIA_VIDEO,
+      PERMISSIONS.ANDROID.READ_MEDIA_AUDIO,
       PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
     ],
     ios: [
@@ -77,8 +83,23 @@ export function* ensureMandatoryPermissions({ routeName }) {
   });
 
   requestMultiple(mandatoryPermissions)
-    .then(statuses => {
+    .then(resp => {
+      let statuses = [...resp];
+      const isAndroid13 = DeviceInfo.getSystemVersion() >= 13;
+      if (Platform.OS === 'android' && isAndroid13) {
+        statuses = deleteObjectKey(
+          statuses,
+          'android.permission.READ_EXTERNAL_STORAGE'
+        );
+      } else {
+        statuses = deleteObjectKey(
+          statuses,
+          'android.permission.READ_MEDIA_AUDIO',
+          'android.permission.READ_MEDIA_IMAGES'
+        );
+      }
       dispatch(DeviceCreators.updateProps({ permissions: statuses }));
+
       const statusesArray = Object.values(statuses);
 
       if (

@@ -76,6 +76,11 @@ const defaultRoutes = {
   session: 'Main'
 };
 
+const deleteObjectKey = (obj, key) => {
+  const { [key]: _, ...rest } = obj;
+  return rest;
+};
+
 const deliveryStates = {
   DEL: 'Delivering',
   DELC: 'Delivery Complete',
@@ -416,6 +421,7 @@ export {
   deliverProductsDisabled,
   deliveredStatuses,
   deliveryStates,
+  deleteObjectKey,
   deviceFrame,
   defaultRoutes,
   distance,
