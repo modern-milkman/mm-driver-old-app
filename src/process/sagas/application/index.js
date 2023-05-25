@@ -100,7 +100,7 @@ export const init = function* () {
   getIcon().then(icon => {
     const today = new Date();
 
-    if (today < new Date('1 December ' + today.getFullYear())) {
+    if (parseInt(today.getMonth()) !== 11) {
       if (icon === 'xmas') {
         changeIcon('regular');
       }
