@@ -60,6 +60,10 @@ project.ext.envConfigFiles = [
     release: ".env.production",
     qaTest: ".env.test",
 ]
+project.ext.react = [
+    entryFile: "index.js",
+    enableHermes: true 
+]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 //react-native-vector-icons
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

@@ -51,7 +51,9 @@ const configureCountryBaseURL = () => {
     reachabilityRequestTimeout: parseInt(
       Config.NETINFO_REACHABILITY_REQUEST_TIMEOUT
     ),
-    reachabilityTest: async response => response.status === 200
+    reachabilityTest: async response => response.status === 200,
+    reachabilityMethod: 'GET',
+    reachabilityHeaders: { 'x-api-version': Config.X_API_VERSION }
   });
   NETINFO_LISTENER = NetInfo.addEventListener(handleNetStatChange);
   NetInfo.fetch().then(handleNetStatChange);
