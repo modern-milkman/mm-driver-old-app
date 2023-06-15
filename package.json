@@ -1,11 +1,11 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "7.16.0",
-  "versionCode": "188",
+  "version": "7.17.0",
+  "versionCode": "189",
   "private": true,
   "scripts": {
-    "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; cd ios && pod install; cd ../android && ./gradlew clean",
-    "postinstall": "./scripts/infuse_version.sh; ./scripts/update_netinfo.sh; cd ios && pod install; react-native setup-ios-permissions",
+    "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn;",
+    "postinstall": "./scripts/infuse_version.sh; ./scripts/update_netinfo.sh; cd android && ./gradlew clean; cd ../; npx react-native setup-ios-permissions; cd ios && pod install; echo 'postinstall complete';",
     "precommit": "lint-staged",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "sync-translations": "./node_modules/.bin/locize sync --api-key 1346bd17-29e0-43f2-ae52-e64f1a9a1f7b --project-id 529883ba-8b31-4f9a-8116-ca4dc6f2a807 --path src/process/locales && ./scripts/infuse_locale.sh",
@@ -13,6 +13,8 @@
   },
   "reactNativePermissionsIOS": [
     "Camera",
+    "LocationAccuracy",
+    "LocationAlways",
     "LocationWhenInUse",
     "MediaLibrary",
     "PhotoLibrary"
