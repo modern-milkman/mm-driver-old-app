@@ -5,5 +5,6 @@
   "NSLocationAlwaysUsageDescription": "Votre emplacement est nécessaire pour effectuer des livraisons.",
   "NSLocationWhenInUseUsageDescription": "Votre emplacement est nécessaire pour effectuer des livraisons.",
   "NSPhotoLibraryAddUsageDescription": "Autorise les téléchargements de photos dans l'application.",
-  "NSPhotoLibraryUsageDescription": "Autorise les téléchargements de photos dans l'application."
+  "NSPhotoLibraryUsageDescription": "Autorise les téléchargements de photos dans l'application.",
+  "NSAppleMusicUsageDescription": "Non utilisé par l'application"
 }
