@@ -1,7 +1,7 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "7.16.0",
-  "versionCode": "190",
+  "version": "7.17.1",
+  "versionCode": "192",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; ./appcenter-pre-build.sh",
@@ -13,6 +13,8 @@
   },
   "reactNativePermissionsIOS": [
     "Camera",
+    "LocationAccuracy",
+    "LocationAlways",
     "LocationWhenInUse",
     "MediaLibrary",
     "PhotoLibrary"
@@ -60,7 +62,7 @@
     "react-native-permissions": "3.8.0",
     "react-native-reanimated": "2.14.4",
     "react-native-restart": "0.1.0",
-    "react-native-safe-area-context": "4.5.1",
+    "react-native-safe-area-context": "4.5.3",
     "react-native-screens": "3.20.0",
     "react-native-svg": "13.9.0",
     "react-native-typography": "1.4.1",

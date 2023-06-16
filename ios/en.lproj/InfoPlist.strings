@@ -5,3 +5,4 @@
   "NSLocationWhenInUseUsageDescription"= "Your location is required to make deliveries.";
   "NSPhotoLibraryAddUsageDescription"= "Allows photo uploads within the app.";
   "NSPhotoLibraryUsageDescription"= "Allows photo uploads within the app.";
+  "NSAppleMusicUsageDescription"= "Not used by the app";

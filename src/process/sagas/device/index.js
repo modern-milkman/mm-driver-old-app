@@ -16,7 +16,6 @@ import {
 import Api from 'Api';
 import store from 'Redux/store';
 import I18n from 'Locales/I18n';
-import { deleteObjectKey } from 'Helpers';
 import NavigationService from 'Services/navigation';
 import { user as userSelector } from 'Reducers/user';
 import { Types as GrowlTypes } from 'Reducers/growl';
@@ -48,16 +47,23 @@ import {
 export { watchUserLocation } from './extras/watchUserLocation';
 
 export function* ensureMandatoryPermissions({ routeName }) {
+  const isAndroid13OrLater = DeviceInfo.getSystemVersion() >= 13;
   const { dispatch } = store().store;
   const mandatoryPermissions = Platform.select({
     android: [
       PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
       PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
       PERMISSIONS.ANDROID.CAMERA,
-      PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
-      PERMISSIONS.ANDROID.READ_MEDIA_VIDEO,
-      PERMISSIONS.ANDROID.READ_MEDIA_AUDIO,
-      PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+      ...(isAndroid13OrLater
+        ? [
+            PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
+            PERMISSIONS.ANDROID.READ_MEDIA_VIDEO,
+            PERMISSIONS.ANDROID.READ_MEDIA_AUDIO
+          ]
+        : []),
+      ...(!isAndroid13OrLater
+        ? [PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE]
+        : [])
     ],
     ios: [
       PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
@@ -83,25 +89,9 @@ export function* ensureMandatoryPermissions({ routeName }) {
   });
 
   requestMultiple(mandatoryPermissions)
-    .then(resp => {
-      let statuses = [...resp];
-      const isAndroid13 = DeviceInfo.getSystemVersion() >= 13;
-      if (Platform.OS === 'android' && isAndroid13) {
-        statuses = deleteObjectKey(
-          statuses,
-          'android.permission.READ_EXTERNAL_STORAGE'
-        );
-      } else {
-        statuses = deleteObjectKey(
-          statuses,
-          'android.permission.READ_MEDIA_AUDIO',
-          'android.permission.READ_MEDIA_IMAGES'
-        );
-      }
+    .then(statuses => {
       dispatch(DeviceCreators.updateProps({ permissions: statuses }));
-
       const statusesArray = Object.values(statuses);
-
       if (
         statusesArray.includes(RESULTS.DENIED) ||
         statusesArray.includes(RESULTS.BLOCKED) ||

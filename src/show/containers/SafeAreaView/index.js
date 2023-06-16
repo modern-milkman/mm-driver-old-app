@@ -5,9 +5,14 @@ import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
 
 import { useTheme } from 'Containers';
 
-const SafeAreaView = props => {
+const SafeAreaView = ({
+  bottom = true,
+  testID = null,
+  top = true,
+  style = {},
+  children = null
+}) => {
   const { colors } = useTheme();
-  const { bottom, testID, top } = props;
   const defaultStyle = {
     backgroundColor: colors.neutral,
     flex: 1
@@ -23,20 +28,10 @@ const SafeAreaView = props => {
   }
 
   return (
-    <SafeAreaViewRN
-      style={[defaultStyle, props.style]}
-      edges={edges}
-      testID={testID}>
-      {props.children}
+    <SafeAreaViewRN style={[defaultStyle, style]} edges={edges} testID={testID}>
+      {children}
     </SafeAreaViewRN>
   );
-};
-
-SafeAreaView.defaultProps = {
-  bottom: true,
-  top: true,
-  style: {},
-  children: null
 };
 
 SafeAreaView.propTypes = {
