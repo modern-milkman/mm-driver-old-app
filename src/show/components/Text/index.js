@@ -20,11 +20,11 @@ const Text = props => {
     align,
     children,
     color,
-    flex,
-    lineHeight,
-    type,
-    underline,
-    weight,
+    flex = null,
+    lineHeight = null,
+    type = Types.CAPTION,
+    underline = false,
+    weight = null,
     ...rest
   } = props;
   let humanoidMaterialStyles = null;
@@ -67,21 +67,13 @@ Text.propTypes = {
   align: PropTypes.string,
   color: PropTypes.any,
   children: PropTypes.any,
+  disabled: PropTypes.bool,
   flex: PropTypes.number,
   lineHeight: PropTypes.number,
   numberOfLines: PropTypes.number,
   type: PropTypes.string,
   underline: PropTypes.bool,
   weight: PropTypes.string
-};
-
-Text.defaultProps = {
-  align: 'left',
-  flex: null,
-  lineHeight: null,
-  type: Types.CAPTION,
-  underline: false,
-  weight: null
 };
 
 export default exports;

@@ -45,27 +45,28 @@ const inputHeight = (
 
 const TextInput = forwardRef((props, ref) => {
   const {
-    autoCapitalize,
-    autoFocus,
-    error,
-    errorMessage,
-    disableErrors,
-    keyboardType,
-    leftIcon,
-    maxLength,
-    multiline,
-    multilineHeight,
-    onChangeText,
-    onFocusChanged,
-    onLeftIconPress,
-    onSubmitEditing,
-    placeholder,
+    autoCapitalize = 'sentences',
+    autoFocus = false,
+    error = false,
+    errorMessage = I18n.t('input:errors:default'),
+    disableErrors = false,
+    disableOnSubmitEditing = false,
+    keyboardType = 'default',
+    leftIcon = null,
+    maxLength = null,
+    multiline = false,
+    multilineHeight = 60,
+    onChangeText = mock,
+    onFocusChanged = mock,
+    onLeftIconPress = mock,
+    onSubmitEditing = mock,
+    placeholder = '...',
     returnKeyType,
-    secureTextEntry,
-    shadow,
-    size,
+    secureTextEntry = false,
+    shadow = false,
+    size = 'large',
     testID,
-    value
+    value = ''
   } = props;
   const [focused, setFocus] = useState(
     ref?.isFocused && ref.isFocused() ? true : false
@@ -128,7 +129,7 @@ const TextInput = forwardRef((props, ref) => {
               onBlur={onFocusChangedInternalEvent.bind(null, false)}
               onChangeText={onChangeText}
               onFocus={onFocusChangedInternalEvent.bind(null, true)}
-              onSubmitEditing={onSubmitEditing}
+              onSubmitEditing={disableOnSubmitEditing ? mock : onSubmitEditing}
               placeholder={placeholder}
               placeholderTextColor={alphaColor('inputSecondary', 0.4)}
               ref={ref}
@@ -180,6 +181,7 @@ TextInput.propTypes = {
   error: PropTypes.bool,
   errorMessage: PropTypes.string,
   disableErrors: PropTypes.bool,
+  disableOnSubmitEditing: PropTypes.bool,
   keyboardType: PropTypes.string,
   leftIcon: PropTypes.string,
   maxLength: PropTypes.any,
@@ -196,28 +198,6 @@ TextInput.propTypes = {
   size: PropTypes.string,
   testID: PropTypes.string,
   value: PropTypes.string
-};
-
-TextInput.defaultProps = {
-  autoCapitalize: 'sentences',
-  autoFocus: false,
-  error: false,
-  errorMessage: I18n.t('input:errors:default'),
-  disableErrors: false,
-  keyboardType: 'default',
-  leftIcon: null,
-  maxLength: null,
-  multiline: false,
-  multilineHeight: 60,
-  onChangeText: mock,
-  onFocusChanged: mock,
-  onLeftIconPress: mock,
-  onSubmitEditing: mock,
-  placeholder: '...',
-  secureTextEntry: false,
-  shadow: false,
-  size: 'large',
-  value: ''
 };
 
 TextInput.displayName = 'TextInput';

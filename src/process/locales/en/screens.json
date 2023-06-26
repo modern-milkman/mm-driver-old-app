@@ -183,14 +183,14 @@
     "title": "Permissions missing"
   },
   "registrationMileage": {
-    "invalidPlate": "Invalid registration plate",
+    "invalidPlate": "Number plate not on file",
     "mileage": "Mileage",
     "registration": "Registration",
     "title": "Registration & Mileage",
     "modal": {
-      "title": "Number Plate not recognised",
+      "title": "Number plate not recognised",
       "body": "This number plate does not exist in our records, please try again.",
-      "proceedAnyway": "Proceed anyway, this will be flagged"
+      "proceedAnyway": "Proceed anyway"
     }
   },
   "settings": {

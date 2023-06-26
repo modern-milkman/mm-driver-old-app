@@ -22,11 +22,14 @@ const mileageReference = React.createRef();
 const focusMileage = () => {
   mileageReference?.current?.focus();
 };
-
 const { width } = deviceFrame();
 
-const handleNextAction = (navigation, isRegPlateValid, setVisible) => {
-  if (isRegPlateValid) {
+const handleNextAction = (
+  navigation,
+  vehicleRegistrationOnFile,
+  setVisible
+) => {
+  if (vehicleRegistrationOnFile) {
     navigation();
   } else {
     setVisible(true);
@@ -108,7 +111,7 @@ const RegistrationMileage = ({
   const routeName = 'EmptiesCollected';
   const disabled = currentMileageHasError || vehicleRegistrationHasError;
 
-  const isRegPlateValid =
+  const vehicleRegistrationOnFile =
     registrationPlates?.filter(
       reg => reg.registration === vehicleRegistration?.replace(/ /g, '')
     ).length > 0;
@@ -197,13 +200,15 @@ const RegistrationMileage = ({
           leftIconAction={NavigationService.goBack}
           title={I18n.t('screens:registrationMileage.title')}
           rightText={I18n.t('general:next')}
-          rightAction={
-            disabled
-              ? mock
-              : NavigationService.navigate.bind(null, {
-                  routeName
-                })
-          }
+          rightAction={handleNextAction.bind(
+            null,
+            NavigationService.navigate.bind(null, {
+              routeName
+            }),
+            vehicleRegistrationOnFile,
+            setVisible
+          )}
+          rightActionDisabled={disabled}
           {...(disabled && { rightColor: colors.inputSecondary })}
           testID={'checkVan-navbar'}
         />
@@ -221,7 +226,9 @@ const RegistrationMileage = ({
               marginVertical={defaults.marginVertical / 2}>
               <TextInput
                 autoCapitalize={'characters'}
-                error={vehicleRegistrationHasError || !isRegPlateValid}
+                error={
+                  vehicleRegistrationHasError || !vehicleRegistrationOnFile
+                }
                 errorMessage={
                   vehicleRegistrationErrorMessage ||
                   I18n.t('screens:registrationMileage.invalidPlate')
@@ -248,10 +255,11 @@ const RegistrationMileage = ({
               marginHorizontal={defaults.marginHorizontal}
               marginVertical={defaults.marginVertical / 2}>
               <TextInput
-                keyboardType={'numeric'}
+                autoCapitalize={'none'}
                 error={currentMileageHasError}
                 errorMessage={currentMileageErrorMessage}
-                autoCapitalize={'none'}
+                disableOnSubmitEditing={disabled}
+                keyboardType={'number-pad'}
                 onChangeText={updateReducerAndTransient.bind(null, {
                   updateTransientProps,
                   reducerMethod: setMileage,
@@ -262,14 +270,14 @@ const RegistrationMileage = ({
                   NavigationService.navigate.bind(null, {
                     routeName
                   }),
-                  isRegPlateValid,
+                  vehicleRegistrationOnFile,
                   setVisible
                 )}
                 placeholder={I18n.t('input:placeholder.mileage')}
-                value={currentMileage}
                 ref={mileageReference}
-                returnKeyType={'next'}
+                returnKeyType={'done'}
                 testID={'checkVan-mileage-input'}
+                value={currentMileage}
               />
             </RowView>
           </KeyboardAvoidingView>
@@ -285,7 +293,7 @@ const RegistrationMileage = ({
               NavigationService.navigate.bind(null, {
                 routeName
               }),
-              isRegPlateValid,
+              vehicleRegistrationOnFile,
               setVisible
             )}
             title={I18n.t('general:next')}

@@ -358,11 +358,17 @@ export const saveVehicleChecks = function* () {
     type: Api.API_CALL,
     promise: Api.repositories.delivery.postVechicleChecks({
       payload: {
-        ...payload,
-        returns,
         ...(payload.shiftStart && {
-          currentMileage: parseInt(payload.currentMileage)
-        })
+          currentMileage:
+            parseInt(payload.currentMileage.replace(/\D/g, '')) || 0,
+          vehicleRegistration: payload.vehicleRegistration || ''
+        }),
+        ...(payload.registrationCheckOverride && {
+          registrationCheckOverride: payload.registrationCheckOverride
+        }),
+        returns,
+        shiftEnd: payload.shiftEnd,
+        shiftStart: payload.shiftStart
       }
     })
   });

@@ -15,11 +15,12 @@ const NavBar = props => {
   const {
     LeftComponent,
     leftIcon,
-    leftIconAction,
+    leftIconAction = mock,
     leftIconColor = colors.inputSecondary,
-    marginHorizontal,
+    marginHorizontal = defaults.marginHorizontal,
     RightComponent,
     rightAction,
+    rightActionDisabled = false,
     rightText,
     rightIcon,
     rightCustomIcon,
@@ -47,14 +48,15 @@ const NavBar = props => {
 
       <Text.Input color={colors.inputSecondary}>{title}</Text.Input>
       {RightComponent || rightText || rightIcon || rightCustomIcon ? (
-        renderRight(
-          RightComponent,
-          rightText,
-          rightIcon,
-          rightCustomIcon,
+        renderRight({
+          rightAction,
+          rightActionDisabled,
           rightColor,
-          rightAction
-        )
+          RightComponent,
+          rightCustomIcon,
+          rightIcon,
+          rightText
+        })
       ) : (
         <RowView
           width={defaults.topNavigation.height}
@@ -65,14 +67,15 @@ const NavBar = props => {
   );
 };
 
-const renderRight = (
-  RightComponent,
-  rightText,
-  rightIcon,
-  rightCustomIcon,
+const renderRight = ({
+  rightAction,
+  rightActionDisabled,
   rightColor,
-  rightAction
-) => {
+  RightComponent,
+  rightCustomIcon,
+  rightIcon,
+  rightText
+}) => {
   if (RightComponent) {
     return <RightComponent />;
   }
@@ -86,6 +89,7 @@ const renderRight = (
         height={defaults.topNavigation.height}>
         <Text.Label
           color={rightColor}
+          disabled={rightActionDisabled}
           onPress={rightAction}
           align={'right'}
           lineHeight={defaults.topNavigation.height}>
@@ -100,6 +104,7 @@ const renderRight = (
       <CustomIcon
         width={defaults.topNavigation.iconSize}
         containerWidth={defaults.topNavigation.height}
+        disabled={rightActionDisabled}
         icon={rightCustomIcon}
         iconColor={rightColor}
         onPress={rightAction}
@@ -112,6 +117,7 @@ const renderRight = (
       <Icon
         name={rightIcon}
         color={rightColor}
+        disabled={rightActionDisabled}
         size={defaults.topNavigation.iconSize}
         containerSize={defaults.topNavigation.height}
         onPress={rightAction}
@@ -130,15 +136,11 @@ NavBar.propTypes = {
   rightColor: PropTypes.string,
   rightCustomIcon: PropTypes.string,
   rightAction: PropTypes.func,
+  rightActionDisabled: PropTypes.bool,
   rightIcon: PropTypes.string,
   rightText: PropTypes.string,
   testID: PropTypes.string,
   title: PropTypes.string
-};
-
-NavBar.defaultProps = {
-  leftIconAction: mock,
-  marginHorizontal: defaults.marginHorizontal
 };
 
 export default NavBar;

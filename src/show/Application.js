@@ -36,7 +36,7 @@ class Application extends React.Component {
         <PersistGate
           loading={null}
           persistor={persistor}
-          onBeforeLift={initApp()}>
+          onBeforeLift={initApp}>
           <ThemeProvider>
             <ApplicationRootView />
           </ThemeProvider>

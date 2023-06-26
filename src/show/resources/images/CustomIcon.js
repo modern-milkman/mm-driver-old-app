@@ -14,14 +14,14 @@ const CustomIcon = props => {
 
   const {
     bgColor = colors.input,
-    containerWidth,
-    disabled,
-    icon,
+    containerWidth = 40,
+    disabled = false,
+    icon = 'close',
     iconColor = colors.inputSecondary,
-    onLongPress,
-    onPress,
-    style,
-    width
+    onLongPress = mock,
+    onPress = mock,
+    style = {},
+    width = 24
   } = props;
   const ratio = 24 / 24;
   const height = width / ratio;
@@ -480,15 +480,6 @@ CustomIcon.propTypes = {
   onPress: PropTypes.func,
   style: PropTypes.any,
   width: PropTypes.number
-};
-
-CustomIcon.defaultProps = {
-  icon: 'close',
-  onLongPress: mock,
-  onPress: mock,
-  style: {},
-  width: 24,
-  containerWidth: 40
 };
 
 export default CustomIcon;
