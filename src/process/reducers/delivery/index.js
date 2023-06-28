@@ -671,7 +671,7 @@ export const setRegistration = (state, { reg }) =>
 
 export const setRegistrationPlates = (state, { payload }) =>
   produce(state, draft => {
-    draft.registrationPlates = payload;
+    draft.registrationPlates = Array.isArray(payload) ? payload : [];
   });
 
 export const setRejected = (state, params) =>
