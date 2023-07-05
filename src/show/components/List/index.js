@@ -209,7 +209,7 @@ const renderItemInterface = (
         {(customIcon || image || icon || enforceLayout) && (
           <RowView
             width={
-              (customIconProps
+              (customIconProps?.containerSize
                 ? customIconProps.containerSize
                 : style.image.width) +
               defaults.marginHorizontal / 2
