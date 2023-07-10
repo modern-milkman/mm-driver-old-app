@@ -6,7 +6,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Platform } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
-
 import {
   requestMultiple,
   PERMISSIONS,
@@ -194,6 +193,7 @@ export function* setLocation({ position }) {
     }
 
     if (user_session && user.driverId) {
+      Analytics.trackEvent(EVENTS.SET_DEVICE_LOCATION, position);
       yield put({
         type: Api.API_CALL,
         promise: Api.repositories.fleet.drivers({
