@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import React, { useCallback, useEffect, useRef } from 'react';
 import MapView, {
   Marker as RNMMarker,
@@ -205,7 +205,7 @@ const Map = props => {
           updateDeviceProps
         })}
         pitchEnabled={false}
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         ref={setMapRef.bind(null, mapRef)}
         showsCompass={false}
         showsIndoors={false}
