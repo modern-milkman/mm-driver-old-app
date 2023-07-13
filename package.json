@@ -1,7 +1,7 @@
 {
   "name": "ModernMilkmanDriver",
   "version": "7.18.0",
-  "versionCode": "197",
+  "versionCode": "198",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; ./appcenter-pre-build.sh",
@@ -28,9 +28,9 @@
     "@react-native-community/masked-view": "0.1.11",
     "@react-native-community/netinfo": "luminos-software/react-native-netinfo#master",
     "@react-native-picker/picker": "2.4.10",
-    "@react-navigation/drawer": "6.6.2",
-    "@react-navigation/native": "6.1.6",
-    "@react-navigation/stack": "6.3.16",
+    "@react-navigation/drawer": "6.6.3",
+    "@react-navigation/native": "6.1.7",
+    "@react-navigation/stack": "6.3.17",
     "amplitude": "6.0.0",
     "appcenter": "4.4.5",
     "appcenter-analytics": "4.4.5",
