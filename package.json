@@ -1,7 +1,7 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "7.18.0",
-  "versionCode": "198",
+  "version": "7.19.0",
+  "versionCode": "199",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; ./appcenter-pre-build.sh",
@@ -15,9 +15,7 @@
     "Camera",
     "LocationAccuracy",
     "LocationAlways",
-    "LocationWhenInUse",
-    "MediaLibrary",
-    "PhotoLibrary"
+    "LocationWhenInUse"
   ],
   "dependencies": {
     "@miblanchard/react-native-slider": "2.3.1",

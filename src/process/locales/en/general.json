@@ -6,7 +6,6 @@
   "details": "Details",
   "disable": "Disable",
   "done": "Done",
-  "tryAgain": "Try Again",
   "hide": "Hide",
   "laterTonight": "Later tonight",
   "location": "Location",
@@ -16,18 +15,17 @@
   "no": "No",
   "offline": "Offline",
   "ok": "Ok",
-  "openGalery": "Choose from Gallery",
   "permisions": {
     "location": {
       "whyLocationUsage": "Your location is required to make deliveries."
     }
   },
-  "photoLibrary": "Photo Library",
   "reset": "Reset & Restart Driver",
   "restart": "Restart Driver",
   "reviewPhoto": "Review Photo",
   "skip": "Skip",
   "takePhoto": "Take a Photo",
+  "tryAgain": "Try Again",
   "upNext": "Up next",
   "yes": "Yes"
 }

@@ -2,6 +2,7 @@
   "invalid": {
     "email": "Le courriel est invalide",
     "numericValidation": "Doit être un nombre",
-    "requiredValidation": "Ne peux pas être vide"
+    "requiredValidation": "Ne peux pas être vide",
+    "textValidation": "Les entrées de texte doivent contenir des caractères"
   }
 }

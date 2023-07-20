@@ -22,12 +22,12 @@
     "itemsLeft": "{{items}} items left",
     "loadVan": "Load Van",
     "rateMyRound": {
-      "title": "Rate My Round",
       "alert": {
-        "title": "Did your round go well today?",
         "happy": "Great! Please add anything you'd like to share with us on Rate my Round",
-        "sad": "We're sorry to hear that. Please explain what went wrong in 'rate my round' so that we can find a solution for you"
-      }
+        "sad": "We're sorry to hear that. Please explain what went wrong in 'rate my round' so that we can find a solution for you",
+        "title": "Did your round go well today?"
+      },
+      "title": "Rate My Round"
     },
     "title": "Your Route Checklist"
   },
@@ -174,10 +174,6 @@
       "location": {
         "android": "Enable from device's Settings > Location > App permision > Driver screen.",
         "ios": "Enable from device's Settings > Privacy > Location Services screen."
-      },
-      "photoLibrary": {
-        "android": "Enable from device's Settings > Location > Permision manager > Files > Driver screen.",
-        "ios": "Enable from device's Settings > Driver > Photos."
       }
     },
     "title": "Permissions missing"
@@ -185,13 +181,13 @@
   "registrationMileage": {
     "invalidPlate": "Number plate not on file",
     "mileage": "Mileage",
-    "registration": "Registration",
-    "title": "Registration & Mileage",
     "modal": {
-      "title": "Number plate not recognised",
       "body": "This number plate does not exist in our records, please try again.",
-      "proceedAnyway": "Proceed anyway"
-    }
+      "proceedAnyway": "Proceed anyway",
+      "title": "Number plate not recognised"
+    },
+    "registration": "Registration",
+    "title": "Registration & Mileage"
   },
   "settings": {
     "misc": {

@@ -21,7 +21,14 @@
     },
     "itemsLeft": "{{items}} articles restants",
     "loadVan": "Fourgon de chargement",
-    "rateMyRound": "Évaluer ma partie",
+    "rateMyRound": {
+      "alert": {
+        "happy": "Super! Veuillez ajouter tout ce que vous souhaitez partager avec nous sur Rate my Round",
+        "sad": "Nous sommes désolés d'entendre cela. Veuillez expliquer ce qui n'a pas fonctionné dans \"évaluer ma partie\" afin que nous puissions trouver une solution pour vous",
+        "title": "Votre parcours s'est bien passé aujourd'hui ?"
+      },
+      "title": "Évaluer ma partie"
+    },
     "title": "Liste de contrôle de votre itinéraire"
   },
   "checklist": {
@@ -67,11 +74,15 @@
       }
     },
     "deliveryItems": "Articles de livraison",
+    "emptiesCollected": "Vides collectés ?",
     "modal": {
-      "inputPlaceholder": "Tapez votre raison ici"
+      "actionSheetPlaceholder": "Veuillez sélectionner une raison",
+      "inputPlaceholder": "Ajouter plus d'informations ici",
+      "rejectTitle": "Motif de rejet"
     },
     "proofOfDeliveryRequired": "REQUIERT UNE PREUVE DE LIVRAISON",
     "routeDescription": "ID de route #{{routeDescription}}",
+    "skipDelivery": "Sauter la livraison",
     "status": {
       "completed": "Complété",
       "rejected": "Ignoré"
@@ -118,6 +129,7 @@
     },
     "foreground": {
       "loaderText": {
+        "bundles": "Chargement des informations sur le bundle",
         "getForDriver": "Chargement des données d'itinéraire",
         "getVehicleStockForDriver": "Chargement des informations boursières",
         "rejectReasons": "Chargement des motifs de rejet",
@@ -148,7 +160,7 @@
   },
   "panel": {
     "driverID": "ID conducteur #{{driverId}}",
-    "gasStation": "Trouver une station-service à proximité",
+    "gasStation": "Trouvez du carburant à proximité",
     "loadedStock": "Stock chargé",
     "suggestions": "Suggérer un changement"
   },
@@ -167,8 +179,13 @@
     "title": "Autorisations manquantes"
   },
   "registrationMileage": {
+    "invalidPlate": "Plaque d'immatriculation non enregistrée",
     "mileage": "Kilométrage",
-    "or": "OU",
+    "modal": {
+      "body": "Cette plaque d'immatriculation n'existe pas dans nos archives, veuillez réessayer.",
+      "proceedAnyway": "Continuer malgré tout",
+      "title": "Plaque d'immatriculation non reconnue"
+    },
     "registration": "Inscription",
     "title": "Inscription"
   },

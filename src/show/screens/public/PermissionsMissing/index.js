@@ -60,19 +60,6 @@ const PermissionsMissing = () => {
           title={I18n.t('general:camera')}
           titleColor={colors.white}
         />
-        <ListItem
-          icon={'file-image'}
-          iconColor={colors.white}
-          description={`${I18n.t(
-            'ios:NSPhotoLibraryUsageDescription'
-          )} ${I18n.t(
-            `screens:permissionsMissing.instructions.camera.${Platform.OS}`
-          )}`}
-          descriptionColor={colors.inputSecondary}
-          disabled
-          title={I18n.t('general:photoLibrary')}
-          titleColor={colors.white}
-        />
       </ColumnView>
     </FullView>
   );

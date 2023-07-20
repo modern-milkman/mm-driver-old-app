@@ -1,10 +1,8 @@
 {
+  "NSAppleMusicUsageDescription": "Not used by the app",
   "NSCameraUsageDescription": "Camera access required for proof of delivery and replying to customer claims.",
   "NSFaceIDUsageDescription": "Allows fast and secure biometric authentication.",
   "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is required to make deliveries.",
   "NSLocationAlwaysUsageDescription": "Your location is required to make deliveries.",
-  "NSLocationWhenInUseUsageDescription": "Your location is required to make deliveries.",
-  "NSPhotoLibraryAddUsageDescription": "Allows photo uploads within the app.",
-  "NSPhotoLibraryUsageDescription": "Allows photo uploads within the app.",
-  "NSAppleMusicUsageDescription": "Not used by the app"
+  "NSLocationWhenInUseUsageDescription": "Your location is required to make deliveries."
 }

@@ -188,11 +188,6 @@ const preopenPicker = ({ addImage, deletePhoto, key, reviewPhoto, title }) => {
       key,
       method: 'openCamera'
     });
-    pickerOptions[I18n.t('general:openGalery')] = openPicker.bind(null, {
-      addImage,
-      key,
-      method: 'openPicker'
-    });
   }
   if (deletePhoto) {
     pickerOptions[I18n.t('general:deletePhoto')] = deletePhoto;

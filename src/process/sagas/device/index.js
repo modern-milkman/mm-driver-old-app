@@ -1,7 +1,6 @@
 // DEVICE SAGAS BELOW
 // could be used for offline / online / set position
 
-import DeviceInfo from 'react-native-device-info';
 import * as SplashScreen from 'expo-splash-screen';
 import { delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Platform } from 'react-native';
@@ -46,29 +45,14 @@ import {
 export { watchUserLocation } from './extras/watchUserLocation';
 
 export function* ensureMandatoryPermissions({ routeName }) {
-  const isAndroid13OrLater = DeviceInfo.getSystemVersion() >= 13;
   const { dispatch } = store().store;
   const mandatoryPermissions = Platform.select({
     android: [
       PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
       PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      PERMISSIONS.ANDROID.CAMERA,
-      ...(isAndroid13OrLater
-        ? [
-            PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
-            PERMISSIONS.ANDROID.READ_MEDIA_VIDEO,
-            PERMISSIONS.ANDROID.READ_MEDIA_AUDIO
-          ]
-        : []),
-      ...(!isAndroid13OrLater
-        ? [PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE]
-        : [])
+      PERMISSIONS.ANDROID.CAMERA
     ],
-    ios: [
-      PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-      PERMISSIONS.IOS.CAMERA,
-      PERMISSIONS.IOS.PHOTO_LIBRARY
-    ]
+    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.CAMERA]
   });
 
   const biometrics = yield select(biometricsSelector);

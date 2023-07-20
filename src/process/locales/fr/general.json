@@ -1,7 +1,7 @@
 {
   "camera": "Appareil photo",
   "cancel": "Annuler",
-  "country": "Emplacement/Région sélectionné",
+  "country": "Emplacement / Région sélectionné",
   "deletePhoto": "Supprimer la photo",
   "details": "Des détails",
   "disable": "Désactiver",
@@ -15,7 +15,6 @@
   "no": "Non",
   "offline": "Hors ligne",
   "ok": "D'accord",
-  "openGalery": "Choisir depuis la galerie",
   "permisions": {
     "location": {
       "whyLocationUsage": "Votre emplacement est nécessaire pour effectuer des livraisons."
@@ -26,6 +25,7 @@
   "reviewPhoto": "Revoir la photo",
   "skip": "Sauter",
   "takePhoto": "Prendre une photo",
+  "tryAgain": "Essayer à nouveau",
   "upNext": "Suivant",
   "yes": "Oui"
 }

@@ -1,8 +1,6 @@
+  "NSAppleMusicUsageDescription"= "Non utilisé par l'application";
   "NSCameraUsageDescription"= "Accès à la caméra requis pour la preuve de livraison et la réponse aux réclamations des clients.";
   "NSFaceIDUsageDescription"= "Permet une authentification biométrique rapide et sécurisée.";
   "NSLocationAlwaysAndWhenInUseUsageDescription"= "Votre emplacement est nécessaire pour effectuer des livraisons.";
   "NSLocationAlwaysUsageDescription"= "Votre emplacement est nécessaire pour effectuer des livraisons.";
   "NSLocationWhenInUseUsageDescription"= "Votre emplacement est nécessaire pour effectuer des livraisons.";
-  "NSPhotoLibraryAddUsageDescription"= "Autorise les téléchargements de photos dans l'application.";
-  "NSPhotoLibraryUsageDescription"= "Autorise les téléchargements de photos dans l'application.";
-  "NSAppleMusicUsageDescription"= "Non utilisé par l'application";
