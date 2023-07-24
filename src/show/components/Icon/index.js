@@ -29,6 +29,7 @@ const Icon = props => {
       <RNEIcon
         color={color}
         disabled={disabled}
+        disabledStyle={defaultStyle.disabledStyle}
         iconStyle={[
           defaultStyle.iconDefaultStyle(containerSize),
           defaultStyle.iconDefaultContainerSize(containerSize),

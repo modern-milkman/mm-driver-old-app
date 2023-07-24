@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import Config from 'react-native-config';
 import { createActions, createReducer } from 'reduxsauce';
 
@@ -49,7 +50,14 @@ const initialState = {
   mapMarkerSize: sizes.marker.normal,
   mapMode: 'auto',
   mapNoTrackingHeading: 0,
-  mapZoom: 14,
+  ...Platform.select({
+    ios: {
+      mapZoom: 36000
+    },
+    android: {
+      mapZoom: 14
+    }
+  }),
   network: {
     isConnected: false,
     status: 0 //0-Online * 1-Soft Offline * 2-offline

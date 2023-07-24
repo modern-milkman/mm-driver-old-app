@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Config from 'react-native-config';
 import RNRestart from 'react-native-restart';
 import { Platform, StatusBar } from 'react-native';
+import KeepAwake from '@sayem314/react-native-keep-awake';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 import I18n from 'Locales/I18n';
@@ -111,8 +112,8 @@ class Root extends React.Component {
         <InAppBrowser theme={theme} />
 
         {/* content that should go on top of the app, full view, no safe area bounds */}
-
         <Navigator theme={theme} />
+        <KeepAwake />
       </FullView>
     );
   };

@@ -43,7 +43,8 @@ const regionChangeComplete = (
         ...(!shouldTrackHeading && {
           mapNoTrackingHeading: currentCamera.heading
         }),
-        mapZoom: currentCamera.zoom
+        ...(Platform.OS === 'android' && { mapZoom: currentCamera.zoom }),
+        ...(Platform.OS === 'ios' && { mapZoom: currentCamera.altitude })
       });
     });
     if (isGesture) {
@@ -105,7 +106,10 @@ const Map = props => {
       longitude
     },
     pitch: shouldPitchMap ? 90 : 0,
-    zoom: mapZoom,
+    ...Platform.select({
+      android: { zoom: mapZoom },
+      ios: { altitude: mapZoom }
+    }),
     heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading
   });
 
@@ -143,7 +147,6 @@ const Map = props => {
             }
           });
         }
-
         animateCamera(currentCamera, {
           ...(shouldTrackLocation && {
             center: {
@@ -157,7 +160,7 @@ const Map = props => {
             }
           }),
           heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading,
-          pitch: shouldPitchMap ? 90 : 0
+          pitch: shouldPitchMap ? (Platform.OS === 'android' ? 90 : 45) : 0
         });
       });
     }

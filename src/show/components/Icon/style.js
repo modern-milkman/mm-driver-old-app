@@ -1,6 +1,9 @@
 import { Platform } from 'react-native';
 
 export default {
+  disabledStyle: {
+    backgroundColor: 'transparent'
+  },
   iconDefaultContainerSize: containerSize => ({
     width: containerSize,
     height: containerSize,
