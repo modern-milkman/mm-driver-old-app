@@ -1,14 +1,14 @@
 {
   "name": "ModernMilkmanDriver",
   "version": "8.0.0",
-  "versionCode": "202",
+  "versionCode": "203",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; ./appcenter-pre-build.sh",
     "postinstall": "./scripts/infuse_version.sh;",
     "precommit": "lint-staged",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "sync-translations": "./node_modules/.bin/locize sync --api-key 1346bd17-29e0-43f2-ae52-e64f1a9a1f7b --project-id 529883ba-8b31-4f9a-8116-ca4dc6f2a807 --path src/process/locales && ./scripts/infuse_locale.sh",
+    "sync-translations": "./node_modules/.bin/locize sync --update-values true --api-key 1346bd17-29e0-43f2-ae52-e64f1a9a1f7b --project-id 529883ba-8b31-4f9a-8116-ca4dc6f2a807 --path src/process/locales && ./scripts/infuse_locale.sh",
     "prepare": "husky install"
   },
   "reactNativePermissionsIOS": [

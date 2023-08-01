@@ -4,5 +4,6 @@
   "NSFaceIDUsageDescription": "Allows fast and secure biometric authentication.",
   "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is required to make deliveries.",
   "NSLocationAlwaysUsageDescription": "Your location is required to make deliveries.",
-  "NSLocationWhenInUseUsageDescription": "Your location is required to make deliveries."
+  "NSLocationWhenInUseUsageDescription": "Your location is required to make deliveries.",
+  "NSPhotoLibraryUsageDescription": "Not used by the app"
 }
