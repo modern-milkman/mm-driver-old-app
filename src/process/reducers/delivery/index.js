@@ -610,7 +610,10 @@ export const setCustomerClaims = (state, { payload, stopId }) =>
 
     payload.forEach(claim => {
       if (claim.driverAcknowledged === false) {
-        unacknowledgedList.push(claim);
+        unacknowledgedList.push({
+          ...claim,
+          index: unacknowledgedList.length + 1
+        });
         unacknowledgedListIds.push(claim.claimId);
         draft.stops[stopId].claims.showClaimModal = true;
       } else {

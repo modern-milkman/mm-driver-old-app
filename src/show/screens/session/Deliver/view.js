@@ -3,11 +3,13 @@ import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
 import { Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 
-import actionSheet from 'Services/actionSheet';
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import { defaults, sizes } from 'Theme';
+import { ImageTextModal } from 'Renders';
+import actionSheet from 'Services/actionSheet';
 import NavigationService from 'Services/navigation';
 import { deliveredStatuses, deviceFrame, mock, preopenPicker } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
@@ -22,8 +24,6 @@ import {
   Text,
   TextInput
 } from 'Components';
-
-import { ImageTextModal } from 'Renders';
 
 import style from './style';
 
@@ -278,7 +278,6 @@ const Deliver = props => {
     bundledProducts,
     buttonAccessibility,
     confirmedItem,
-    navigation,
     outOfStockIds,
     podImage,
     routeDescription,
@@ -344,8 +343,10 @@ const Deliver = props => {
     });
   }
 
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    const focusListener = navigation.addListener('focus', () => {
+    if (isFocused) {
       if (showClaimModal) {
         NavigationService.navigate({
           routeName: 'CustomerIssueModal'
@@ -357,11 +358,9 @@ const Deliver = props => {
       ) {
         showPODRequired();
       }
-    });
-
-    return focusListener;
+    }
   }, [
-    navigation,
+    isFocused,
     selectedStop?.proofOfDeliveryRequired,
     selectedStop?.status,
     showClaimModal,
@@ -702,7 +701,6 @@ Deliver.propTypes = {
   bundledProducts: PropTypes.object,
   buttonAccessibility: PropTypes.number,
   confirmedItem: PropTypes.array,
-  navigation: PropTypes.object,
   outOfStockIds: PropTypes.array,
   podImage: PropTypes.object,
   reasonMessage: PropTypes.string,
