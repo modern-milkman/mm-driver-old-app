@@ -503,6 +503,12 @@ export const getForDriverSuccess = (state, { payload }) =>
           if (outOfSequenceIndex >= 0) {
             draft.outOfSequenceIds.splice(outOfSequenceIndex, 1);
           }
+          const orderedStopIndex = draft.orderedStopsIds.indexOf(
+            address.addressId
+          );
+          if (orderedStopIndex >= 0) {
+            draft.orderedStopsIds.splice(orderedStopIndex, 1);
+          }
           break;
       }
     }
