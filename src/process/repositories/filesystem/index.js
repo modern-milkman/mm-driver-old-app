@@ -2,6 +2,7 @@ import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
 
 import Api from 'Api';
+import Analytics, { EVENTS } from 'Services/analytics';
 
 export default {
   clear: async () => {
@@ -25,6 +26,11 @@ export default {
         'x-api-version': Config.X_API_VERSION,
         Authorization: 'Bearer ' + Api.getToken()
       }
+    }).promise.catch(err => {
+      Analytics.trackEvent(EVENTS.DOWNLOAD_FAIL, {
+        errorMessage: err.message,
+        params
+      });
     });
   },
 
