@@ -144,9 +144,14 @@ const Map = props => {
             center: {
               latitude,
               longitude
-            }
+            },
+            ...Platform.select({
+              android: { zoom: mapZoom },
+              ios: { altitude: mapZoom }
+            })
           });
         }
+
         animateCamera(currentCamera, {
           ...(shouldTrackLocation && {
             center: {
@@ -160,7 +165,11 @@ const Map = props => {
             }
           }),
           heading: shouldTrackHeading ? heading || 0 : mapNoTrackingHeading,
-          pitch: shouldPitchMap ? (Platform.OS === 'android' ? 90 : 45) : 0
+          pitch: shouldPitchMap ? (Platform.OS === 'android' ? 90 : 45) : 0,
+          ...Platform.select({
+            android: { zoom: mapZoom },
+            ios: { altitude: mapZoom }
+          })
         });
       });
     }
@@ -177,6 +186,7 @@ const Map = props => {
     mapIsInteracting,
     mapNoTrackingHeading,
     mapRef,
+    mapZoom,
     shouldPitchMap,
     shouldTrackHeading,
     shouldTrackLocation
@@ -187,7 +197,11 @@ const Map = props => {
       <MapView
         customMapStyle={mapStyle[theme]}
         initialCamera={initialCamera.current}
-        minZoomLevel={parseInt(Config.MIN_MAP_ZOOM_LEVEL)}
+        minZoomLevel={parseInt(
+          Platform.OS === 'android'
+            ? Config.ANDROID_MIN_MAP_ZOOM_LEVEL
+            : Config.IOS_MIN_MAP_ZOOM_LEVEL
+        )}
         moveOnMarkerPress={false}
         onStartShouldSetResponder={triggerManualMove.bind(null, {
           mapIsInteracting,
