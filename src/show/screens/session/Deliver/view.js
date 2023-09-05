@@ -11,8 +11,14 @@ import { defaults, sizes } from 'Theme';
 import { ImageTextModal } from 'Renders';
 import actionSheet from 'Services/actionSheet';
 import NavigationService from 'Services/navigation';
-import { deliveredStatuses, deviceFrame, mock, preopenPicker } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
+import {
+  deliveredStatuses,
+  deviceFrame,
+  distance,
+  mock,
+  preopenPicker
+} from 'Helpers';
 import {
   Button,
   Image,
@@ -287,7 +293,8 @@ const Deliver = props => {
     toggleConfirmedItem,
     toggleModal,
     toggleOutOfStock,
-    updateProps
+    updateProps,
+    position
   } = props;
 
   const acknowledgedList = selectedStop?.claims.acknowledgedList || [];
@@ -372,6 +379,13 @@ const Deliver = props => {
     return null;
   }
 
+  const over20MetresAway =
+    distance(
+      { x: position.latitude, y: position.longitude },
+      { x: selectedStop.latitude, y: selectedStop.longitude },
+      'ME'
+    ) > 20;
+
   return (
     <SafeAreaView>
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
@@ -432,6 +446,19 @@ const Deliver = props => {
               <Text.Button testID={'deliver-deliveryStatus'}>
                 {I18n.t(`screens:deliver.status.${selectedStop.status}`)}
               </Text.Button>
+            </RowView>
+          </>
+        )}
+
+        {over20MetresAway && (
+          <>
+            <Separator width={'100%'} />
+            <RowView
+              paddingVertical={defaults.marginHorizontal / 2}
+              backgroundColor={colors.error}>
+              <Text.Caption color={colors.whiteOnly}>
+                {I18n.t(`screens:deliver.over20meters`)}
+              </Text.Caption>
             </RowView>
           </>
         )}
@@ -703,6 +730,7 @@ Deliver.propTypes = {
   confirmedItem: PropTypes.array,
   outOfStockIds: PropTypes.array,
   podImage: PropTypes.object,
+  position: PropTypes.object,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
   selectedStop: PropTypes.object,
@@ -722,6 +750,7 @@ Deliver.defaultProps = {
   confirmedItem: [],
   outOfStockIds: [],
   podImage: null,
+  position: { latitude: 0, longitude: 0 },
   reasonMessage: '',
   routeDescription: null,
   selectedStop: {},

@@ -80,6 +80,7 @@
       "inputPlaceholder": "Add more info here",
       "rejectTitle": "Rejection Reason"
     },
+    "over20meters": "You are over 20 metres away from the customer's pin",
     "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",
     "skipDelivery": "Skip Delivery",
