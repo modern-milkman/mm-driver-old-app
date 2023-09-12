@@ -3,9 +3,9 @@ import { Platform } from 'react-native';
 import React, { createRef } from 'react';
 import { WebView } from 'react-native-webview';
 
-import { openURL } from 'Helpers';
-import { Icon, Text } from 'Components';
 import { defaults } from 'Theme';
+import { Icon, Text } from 'Components';
+import { openURL, mock } from 'Helpers';
 import { Modal, RowView, SafeAreaView, useThemedStyles } from 'Containers';
 
 import unthemedStyle from './style';
@@ -26,12 +26,14 @@ const goBackOrDismiss = ({ canGoBack, updateProps }) => {
 
 const InAppBrowser = props => {
   const {
-    canGoBack,
-    canGoForward,
+    canGoBack = false,
+    canGoForward = false,
     theme: { colors },
-    updateProps,
-    url: uri,
-    visible
+    showAddressBar = true,
+    updateProps = mock,
+    url: uri = 'http://themodernmilkman.co.uk',
+    html = '',
+    visible = false
   } = props;
   const style = useThemedStyles(unthemedStyle);
 
@@ -54,42 +56,46 @@ const InAppBrowser = props => {
             color={colors.white}
             onPress={dismiss.bind(null, { updateProps })}
           />
-          <Icon
-            name="arrow-left"
-            size={defaults.topNavigation.iconSize}
-            containerSize={defaults.topNavigation.height}
-            color={canGoBack ? colors.white : colors.input}
-            disabled={!canGoBack}
-            onPress={webview?.current?.goBack}
-          />
-          <Text.Caption
-            align={'left'}
-            color={colors.white}
-            flex={1}
-            numberOfLines={1}>
-            {uri}
-          </Text.Caption>
+          {showAddressBar && (
+            <>
+              <Icon
+                name="arrow-left"
+                size={defaults.topNavigation.iconSize}
+                containerSize={defaults.topNavigation.height}
+                color={canGoBack ? colors.white : colors.input}
+                disabled={!canGoBack}
+                onPress={webview?.current?.goBack}
+              />
+              <Text.Caption
+                align={'left'}
+                color={colors.white}
+                flex={1}
+                numberOfLines={1}>
+                {uri}
+              </Text.Caption>
 
-          <Icon
-            name="arrow-right"
-            size={defaults.topNavigation.iconSize}
-            containerSize={defaults.topNavigation.height}
-            color={canGoForward ? colors.white : colors.input}
-            disabled={!canGoForward}
-            onPress={webview?.current?.goForward}
-          />
-          <Icon
-            type={'material'}
-            name="open-in-browser"
-            size={defaults.topNavigation.iconSize}
-            containerSize={defaults.topNavigation.height}
-            color={colors.white}
-            onPress={openURL.bind(null, uri)}
-          />
+              <Icon
+                name="arrow-right"
+                size={defaults.topNavigation.iconSize}
+                containerSize={defaults.topNavigation.height}
+                color={canGoForward ? colors.white : colors.input}
+                disabled={!canGoForward}
+                onPress={webview?.current?.goForward}
+              />
+              <Icon
+                type={'material'}
+                name="open-in-browser"
+                size={defaults.topNavigation.iconSize}
+                containerSize={defaults.topNavigation.height}
+                color={colors.white}
+                onPress={openURL.bind(null, uri)}
+              />
+            </>
+          )}
         </RowView>
 
         <WebView
-          source={{ uri }}
+          source={{ uri, html }}
           onNavigationStateChange={navState => {
             updateProps({
               canGoBack: navState.canGoBack,
@@ -97,6 +103,7 @@ const InAppBrowser = props => {
               url: navState.url
             });
           }}
+          originWhitelist={['*']}
           ref={webview}
         />
       </SafeAreaView>
@@ -104,14 +111,11 @@ const InAppBrowser = props => {
   );
 };
 
-InAppBrowser.defaultProps = {
-  url: 'http://themodernmilkman.co.uk',
-  visible: false
-};
-
 InAppBrowser.propTypes = {
   canGoBack: PropTypes.bool,
   canGoForward: PropTypes.bool,
+  html: PropTypes.string,
+  showAddressBar: PropTypes.bool,
   theme: PropTypes.object,
   updateProps: PropTypes.func,
   url: PropTypes.string,

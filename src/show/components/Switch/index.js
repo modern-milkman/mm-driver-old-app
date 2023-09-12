@@ -14,8 +14,8 @@ const Switch = props => {
       android: disabled ? alphaColor('input', 0.4) : colors.input
     }),
     true: Platform.select({
-      android: disabled ? alphaColor('input', 0.4) : colors.primary,
-      ios: colors.primary
+      android: disabled ? alphaColor('input', 0.4) : colors.primaryBright,
+      ios: colors.primaryBright
     })
   };
   const platformProps = Platform.select({
@@ -24,7 +24,7 @@ const Switch = props => {
         ? colors.input
         : value
         ? colors.whiteOnly
-        : colors.primary
+        : colors.primaryBright
     },
     ios: {
       ios_backgroundColor: colors.input

@@ -4,11 +4,11 @@ import PermissionsMissing from './public/PermissionsMissing';
 import UpgradeApp from './public/UpgradeApp';
 
 // SESSION ONLY
+import AcceptTerms from './session/AcceptTerms';
 import CheckIn from './session/CheckIn';
 import CustomerIssueDetails from './session/Deliver/subviews/Details';
 import CustomerIssueList from './session/Deliver/subviews/List';
 import CustomerIssueModal from './session/Deliver/subviews/Modal';
-
 import EmptiesCollected from './session/VehicleCheckWizard/EmptiesCollected';
 import Deliver from './session/Deliver';
 import LoadVan from './session/LoadVan';
@@ -18,6 +18,7 @@ import RegistrationMileage from './session/VehicleCheckWizard/RegistrationMileag
 import Settings from './session/Settings';
 
 export {
+  AcceptTerms,
   CheckIn,
   CustomerIssueDetails,
   CustomerIssueList,

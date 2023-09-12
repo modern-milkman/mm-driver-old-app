@@ -189,10 +189,14 @@ const SideBar = props => {
               coerce(Config.APP_VERSION_NAME)
             ) && (
               <ListItem
+                customIconProps={{
+                  containerSize: sizes.sidebar.icon.default,
+                  width: sizes.sidebar.icon.default
+                }}
                 title={I18n.t('screens:upgradeApp.download', {
                   version: appcenter.short_version
                 })}
-                icon={'cellphone-android'}
+                icon={'cellphone'}
                 rightIcon={'cloud-download-outline'}
                 onPress={triggerDriverUpdate.bind(
                   null,

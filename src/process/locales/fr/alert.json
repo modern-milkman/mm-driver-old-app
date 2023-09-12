@@ -17,6 +17,10 @@
     "title": "Code copié dans le presse-papiers"
   },
   "errors": {
+    "acceptTerms": {
+      "message": "Une erreur s'est produite lors de la tentative d'acceptation des conditions générales. Veuillez réessayer plus tard.",
+      "title": "Erreur lors de l'acceptation des conditions générales"
+    },
     "api": {
       "driverData": {
         "message": "Essayez à nouveau d’actualiser les données d’itinéraire. Si le problème persiste, communiquez avec votre superviseur.",
@@ -36,6 +40,13 @@
         "title": "Erreur lors de la synchronisation des données"
       }
     },
+    "terms": {
+      "message": {
+        "404": "Échec de la récupération du dernier document de conditions générales. Appuyez ici pour réessayer. Si le problème persiste, contactez votre superviseur.",
+        "copy": "Échec de l'enregistrement du dernier document de conditions générales sur votre appareil. Veuillez réessayer. Si le problème persiste, contactez votre superviseur."
+      },
+      "title": "Erreur de téléchargement de conditions générales"
+    },
     "vanChecks": {
       "mustComplyWithTerms": {
         "message": "Vous devez vous conformer à toutes les conditions pour commencer votre quart de travail",
@@ -44,6 +55,10 @@
     }
   },
   "success": {
+    "acceptTerms": {
+      "message": "La dernière révision des conditions générales a été acceptée. Merci!",
+      "title": "Conditions générales acceptées"
+    },
     "delivery": {
       "proofOfDeliveryRequired": {
         "message": "Veuillez prendre votre téléphone avec vous et prendre une photo une fois que vous avez livré les produits.",
@@ -98,6 +113,10 @@
         "message": "Toutes les données de travail ont été transmises avec succès au serveur. Appuyez pour ignorer.",
         "title": "Poussé avec succès toutes vos données hors ligne !"
       }
+    },
+    "terms": {
+      "message": "Les conditions générales du Modern Milkman ont été téléchargées avec succès et enregistrées dans le dossier de téléchargement de votre appareil. Veuillez les lire attentivement avant d'accepter.",
+      "title": "Conditions générales téléchargées avec succès"
     }
   }
 }

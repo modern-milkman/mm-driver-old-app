@@ -1,7 +1,7 @@
 import axios from 'axios';
 import EM from 'es-event-emitter';
-import { coerce, gt as semverGt } from 'semver';
 import Config from 'react-native-config';
+import { coerce, gt as semverGt } from 'semver';
 import NetInfo from '@react-native-community/netinfo';
 
 import I18n from 'Locales/I18n';
@@ -402,7 +402,11 @@ const Api = {
 
   testCustomHeaders({ headers }) {
     if (headers) {
-      const { dispatch } = store().store;
+      const { dispatch, getState } = store().store;
+      let {
+        user: { acceptedTermsVersion },
+        application: { userSessionPresent }
+      } = getState();
       if (
         headers['x-app-version'] &&
         semverGt(headers['x-app-version'], coerce(Config.APP_VERSION_NAME))
@@ -424,6 +428,15 @@ const Api = {
             resetHourDay: h * 60 * 60 + m * 60
           })
         );
+      }
+      if (
+        userSessionPresent &&
+        parseInt(headers['x-terms-version']) > acceptedTermsVersion
+      ) {
+        NavigationService.navigate({
+          routeName: 'AcceptTerms',
+          params: { minimumTermsVersion: parseInt(headers['x-terms-version']) }
+        });
       }
     }
   },

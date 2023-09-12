@@ -10,6 +10,7 @@ export const { Types, Creators } = createActions(
     biometricLogin: null,
     biometricDisable: null,
     dismissKeyboard: null,
+    getTerms: null,
     init: null,
     login: ['isBiometricLogin'],
     login_completed: null,

@@ -1,5 +1,8 @@
 import Appcenter from 'appcenter';
+import { Base64 } from 'js-base64';
+import RNFS from 'react-native-fs';
 import Crashes from 'appcenter-crashes';
+import Config from 'react-native-config';
 import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
 import { call, delay, put, select } from 'redux-saga/effects';
@@ -13,9 +16,9 @@ import I18n from 'Locales/I18n';
 import * as SplashScreen from 'expo-splash-screen';
 import NavigationService from 'Services/navigation';
 import Analytics, { EVENTS } from 'Services/analytics';
-import { defaultRoutes, isAppInstalled, systemLanguage } from 'Helpers';
 import EncryptedStorage from 'Services/encryptedStorage';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
+import { defaultRoutes, isAppInstalled, systemLanguage } from 'Helpers';
 import { user as userSelector, Types as UserTypes } from 'Reducers/user';
 
 import {
@@ -31,6 +34,7 @@ import {
 } from 'Reducers/device';
 import {
   lastRoute as lastRouteSelector,
+  lastRouteParams as lastRouteParamsSelector,
   Types as ApplicationTypes,
   userSessionPresent as userSessionPresentSelector,
   mounted as mountedSelector
@@ -85,6 +89,33 @@ export const biometricLogin = function* () {
 
 export const dismissKeyboard = function () {
   Keyboard.dismiss();
+};
+
+export const getTerms = function* () {
+  // BE gives us a base64 encoded file, so we need to decode it
+  Api.repositories.filesystem
+    .downloadFile({
+      fromUrl: `${Api.DELIVERY_URL()}/Delivery/TermsAndConditions`,
+      toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_MISC}/terms-and-conditions-base64.pdf`
+    })
+    .then(getTermsReadBase64);
+};
+
+const getTermsReadBase64 = () => {
+  Api.repositories.filesystem
+    .readFile(
+      `${RNFS.DocumentDirectoryPath}/${Config.FS_MISC}/terms-and-conditions-base64.pdf`,
+      'base64'
+    )
+    .then(getTermsWriteDecodedBase64);
+};
+
+const getTermsWriteDecodedBase64 = data => {
+  Api.repositories.filesystem.writeFile(
+    `${RNFS.DocumentDirectoryPath}/${Config.FS_MISC}/terms-and-conditions.pdf`,
+    Base64.atob(data),
+    'base64'
+  );
 };
 
 export const init = function* () {
@@ -185,6 +216,7 @@ export const login_success = function* ({ payload, isBiometricLogin }) {
   yield put({ type: UserTypes.UPDATE_PROPS, props: { ...payload } });
 
   yield put({ type: UserTypes.GET_DRIVER, isBiometricLogin });
+  yield put({ type: ApplicationTypes.GET_TERMS });
   Analytics.trackEvent(EVENTS.LOGIN_SUCCESSFUL);
 };
 
@@ -262,11 +294,12 @@ export const rehydrated = function* () {
 };
 
 export const rehydratedAndMounted = function* () {
-  const lastRoute = yield select(lastRouteSelector);
   const user = yield select(userSelector);
   const country = yield select(countrySelector);
-  const user_session = yield select(userSessionPresentSelector);
+  const lastRoute = yield select(lastRouteSelector);
   const { reloadingDevice } = yield select(processorsSelector);
+  const user_session = yield select(userSessionPresentSelector);
+  const lastRouteParams = yield select(lastRouteParamsSelector);
 
   Api.configureCountryBaseURL();
 
@@ -290,7 +323,8 @@ export const rehydratedAndMounted = function* () {
       yield call(Api.setToken, user.jwtToken, user.refreshToken);
       yield put({
         type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
-        routeName: lastRoute
+        routeName: lastRoute,
+        params: lastRouteParams
       });
     }
   } else {

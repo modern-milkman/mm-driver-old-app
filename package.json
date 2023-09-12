@@ -1,7 +1,7 @@
 {
   "name": "ModernMilkmanDriver",
   "version": "8.0.2",
-  "versionCode": "208",
+  "versionCode": "209",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; ./appcenter-pre-build.sh",
@@ -80,12 +80,14 @@
   "devDependencies": {
     "@babel/core": "7.22.9",
     "@babel/eslint-parser": "7.22.9",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "7.18.6",
     "@babel/plugin-proposal-optional-chaining": "7.21.0",
     "@babel/preset-typescript": "7.22.5",
     "@babel/runtime": "7.22.6",
     "@react-native-community/eslint-config": "3.2.0",
     "babel-eslint": "10.1.0",
     "eslint": "8.45.0",
+    "eslint-plugin-ft-flow": "3.0.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-native": "4.0.0",

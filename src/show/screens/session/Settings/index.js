@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 import { Creators as deviceActions } from 'Reducers/device';
 import { Creators as applicationActions } from 'Reducers/application';
+import { Creators as inAppBrowserActions } from 'Reducers/inappbrowser';
 import { Creators as deliveryActions, checklist } from 'Reducers/delivery';
 
 import Settings from './view';
@@ -33,6 +34,7 @@ export default connect(
     biometricDisable: applicationActions.biometricDisable,
     continueDelivering: deliveryActions.continueDelivering,
     updateDeviceProps: deviceActions.updateProps,
+    updateInAppBrowserProps: inAppBrowserActions.updateProps,
     setLanguage: deviceActions.setLanguage
   }
 )(Settings);

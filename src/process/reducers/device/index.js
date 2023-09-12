@@ -7,7 +7,7 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
-    ensureMandatoryPermissions: ['routeName'],
+    ensureMandatoryPermissions: ['routeName', 'params'],
     lowConnectionUpdate: ['lowConnection'],
     pushRequest: ['queue', 'payload'],
     setCountry: ['country'],
@@ -58,6 +58,7 @@ const initialState = {
       mapZoom: 14
     }
   }),
+  minimumTermsVersion: 0,
   network: {
     isConnected: false,
     status: 0 //0-Online * 1-Soft Offline * 2-offline

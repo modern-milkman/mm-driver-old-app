@@ -1,4 +1,19 @@
 {
+  "acceptTerms": {
+    "description": {
+      "new": {
+        "agreement": "I have read and agree to the ",
+        "prefix": "To use this app you must review and agree to the ",
+        "suffix": "."
+      },
+      "updated": {
+        "agreement": "I have read and agree to the new ",
+        "prefix": "We've recently updated our ",
+        "suffix": ". To continue using the app, please review and agree to these."
+      }
+    },
+    "title": "Terms and conditions"
+  },
   "appCrash": {
     "crashCode": "Tap to copy Error CODE: {{crashCode}}",
     "description": "Unfortunately Driver app has encountered an error that couldn't be handled. The error was reported to the developers and will be addressed in an app update. If the issue persists, contact your supervisor.",
@@ -191,6 +206,9 @@
     "title": "Registration & Mileage"
   },
   "settings": {
+    "links": {
+      "tos": "View terms and conditions"
+    },
     "misc": {
       "language": "Language",
       "languageRestart": "App will restart if language is changed"
@@ -198,6 +216,7 @@
     "sections": {
       "authentication": "Authentication",
       "device": "Device",
+      "general": "General",
       "map": "Map",
       "routeManagement": "Route Management"
     },

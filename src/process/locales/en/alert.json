@@ -17,6 +17,10 @@
     "title": "Error code copied to clipboard"
   },
   "errors": {
+    "acceptTerms": {
+      "message": "There's been an error trying to accept the terms and conditions. Please try again later.",
+      "title": "Error accepting terms and conditions"
+    },
     "api": {
       "driverData": {
         "message": "Try refreshing route data again. If the problem persists, contact your supervisor.",
@@ -36,6 +40,13 @@
         "title": "Error synchronising data"
       }
     },
+    "terms": {
+      "message": {
+        "404": "Failed to retrieve latest terms and conditions document. Tap here to retry. If the problem persists, contact your supervisor.",
+        "copy": "Failed to save latest terms and conditions document to your device. Please try again. If the problem persists, contact your supervisor."
+      },
+      "title": "Error downloading T&C"
+    },
     "vanChecks": {
       "mustComplyWithTerms": {
         "message": "You need to comply with all terms to start your shift",
@@ -44,6 +55,10 @@
     }
   },
   "success": {
+    "acceptTerms": {
+      "message": "The latest revision of the terms and conditions have been accepted. Thank you!",
+      "title": "Terms and conditions accepted"
+    },
     "delivery": {
       "proofOfDeliveryRequired": {
         "message": "Please take your phone with you and take a picture once you've delivered the products.",
@@ -98,6 +113,10 @@
         "message": "All work data has been successfully pushed to the server. Tap to dismiss.",
         "title": "Successfully pushed all your offline data!"
       }
+    },
+    "terms": {
+      "message": "Modern Milkman driver terms and conditions have been downloaded successfully and saved to your device's downloads folder. Please read them carefully before agreeing.",
+      "title": "T&C downloaded successfully"
     }
   }
 }

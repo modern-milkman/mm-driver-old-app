@@ -2,9 +2,9 @@ import { all, takeEvery, takeLatest, spawn } from 'redux-saga/effects';
 
 // TYPES
 import { Types as UserTypes } from 'Reducers/user';
+import { Types as GrowlTypes } from 'Reducers/growl';
 import { Types as DeviceTypes } from 'Reducers/device';
 import { Types as DeliveryTypes } from 'Reducers/delivery';
-import { Types as GrowlTypes } from 'Reducers/growl';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
 import { watchLocationChannel } from 'redux-saga-location';
@@ -18,6 +18,7 @@ import {
   biometricLogin,
   biometricDisable,
   dismissKeyboard,
+  getTerms,
   init,
   login_completed,
   login_error,
@@ -83,7 +84,13 @@ import {
 
 import { alert } from './growl';
 
-import { getDriver, setDriver } from './user';
+import {
+  acceptTerms,
+  acceptTermsError,
+  acceptTermsSuccess,
+  getDriver,
+  setDriver
+} from './user';
 
 export default function* root() {
   yield all([
@@ -96,6 +103,7 @@ export default function* root() {
     takeLatest(ApplicationTypes.BIOMETRIC_DISABLE, biometricDisable),
     takeLatest(ApplicationTypes.BIOMETRIC_LOGIN, biometricLogin),
     takeLatest(ApplicationTypes.DISMISS_KEYBOARD, dismissKeyboard),
+    takeLatest(ApplicationTypes.GET_TERMS, getTerms),
     takeLatest(ApplicationTypes.INIT, init),
     takeLatest(ApplicationTypes.LOGIN, login),
     takeLatest(ApplicationTypes.LOGIN_ERROR, login_error),
@@ -185,6 +193,9 @@ export default function* root() {
 
     takeEvery(GrowlTypes.ALERT, alert),
 
+    takeEvery(UserTypes.ACCEPT_TERMS, acceptTerms),
+    takeEvery(UserTypes.ACCEPT_TERMS_ERROR, acceptTermsError),
+    takeEvery(UserTypes.ACCEPT_TERMS_SUCCESS, acceptTermsSuccess),
     takeEvery(UserTypes.GET_DRIVER, getDriver),
     takeEvery(UserTypes.SET_DRIVER, setDriver),
     takeEvery(UserTypes.SET_DRIVER, login_completed),

@@ -18,7 +18,7 @@ export default {
 
   downloadFile: params => {
     // returns  { jobId, promise } obj if needed
-    RNFS.downloadFile({
+    return RNFS.downloadFile({
       ...params,
       headers: {
         Accept: 'application/json',
@@ -36,9 +36,10 @@ export default {
 
   init: async () => {
     const createIfNotExists = [
-      Config.FS_PROD_IMAGES,
       Config.FS_CUSTOMER_IMAGES,
-      Config.FS_DRIVER_REPLY_IMAGES
+      Config.FS_DRIVER_REPLY_IMAGES,
+      Config.FS_MISC,
+      Config.FS_PROD_IMAGES
     ];
     for (const path of createIfNotExists) {
       if (!(await RNFS.exists(`${RNFS.DocumentDirectoryPath}/${path}`))) {
@@ -51,5 +52,9 @@ export default {
 
   readFile: async (filepath, encoding) => {
     return await RNFS.readFile(filepath, encoding);
+  },
+
+  writeFile: async (filepath, content, encoding) => {
+    return await RNFS.writeFile(filepath, content, encoding);
   }
 };

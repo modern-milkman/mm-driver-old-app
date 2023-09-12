@@ -48,6 +48,15 @@ export function* onNavigateSideEffects(navigateParams) {
       yield put({ type: ApplicationTypes.DISMISS_KEYBOARD });
       break;
 
+    case 'AcceptTerms':
+      yield put({
+        type: DeviceTypes.UPDATE_PROPS,
+        props: {
+          minimumTermsVersion: params?.minimumTermsVersion
+        }
+      });
+      yield put({ type: ApplicationTypes.GET_TERMS });
+      break;
     case 'Deliver':
       if (params?.auto && params?.selectedStopId) {
         yield put({

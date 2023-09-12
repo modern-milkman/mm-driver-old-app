@@ -12,6 +12,8 @@ export const { Types, Creators } = createActions(
 const initialState = {
   canGoBack: false,
   canGoForward: false,
+  html: null,
+  showAddressBar: true,
   url: null,
   visible: false
 };

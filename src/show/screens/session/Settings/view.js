@@ -11,6 +11,7 @@ import NavigationService from 'Services/navigation';
 import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import {
   Label,
+  ListItem,
   ListHeader,
   NavBar,
   Text,
@@ -21,7 +22,9 @@ import {
 import {
   actionSheetSwitch,
   availableLanguages,
-  deliverProductsDisabled
+  deliverProductsDisabled,
+  mock,
+  openTerms
 } from 'Helpers';
 
 import style from './style';
@@ -105,7 +108,8 @@ const Settings = props => {
     showMapControlsOnMovement,
     showAllPendingStops,
     status,
-    updateDeviceProps,
+    updateDeviceProps = mock,
+    updateInAppBrowserProps = mock,
     vibrate
   } = props;
 
@@ -597,6 +601,16 @@ const Settings = props => {
               <Separator />
             </>
           )}
+
+          <ListHeader title={I18n.t('screens:settings.sections.general')} />
+
+          <ListItem
+            onPress={openTerms.bind(null, { updateInAppBrowserProps })}
+            rightIcon={'chevron-right'}
+            title={I18n.t('screens:settings.links.tos')}
+          />
+
+          <Separator />
         </ColumnView>
       </ColumnView>
     </SafeAreaView>
@@ -627,6 +641,7 @@ Settings.propTypes = {
   showAllPendingStops: PropTypes.bool,
   status: PropTypes.string,
   updateDeviceProps: PropTypes.func,
+  updateInAppBrowserProps: PropTypes.func,
   vibrate: PropTypes.bool
 };
 

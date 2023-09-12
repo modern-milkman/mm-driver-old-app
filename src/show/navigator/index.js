@@ -11,6 +11,7 @@ import {
 import DrawerNavigator from './subViews/DrawerNav';
 import { navigationRef } from 'Services/navigation';
 import {
+  AcceptTerms,
   CheckIn,
   CustomerIssueDetails,
   CustomerIssueList,
@@ -49,6 +50,13 @@ const Navigator = ({ theme, userSessionPresent }) => {
             {MainNavigator()}
             {VechicleCheckWizardNavigator()}
             {ModalNavigator()}
+            <Stack.Group
+              screenOptions={{
+                headerShown: false,
+                gestureEnabled: false
+              }}>
+              <Stack.Screen name="AcceptTerms" component={AcceptTerms} />
+            </Stack.Group>
           </>
         )}
         <Stack.Group

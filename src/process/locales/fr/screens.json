@@ -1,4 +1,19 @@
 {
+  "acceptTerms": {
+    "description": {
+      "new": {
+        "agreement": "j'ai lu et accepté les ",
+        "prefix": "Pour utiliser cette application, vous devez lire et accepter les ",
+        "suffix": "."
+      },
+      "updated": {
+        "agreement": "J'ai lu et j'accepte le nouveau ",
+        "prefix": "Nous avons récemment mis à jour notre ",
+        "suffix": ". Pour continuer à utiliser l'application, veuillez les lire et les accepter."
+      }
+    },
+    "title": "Conditions générales"
+  },
   "appCrash": {
     "crashCode": "Appuyez pour copier le CODE d'erreur : {{crashCode}}",
     "description": "Malheureusement, l'application Driver a rencontré une erreur qui n'a pas pu être gérée. L'erreur a été signalée aux développeurs et sera traitée dans une mise à jour de l'application. Si le problème persiste, contactez votre superviseur.",
@@ -190,6 +205,9 @@
     "title": "Inscription"
   },
   "settings": {
+    "links": {
+      "tos": "Voir les conditions générales"
+    },
     "misc": {
       "language": "Langue",
       "languageRestart": "L'application redémarrera si la langue est modifiée"
@@ -197,6 +215,7 @@
     "sections": {
       "authentication": "Authentification",
       "device": "Appareil",
+      "general": "Général",
       "map": "Carte",
       "routeManagement": "Gestion des itinéraires"
     },

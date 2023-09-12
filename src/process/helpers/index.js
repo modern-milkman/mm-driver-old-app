@@ -1,4 +1,5 @@
 import { Base64 } from 'js-base64';
+import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
 import { useEffect, useRef } from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -12,10 +13,13 @@ import {
   StatusBar
 } from 'react-native';
 
+import store from 'Redux/store';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import actionSheet from 'Services/actionSheet';
 import Analytics, { EVENTS } from 'Services/analytics';
+import { Creators as GrowlActions } from 'Reducers/growl';
+import { Types as ApplicationTypes } from 'Reducers/application';
 
 import slack from './slack';
 
@@ -281,6 +285,54 @@ const openPicker = ({ addImage, key, method }) => {
   });
 };
 
+const openTerms = async ({ updateInAppBrowserProps }) => {
+  const { dispatch } = store().store;
+  const termsPath = `${RNFS.DocumentDirectoryPath}/${Config.FS_MISC}/terms-and-conditions.pdf`;
+  if (await RNFS.exists(termsPath)) {
+    if (Platform.OS === 'ios') {
+      updateInAppBrowserProps({
+        url: `file://${termsPath}`,
+        visible: true,
+        showAddressBar: false
+      });
+    } else {
+      try {
+        await RNFS.copyFile(
+          termsPath,
+          `${RNFS.DownloadDirectoryPath}/modern-milkman-terms-and-conditions.pdf`
+        );
+        dispatch(
+          GrowlActions.alert({
+            type: 'info',
+            title: I18n.t('alert:success.terms.title'),
+            message: I18n.t('alert:success.terms.message')
+          })
+        );
+      } catch (error) {
+        dispatch(
+          GrowlActions.alert({
+            type: 'error',
+            title: I18n.t('alert:errors.terms.title'),
+            message: I18n.t('alert:errors.terms.message.copy')
+          })
+        );
+      }
+    }
+  } else {
+    dispatch(
+      GrowlActions.alert({
+        interval: -1,
+        type: 'error',
+        title: I18n.t('alert:errors.terms.title'),
+        message: I18n.t('alert:errors.terms.message.404'),
+        payload: {
+          action: ApplicationTypes.GET_TERMS
+        }
+      })
+    );
+  }
+};
+
 const openURL = url => {
   Linking.openURL(url);
 };
@@ -421,6 +473,7 @@ export {
   mock,
   openDriverUpdate,
   openPicker,
+  openTerms,
   openURL,
   plateRecognition,
   preopenPicker,

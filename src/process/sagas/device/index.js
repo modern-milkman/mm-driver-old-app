@@ -44,7 +44,7 @@ import {
 
 export { watchUserLocation } from './extras/watchUserLocation';
 
-export function* ensureMandatoryPermissions({ routeName }) {
+export function* ensureMandatoryPermissions({ routeName, params }) {
   const { dispatch } = store().store;
   const mandatoryPermissions = Platform.select({
     android: [
@@ -80,10 +80,10 @@ export function* ensureMandatoryPermissions({ routeName }) {
         statusesArray.includes(RESULTS.BLOCKED) ||
         statusesArray.includes(RESULTS.LIMITED)
       ) {
-        NavigationService.navigate({ routeName: 'PermissionsMissing' });
+        NavigationService.navigate({ routeName: 'PermissionsMissing', params });
       } else {
         if (routeName) {
-          NavigationService.navigate({ routeName });
+          NavigationService.navigate({ routeName, params });
         }
         dispatch(DeviceCreators.watchUserLocation());
       }
