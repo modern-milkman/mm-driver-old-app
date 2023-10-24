@@ -17,7 +17,6 @@ export default connect(
       rejectReasons: state.delivery?.rejectReasons,
       routeDescription: state.delivery?.stockWithData?.routeDescription,
       selectedStop: selectedStop(state),
-      position: state.device.position,
       ...state.transient
     };
   },
