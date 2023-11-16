@@ -47,20 +47,22 @@ import {
   getDriverReplyImage,
   getForDriver,
   getForDriverSuccess,
-  getRejectDeliveryReasons,
   getRegistrationPlates,
+  getRejectDeliveryReasons,
   getReturnTypes,
   getVehicleStockForDriverSuccess,
   redirectSetSelectedClaimId,
   refreshAllData,
   saveVehicleChecks,
+  scanExternalReference,
+  scanExternalReferenceSuccess,
   setDeliveredOrRejected,
   setItemOutOfStock,
   setReturnTypes,
   showMustComplyWithTerms,
   showPODRequired,
-  updateDriverActivity,
   updateDirectionsPolyline,
+  updateDriverActivity,
   updateProps as updateDeliveryProps,
   updateSelectedStop
 } from './delivery';
@@ -149,6 +151,11 @@ export default function* root() {
     ),
     takeLatest(DeliveryTypes.REFRESH_ALL_DATA, refreshAllData),
     takeLatest(DeliveryTypes.SAVE_VEHICLE_CHECKS, saveVehicleChecks),
+    takeLatest(DeliveryTypes.SCAN_EXTERNAL_REFERENCE, scanExternalReference),
+    takeLatest(
+      DeliveryTypes.SCAN_EXTERNAL_REFERENCE_SUCCESS,
+      scanExternalReferenceSuccess
+    ),
     takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, getDriverReplyImage),
     takeLatest(
       DeliveryTypes.SET_DELIVERED,

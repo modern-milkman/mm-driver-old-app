@@ -52,7 +52,11 @@ export function* ensureMandatoryPermissions({ routeName, params }) {
       PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
       PERMISSIONS.ANDROID.CAMERA
     ],
-    ios: [PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.IOS.CAMERA]
+    ios: [
+      PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      PERMISSIONS.IOS.CAMERA,
+      PERMISSIONS.IOS.MICROPHONE
+    ]
   });
 
   const biometrics = yield select(biometricsSelector);

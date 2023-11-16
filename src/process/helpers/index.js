@@ -189,8 +189,7 @@ const preopenPicker = ({ addImage, deletePhoto, key, reviewPhoto, title }) => {
   if (addImage) {
     pickerOptions[I18n.t('general:takePhoto')] = openPicker.bind(null, {
       addImage,
-      key,
-      method: 'openCamera'
+      key
     });
   }
   if (deletePhoto) {
@@ -264,17 +263,10 @@ const openDriverUpdate = () => {
   });
 };
 
-const openPicker = ({ addImage, key, method }) => {
-  const event =
-    method === 'openCamera'
-      ? EVENTS.IMAGE_PICKER_FROM_CAMERA
-      : 'openPicker'
-      ? EVENTS.IMAGE_PICKER_FROM_PHOTO_LIBRARY
-      : EVENTS.IMAGE_PICKER_FROM_NULL;
+const openPicker = ({ addImage, key }) => {
+  Analytics.trackEvent(EVENTS.IMAGE_PICKER_FROM_CAMERA);
 
-  Analytics.trackEvent(event);
-
-  ImagePicker[method]({
+  ImagePicker.openCamera({
     width: 1000,
     height: 1000,
     compressImageQuality: 0.6,

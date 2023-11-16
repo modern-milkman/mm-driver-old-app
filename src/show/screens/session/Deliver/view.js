@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
-import { Pressable } from 'react-native';
+import { Camera, FlashMode } from 'expo-camera';
 import React, { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
@@ -22,7 +23,8 @@ import {
   SegmentedControl,
   Separator,
   Text,
-  TextInput
+  TextInput,
+  Icon
 } from 'Components';
 
 import style from './style';
@@ -263,14 +265,45 @@ const orderTitle = (order, bundledProducts) => {
   return title;
 };
 
+const setBarCodeOpenedAndId = (
+  toggleConfirmedItem,
+  setBarCodeOpened,
+  setScanningItemId,
+  confirmedItems,
+  itemId
+) => {
+  if (!confirmedItems.includes(itemId)) {
+    setBarCodeOpened(true);
+    setScanningItemId(itemId);
+  } else {
+    toggleConfirmedItem(itemId);
+  }
+};
+
+const handleBarCodeScanned = (
+  setBarCodeOpened,
+  scanExternalReference,
+  scanningItemId,
+  setManuallyTypedBarcode,
+  { data }
+) => {
+  setManuallyTypedBarcode(null);
+  setBarCodeOpened(false);
+  scanExternalReference(data, scanningItemId);
+};
+
 const Deliver = props => {
   const [modalImageSrc, setModalImageSrc] = useState(null);
   const [modalText, setModalText] = useState(null);
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
+  const [barCodeOpened, setBarCodeOpened] = useState(false);
+  const [scanningItemId, setScanningItemId] = useState(null);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
-
   const [hasCollectedEmpties, setHasCollectedEmpties] = useState(null);
+  const [manuallyTypedBarcode, setManuallyTypedBarcode] = useState(null);
+
+  const [torch, setTorch] = useState(false);
 
   const { colors } = useTheme();
   const {
@@ -281,6 +314,7 @@ const Deliver = props => {
     outOfStockIds,
     podImage,
     routeDescription,
+    scanExternalReference,
     selectedStop,
     setDelivered,
     showPODRequired,
@@ -311,8 +345,8 @@ const Deliver = props => {
             isOutOfStock || order.status === 3
               ? 'alert'
               : confirmedItem.includes(order.key) || order.status === 2
-              ? 'check'
-              : null,
+                ? 'check'
+                : null,
           enforceLayout: true,
           ...(isOutOfStock || order.status === 3
             ? {
@@ -320,7 +354,8 @@ const Deliver = props => {
                 suffixColor: colors.error
               }
             : { rightIconColor: colors.success }),
-          isDeliveryItem: true
+          isDeliveryItem: true,
+          externalReference: selectedStop?.externalReference
         };
       })
     : null;
@@ -558,9 +593,27 @@ const Deliver = props => {
               }
               hasSections={height > 700}
               onLongPress={
-                selectedStop?.satisfactionStatus === 5 ? mock : toggleOutOfStock
+                selectedStop?.satisfactionStatus === 5
+                  ? setBarCodeOpenedAndId.bind(
+                      null,
+                      toggleConfirmedItem,
+                      setBarCodeOpened,
+                      setScanningItemId,
+                      confirmedItem
+                    )
+                  : toggleOutOfStock
               }
-              onPress={toggleConfirmedItem}
+              onPress={
+                selectedStop?.satisfactionStatus === 5
+                  ? setBarCodeOpenedAndId.bind(
+                      null,
+                      toggleConfirmedItem,
+                      setBarCodeOpened,
+                      setScanningItemId,
+                      confirmedItem
+                    )
+                  : toggleConfirmedItem
+              }
               renderItemSeparator={null}
               renderSectionFooter={null}
             />
@@ -692,6 +745,76 @@ const Deliver = props => {
           )}
         </ColumnView>
       )}
+      {barCodeOpened && (
+        <View style={StyleSheet.absoluteFillObject}>
+          <Pressable style={style.closeButton}>
+            <CustomIcon
+              onPress={setBarCodeOpened.bind(null, false)}
+              containerWidth={buttonAccessibility}
+              width={buttonAccessibility}
+              icon={'close'}
+              iconColor={
+                selectedStop.proofOfDeliveryRequired
+                  ? colors.error
+                  : colors.primary
+              }
+            />
+          </Pressable>
+          <Pressable
+            style={[style.flash, { backgroundColor: colors.primary }]}
+            onPress={setTorch.bind(null, !torch)}>
+            <Icon
+              name={torch ? 'flashlight-off' : 'flashlight'}
+              color={colors.inputSecondary}
+              size={sizes.list.height}
+              containerSize={sizes.list.height}
+              disabled
+            />
+          </Pressable>
+          <View style={style.manualWrapper}>
+            <TextInput
+              autoCapitalize={'none'}
+              keyboardType={'numeric'}
+              onChangeText={setManuallyTypedBarcode}
+              onSubmitEditing={handleBarCodeScanned.bind(
+                null,
+                setBarCodeOpened,
+                scanExternalReference,
+                scanningItemId,
+                setManuallyTypedBarcode,
+                manuallyTypedBarcode
+              )}
+              placeholder={I18n.t('screens:deliver.scanner.placeholder')}
+              returnKeyType={'go'}
+              value={manuallyTypedBarcode}
+            />
+            <Button.Primary
+              title={I18n.t('screens:deliver.scanner.button', {
+                claimNo: unacknowledgedList.length
+              })}
+              onPress={handleBarCodeScanned.bind(
+                null,
+                setBarCodeOpened,
+                scanExternalReference,
+                scanningItemId,
+                setManuallyTypedBarcode,
+                { data: manuallyTypedBarcode }
+              )}
+            />
+          </View>
+          <Camera
+            onBarCodeScanned={handleBarCodeScanned.bind(
+              null,
+              setBarCodeOpened,
+              scanExternalReference,
+              scanningItemId,
+              setManuallyTypedBarcode
+            )}
+            style={StyleSheet.absoluteFillObject}
+            flashMode={torch ? FlashMode.torch : FlashMode.off}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -705,6 +828,7 @@ Deliver.propTypes = {
   podImage: PropTypes.object,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
+  scanExternalReference: PropTypes.func,
   selectedStop: PropTypes.object,
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,

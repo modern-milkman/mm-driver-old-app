@@ -33,5 +33,9 @@ allprojects {
         google()  // Google's Maven repository
         mavenCentral()  // Maven Central repository
         maven { url "https://braze-inc.github.io/braze-android-sdk/sdk" }
+        maven {
+            // expo-camera bundles a custom com.google.android:cameraview
+            url "$rootDir/../node_modules/expo-camera/android/maven"
+        }
     }
 }

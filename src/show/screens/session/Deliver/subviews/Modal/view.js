@@ -11,7 +11,7 @@ import actionSheet from 'Services/actionSheet';
 import NavigationService from 'Services/navigation';
 import { deviceFrame, formatDate, mock } from 'Helpers';
 import { defaults, sizes } from 'Theme';
-import { ColumnView, RowView, useTheme, useThemedStyles } from 'Containers';
+import { ColumnView, RowView, useTheme } from 'Containers';
 import {
   Button,
   Text,
@@ -21,8 +21,6 @@ import {
   List,
   Separator
 } from 'Components';
-
-import unthemedStyle from './style';
 
 const hideClaimsModal = toggleModal => {
   toggleModal('showClaimModal', false);
@@ -49,8 +47,7 @@ const renderReplyBody = ({
   cannedContent,
   colors,
   driverResponse,
-  updateDriverResponse,
-  style
+  updateDriverResponse
 }) => {
   return (
     <ColumnView
@@ -157,7 +154,6 @@ const updateText = (updateDriverResponse, driverResponse, text) => {
 };
 
 const CustomerIssueModal = props => {
-  const style = useThemedStyles(unthemedStyle);
   const { alphaColor, colors } = useTheme();
   const {
     cannedContent,
@@ -300,8 +296,7 @@ const CustomerIssueModal = props => {
                 cannedContent,
                 colors,
                 driverResponse,
-                updateDriverResponse,
-                style
+                updateDriverResponse
               })
             : renderCustomerIssueBody({
                 customerComment: selectedClaimData?.customerComment,

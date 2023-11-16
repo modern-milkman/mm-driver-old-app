@@ -21,6 +21,7 @@ export default connect(
     };
   },
   {
+    scanExternalReference: deliveryActions.scanExternalReference,
     setDelivered: deliveryActions.setDelivered,
     setRejected: deliveryActions.setRejected,
     showPODRequired: deliveryActions.showPODRequired,

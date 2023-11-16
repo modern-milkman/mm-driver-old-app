@@ -70,6 +70,42 @@ export const continueDelivering = function* () {
   yield call(updateTrackerData, { status });
 };
 
+export const scanExternalReference = function* ({ externalId, itemId }) {
+  const selectedStop = yield select(selectedStopSelector);
+  const index = selectedStop.externalReferenceIds.indexOf(externalId);
+
+  if (index > -1) {
+    yield put({
+      type: DeliveryTypes.SCAN_EXTERNAL_REFERENCE_SUCCESS,
+      itemId
+    });
+  } else {
+    yield put({
+      type: GrowlTypes.ALERT,
+      props: {
+        type: 'error',
+        title: I18n.t('screens:deliver.scanner.error.title'),
+        message: I18n.t('screens:deliver.scanner.error.description')
+      }
+    });
+  }
+};
+export const scanExternalReferenceSuccess = function* ({ itemId }) {
+  yield put({
+    type: DeliveryTypes.TOGGLE_CONFIRMED_ITEM,
+    id: itemId
+  });
+
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'info',
+      title: I18n.t('screens:deliver.scanner.success.title'),
+      message: I18n.t('screens:deliver.scanner.success.description')
+    }
+  });
+};
+
 export const deliverLater = function* () {
   const autoSelectStop = yield select(autoSelectStopSelector);
   const isOptimised = yield select(isOptimisedSelector);

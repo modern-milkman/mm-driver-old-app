@@ -103,7 +103,19 @@
       "rejected": "Skipped"
     },
     "userId": "User ID #{{userId}}",
-    "viewClaims": "View claims ({{claimNo}})"
+    "viewClaims": "View claims ({{claimNo}})",
+    "scanner": {
+      "placeholder": "Code",
+      "button": "Ender Manually",
+      "success": {
+        "title": "Successfull",
+        "description": "LaaS has been confirmed."
+      },
+      "error": {
+        "title": "Oops",
+        "description": "This LaaS is not correct."
+      }
+    }
   },
   "emptiesCollected": {
     "subHeading": {
