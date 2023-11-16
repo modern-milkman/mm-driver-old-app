@@ -4,4 +4,5 @@
   "NSLocationAlwaysAndWhenInUseUsageDescription"= "Votre emplacement est nécessaire pour effectuer des livraisons.";
   "NSLocationAlwaysUsageDescription"= "Votre emplacement est nécessaire pour effectuer des livraisons.";
   "NSLocationWhenInUseUsageDescription"= "Votre emplacement est nécessaire pour effectuer des livraisons.";
+  "NSMicrophoneUsageDescription"= "Accès micro requis pour le POD.";
   "NSPhotoLibraryUsageDescription"= "Non utilisé par l'application";

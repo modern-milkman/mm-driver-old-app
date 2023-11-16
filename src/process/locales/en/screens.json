@@ -89,25 +89,25 @@
     },
     "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",
+    "scanner": {
+      "button": "Ender Manually",
+      "error": {
+        "description": "This LaaS is not correct.",
+        "title": "Oops"
+      },
+      "placeholder": "Code",
+      "success": {
+        "description": "LaaS has been confirmed.",
+        "title": "Successful"
+      }
+    },
     "skipDelivery": "Skip Delivery",
     "status": {
       "completed": "Completed",
       "rejected": "Skipped"
     },
     "userId": "User ID #{{userId}}",
-    "viewClaims": "View claims ({{claimNo}})",
-    "scanner": {
-      "placeholder": "Code",
-      "button": "Ender Manually",
-      "success": {
-        "title": "Successfull",
-        "description": "LaaS has been confirmed."
-      },
-      "error": {
-        "title": "Oops",
-        "description": "This LaaS is not correct."
-      }
-    }
+    "viewClaims": "View claims ({{claimNo}})"
   },
   "emptiesCollected": {
     "subHeading": {

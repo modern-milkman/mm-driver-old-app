@@ -18,8 +18,8 @@
   },
   "errors": {
     "acceptTerms": {
-      "message": "Une erreur s'est produite lors de la tentative d'acceptation des conditions générales. Veuillez réessayer plus tard.",
-      "title": "Erreur lors de l'acceptation des conditions générales"
+      "message": "Une erreur s'est produite lors de la tentative d'acceptation des termes et conditions. Veuillez réessayer plus tard.",
+      "title": "Erreur lors de l'acceptation des termes et conditions"
     },
     "api": {
       "driverData": {
@@ -45,7 +45,7 @@
         "404": "Échec de la récupération du dernier document de conditions générales. Appuyez ici pour réessayer. Si le problème persiste, contactez votre superviseur.",
         "copy": "Échec de l'enregistrement du dernier document de conditions générales sur votre appareil. Veuillez réessayer. Si le problème persiste, contactez votre superviseur."
       },
-      "title": "Erreur de téléchargement de conditions générales"
+      "title": "Erreur de téléchargement de T&C"
     },
     "vanChecks": {
       "mustComplyWithTerms": {
@@ -56,8 +56,8 @@
   },
   "success": {
     "acceptTerms": {
-      "message": "La dernière révision des conditions générales a été acceptée. Merci!",
-      "title": "Conditions générales acceptées"
+      "message": "La dernière révision des termes et conditions a été acceptée. Merci!",
+      "title": "Termes et conditions acceptés"
     },
     "delivery": {
       "proofOfDeliveryRequired": {
@@ -115,8 +115,8 @@
       }
     },
     "terms": {
-      "message": "Les conditions générales du Modern Milkman ont été téléchargées avec succès et enregistrées dans le dossier de téléchargement de votre appareil. Veuillez les lire attentivement avant d'accepter.",
-      "title": "Conditions générales téléchargées avec succès"
+      "message": "Les conditions générales du pilote Milkman moderne ont été téléchargées avec succès et enregistrées dans le dossier de téléchargement de votre appareil. Veuillez les lire attentivement avant d'accepter.",
+      "title": "T&C téléchargées avec succès"
     }
   }
 }

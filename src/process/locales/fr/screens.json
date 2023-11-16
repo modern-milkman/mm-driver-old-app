@@ -12,7 +12,7 @@
         "suffix": ". Pour continuer à utiliser l'application, veuillez les lire et les accepter."
       }
     },
-    "title": "Conditions générales"
+    "title": "Termes et conditions"
   },
   "appCrash": {
     "crashCode": "Appuyez pour copier le CODE d'erreur : {{crashCode}}",
@@ -36,14 +36,6 @@
     },
     "itemsLeft": "{{items}} articles restants",
     "loadVan": "Fourgon de chargement",
-    "rateMyRound": {
-      "alert": {
-        "happy": "Super! Veuillez ajouter tout ce que vous souhaitez partager avec nous sur Rate my Round",
-        "sad": "Nous sommes désolés d'entendre cela. Veuillez expliquer ce qui n'a pas fonctionné dans \"évaluer ma partie\" afin que nous puissions trouver une solution pour vous",
-        "title": "Votre parcours s'est bien passé aujourd'hui ?"
-      },
-      "title": "Évaluer ma partie"
-    },
     "title": "Liste de contrôle de votre itinéraire"
   },
   "checklist": {
@@ -97,6 +89,18 @@
     },
     "proofOfDeliveryRequired": "REQUIERT UNE PREUVE DE LIVRAISON",
     "routeDescription": "ID de route #{{routeDescription}}",
+    "scanner": {
+      "button": "Terminer manuellement",
+      "error": {
+        "description": "Ce LaaS n'est pas correct.",
+        "title": "Oops"
+      },
+      "placeholder": "Code",
+      "success": {
+        "description": "LaaS a été confirmé.",
+        "title": "Réussi"
+      }
+    },
     "skipDelivery": "Sauter la livraison",
     "status": {
       "completed": "Complété",
@@ -206,7 +210,7 @@
   },
   "settings": {
     "links": {
-      "tos": "Voir les conditions générales"
+      "tos": "Voir les termes et conditions"
     },
     "misc": {
       "language": "Langue",
