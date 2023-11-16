@@ -16,7 +16,6 @@ export default connect(
     return {
       payload: checklist?.payload,
       processing: state.delivery?.processing,
-      rateMyRound: checklist?.rateMyRound,
       emptiesRequired: checklist?.emptiesRequired,
       emptiesScreenDirty: checklist?.emptiesScreenDirty,
       ...state.transient

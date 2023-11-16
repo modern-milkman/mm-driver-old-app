@@ -1,9 +1,5 @@
 {
   "development": {
-    "RATE_MY_ROUND": {
-      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
-      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
-    },
     "ADMIN": {
       "uk": "https://tst-services.themodernmilkman.co.uk/tmm-adminapi/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-adminapi/v1/api"
@@ -18,10 +14,6 @@
     }
   },
   "production": {
-    "RATE_MY_ROUND": {
-      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
-      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
-    },
     "ADMIN": {
       "uk": "https://services.themodernmilkman.co.uk/adminapi/v1/api",
       "fr": "https://adminapi.lemarchemoderne.fr/api"
@@ -36,10 +28,6 @@
     }
   },
   "test": {
-    "RATE_MY_ROUND": {
-      "uk": "https://docs.google.com/forms/d/e/1FAIpQLSfDo8ndLreAccQc3j_ExEeIBJuL5XNsZBIgTMkfps3MfMXo6g/viewform?usp=pp_url",
-      "fr": "https://docs.google.com/forms/d/e/1FAIpQLSd2-C3r4jLfo0CWVey4FYsSkMI9FMq_1TnfZnMyKdj3gNVseQ/viewform?usp=pp_url"
-    },
     "ADMIN": {
       "uk": "https://tst-services.themodernmilkman.co.uk/tmm-adminapi/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-adminapi/v1/api"

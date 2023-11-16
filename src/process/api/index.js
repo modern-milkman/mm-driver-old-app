@@ -59,16 +59,6 @@ const configureCountryBaseURL = () => {
   NetInfo.fetch().then(handleNetStatChange);
 };
 
-const RMR_COUNTRY_BASED_PROP = () => {
-  const user = store().store.getState().user;
-  const routeDescription =
-    store().store.getState().delivery.stockWithData.routeDescription;
-
-  return `${COUNTRY_BASED_PROP('RATE_MY_ROUND')}&entry.2020812711=${
-    user.name
-  }&entry.1414591438=${user.driverId}&entry.1516670531=${routeDescription}`;
-};
-
 const handleNetStatChange = netStatProps => {
   const { dispatch } = store().store;
   dispatch({ type: 'REDUX_SAGA_NETSTAT_CHANGE', netStatProps });
@@ -354,7 +344,6 @@ api.interceptors.response.use(
 
 const Api = {
   API_CALL: 'API_CALL',
-  RATE_MY_ROUND: RMR_COUNTRY_BASED_PROP,
   ADMIN_URL: COUNTRY_BASED_PROP.bind(null, 'ADMIN'),
   DELIVERY_URL: COUNTRY_BASED_PROP.bind(null, 'DELIVERY'),
   OPERATIONS_URL: COUNTRY_BASED_PROP.bind(null, 'OPERATIONS'),

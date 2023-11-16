@@ -99,7 +99,6 @@ export const initialChecklist = {
   emptiesScreenDirty: false,
   loadedVan: false,
   loadedVanItems: [],
-  rateMyRound: false,
   shiftEndVanChecks: false,
   shiftStartVanChecks: false,
   payload: {
@@ -244,7 +243,6 @@ const resetChecklistFlags = checklist => {
   checklist.loadedVan = false;
   checklist.loadedVanItems = [];
   checklist.payloadAltered = false;
-  checklist.rateMyRound = false;
   checklist.shiftStartVanChecks = false;
   checklist.shiftEndVanChecks = false;
 };

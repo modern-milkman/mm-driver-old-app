@@ -5,7 +5,6 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
 import { defaults } from 'Theme';
-import { openRateMyRound } from 'SessionShared';
 import NavigationService from 'Services/navigation';
 import { ColumnView, SafeAreaView, RowView, useTheme } from 'Containers';
 import { Button, ListHeader, NavBar, Text, TextInput } from 'Components';
@@ -20,7 +19,6 @@ const focusNext = index => {
 
 const nextStep = ({
   payload,
-  rateMyRound,
   saveVehicleChecks,
   showMustComplyWithTerms,
   updateChecklistProps,
@@ -30,13 +28,6 @@ const nextStep = ({
     triggerDriverConfirmations({ saveVehicleChecks, showMustComplyWithTerms });
   } else {
     saveVehicleChecks('shiftEndVanChecks');
-
-    if (!rateMyRound) {
-      openRateMyRound({
-        updateChecklistProps,
-        updateInAppBrowserProps
-      });
-    }
   }
 };
 
@@ -57,7 +48,6 @@ const renderEmpty = (
     emptiesScreenDirty,
     length,
     payload,
-    rateMyRound,
     saveVehicleChecks,
     setEmpty,
     showMustComplyWithTerms,
@@ -102,7 +92,6 @@ const renderEmpty = (
                 ? mock
                 : nextStep.bind(null, {
                     payload,
-                    rateMyRound,
                     saveVehicleChecks,
                     showMustComplyWithTerms,
                     updateChecklistProps,
@@ -138,7 +127,6 @@ const EmptiesCollected = ({
   emptiesScreenDirty,
   navigation,
   payload,
-  rateMyRound,
   saveVehicleChecks,
   setEmpty,
   processing,
@@ -200,7 +188,6 @@ const EmptiesCollected = ({
               ? mock
               : nextStep.bind(null, {
                   payload,
-                  rateMyRound,
                   saveVehicleChecks,
                   showMustComplyWithTerms,
                   updateChecklistProps,
@@ -234,7 +221,6 @@ const EmptiesCollected = ({
                 emptiesRequired,
                 length: emptiesArray.length,
                 payload,
-                rateMyRound,
                 saveVehicleChecks,
                 setEmpty,
                 showMustComplyWithTerms,
@@ -257,7 +243,6 @@ const EmptiesCollected = ({
             processing={processing}
             onPress={nextStep.bind(null, {
               payload,
-              rateMyRound,
               saveVehicleChecks,
               showMustComplyWithTerms,
               updateChecklistProps,
@@ -276,7 +261,6 @@ EmptiesCollected.propTypes = {
   emptiesScreenDirty: PropTypes.bool,
   navigation: PropTypes.object,
   payload: PropTypes.object,
-  rateMyRound: PropTypes.bool,
   processing: PropTypes.bool,
   saveVehicleChecks: PropTypes.func,
   setEmpty: PropTypes.func,

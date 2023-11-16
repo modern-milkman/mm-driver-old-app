@@ -4,11 +4,9 @@ import { View } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { defaults } from 'Theme';
-
-import { openRateMyRound } from 'SessionShared';
 import NavigationService from 'Services/navigation';
-import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import { deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
+import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 
 import style from './style';
@@ -93,9 +91,7 @@ const CheckIn = props => {
     status,
     startDelivering,
     stopCount,
-    updateChecklistProps,
-    updateDeliveryProps,
-    updateInAppBrowserProps
+    updateDeliveryProps
   } = props;
 
   const dpDisabled = deliverProductsDisabled({ checklist, status });
@@ -148,25 +144,6 @@ const CheckIn = props => {
         : 'chevron-right',
       title: I18n.t('screens:checkIn.deliverProducts'),
       testID: 'checkIn-deliverProducts-listItem'
-    },
-    {
-      customIcon: 'star',
-      disabled:
-        checklist.rateMyRound ||
-        !checklist.deliveryComplete ||
-        !checklist.loadedVan ||
-        !checklist.shiftStartVanChecks,
-      onPress: openRateMyRound.bind(null, {
-        updateChecklistProps,
-        updateInAppBrowserProps
-      }),
-      rightIcon: !checklist.deliveryComplete
-        ? null
-        : checklist.rateMyRound
-        ? 'check'
-        : 'chevron-right',
-      title: I18n.t('screens:checkIn.rateMyRound.title'),
-      testID: 'checkIn-checkVanEnd-listItem'
     },
     {
       customIcon: 'vanCheck',
@@ -280,9 +257,7 @@ CheckIn.propTypes = {
   resetChecklistPayload: PropTypes.func,
   startDelivering: PropTypes.func,
   stopCount: PropTypes.number,
-  updateChecklistProps: PropTypes.func,
-  updateDeliveryProps: PropTypes.func,
-  updateInAppBrowserProps: PropTypes.func
+  updateDeliveryProps: PropTypes.func
 };
 
 CheckIn.defaultProps = {
