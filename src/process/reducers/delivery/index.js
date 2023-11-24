@@ -7,9 +7,11 @@ import { produce, updateProps } from '../shared';
 
 export const { Types, Creators } = createActions(
   {
+    addPodImage: ['img'],
     addPodImageToDriverClaim: ['image', 'handledClaims', 'stopId'],
     clearCenterMapLocation: null,
     continueDelivering: null,
+    deletePodImage: ['index'],
     deliverLater: ['selectedStopId'],
     driverReply: ['claimId', 'comment', 'acknowledgedClaim', 'index'],
     foregroundDeliveryActions: null,
@@ -38,7 +40,7 @@ export const { Types, Creators } = createActions(
       'id',
       'selectedStopId',
       'outOfStockIds',
-      'podImage',
+      'podImages',
       'hasCollectedEmpties'
     ],
     setEmpty: ['prop', 'value'],
@@ -135,6 +137,11 @@ export const initialState = {
   userId: null
 };
 
+const addPodImage = (state, { img: { path, mime } }) =>
+  produce(state, draft => {
+    draft.podImages.push({ path, mime });
+  });
+
 const addPodImageToDriverClaim = (state, { image, handledClaims, stopId }) =>
   produce(state, draft => {
     handledClaims.forEach(claimId => {
@@ -153,6 +160,11 @@ const addPodImageToDriverClaim = (state, { image, handledClaims, stopId }) =>
           }));
       }
     });
+  });
+
+const deletePodImage = (state, { index }) =>
+  produce(state, draft => {
+    draft.podImages.splice(index, 1);
   });
 
 const deliverLater = (state, { selectedStopId }) =>
@@ -248,7 +260,7 @@ const resetChecklistFlags = checklist => {
 };
 
 const resetSelectedStopInfo = draft => {
-  draft.podImage = null;
+  draft.podImages = [];
   draft.directionsPolyline = [];
   draft.allItemsDone = false;
   draft.confirmedItem = [];
@@ -796,9 +808,11 @@ export const updateStopAutoSelectTimestamp = (state, { sID }) =>
   });
 
 export default createReducer(initialState, {
+  [Types.ADD_POD_IMAGE]: addPodImage,
   [Types.ADD_POD_IMAGE_TO_DRIVER_CLAIM]: addPodImageToDriverClaim,
   [Types.CLEAR_CENTER_MAP_LOCATION]: clearCenterMapLocation,
   [Types.CONTINUE_DELIVERING]: startDelivering,
+  [Types.DELETE_POD_IMAGE]: deletePodImage,
   [Types.DELIVER_LATER]: deliverLater,
   [Types.DRIVER_REPLY]: driverReply,
   [Types.GET_FOR_DRIVER]: getForDriver,

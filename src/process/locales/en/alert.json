@@ -61,7 +61,7 @@
     },
     "delivery": {
       "proofOfDeliveryRequired": {
-        "message": "Please take your phone with you and take a picture once you've delivered the products.",
+        "message": "Please take your phone with you and take at least a picture once you've delivered the products.",
         "title": "Proof of delivery required!"
       }
     },

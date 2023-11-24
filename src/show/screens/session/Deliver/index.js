@@ -13,7 +13,7 @@ export default connect(
       buttonAccessibility: state.device.buttonAccessibility,
       confirmedItem: state.delivery?.confirmedItem,
       outOfStockIds: state.delivery?.outOfStockIds,
-      podImage: state.delivery?.podImage,
+      podImages: state.delivery?.podImages,
       rejectReasons: state.delivery?.rejectReasons,
       routeDescription: state.delivery?.stockWithData?.routeDescription,
       selectedStop: selectedStop(state),
@@ -21,6 +21,8 @@ export default connect(
     };
   },
   {
+    addPodImage: deliveryActions.addPodImage,
+    deletePodImage: deliveryActions.deletePodImage,
     scanExternalReference: deliveryActions.scanExternalReference,
     setDelivered: deliveryActions.setDelivered,
     setRejected: deliveryActions.setRejected,

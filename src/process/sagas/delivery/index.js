@@ -420,7 +420,7 @@ export const setDeliveredOrRejected = function* (
   {
     hasCollectedEmpties,
     id,
-    podImage,
+    podImages,
     outOfStockIds,
     selectedStopId,
     reasonType,
@@ -478,17 +478,24 @@ export const setDeliveredOrRejected = function* (
     });
   }
 
-  let baseImage = '';
+  let proofOfDeliveryImages = [];
 
-  if (podImage && requestType === 'delivered') {
-    baseImage = yield Repositories.filesystem.readFile(podImage.path, 'base64');
-
-    yield put({
-      type: DeliveryTypes.ADD_POD_IMAGE_TO_DRIVER_CLAIM,
-      image: `data:${podImage.mime};base64,${baseImage}`,
-      handledClaims,
-      stopId: selectedStopId
-    });
+  if (podImages.length > 0 && requestType === 'delivered') {
+    for (let index = 0; index < podImages.length; index++) {
+      proofOfDeliveryImages.push({
+        imageData: yield Repositories.filesystem.readFile(
+          podImages[index].path,
+          'base64'
+        ),
+        mimeType: podImages[index].mime
+      });
+      yield put({
+        type: DeliveryTypes.ADD_POD_IMAGE_TO_DRIVER_CLAIM,
+        image: `data:${podImages[index].mime};base64,${proofOfDeliveryImages[index].imageData}`,
+        handledClaims,
+        stopId: selectedStopId
+      });
+    }
   }
 
   // deliveryDateLocal may be altered if drivers change their device time.
@@ -506,10 +513,7 @@ export const setDeliveredOrRejected = function* (
         driverId: user.driverId,
         routeId: routeId,
         emptiesCollected: hasCollectedEmpties,
-        ...(podImage && {
-          podImage: baseImage,
-          podImageType: podImage.mime
-        })
+        proofOfDeliveryImages
       })
     })
   });

@@ -23,8 +23,8 @@ const Switch = props => {
       thumbColor: disabled
         ? colors.input
         : value
-          ? colors.whiteOnly
-          : colors.primaryBright
+        ? colors.whiteOnly
+        : colors.primaryBright
     },
     ios: {
       ios_backgroundColor: colors.input

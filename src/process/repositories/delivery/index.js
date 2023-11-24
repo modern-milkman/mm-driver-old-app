@@ -72,8 +72,7 @@ export default {
     deliveryLocationLatitude = null,
     deliveryLocationLongitude = null,
     emptiesCollected = false,
-    podImage = null,
-    podImageType = null,
+    proofOfDeliveryImages = [],
     handledClaims
   }) {
     return Api.post(`${Api.DELIVERY_URL()}/Delivery/${orderId}/SetDelivered`, {
@@ -84,13 +83,9 @@ export default {
       deliveryLocationLongitude,
       emptiesCollected,
       handledClaims,
-      ...(podImage &&
-        podImageType && {
-          proofOfDelivery: {
-            imageData: podImage,
-            mimeType: podImageType
-          }
-        })
+      ...(proofOfDeliveryImages.length > 0 && {
+        proofOfDeliveryImages
+      })
     });
   },
   postDriverActivity(payload) {

@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
+import { Pressable } from 'react-native';
 import { Camera, FlashMode } from 'expo-camera';
 import React, { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { Pressable, StyleSheet, View } from 'react-native';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
@@ -12,7 +13,8 @@ import { defaults, sizes } from 'Theme';
 import { ImageTextModal } from 'Renders';
 import actionSheet from 'Services/actionSheet';
 import NavigationService from 'Services/navigation';
-import { deliveredStatuses, deviceFrame, mock, preopenPicker } from 'Helpers';
+import Analytics, { EVENTS } from 'Services/analytics';
+import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
 import {
   Button,
@@ -35,9 +37,47 @@ const focusReasonMessage = () => {
   reasonMessageRef?.current?.focus();
 };
 
+const handleBarCodeScanned = (
+  { setModalVisible, scanExternalReference, orderId, setManuallyTypedBarcode },
+  { data }
+) => {
+  setModalVisible(false);
+  setManuallyTypedBarcode('');
+  scanExternalReference(data, orderId);
+};
+
 const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
   focusReasonMessage();
+};
+
+const handleListItemOnPress = (
+  {
+    confirmedItem,
+    selectedStop,
+    setModalVisible,
+    setModalType,
+    setScanningOrderId,
+    toggleConfirmedItem
+  },
+  orderId
+) => {
+  if (
+    selectedStop?.satisfactionStatus === 5 &&
+    !confirmedItem.includes(orderId)
+  ) {
+    showBarCodeScanner({
+      confirmedItem,
+      orderId,
+      setModalVisible,
+      setModalType,
+      setScanningOrderId,
+      showModal,
+      toggleConfirmedItem
+    });
+  } else {
+    toggleConfirmedItem(orderId);
+  }
 };
 
 const openActionSheet = ({ rejectReasons, updateTransientProps }) => {
@@ -53,44 +93,41 @@ const openActionSheet = ({ rejectReasons, updateTransientProps }) => {
   actionSheet(options);
 };
 
-const podPrompt = ({
-  podImage,
-  proofOfDeliveryRequired,
+const openCamera = ({ addPodImage }) => {
+  ImagePicker.openCamera({
+    width: 1000,
+    height: 1000,
+    compressImageQuality: 0.6,
+    cropping: true,
+    includeBase64: true
+  }).then(addPodImage);
+  Analytics.trackEvent(EVENTS.IMAGE_PICKER_FROM_CAMERA);
+};
+
+const openConfiguredCamera = ({
+  deletePodImage,
+  index,
+  podImages,
   setModalImageSrc,
   setModalText,
   setModalType,
-  setModalVisible,
-  updateProps
+  setModalVisible
 }) => {
-  preopenPicker({
-    key: 'pod',
-    addImage: (key, path, mime) => {
-      updateProps({
-        podImage: {
-          key,
-          path,
-          mime
-        }
-      });
-    },
-    ...(podImage && {
-      reviewPhoto: showModal.bind(null, {
-        imageSrc: podImage.path,
-        text: null,
-        type: 'image',
-        setModalImageSrc,
-        setModalText,
-        setModalType,
-        setModalVisible
-      }),
-      deletePhoto: updateProps.bind(null, {
-        podImage: null
-      })
-    }),
-    title: proofOfDeliveryRequired
-      ? I18n.t('screens:deliver.proofOfDeliveryRequired')
-      : null
+  const pickerOptions = {};
+  pickerOptions[I18n.t('general:reviewPhoto')] = showModal.bind(null, {
+    imageSrc: podImages[index].path,
+    text: null,
+    type: 'image',
+    setModalImageSrc,
+    setModalText,
+    setModalType,
+    setModalVisible
   });
+  pickerOptions[I18n.t('general:deletePhoto')] = deletePodImage.bind(
+    null,
+    index
+  );
+  actionSheet(pickerOptions, { destructiveButtonIndex: 2 });
 };
 
 const rejectAndNavigateBack = (
@@ -107,6 +144,97 @@ const rejectAndNavigateBack = (
   });
 };
 
+const renderBarCodeScanner = ({
+  buttonAccessibility,
+  colors,
+  manuallyTypedBarcode,
+  scanExternalReference,
+  orderId,
+  selectedStop,
+  setManuallyTypedBarcode,
+  setModalVisible,
+  setTorch,
+  torch,
+  unacknowledgedList
+}) => {
+  return (
+    <>
+      <SafeAreaView style={style.cameraScannerOverlay}>
+        <ColumnView
+          marginHorizontal={defaults.marginHorizontal}
+          width={width - defaults.marginHorizontal * 2}
+          flex={1}
+          justifyContent={'space-between'}
+          marginBottom={defaults.marginVertical}>
+          <RowView justifyContent={'space-between'}>
+            <Icon
+              name={torch ? 'flashlight' : 'flashlight-off'}
+              color={colors.inputSecondary}
+              size={buttonAccessibility}
+              containerSize={buttonAccessibility}
+              onPress={setTorch.bind(null, !torch)}
+            />
+            <CustomIcon
+              onPress={setModalVisible.bind(null, false)}
+              containerWidth={buttonAccessibility}
+              width={buttonAccessibility}
+              icon={'close'}
+              iconColor={
+                selectedStop.proofOfDeliveryRequired
+                  ? colors.error
+                  : colors.primary
+              }
+            />
+          </RowView>
+          <ColumnView>
+            <TextInput
+              autoCapitalize={'none'}
+              keyboardType={'numeric'}
+              onChangeText={setManuallyTypedBarcode}
+              onSubmitEditing={handleBarCodeScanned.bind(null, {
+                setModalVisible,
+                scanExternalReference,
+                orderId,
+                setManuallyTypedBarcode,
+                manuallyTypedBarcode
+              })}
+              placeholder={I18n.t('screens:deliver.scanner.placeholder')}
+              returnKeyType={'go'}
+              value={manuallyTypedBarcode}
+            />
+            <Button.Primary
+              title={I18n.t('screens:deliver.scanner.button', {
+                claimNo: unacknowledgedList.length
+              })}
+              onPress={handleBarCodeScanned.bind(
+                null,
+                {
+                  setModalVisible,
+                  scanExternalReference,
+                  orderId,
+                  setManuallyTypedBarcode
+                },
+                { data: manuallyTypedBarcode }
+              )}
+              disabled={manuallyTypedBarcode === ''}
+            />
+          </ColumnView>
+        </ColumnView>
+      </SafeAreaView>
+      <Camera
+        flashMode={torch ? FlashMode.torch : FlashMode.off}
+        onBarCodeScanned={handleBarCodeScanned.bind(null, {
+          setModalVisible,
+          scanExternalReference,
+          orderId,
+          setManuallyTypedBarcode
+        })}
+        style={style.cameraScanner}
+      />
+    </>
+  );
+};
+
 const renderFallbackCustomerImage = width => (
   <RowView height={width - defaults.marginHorizontal * 2}>
     <CustomIcon
@@ -117,11 +245,88 @@ const renderFallbackCustomerImage = width => (
   </RowView>
 );
 
+const renderPodImage = (
+  {
+    buttonAccessibility,
+    deletePodImage,
+    podImages,
+    setModalImageSrc,
+    setModalText,
+    setModalType,
+    setModalVisible
+  },
+  podImage,
+  index
+) => (
+  <Pressable
+    key={`podImage-${index}`}
+    style={[style.photoWrapper, { width: buttonAccessibility }]}
+    onPress={openConfiguredCamera.bind(null, {
+      deletePodImage,
+      index,
+      podImages,
+      setModalImageSrc,
+      setModalText,
+      setModalType,
+      setModalVisible
+    })}>
+    <Image
+      source={{
+        uri: podImage.path
+      }}
+      style={{ borderRadius: defaults.borderRadius }}
+      width={buttonAccessibility}
+    />
+  </Pressable>
+);
+
+const renderPodImages = ({
+  addPodImage,
+  buttonAccessibility,
+  colors,
+  deletePodImage,
+  podImages,
+  selectedStop,
+  setModalImageSrc,
+  setModalText,
+  setModalType,
+  setModalVisible
+}) => {
+  return (
+    <>
+      {podImages.map(
+        renderPodImage.bind(null, {
+          buttonAccessibility,
+          deletePodImage,
+          podImages,
+          setModalImageSrc,
+          setModalText,
+          setModalType,
+          setModalVisible
+        })
+      )}
+      {podImages.length < 2 && (
+        <CustomIcon
+          onPress={openCamera.bind(null, {
+            addPodImage
+          })}
+          containerWidth={buttonAccessibility}
+          width={buttonAccessibility}
+          icon={'addPhoto'}
+          iconColor={
+            selectedStop.proofOfDeliveryRequired ? colors.error : colors.primary
+          }
+        />
+      )}
+    </>
+  );
+};
+
 const renderSkipModal = ({
   colors,
   hasCollectedEmpties,
   outOfStockIds,
-  reasonMessage,
+  reasonMessage = '',
   rejectReasons,
   selectedStop,
   setModalImageSrc,
@@ -129,7 +334,7 @@ const renderSkipModal = ({
   setModalVisible,
   setRejected,
   reasonType,
-  updateTransientProps,
+  updateTransientProps = mock,
   width
 }) => (
   <ColumnView
@@ -227,6 +432,28 @@ const renderSkipModal = ({
   </ColumnView>
 );
 
+const showBarCodeScanner = ({
+  confirmedItem,
+  orderId,
+  setModalVisible,
+  setModalType,
+  setScanningOrderId,
+  showModal,
+  toggleConfirmedItem
+}) => {
+  if (!confirmedItem.includes(orderId)) {
+    showModal({
+      orderId,
+      setModalVisible,
+      setModalType,
+      setScanningOrderId,
+      type: 'barcode'
+    });
+  } else {
+    toggleConfirmedItem(orderId);
+  }
+};
+
 const showClaims = toggleModal => {
   toggleModal('showClaimModal', true);
   NavigationService.navigate({
@@ -236,10 +463,12 @@ const showClaims = toggleModal => {
 
 const showModal = ({
   imageSrc,
+  orderId,
   setModalText,
   setModalImageSrc,
   setModalType,
   setModalVisible,
+  setScanningOrderId,
   text,
   type
 }) => {
@@ -248,10 +477,11 @@ const showModal = ({
     setModalImageSrc(imageSrc);
     setModalText(text);
   }
+  if (type === 'barcode') {
+    setScanningOrderId(orderId);
+  }
   setModalVisible(true);
 };
-
-const { width, height } = deviceFrame();
 
 const orderTitle = (order, bundledProducts) => {
   if (!order.isBundle) {
@@ -265,64 +495,38 @@ const orderTitle = (order, bundledProducts) => {
   return title;
 };
 
-const setBarCodeOpenedAndId = (
-  toggleConfirmedItem,
-  setBarCodeOpened,
-  setScanningItemId,
-  confirmedItems,
-  itemId
-) => {
-  if (!confirmedItems.includes(itemId)) {
-    setBarCodeOpened(true);
-    setScanningItemId(itemId);
-  } else {
-    toggleConfirmedItem(itemId);
-  }
-};
-
-const handleBarCodeScanned = (
-  setBarCodeOpened,
-  scanExternalReference,
-  scanningItemId,
-  setManuallyTypedBarcode,
-  { data }
-) => {
-  setManuallyTypedBarcode(null);
-  setBarCodeOpened(false);
-  scanExternalReference(data, scanningItemId);
-};
+const { width, height } = deviceFrame();
 
 const Deliver = props => {
+  const {
+    addPodImage = mock,
+    allItemsDone = false,
+    bundledProducts = {},
+    buttonAccessibility,
+    confirmedItem = [],
+    deletePodImage = mock,
+    outOfStockIds = [],
+    podImages = [],
+    routeDescription = null,
+    selectedStop = {},
+    setDelivered = mock,
+    showPODRequired = mock,
+    toggleConfirmedItem = mock,
+    toggleModal = mock,
+    toggleOutOfStock = mock,
+    scanExternalReference = mock
+  } = props;
+
+  const { colors } = useTheme();
+  const [hasCollectedEmpties, setHasCollectedEmpties] = useState(null);
+  const [manuallyTypedBarcode, setManuallyTypedBarcode] = useState('');
   const [modalImageSrc, setModalImageSrc] = useState(null);
   const [modalText, setModalText] = useState(null);
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
-  const [barCodeOpened, setBarCodeOpened] = useState(false);
-  const [scanningItemId, setScanningItemId] = useState(null);
+  const [orderId, setScanningOrderId] = useState(null);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
-  const [hasCollectedEmpties, setHasCollectedEmpties] = useState(null);
-  const [manuallyTypedBarcode, setManuallyTypedBarcode] = useState(null);
-
   const [torch, setTorch] = useState(false);
-
-  const { colors } = useTheme();
-  const {
-    allItemsDone,
-    bundledProducts,
-    buttonAccessibility,
-    confirmedItem,
-    outOfStockIds,
-    podImage,
-    routeDescription,
-    scanExternalReference,
-    selectedStop,
-    setDelivered,
-    showPODRequired,
-    toggleConfirmedItem,
-    toggleModal,
-    toggleOutOfStock,
-    updateProps
-  } = props;
 
   const acknowledgedList = selectedStop?.claims.acknowledgedList || [];
   const unacknowledgedList = selectedStop?.claims.unacknowledgedList || [];
@@ -345,10 +549,15 @@ const Deliver = props => {
             isOutOfStock || order.status === 3
               ? 'alert'
               : confirmedItem.includes(order.key) || order.status === 2
-                ? 'check'
-                : null,
+              ? 'check'
+              : selectedStop?.satisfactionStatus === 5
+              ? 'barcode'
+              : null,
           enforceLayout: true,
-          ...(isOutOfStock || order.status === 3
+          ...(isOutOfStock ||
+          order.status === 3 ||
+          (selectedStop?.satisfactionStatus === 5 &&
+            !confirmedItem.includes(order.key))
             ? {
                 rightIconColor: colors.error,
                 suffixColor: colors.error
@@ -363,19 +572,13 @@ const Deliver = props => {
   if (
     selectedStop?.proofOfDeliveryRequired &&
     allItemsDone &&
-    !podImage &&
+    podImages.length === 0 &&
     !modalVisible &&
-    !podPromptAutoShown
+    !podPromptAutoShown &&
+    hasCollectedEmpties !== null
   ) {
     setPodPromptAutoShown(true);
-    podPrompt({
-      proofOfDeliveryRequired: selectedStop?.proofOfDeliveryRequired,
-      setModalImageSrc,
-      setModalText,
-      setModalType,
-      setModalVisible,
-      updateProps
-    });
+    showPODRequired();
   }
 
   const isFocused = useIsFocused();
@@ -428,6 +631,20 @@ const Deliver = props => {
             onPress: setModalVisible,
             renderFallback: renderFallbackCustomerImage.bind(null, width),
             text: modalText
+          })}
+        {modalType === 'barcode' &&
+          renderBarCodeScanner({
+            buttonAccessibility,
+            colors,
+            manuallyTypedBarcode,
+            scanExternalReference,
+            orderId,
+            selectedStop,
+            setManuallyTypedBarcode,
+            setModalVisible,
+            setTorch,
+            torch,
+            unacknowledgedList
           })}
       </Modal>
 
@@ -592,28 +809,17 @@ const Deliver = props => {
                   : optimizedStopOrders
               }
               hasSections={height > 700}
-              onLongPress={
-                selectedStop?.satisfactionStatus === 5
-                  ? setBarCodeOpenedAndId.bind(
-                      null,
-                      toggleConfirmedItem,
-                      setBarCodeOpened,
-                      setScanningItemId,
-                      confirmedItem
-                    )
-                  : toggleOutOfStock
-              }
-              onPress={
-                selectedStop?.satisfactionStatus === 5
-                  ? setBarCodeOpenedAndId.bind(
-                      null,
-                      toggleConfirmedItem,
-                      setBarCodeOpened,
-                      setScanningItemId,
-                      confirmedItem
-                    )
-                  : toggleConfirmedItem
-              }
+              {...(selectedStop?.satisfactionStatus !== 5 && {
+                onLongPress: toggleOutOfStock
+              })}
+              onPress={handleListItemOnPress.bind(null, {
+                confirmedItem,
+                selectedStop,
+                setModalVisible,
+                setModalType,
+                setScanningOrderId,
+                toggleConfirmedItem
+              })}
               renderItemSeparator={null}
               renderSectionFooter={null}
             />
@@ -661,50 +867,18 @@ const Deliver = props => {
           {unacknowledgedList.length === 0 && (
             <>
               <RowView justifyContent={'space-between'}>
-                {!podImage && (
-                  <CustomIcon
-                    onPress={podPrompt.bind(null, {
-                      proofOfDeliveryRequired:
-                        selectedStop.proofOfDeliveryRequired,
-                      setModalImageSrc,
-                      setModalText,
-                      setModalType,
-                      setModalVisible,
-                      updateProps
-                    })}
-                    containerWidth={buttonAccessibility}
-                    width={buttonAccessibility}
-                    icon={'addPhoto'}
-                    iconColor={
-                      selectedStop.proofOfDeliveryRequired
-                        ? colors.error
-                        : colors.primary
-                    }
-                  />
-                )}
-                {podImage && (
-                  <Pressable
-                    key={'pod'}
-                    style={[style.photoWrapper, { width: buttonAccessibility }]}
-                    onPress={podPrompt.bind(null, {
-                      podImage,
-                      proofOfDeliveryRequired:
-                        selectedStop.proofOfDeliveryRequired,
-                      setModalImageSrc,
-                      setModalText,
-                      setModalType,
-                      setModalVisible,
-                      updateProps
-                    })}>
-                    <Image
-                      source={{
-                        uri: podImage.path
-                      }}
-                      style={{ borderRadius: defaults.borderRadius }}
-                      width={buttonAccessibility}
-                    />
-                  </Pressable>
-                )}
+                {renderPodImages({
+                  addPodImage,
+                  buttonAccessibility,
+                  colors,
+                  deletePodImage,
+                  podImages,
+                  selectedStop,
+                  setModalImageSrc,
+                  setModalText,
+                  setModalType,
+                  setModalVisible
+                })}
                 <Button.Primary
                   title={I18n.t('general:done')}
                   onPress={NavigationService.goBack.bind(null, {
@@ -713,19 +887,23 @@ const Deliver = props => {
                       selectedStop.orderId,
                       selectedStop.key,
                       outOfStockIds,
-                      podImage,
+                      podImages,
                       hasCollectedEmpties
                     )
                   })}
                   disabled={
                     !allItemsDone ||
-                    (selectedStop.proofOfDeliveryRequired && !podImage) ||
+                    (selectedStop.proofOfDeliveryRequired &&
+                      podImages.length === 0) ||
                     hasCollectedEmpties === null
                   }
                   width={
                     width -
-                    buttonAccessibility -
-                    defaults.marginHorizontal * 2.5
+                    defaults.marginHorizontal * 2 -
+                    Math.min(podImages.length + 1, 2) * buttonAccessibility -
+                    Math.min(podImages.length + 1, 2) *
+                      0.5 *
+                      defaults.marginHorizontal
                   }
                   testID={'deliver-done'}
                 />
@@ -745,87 +923,20 @@ const Deliver = props => {
           )}
         </ColumnView>
       )}
-      {barCodeOpened && (
-        <View style={StyleSheet.absoluteFillObject}>
-          <Pressable style={style.closeButton}>
-            <CustomIcon
-              onPress={setBarCodeOpened.bind(null, false)}
-              containerWidth={buttonAccessibility}
-              width={buttonAccessibility}
-              icon={'close'}
-              iconColor={
-                selectedStop.proofOfDeliveryRequired
-                  ? colors.error
-                  : colors.primary
-              }
-            />
-          </Pressable>
-          <Pressable
-            style={[style.flash, { backgroundColor: colors.primary }]}
-            onPress={setTorch.bind(null, !torch)}>
-            <Icon
-              name={torch ? 'flashlight-off' : 'flashlight'}
-              color={colors.inputSecondary}
-              size={sizes.list.height}
-              containerSize={sizes.list.height}
-              disabled
-            />
-          </Pressable>
-          <View style={style.manualWrapper}>
-            <TextInput
-              autoCapitalize={'none'}
-              keyboardType={'numeric'}
-              onChangeText={setManuallyTypedBarcode}
-              onSubmitEditing={handleBarCodeScanned.bind(
-                null,
-                setBarCodeOpened,
-                scanExternalReference,
-                scanningItemId,
-                setManuallyTypedBarcode,
-                manuallyTypedBarcode
-              )}
-              placeholder={I18n.t('screens:deliver.scanner.placeholder')}
-              returnKeyType={'go'}
-              value={manuallyTypedBarcode}
-            />
-            <Button.Primary
-              title={I18n.t('screens:deliver.scanner.button', {
-                claimNo: unacknowledgedList.length
-              })}
-              onPress={handleBarCodeScanned.bind(
-                null,
-                setBarCodeOpened,
-                scanExternalReference,
-                scanningItemId,
-                setManuallyTypedBarcode,
-                { data: manuallyTypedBarcode }
-              )}
-            />
-          </View>
-          <Camera
-            onBarCodeScanned={handleBarCodeScanned.bind(
-              null,
-              setBarCodeOpened,
-              scanExternalReference,
-              scanningItemId,
-              setManuallyTypedBarcode
-            )}
-            style={StyleSheet.absoluteFillObject}
-            flashMode={torch ? FlashMode.torch : FlashMode.off}
-          />
-        </View>
-      )}
     </SafeAreaView>
   );
 };
 
 Deliver.propTypes = {
+  addPodImage: PropTypes.func,
   allItemsDone: PropTypes.bool,
   bundledProducts: PropTypes.object,
   buttonAccessibility: PropTypes.number,
   confirmedItem: PropTypes.array,
+  deletePodImage: PropTypes.func,
   outOfStockIds: PropTypes.array,
-  podImage: PropTypes.object,
+  podImages: PropTypes.array,
+  position: PropTypes.object,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
   scanExternalReference: PropTypes.func,
@@ -838,25 +949,6 @@ Deliver.propTypes = {
   toggleOutOfStock: PropTypes.func,
   updateProps: PropTypes.func,
   updateTransientProps: PropTypes.func
-};
-
-Deliver.defaultProps = {
-  allItemsDone: false,
-  bundledProducts: {},
-  confirmedItem: [],
-  outOfStockIds: [],
-  podImage: null,
-  reasonMessage: '',
-  routeDescription: null,
-  selectedStop: {},
-  setDelivered: mock,
-  setRejected: mock,
-  showPODRequired: mock,
-  toggleConfirmedItem: mock,
-  toggleModal: mock,
-  toggleOutOfStock: mock,
-  updateProps: mock,
-  updateTransientProps: mock
 };
 
 export default Deliver;

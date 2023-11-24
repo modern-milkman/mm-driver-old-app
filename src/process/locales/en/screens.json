@@ -90,7 +90,7 @@
     "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",
     "scanner": {
-      "button": "Ender Manually",
+      "button": "Enter manually",
       "error": {
         "description": "This LaaS is not correct.",
         "title": "Oops"

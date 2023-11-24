@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { defaults, sizes } from 'Theme';
+import { defaults } from 'Theme';
 
 const style = StyleSheet.create({
   flex1: {
@@ -12,28 +12,13 @@ const style = StyleSheet.create({
   photoWrapper: {
     borderRadius: defaults.borderRadius
   },
-  closeButton: {
-    top: 40,
-    right: 20,
-    height: sizes.button.normal,
-    width: sizes.button.normal,
-    position: 'absolute',
+  cameraScanner: {
+    ...StyleSheet.absoluteFill,
     zIndex: 1
   },
-  manualWrapper: {
-    position: 'absolute',
-    left: 0,
-    bottom: 60,
-    right: 0,
-    zIndex: 1
-  },
-  flash: {
-    bottom: 240,
-    right: 20,
-    position: 'absolute',
-    zIndex: 1,
-    borderRadius: 4,
-    padding: defaults.marginVertical / 4
+  cameraScannerOverlay: {
+    zIndex: 2,
+    backgroundColor: 'transparent'
   }
 });
 

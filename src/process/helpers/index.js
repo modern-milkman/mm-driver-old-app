@@ -2,7 +2,6 @@ import { Base64 } from 'js-base64';
 import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
 import { useEffect, useRef } from 'react';
-import ImagePicker from 'react-native-image-crop-picker';
 import {
   Animated,
   Easing,
@@ -17,7 +16,6 @@ import store from 'Redux/store';
 import I18n from 'Locales/I18n';
 import Alert from 'Services/alert';
 import actionSheet from 'Services/actionSheet';
-import Analytics, { EVENTS } from 'Services/analytics';
 import { Creators as GrowlActions } from 'Reducers/growl';
 import { Types as ApplicationTypes } from 'Reducers/application';
 
@@ -180,27 +178,6 @@ const formatDateTime = date =>
     date.getMinutes()
   )}${addZero(date.getSeconds())}`;
 
-const preopenPicker = ({ addImage, deletePhoto, key, reviewPhoto, title }) => {
-  const pickerOptions = {};
-  let destructiveButtonIndex = null;
-  if (reviewPhoto) {
-    pickerOptions[I18n.t('general:reviewPhoto')] = reviewPhoto;
-  }
-  if (addImage) {
-    pickerOptions[I18n.t('general:takePhoto')] = openPicker.bind(null, {
-      addImage,
-      key
-    });
-  }
-  if (deletePhoto) {
-    pickerOptions[I18n.t('general:deletePhoto')] = deletePhoto;
-    destructiveButtonIndex = 4;
-  }
-  if (key && addImage) {
-    actionSheet(pickerOptions, { destructiveButtonIndex, title });
-  }
-};
-
 const isAppInstalled = async appName => {
   return await Linking.canOpenURL(appName + '://')
     .then(installed => {
@@ -260,20 +237,6 @@ const openDriverUpdate = () => {
         }
       ]
     });
-  });
-};
-
-const openPicker = ({ addImage, key }) => {
-  Analytics.trackEvent(EVENTS.IMAGE_PICKER_FROM_CAMERA);
-
-  ImagePicker.openCamera({
-    width: 1000,
-    height: 1000,
-    compressImageQuality: 0.6,
-    cropping: true,
-    includeBase64: true
-  }).then(img => {
-    addImage(key, img.path, img.mime);
   });
 };
 
@@ -464,11 +427,9 @@ export {
   jiggleAnimation,
   mock,
   openDriverUpdate,
-  openPicker,
   openTerms,
   openURL,
   plateRecognition,
-  preopenPicker,
   randomKey,
   slack,
   statusBarHeight,
