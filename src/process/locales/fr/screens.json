@@ -90,7 +90,7 @@
     "proofOfDeliveryRequired": "REQUIERT UNE PREUVE DE LIVRAISON",
     "routeDescription": "ID de route #{{routeDescription}}",
     "scanner": {
-      "button": "Terminer manuellement",
+      "button": "Entrer manuellement",
       "error": {
         "description": "Ce LaaS n'est pas correct.",
         "title": "Oops"

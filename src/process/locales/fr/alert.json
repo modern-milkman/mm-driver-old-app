@@ -61,7 +61,7 @@
     },
     "delivery": {
       "proofOfDeliveryRequired": {
-        "message": "Veuillez prendre votre téléphone avec vous et prendre une photo une fois que vous avez livré les produits.",
+        "message": "Veuillez emporter votre téléphone avec vous et prendre au moins une photo une fois que vous avez livré les produits.",
         "title": "Preuve de livraison requise!"
       }
     },
