@@ -136,7 +136,7 @@ export const init = function* () {
         changeIcon('regular');
       }
     } else {
-      if (icon === 'default' || icon === 'regular') {
+      if (['default', 'Default'].includes(icon) || icon === 'regular') {
         changeIcon('xmas');
       }
     }
@@ -270,7 +270,7 @@ export const rehydrated = function* () {
   }
 
   if (device.uniqueID === 'uninitialized') {
-    const deviceUniqueId = DeviceInfo.getUniqueId();
+    const deviceUniqueId = yield call(DeviceInfo.getUniqueId);
     yield put({
       type: DeviceTypes.UPDATE_PROPS,
       props: {

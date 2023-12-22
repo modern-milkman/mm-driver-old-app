@@ -549,10 +549,10 @@ const Deliver = props => {
             isOutOfStock || order.status === 3
               ? 'alert'
               : confirmedItem.includes(order.key) || order.status === 2
-              ? 'check'
-              : selectedStop?.satisfactionStatus === 5
-              ? 'barcode'
-              : null,
+                ? 'check'
+                : selectedStop?.satisfactionStatus === 5
+                  ? 'barcode'
+                  : null,
           enforceLayout: true,
           ...(isOutOfStock ||
           order.status === 3 ||

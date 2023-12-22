@@ -1,7 +1,6 @@
 //testID supported
 import store from 'Redux/store';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
 import { StyleSheet } from 'react-native';
 import React, { createRef, useEffect } from 'react';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -11,6 +10,10 @@ import { useThemedStyles } from 'Containers';
 import unthemedStyle from './style';
 
 const dropdown = createRef();
+
+const setDropdownReference = func => {
+  dropdown.current = func;
+};
 
 const Growl = props => {
   const style = useThemedStyles(unthemedStyle);
@@ -23,7 +26,7 @@ const Growl = props => {
 
   useEffect(() => {
     updateProps({
-      dropdownAlertInstance: dropdown.current.alertWithType
+      dropdownAlertInstance: dropdown.current
     });
 
     return () => {
@@ -43,34 +46,32 @@ const Growl = props => {
 
   return (
     <DropdownAlert
-      ref={dropdown}
-      closeInterval={parseInt(Config.GROWL_AUTOHIDE)}
-      contentContainerStyle={style.contentContainerStyle}
+      alert={setDropdownReference.bind(null)}
+      animatedViewStyle={style.shadow}
       defaultContainer={style.defaultContainer}
-      defaultTextContainer={style.defaultTextContainer}
       errorColor={colors.error}
       errorImageSrc={null}
       imageStyle={style.logo}
       inactiveStatusBarBackgroundColor={'transparent'}
       infoColor={colors.primary}
       infoImageSrc={null}
-      messageNumOfLines={5}
-      messageStyle={StyleSheet.flatten([
+      messageNumberOfLines={5}
+      messageTextStyle={StyleSheet.flatten([
         style.messageStyle,
         growl.type === 'error' && style.error
       ])}
-      onTap={onTap}
+      onDismissPress={onTap}
       panResponderEnabled
-      tapToCloseEnabled
+      safeViewStyle={style.contentContainerStyle}
       testID={testID}
-      titleNumOfLines={2}
-      titleStyle={StyleSheet.flatten([
+      textViewStyle={style.defaultTextContainer}
+      titleNumberOfLines={2}
+      titleTextStyle={StyleSheet.flatten([
         style.titleStyle,
         growl.type === 'error' && style.error
       ])}
       translucent
       updateStatusBar={false}
-      wrapperStyle={style.shadow}
       zIndex={100}
     />
   );

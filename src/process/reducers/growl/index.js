@@ -16,7 +16,7 @@ const initialState = {
 };
 
 export const alert = (state, action) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     draft.type = action.props.type;
   });
 
@@ -25,5 +25,4 @@ export default createReducer(initialState, {
   [Types.ALERT]: alert
 });
 
-export const dropdownAlertInstance = (state) =>
-  state.growl.dropdownAlertInstance;
+export const dropdownAlertInstance = state => state.growl.dropdownAlertInstance;

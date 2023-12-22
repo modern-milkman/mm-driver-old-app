@@ -468,9 +468,8 @@ export const getForDriverSuccess = (state, { payload }) =>
             status,
             title
           };
-          draft.stops[
-            address.addressId
-          ].searchHandle += ` ${title.toLowerCase()}`;
+          draft.stops[address.addressId].searchHandle +=
+            ` ${title.toLowerCase()}`;
           draft.stops[address.addressId].itemCount += quantity;
         }
         // update order items and main stop status

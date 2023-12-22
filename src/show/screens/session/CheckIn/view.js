@@ -140,8 +140,8 @@ const CheckIn = props => {
       rightIcon: checklist.deliveryComplete
         ? 'check'
         : dpDisabled
-        ? null
-        : 'chevron-right',
+          ? null
+          : 'chevron-right',
       title: I18n.t('screens:checkIn.deliverProducts'),
       testID: 'checkIn-deliverProducts-listItem'
     },
@@ -163,8 +163,8 @@ const CheckIn = props => {
       rightIcon: !checklist.deliveryComplete
         ? null
         : checklist.shiftEndVanChecks
-        ? 'check'
-        : 'chevron-right',
+          ? 'check'
+          : 'chevron-right',
       title: I18n.t('screens:checkIn.checkOut'),
       testID: 'checkIn-checkVanEnd-listItem'
     }

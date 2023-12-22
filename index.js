@@ -1,4 +1,3 @@
-import { enableES5 } from 'immer';
 import Crashes from 'appcenter-crashes';
 import Config from 'react-native-config';
 import Analytics from 'appcenter-analytics';
@@ -6,8 +5,6 @@ import { AppRegistry, LogBox } from 'react-native';
 
 import Application from './src/show/Application';
 import { name as appName } from './package.json';
-
-enableES5();
 
 if (global.location && global.location.pathname.includes('/debugger-ui')) {
   // for rn-debugger
