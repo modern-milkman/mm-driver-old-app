@@ -23,7 +23,7 @@ export default connect(
   {
     addPodImage: deliveryActions.addPodImage,
     deletePodImage: deliveryActions.deletePodImage,
-    scanExternalReference: deliveryActions.scanExternalReference,
+    scanBarcode: deliveryActions.scanBarcode,
     setDelivered: deliveryActions.setDelivered,
     setRejected: deliveryActions.setRejected,
     showPODRequired: deliveryActions.showPODRequired,

@@ -10,10 +10,6 @@ export const RGB_COLORS = {
     light: '232, 25, 73', //#E81949,
     dark: '232, 25, 73' //#E81949,
   },
-  freddiesFlowers: {
-    light: '151,125,183', // #977DB7
-    dark: '151,125,183' // #977DB7
-  },
   input: {
     light: '221, 236, 239', //#DDECEF
     dark: '54, 83, 105' //#365369
@@ -38,6 +34,10 @@ export const RGB_COLORS = {
     light: '69, 177, 74', //#45B14A
     dark: '69, 177, 74' //#45B14A
   },
+  tpl: {
+    light: '151,125,183', // #977DB7
+    dark: '151,125,183' // #977DB7
+  },
   warning: {
     light: '255, 167, 38', //#ffa726
     dark: '255, 167, 38' //#ffa726
@@ -56,7 +56,6 @@ export const colors = theme => {
   return {
     background: `rgb(${RGB_COLORS.neutral[theme]})`,
     error: `rgb(${RGB_COLORS.error[theme]})`,
-    freddiesFlowers: `rgb(${RGB_COLORS.freddiesFlowers[theme]})`,
     blackOnly: `rgb(${RGB_COLORS.blackOnly[theme]})`,
     input: `rgb(${RGB_COLORS.input[theme]})`,
     inputSecondary: `rgb(${RGB_COLORS.inputSecondary[theme]})`,
@@ -64,6 +63,7 @@ export const colors = theme => {
     primary: `rgb(${RGB_COLORS.primary[theme]})`,
     primaryBright: `rgb(${RGB_COLORS.primaryBright[theme]})`,
     success: `rgb(${RGB_COLORS.success[theme]})`,
+    tpl: `rgb(${RGB_COLORS.tpl[theme]})`,
     warning: `rgb(${RGB_COLORS.warning[theme]})`,
     white: `rgb(${RGB_COLORS.white[theme]})`,
     whiteOnly: `rgb(${RGB_COLORS.whiteOnly[theme]})`

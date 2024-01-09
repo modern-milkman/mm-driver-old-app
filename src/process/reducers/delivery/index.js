@@ -33,8 +33,8 @@ export const { Types, Creators } = createActions(
     refreshAllData: null,
     resetChecklistPayload: ['resetType'],
     saveVehicleChecks: ['saveType'],
-    scanExternalReference: ['externalId', 'itemId'],
-    scanExternalReferenceSuccess: ['itemId'],
+    scanBarcode: ['barcodeValue'],
+    scanBarcodeSuccess: ['itemId'],
     setCustomerClaims: ['payload', 'stopId'],
     setDelivered: [
       'id',
@@ -409,8 +409,8 @@ export const getForDriverSuccess = (state, { payload }) =>
         // stop doesn't exist, create it
         // info cannot change during delivery night
         draft.stops[address.addressId] = {
-          externalReferenceIds: [],
           ...address,
+          barcodeValues: {},
           claims: {
             acknowledgedList: [],
             unacknowledgedList: [],
@@ -421,6 +421,7 @@ export const getForDriverSuccess = (state, { payload }) =>
           description: I18n.t('screens:deliver.userId', {
             userId: address.userId
           }),
+          has3PLProducts: false,
           key: address.addressId, // TODO can this be removed?
           icon: null, // TODO can this be removed?
           itemCount: 0,
@@ -441,26 +442,30 @@ export const getForDriverSuccess = (state, { payload }) =>
 
       // check order items and update
       for (const {
+        barcodeValue,
+        barcodeScanMandatory,
         deliveryState: status,
-        externalReference,
+        is3PL,
         measureDescription: description,
         orderItemId: key,
         productId,
         productName: title,
         quantity
       } of orderItems) {
-        //add externalIds to stop, OrderBox.
-        if (externalReference) {
-          draft.stops[address.addressId].externalReferenceIds.push(
-            externalReference
-          );
+        if (barcodeValue) {
+          draft.stops[address.addressId].barcodeValues[barcodeValue] = key;
+        }
+        if (is3PL) {
+          draft.stops[address.addressId].has3PLProducts = true;
         }
 
         // create new order items if they do not exist already
         if (!draft.stops[address.addressId].orderItems[key]) {
           draft.stops[address.addressId].orderItems[key] = {
+            barcodeValue,
+            barcodeScanMandatory,
             description,
-            externalReference,
+            is3PL,
             isBundle: !!state.bundledProducts[productId],
             key,
             productId,

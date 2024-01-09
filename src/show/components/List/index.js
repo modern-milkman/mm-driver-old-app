@@ -20,19 +20,31 @@ const defaultRenderItemSeparator = () => <Separator marginLeft={20} />;
 const defaultSectionFooter = () => <Separator />;
 const widthReducer = 0.8;
 
-const renderCustomIcon = ({ customIcon, customIconProps, testID }) => (
+const renderCustomIcon = ({
+  customIcon,
+  customIconProps,
+  iconOnPress,
+  testID
+}) => (
   <CustomIcon
     width={customIconProps?.width || style.image.width}
     containerWidth={customIconProps?.containerSize || style.image.width}
     icon={customIcon}
     iconColor={customIconProps?.color}
     bgColor={customIconProps?.bgColor}
-    disabled
+    disabled={!iconOnPress}
+    onPress={iconOnPress}
     testID={`${testID}-customIcon-${customIcon}`}
   />
 );
 
-const renderIcon = ({ customIconProps, icon, iconColor, testID }) => (
+const renderIcon = ({
+  customIconProps,
+  icon,
+  iconColor,
+  iconOnPress,
+  testID
+}) => (
   <Icon
     name={icon}
     color={iconColor}
@@ -46,7 +58,8 @@ const renderIcon = ({ customIconProps, icon, iconColor, testID }) => (
         ? customIconProps.containerSize
         : style.image.width
     }
-    disabled
+    disabled={!iconOnPress}
+    onPress={iconOnPress}
     testID={`${testID}-icon-${icon}`}
   />
 );
@@ -75,17 +88,34 @@ const renderMedia = ({
   customIconProps,
   icon,
   iconColor,
+  iconOnPress,
   image,
   testID
 }) => {
   if (image) {
-    return renderImage({ customIcon, customIconProps, image, testID });
+    return renderImage({
+      customIcon,
+      customIconProps,
+      image,
+      testID
+    });
   }
   if (customIcon) {
-    return renderCustomIcon({ customIcon, customIconProps, testID });
+    return renderCustomIcon({
+      customIcon,
+      customIconProps,
+      iconOnPress,
+      testID
+    });
   }
   if (icon) {
-    return renderIcon({ icon, iconColor, customIconProps, testID });
+    return renderIcon({
+      customIconProps,
+      icon,
+      iconColor,
+      iconOnPress,
+      testID
+    });
   }
 };
 
@@ -167,6 +197,7 @@ const renderItemInterface = (
     PrefixTextComponent = Text.Input,
     rightComponent,
     rightIcon,
+    rightIconOnPress = null,
     rightIconColor = colors.primary,
     rightImage,
     secondaryCustomRightIcon,
@@ -311,6 +342,7 @@ const renderItemInterface = (
                 customIconProps: customRightIconProps,
                 icon: rightIcon,
                 iconColor: rightIconColor,
+                iconOnPress: rightIconOnPress,
                 image: rightImage,
                 testID
               })}
@@ -449,6 +481,7 @@ ListItem.propTypes = {
   onPress: PropTypes.func,
   rightComponent: PropTypes.any,
   rightIcon: PropTypes.string,
+  rightIconOnPress: PropTypes.func,
   rightIconColor: PropTypes.string,
   rightImage: PropTypes.string,
   secondaryCustomRightIcon: PropTypes.any,
@@ -480,6 +513,7 @@ ListItem.defaultProps = {
   PrefixTextComponent: Text.Input,
   rightComponent: null,
   rightIcon: null,
+  rightIconOnPress: null,
   rightImage: null,
   secondaryCustomRightIcon: null,
   secondaryCustomRightIconProps: {},

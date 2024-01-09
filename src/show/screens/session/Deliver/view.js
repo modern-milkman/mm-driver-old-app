@@ -38,12 +38,12 @@ const focusReasonMessage = () => {
 };
 
 const handleBarCodeScanned = (
-  { setModalVisible, scanExternalReference, orderId, setManuallyTypedBarcode },
+  { setModalVisible, scanBarcode, setManuallyTypedBarcode },
   { data }
 ) => {
   setModalVisible(false);
   setManuallyTypedBarcode('');
-  scanExternalReference(data, orderId);
+  scanBarcode(data);
 };
 
 const handleChangeSkip = (updateTransientProps, key, value) => {
@@ -57,13 +57,13 @@ const handleListItemOnPress = (
     selectedStop,
     setModalVisible,
     setModalType,
-    setScanningOrderId,
     toggleConfirmedItem
   },
   orderId
 ) => {
   if (
-    selectedStop?.satisfactionStatus === 5 &&
+    selectedStop.orderItems[orderId].barcodeValue &&
+    selectedStop.orderItems[orderId].barcodeScanMandatory &&
     !confirmedItem.includes(orderId)
   ) {
     showBarCodeScanner({
@@ -71,7 +71,6 @@ const handleListItemOnPress = (
       orderId,
       setModalVisible,
       setModalType,
-      setScanningOrderId,
       showModal,
       toggleConfirmedItem
     });
@@ -148,8 +147,7 @@ const renderBarCodeScanner = ({
   buttonAccessibility,
   colors,
   manuallyTypedBarcode,
-  scanExternalReference,
-  orderId,
+  scanBarcode,
   selectedStop,
   setManuallyTypedBarcode,
   setModalVisible,
@@ -193,8 +191,7 @@ const renderBarCodeScanner = ({
               onChangeText={setManuallyTypedBarcode}
               onSubmitEditing={handleBarCodeScanned.bind(null, {
                 setModalVisible,
-                scanExternalReference,
-                orderId,
+                scanBarcode,
                 setManuallyTypedBarcode,
                 manuallyTypedBarcode
               })}
@@ -210,8 +207,7 @@ const renderBarCodeScanner = ({
                 null,
                 {
                   setModalVisible,
-                  scanExternalReference,
-                  orderId,
+                  scanBarcode,
                   setManuallyTypedBarcode
                 },
                 { data: manuallyTypedBarcode }
@@ -225,8 +221,7 @@ const renderBarCodeScanner = ({
         flashMode={torch ? FlashMode.torch : FlashMode.off}
         onBarCodeScanned={handleBarCodeScanned.bind(null, {
           setModalVisible,
-          scanExternalReference,
-          orderId,
+          scanBarcode,
           setManuallyTypedBarcode
         })}
         style={style.cameraScanner}
@@ -437,7 +432,6 @@ const showBarCodeScanner = ({
   orderId,
   setModalVisible,
   setModalType,
-  setScanningOrderId,
   showModal,
   toggleConfirmedItem
 }) => {
@@ -446,7 +440,6 @@ const showBarCodeScanner = ({
       orderId,
       setModalVisible,
       setModalType,
-      setScanningOrderId,
       type: 'barcode'
     });
   } else {
@@ -468,7 +461,6 @@ const showModal = ({
   setModalImageSrc,
   setModalType,
   setModalVisible,
-  setScanningOrderId,
   text,
   type
 }) => {
@@ -476,9 +468,6 @@ const showModal = ({
   if (type === 'image') {
     setModalImageSrc(imageSrc);
     setModalText(text);
-  }
-  if (type === 'barcode') {
-    setScanningOrderId(orderId);
   }
   setModalVisible(true);
 };
@@ -514,7 +503,7 @@ const Deliver = props => {
     toggleConfirmedItem = mock,
     toggleModal = mock,
     toggleOutOfStock = mock,
-    scanExternalReference = mock
+    scanBarcode = mock
   } = props;
 
   const { colors } = useTheme();
@@ -524,7 +513,6 @@ const Deliver = props => {
   const [modalText, setModalText] = useState(null);
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
-  const [orderId, setScanningOrderId] = useState(null);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
   const [torch, setTorch] = useState(false);
 
@@ -550,21 +538,33 @@ const Deliver = props => {
               ? 'alert'
               : confirmedItem.includes(order.key) || order.status === 2
                 ? 'check'
-                : selectedStop?.satisfactionStatus === 5
+                : order.barcodeValue
                   ? 'barcode'
                   : null,
+          rightIconOnPress: showBarCodeScanner.bind(null, {
+            confirmedItem,
+            orderId: order.key,
+            setModalVisible,
+            setModalType,
+            showModal,
+            toggleConfirmedItem
+          }),
           enforceLayout: true,
           ...(isOutOfStock ||
           order.status === 3 ||
-          (selectedStop?.satisfactionStatus === 5 &&
+          (order.barcodeValue &&
+            order.barcodeScanMandatory &&
             !confirmedItem.includes(order.key))
             ? {
                 rightIconColor: colors.error,
                 suffixColor: colors.error
               }
-            : { rightIconColor: colors.success }),
-          isDeliveryItem: true,
-          externalReference: selectedStop?.externalReference
+            : order.status === 1 &&
+                order.barcodeValue &&
+                !confirmedItem.includes(order.key)
+              ? { rightIconColor: colors.primary }
+              : { rightIconColor: colors.success }),
+          isDeliveryItem: true
         };
       })
     : null;
@@ -637,8 +637,7 @@ const Deliver = props => {
             buttonAccessibility,
             colors,
             manuallyTypedBarcode,
-            scanExternalReference,
-            orderId,
+            scanBarcode,
             selectedStop,
             setManuallyTypedBarcode,
             setModalVisible,
@@ -809,15 +808,12 @@ const Deliver = props => {
                   : optimizedStopOrders
               }
               hasSections={height > 700}
-              {...(selectedStop?.satisfactionStatus !== 5 && {
-                onLongPress: toggleOutOfStock
-              })}
+              onLongPress={toggleOutOfStock}
               onPress={handleListItemOnPress.bind(null, {
                 confirmedItem,
                 selectedStop,
                 setModalVisible,
                 setModalType,
-                setScanningOrderId,
                 toggleConfirmedItem
               })}
               renderItemSeparator={null}
@@ -939,7 +935,7 @@ Deliver.propTypes = {
   position: PropTypes.object,
   reasonMessage: PropTypes.string,
   routeDescription: PropTypes.string,
-  scanExternalReference: PropTypes.func,
+  scanBarcode: PropTypes.func,
   selectedStop: PropTypes.object,
   setDelivered: PropTypes.func,
   setRejected: PropTypes.func,

@@ -11,7 +11,11 @@ import { mock } from 'Helpers';
 
 import unthemedStyle from './style';
 
-const getCustomerSatisfactionColor = (colors, satisfactionStatus) => {
+const getCustomerSatisfactionColor = ({
+  colors,
+  has3PLProducts,
+  satisfactionStatus
+}) => {
   switch (satisfactionStatus) {
     case 1:
       return colors.success;
@@ -21,10 +25,8 @@ const getCustomerSatisfactionColor = (colors, satisfactionStatus) => {
       return colors.warning;
     case 4:
       return colors.error;
-    case 5:
-      return colors.freddiesFlowers;
     default:
-      return colors.primary;
+      return has3PLProducts ? colors.tpl : colors.primary;
   }
 };
 
@@ -59,17 +61,18 @@ const Marker = props => {
   const selectedStop = stops[id] || null;
   const completed = completedStopsIds.includes(id);
 
-  const customerSatisfactionColor = getCustomerSatisfactionColor(
+  const customerSatisfactionColor = getCustomerSatisfactionColor({
     colors,
-    selectedStop?.satisfactionStatus
-  );
+    has3PLProducts: selectedStop?.has3PLProducts,
+    satisfactionStatus: selectedStop?.satisfactionStatus
+  });
 
   const mapMarkerBackgroundColor =
     selectedStopId === id
       ? colors.inputSecondary
       : completed
-      ? colors.input
-      : customerSatisfactionColor;
+        ? colors.input
+        : customerSatisfactionColor;
 
   const [previousDarkMode, setPreviousDarkMode] = useState(darkMode);
   const [previousMarkerSize, setPreviousMarkerSize] = useState(mapMarkerSize);

@@ -70,14 +70,12 @@ export const continueDelivering = function* () {
   yield call(updateTrackerData, { status });
 };
 
-export const scanExternalReference = function* ({ externalId, itemId }) {
+export const scanBarcode = function* ({ barcodeValue }) {
   const selectedStop = yield select(selectedStopSelector);
-  const index = selectedStop.externalReferenceIds.indexOf(externalId);
-
-  if (index > -1) {
+  if (selectedStop.barcodeValues[barcodeValue]) {
     yield put({
-      type: DeliveryTypes.SCAN_EXTERNAL_REFERENCE_SUCCESS,
-      itemId
+      type: DeliveryTypes.SCAN_BARCODE_SUCCESS,
+      itemId: selectedStop.barcodeValues[barcodeValue]
     });
   } else {
     yield put({
@@ -90,7 +88,7 @@ export const scanExternalReference = function* ({ externalId, itemId }) {
     });
   }
 };
-export const scanExternalReferenceSuccess = function* ({ itemId }) {
+export const scanBarcodeSuccess = function* ({ itemId }) {
   yield put({
     type: DeliveryTypes.TOGGLE_CONFIRMED_ITEM,
     id: itemId

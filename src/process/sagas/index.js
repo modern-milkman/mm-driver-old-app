@@ -54,8 +54,8 @@ import {
   redirectSetSelectedClaimId,
   refreshAllData,
   saveVehicleChecks,
-  scanExternalReference,
-  scanExternalReferenceSuccess,
+  scanBarcode,
+  scanBarcodeSuccess,
   setDeliveredOrRejected,
   setItemOutOfStock,
   setReturnTypes,
@@ -151,11 +151,8 @@ export default function* root() {
     ),
     takeLatest(DeliveryTypes.REFRESH_ALL_DATA, refreshAllData),
     takeLatest(DeliveryTypes.SAVE_VEHICLE_CHECKS, saveVehicleChecks),
-    takeLatest(DeliveryTypes.SCAN_EXTERNAL_REFERENCE, scanExternalReference),
-    takeLatest(
-      DeliveryTypes.SCAN_EXTERNAL_REFERENCE_SUCCESS,
-      scanExternalReferenceSuccess
-    ),
+    takeLatest(DeliveryTypes.SCAN_BARCODE, scanBarcode),
+    takeLatest(DeliveryTypes.SCAN_BARCODE_SUCCESS, scanBarcodeSuccess),
     takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, getDriverReplyImage),
     takeLatest(
       DeliveryTypes.SET_DELIVERED,
