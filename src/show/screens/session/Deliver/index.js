@@ -12,6 +12,7 @@ export default connect(
       bundledProducts: state.delivery.bundledProducts,
       buttonAccessibility: state.device.buttonAccessibility,
       confirmedItem: state.delivery?.confirmedItem,
+      largerDeliveryText: state.device.largerDeliveryText,
       outOfStockIds: state.delivery?.outOfStockIds,
       podImages: state.delivery?.podImages,
       rejectReasons: state.delivery?.rejectReasons,

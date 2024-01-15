@@ -222,6 +222,7 @@
     },
     "sections": {
       "authentication": "Authentication",
+      "delivery": "Delivery",
       "device": "Device",
       "general": "General",
       "map": "Map",
@@ -246,6 +247,7 @@
       "deliveriesCountDown": "Toggle by tapping delivery bar in main screen",
       "deliveriesRemaining": "Deliveries remaining",
       "foreground": "Large foreground",
+      "largerDeliveryText": "Larger delivery items text",
       "optimisedRoutingUnavailable": "Unavailable for current route at this time",
       "showAllPendingStops": {
         "description": "Showing large number of stops might affect app's performance",

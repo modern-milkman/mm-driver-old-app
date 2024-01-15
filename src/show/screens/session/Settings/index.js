@@ -22,6 +22,7 @@ export default connect(
     foregroundSize: state.device.foregroundSize,
     isOptimised: state.delivery?.stockWithData?.isOptimised || false,
     language: state.device.language,
+    largerDeliveryText: state.device.largerDeliveryText,
     mapMarkerSize: state.device.mapMarkerSize,
     optimisedStopsToShow: state.device.optimisedStopsToShow,
     showDoneDeliveries: state.device.showDoneDeliveries,

@@ -46,6 +46,7 @@ const initialState = {
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info,
   language: 'uninitialized',
+  largerDeliveryText: false,
   lowConnection: false,
   mapMarkerSize: sizes.marker.normal,
   mapMode: 'auto',

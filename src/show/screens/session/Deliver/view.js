@@ -424,16 +424,17 @@ const Deliver = props => {
     buttonAccessibility,
     confirmedItem = [],
     deletePodImage = mock,
+    largerDeliveryText = false,
     outOfStockIds = [],
     podImages = [],
     routeDescription = null,
+    scanBarcode = mock,
     selectedStop = {},
     setDelivered = mock,
     showPODRequired = mock,
     toggleConfirmedItem = mock,
     toggleModal = mock,
-    toggleOutOfStock = mock,
-    scanBarcode = mock
+    toggleOutOfStock = mock
   } = props;
 
   const { colors } = useTheme();
@@ -456,7 +457,9 @@ const Deliver = props => {
           ...order,
           description: null,
           testID: `deliver-deliveryItemRow-${order.productId}`,
-          title: orderTitle(order, bundledProducts),
+          title: null,
+          prefix: orderTitle(order, bundledProducts),
+          PrefixTextComponent: largerDeliveryText ? Text.Tab : Text.List,
           customIcon: 'productPlaceholder',
           disabled:
             deliveredStatuses.includes(selectedStop.status) ||
@@ -859,6 +862,7 @@ Deliver.propTypes = {
   buttonAccessibility: PropTypes.number,
   confirmedItem: PropTypes.array,
   deletePodImage: PropTypes.func,
+  largerDeliveryText: PropTypes.bool,
   outOfStockIds: PropTypes.array,
   podImages: PropTypes.array,
   position: PropTypes.object,

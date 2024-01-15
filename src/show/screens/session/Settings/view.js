@@ -89,8 +89,8 @@ const Settings = props => {
   const {
     autoOpenStopDetails,
     autoSelectStop,
-    biometrics,
     biometricDisable,
+    biometrics,
     buttonAccessibility,
     checklist,
     computeDirections,
@@ -101,12 +101,13 @@ const Settings = props => {
     foregroundSize,
     isOptimised,
     language,
+    largerDeliveryText,
     mapMarkerSize,
     optimisedStopsToShow,
     setLanguage,
+    showAllPendingStops,
     showDoneDeliveries,
     showMapControlsOnMovement,
-    showAllPendingStops,
     status,
     updateDeviceProps = mock,
     updateInAppBrowserProps = mock,
@@ -355,6 +356,33 @@ const Settings = props => {
               </Pressable>
             </>
           )}
+
+          <Separator />
+
+          <ListHeader title={I18n.t('screens:settings.sections.delivery')} />
+
+          <Pressable
+            onPress={toggleProp.bind(
+              null,
+              updateDeviceProps,
+              'largerDeliveryText',
+              !largerDeliveryText
+            )}
+            style={style.pressableRow}>
+            <ColumnView flex={1} alignItems={'flex-start'}>
+              <Text.List color={colors.inputSecondary}>
+                {I18n.t('screens:settings.switches.largerDeliveryText')}
+              </Text.List>
+            </ColumnView>
+            <Switch
+              value={largerDeliveryText}
+              onValueChange={toggleProp.bind(
+                null,
+                updateDeviceProps,
+                'largerDeliveryText'
+              )}
+            />
+          </Pressable>
 
           <Separator />
 
@@ -620,8 +648,8 @@ const Settings = props => {
 Settings.propTypes = {
   autoOpenStopDetails: PropTypes.bool,
   autoSelectStop: PropTypes.bool,
-  biometrics: PropTypes.object,
   biometricDisable: PropTypes.func,
+  biometrics: PropTypes.object,
   buttonAccessibility: PropTypes.number,
   checklist: PropTypes.object,
   computeDirections: PropTypes.bool,
@@ -633,12 +661,13 @@ Settings.propTypes = {
   foregroundSize: PropTypes.string,
   isOptimised: PropTypes.bool,
   language: PropTypes.string,
+  largerDeliveryText: PropTypes.bool,
   mapMarkerSize: PropTypes.number,
   optimisedStopsToShow: PropTypes.number,
   setLanguage: PropTypes.func,
+  showAllPendingStops: PropTypes.bool,
   showDoneDeliveries: PropTypes.bool,
   showMapControlsOnMovement: PropTypes.bool,
-  showAllPendingStops: PropTypes.bool,
   status: PropTypes.string,
   updateDeviceProps: PropTypes.func,
   updateInAppBrowserProps: PropTypes.func,
