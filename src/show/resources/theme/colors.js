@@ -63,7 +63,7 @@ export const colors = theme => {
     error: `rgb(${RGB_COLORS.error[theme]})`,
     input: `rgb(${RGB_COLORS.input[theme]})`,
     inputSecondary: `rgb(${RGB_COLORS.inputSecondary[theme]})`,
-    negative: `rgb(${RGB_COLORS.black[theme]})`,
+    negative: `rgb(${RGB_COLORS.negative[theme]})`,
     neutral: `rgb(${RGB_COLORS.neutral[theme]})`,
     primary: `rgb(${RGB_COLORS.primary[theme]})`,
     primaryBright: `rgb(${RGB_COLORS.primaryBright[theme]})`,
