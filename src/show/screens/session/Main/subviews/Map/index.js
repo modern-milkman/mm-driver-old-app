@@ -10,6 +10,7 @@ export default connect(
     return {
       centerMapLocation: state.delivery?.centerMapLocation,
       mapNoTrackingHeading: state.device?.mapNoTrackingHeading,
+      darkMode: state.device?.darkMode,
       mapZoom: state.device?.mapZoom,
       position: state.device?.position,
       shouldPitchMap: state.device?.shouldPitchMap,

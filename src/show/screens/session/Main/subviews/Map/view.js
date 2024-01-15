@@ -83,6 +83,7 @@ const triggerManualMove = ({
 const Map = props => {
   const { theme } = useTheme();
   const {
+    darkMode,
     centerMapLocation,
     clearCenterMapLocation,
     mapNoTrackingHeading,
@@ -226,6 +227,7 @@ const Map = props => {
         ref={setMapRef.bind(null, mapRef)}
         showsCompass={false}
         showsIndoors={false}
+        userInterfaceStyle={darkMode ? 'dark' : 'light'}
         showsMyLocationButton={false}
         showsPointsOfInterest={false}
         showsTraffic={false}
@@ -253,6 +255,7 @@ const Map = props => {
 };
 
 Map.defaultProps = {
+  darkMode: 'true',
   mapMarkerSize: sizes.marker.normal,
   position: {
     heading: 0,
@@ -268,6 +271,7 @@ Map.defaultProps = {
 Map.propTypes = {
   centerMapLocation: PropTypes.object,
   clearCenterMapLocation: PropTypes.func,
+  darkMode: PropTypes.bool,
   height: PropTypes.number,
   mapNoTrackingHeading: PropTypes.number,
   mapZoom: PropTypes.number,

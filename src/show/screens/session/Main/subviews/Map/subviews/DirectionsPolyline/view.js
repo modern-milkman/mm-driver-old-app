@@ -6,10 +6,9 @@ Appearance.setColorScheme should be called on app init to force OS elements to d
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Appearance, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { Polyline } from 'react-native-maps';
 
-import { RGB_COLORS } from 'Theme';
 import { useTheme } from 'Containers';
 
 const DirectionsPolyline = ({ directionsPolyline }) => {
@@ -20,9 +19,7 @@ const DirectionsPolyline = ({ directionsPolyline }) => {
       <Polyline
         strokeWidth={3}
         strokeColor={
-          Platform.OS === 'android'
-            ? colors.inputSecondary
-            : `rgb(${RGB_COLORS.inputSecondary[Appearance.getColorScheme()]})`
+          Platform.OS === 'android' ? colors.inputSecondary : colors.negative
         }
         coordinates={directionsPolyline}
         geodesic

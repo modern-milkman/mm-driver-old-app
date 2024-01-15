@@ -18,6 +18,10 @@ export const RGB_COLORS = {
     light: '54, 83, 105', //#365369
     dark: '221, 236, 239' //#DDECEF
   },
+  negative: {
+    light: '0, 0, 0', //#000000
+    dark: '255, 255, 255' //#FFFFFF
+  },
   neutral: {
     light: '244, 244, 244', //#F4F4F4
     dark: '22, 22, 22' //#161616
@@ -55,10 +59,11 @@ export const RGB_COLORS = {
 export const colors = theme => {
   return {
     background: `rgb(${RGB_COLORS.neutral[theme]})`,
-    error: `rgb(${RGB_COLORS.error[theme]})`,
     blackOnly: `rgb(${RGB_COLORS.blackOnly[theme]})`,
+    error: `rgb(${RGB_COLORS.error[theme]})`,
     input: `rgb(${RGB_COLORS.input[theme]})`,
     inputSecondary: `rgb(${RGB_COLORS.inputSecondary[theme]})`,
+    negative: `rgb(${RGB_COLORS.black[theme]})`,
     neutral: `rgb(${RGB_COLORS.neutral[theme]})`,
     primary: `rgb(${RGB_COLORS.primary[theme]})`,
     primaryBright: `rgb(${RGB_COLORS.primaryBright[theme]})`,
