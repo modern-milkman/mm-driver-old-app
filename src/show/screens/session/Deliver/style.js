@@ -11,14 +11,6 @@ const style = StyleSheet.create({
   },
   photoWrapper: {
     borderRadius: defaults.borderRadius
-  },
-  cameraScanner: {
-    ...StyleSheet.absoluteFill,
-    zIndex: 1
-  },
-  cameraScannerOverlay: {
-    zIndex: 2,
-    backgroundColor: 'transparent'
   }
 });
 

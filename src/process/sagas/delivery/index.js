@@ -482,7 +482,7 @@ export const setDeliveredOrRejected = function* (
     for (let index = 0; index < podImages.length; index++) {
       proofOfDeliveryImages.push({
         imageData: yield Repositories.filesystem.readFile(
-          podImages[index].path,
+          podImages[index].uri,
           'base64'
         ),
         mimeType: podImages[index].mime

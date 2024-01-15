@@ -38,7 +38,7 @@ target 'ModernMilkmanDriver' do
 
   use_react_native!(
     # Hermes is now enabled by default. Disable by setting this flag to false.
-    :hermes_enabled => true,
+    :hermes_enabled => false,
     :fabric_enabled => flags[:fabric_enabled],
     # Enables Flipper.
     #

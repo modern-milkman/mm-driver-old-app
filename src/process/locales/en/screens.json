@@ -87,17 +87,21 @@
       "inputPlaceholder": "Add more info here",
       "rejectTitle": "Rejection Reason"
     },
+    "podCamera": {
+      "save": "Save",
+      "retake": "Retake"
+    },
     "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",
     "scanner": {
       "button": "Enter manually",
       "error": {
-        "description": "This LaaS is not correct.",
+        "description": "Incorrect product scanned",
         "title": "Oops"
       },
-      "placeholder": "Code",
+      "placeholder": "Type barcode here if scan fails",
       "success": {
-        "description": "LaaS has been confirmed.",
+        "description": "Correct product scanned",
         "title": "Successful"
       }
     },

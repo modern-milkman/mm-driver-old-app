@@ -1,7 +1,7 @@
 {
   "name": "ModernMilkmanDriver",
   "version": "8.0.7",
-  "versionCode": "218",
+  "versionCode": "219",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; ./appcenter-pre-build.sh",
@@ -56,7 +56,6 @@
     "react-native-encrypted-storage": "4.0.3",
     "react-native-fs": "2.20.0",
     "react-native-gesture-handler": "2.14.0",
-    "react-native-image-crop-picker": "0.40.2",
     "react-native-inset-shadow": "1.0.3",
     "react-native-maps": "1.8.4",
     "react-native-permissions": "3.10.1",
@@ -107,13 +106,6 @@
       "prettier --single-quote --print-width=120 --write",
       "eslint --fix --max-warnings 0"
     ]
-  },
-  "expo": {
-    "autolinking": {
-      "exclude": [
-        "expo-file-system"
-      ]
-    }
   },
   "engines": {
     "node": ">=16"

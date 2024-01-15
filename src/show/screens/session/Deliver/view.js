@@ -2,10 +2,8 @@ import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
 import { Pressable } from 'react-native';
-import { Camera, FlashMode } from 'expo-camera';
 import React, { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import ImagePicker from 'react-native-image-crop-picker';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
@@ -13,11 +11,11 @@ import { defaults, sizes } from 'Theme';
 import { ImageTextModal } from 'Renders';
 import actionSheet from 'Services/actionSheet';
 import NavigationService from 'Services/navigation';
-import Analytics, { EVENTS } from 'Services/analytics';
 import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
 import {
   Button,
+  Camera,
   Image,
   List,
   ListHeader,
@@ -25,8 +23,7 @@ import {
   SegmentedControl,
   Separator,
   Text,
-  TextInput,
-  Icon
+  TextInput
 } from 'Components';
 
 import style from './style';
@@ -49,6 +46,11 @@ const handleBarCodeScanned = (
 const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
   focusReasonMessage();
+};
+
+const handlePodCameraOpen = ({ setModalType, setModalVisible }) => {
+  setModalType('pod');
+  setModalVisible(true);
 };
 
 const handleListItemOnPress = (
@@ -92,17 +94,6 @@ const openActionSheet = ({ rejectReasons, updateTransientProps }) => {
   actionSheet(options);
 };
 
-const openCamera = ({ addPodImage }) => {
-  ImagePicker.openCamera({
-    width: 1000,
-    height: 1000,
-    compressImageQuality: 0.6,
-    cropping: true,
-    includeBase64: true
-  }).then(addPodImage);
-  Analytics.trackEvent(EVENTS.IMAGE_PICKER_FROM_CAMERA);
-};
-
 const openConfiguredCamera = ({
   deletePodImage,
   index,
@@ -114,7 +105,7 @@ const openConfiguredCamera = ({
 }) => {
   const pickerOptions = {};
   pickerOptions[I18n.t('general:reviewPhoto')] = showModal.bind(null, {
-    imageSrc: podImages[index].path,
+    imageSrc: podImages[index].uri,
     text: null,
     type: 'image',
     setModalImageSrc,
@@ -144,89 +135,30 @@ const rejectAndNavigateBack = (
 };
 
 const renderBarCodeScanner = ({
-  buttonAccessibility,
-  colors,
   manuallyTypedBarcode,
   scanBarcode,
-  selectedStop,
   setManuallyTypedBarcode,
-  setModalVisible,
-  setTorch,
-  torch,
-  unacknowledgedList
+  setModalVisible
 }) => {
   return (
-    <>
-      <SafeAreaView style={style.cameraScannerOverlay}>
-        <ColumnView
-          marginHorizontal={defaults.marginHorizontal}
-          width={width - defaults.marginHorizontal * 2}
-          flex={1}
-          justifyContent={'space-between'}
-          marginBottom={defaults.marginVertical}>
-          <RowView justifyContent={'space-between'}>
-            <Icon
-              name={torch ? 'flashlight' : 'flashlight-off'}
-              color={colors.inputSecondary}
-              size={buttonAccessibility}
-              containerSize={buttonAccessibility}
-              onPress={setTorch.bind(null, !torch)}
-            />
-            <CustomIcon
-              onPress={setModalVisible.bind(null, false)}
-              containerWidth={buttonAccessibility}
-              width={buttonAccessibility}
-              icon={'close'}
-              iconColor={
-                selectedStop.proofOfDeliveryRequired
-                  ? colors.error
-                  : colors.primary
-              }
-            />
-          </RowView>
-          <ColumnView>
-            <TextInput
-              autoCapitalize={'none'}
-              keyboardType={'numeric'}
-              onChangeText={setManuallyTypedBarcode}
-              onSubmitEditing={handleBarCodeScanned.bind(null, {
-                setModalVisible,
-                scanBarcode,
-                setManuallyTypedBarcode,
-                manuallyTypedBarcode
-              })}
-              placeholder={I18n.t('screens:deliver.scanner.placeholder')}
-              returnKeyType={'go'}
-              value={manuallyTypedBarcode}
-            />
-            <Button.Primary
-              title={I18n.t('screens:deliver.scanner.button', {
-                claimNo: unacknowledgedList.length
-              })}
-              onPress={handleBarCodeScanned.bind(
-                null,
-                {
-                  setModalVisible,
-                  scanBarcode,
-                  setManuallyTypedBarcode
-                },
-                { data: manuallyTypedBarcode }
-              )}
-              disabled={manuallyTypedBarcode === ''}
-            />
-          </ColumnView>
-        </ColumnView>
-      </SafeAreaView>
-      <Camera
-        flashMode={torch ? FlashMode.torch : FlashMode.off}
-        onBarCodeScanned={handleBarCodeScanned.bind(null, {
+    <Camera
+      barcodeValue={manuallyTypedBarcode}
+      onBarcodeTextChange={setManuallyTypedBarcode}
+      onClosePress={setModalVisible.bind(null, false)}
+      onSave={handleBarCodeScanned.bind(
+        null,
+        {
           setModalVisible,
           scanBarcode,
           setManuallyTypedBarcode
-        })}
-        style={style.cameraScanner}
-      />
-    </>
+        },
+        {
+          data: manuallyTypedBarcode
+        }
+      )}
+      showBarCodeScanner
+      showRegularControls={false}
+    />
   );
 };
 
@@ -267,7 +199,7 @@ const renderPodImage = (
     })}>
     <Image
       source={{
-        uri: podImage.path
+        uri: podImage.uri
       }}
       style={{ borderRadius: defaults.borderRadius }}
       width={buttonAccessibility}
@@ -276,7 +208,6 @@ const renderPodImage = (
 );
 
 const renderPodImages = ({
-  addPodImage,
   buttonAccessibility,
   colors,
   deletePodImage,
@@ -302,8 +233,9 @@ const renderPodImages = ({
       )}
       {podImages.length < 2 && (
         <CustomIcon
-          onPress={openCamera.bind(null, {
-            addPodImage
+          onPress={handlePodCameraOpen.bind(null, {
+            setModalType,
+            setModalVisible
           })}
           containerWidth={buttonAccessibility}
           width={buttonAccessibility}
@@ -437,7 +369,6 @@ const showBarCodeScanner = ({
 }) => {
   if (!confirmedItem.includes(orderId)) {
     showModal({
-      orderId,
       setModalVisible,
       setModalType,
       type: 'barcode'
@@ -456,7 +387,6 @@ const showClaims = toggleModal => {
 
 const showModal = ({
   imageSrc,
-  orderId,
   setModalText,
   setModalImageSrc,
   setModalType,
@@ -514,7 +444,6 @@ const Deliver = props => {
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
-  const [torch, setTorch] = useState(false);
 
   const acknowledgedList = selectedStop?.claims.acknowledgedList || [];
   const unacknowledgedList = selectedStop?.claims.unacknowledgedList || [];
@@ -634,17 +563,18 @@ const Deliver = props => {
           })}
         {modalType === 'barcode' &&
           renderBarCodeScanner({
-            buttonAccessibility,
-            colors,
             manuallyTypedBarcode,
             scanBarcode,
-            selectedStop,
             setManuallyTypedBarcode,
-            setModalVisible,
-            setTorch,
-            torch,
-            unacknowledgedList
+            setModalVisible
           })}
+        {modalType === 'pod' && (
+          <Camera
+            onClosePress={setModalVisible.bind(null, false)}
+            onSave={addPodImage}
+            squareImage
+          />
+        )}
       </Modal>
 
       <ColumnView
@@ -864,7 +794,6 @@ const Deliver = props => {
             <>
               <RowView justifyContent={'space-between'}>
                 {renderPodImages({
-                  addPodImage,
                   buttonAccessibility,
                   colors,
                   deletePodImage,

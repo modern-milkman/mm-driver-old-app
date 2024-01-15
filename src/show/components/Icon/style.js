@@ -8,7 +8,8 @@ export default {
     width: containerSize,
     height: containerSize,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderRadius: containerSize
   }),
   iconDefaultStyle: containerSize => {
     let defaultStyle = {

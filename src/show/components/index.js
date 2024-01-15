@@ -1,5 +1,6 @@
 import ActionSheetAndroid from './ActionSheetAndroid';
 import Button from './Button';
+import Camera from './Camera';
 import Fab from './Fab';
 import Growl from './Growl';
 import Icon from './Icon';
@@ -21,6 +22,7 @@ import TextInput from './TextInput';
 export {
   ActionSheetAndroid,
   Button,
+  Camera,
   Fab,
   Growl,
   Icon,

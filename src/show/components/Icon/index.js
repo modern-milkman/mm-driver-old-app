@@ -12,6 +12,7 @@ import defaultStyle from './style';
 const Icon = props => {
   const { colors } = useTheme();
   const {
+    backgroundColor = 'transparent',
     color = colors.primary,
     containerSize = 44,
     disabled = false,
@@ -25,7 +26,11 @@ const Icon = props => {
   } = props;
 
   return (
-    <View style={[defaultStyle.iconDefaultContainerSize(containerSize)]}>
+    <View
+      style={[
+        defaultStyle.iconDefaultContainerSize(containerSize),
+        { backgroundColor }
+      ]}>
       <RNEIcon
         color={color}
         disabled={disabled}
@@ -48,6 +53,7 @@ const Icon = props => {
 };
 
 Icon.propTypes = {
+  backgroundColor: PropTypes.any,
   color: PropTypes.any,
   containerSize: PropTypes.number,
   disabled: PropTypes.bool,

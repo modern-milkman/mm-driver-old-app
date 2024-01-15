@@ -137,9 +137,9 @@ export const initialState = {
   userId: null
 };
 
-const addPodImage = (state, { img: { path, mime } }) =>
+const addPodImage = (state, { img: { uri, mime } }) =>
   produce(state, draft => {
-    draft.podImages.push({ path, mime });
+    draft.podImages.push({ uri, mime });
   });
 
 const addPodImageToDriverClaim = (state, { image, handledClaims, stopId }) =>

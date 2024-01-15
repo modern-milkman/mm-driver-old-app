@@ -1,7 +1,7 @@
 import Crashes from 'appcenter-crashes';
 import Config from 'react-native-config';
 import Analytics from 'appcenter-analytics';
-import { AppRegistry, LogBox } from 'react-native';
+import { AppRegistry, LogBox, NativeModules, Platform } from 'react-native';
 
 import Application from './src/show/Application';
 import { name as appName } from './package.json';
@@ -19,6 +19,10 @@ if (Config.ENVIRONMENT === 'development') {
   LogBox.ignoreAllLogs();
 } else if (['test', 'core'].includes(Config.ENVIRONMENT)) {
   Analytics.setEnabled(false);
+}
+
+if (__DEV__ && Platform.OS !== 'android') {
+  NativeModules.DevSettings.setIsDebuggingRemotely(true);
 }
 
 AppRegistry.registerComponent(appName, () => Application);
