@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* ModernMilkmanDriverTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ModernMilkmanDriverTests.m */; };
+		138026FA33BFB5BFF0586852 /* libPods-ModernMilkmanDriver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA4DF0D20FDF55C99A075E86 /* libPods-ModernMilkmanDriver.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		38BDA10D45FF86719D41A225 /* libPods-ModernMilkmanDriver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675FFC1D2DC82F2323222C84 /* libPods-ModernMilkmanDriver.a */; };
+		5BAF47D0FFA0A636396655F7 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE62B09B063A6BB0DB3EE90 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
 		66004F547A98F4CF074529FF /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C128021C3760E0C1286005 /* ExpoModulesProvider.swift */; };
 		9D1588D8E44DB941782CDA27 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB8AFB512369794CEE553F47 /* ExpoModulesProvider.swift */; };
 		9D867C8727BD6688005E707C /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D867C8627BD6688005E707C /* SplashScreen.storyboard */; };
@@ -19,7 +20,6 @@
 		9DE8E43B291BD298003EE32F /* xmas@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9DE8E437291BD298003EE32F /* xmas@3x.png */; };
 		9DE8E43C291BD298003EE32F /* regular@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9DE8E438291BD298003EE32F /* regular@3x.png */; };
 		9DE8E43D291BD298003EE32F /* xmas@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9DE8E439291BD298003EE32F /* xmas@2x.png */; };
-		F02D95813C21AA10681CDC1D /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 031A917BEF74380E3EE6A21C /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */; };
 		FF1E6A5C24AF433D00366BEF /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */; };
 		FF6F542E252DFE9000CB07B8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FF6F5430252DFE9000CB07B8 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
@@ -39,30 +39,30 @@
 		00E356EE1AD99517003FC87E /* ModernMilkmanDriverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModernMilkmanDriverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ModernMilkmanDriverTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModernMilkmanDriverTests.m; sourceTree = "<group>"; };
-		031A917BEF74380E3EE6A21C /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* ModernMilkmanDriver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModernMilkmanDriver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ModernMilkmanDriver/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objcpp; name = AppDelegate.mm; path = ModernMilkmanDriver/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ModernMilkmanDriver/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ModernMilkmanDriver/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ModernMilkmanDriver/main.m; sourceTree = "<group>"; };
+		28481F128F0ABC69553DBE9B /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* ModernMilkmanDriver-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ModernMilkmanDriver-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* ModernMilkmanDriver-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ModernMilkmanDriver-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		675FFC1D2DC82F2323222C84 /* libPods-ModernMilkmanDriver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		71C128021C3760E0C1286005 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		9B8C66B6637B4A29FEF77165 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9D867C8627BD6688005E707C /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		9DE8E436291BD298003EE32F /* regular@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "regular@2x.png"; sourceTree = "<group>"; };
 		9DE8E437291BD298003EE32F /* xmas@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xmas@3x.png"; sourceTree = "<group>"; };
 		9DE8E438291BD298003EE32F /* regular@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "regular@3x.png"; sourceTree = "<group>"; };
 		9DE8E439291BD298003EE32F /* xmas@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xmas@2x.png"; sourceTree = "<group>"; };
 		9DEA5F132991428700F0D86D /* ModernMilkmanDriver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ModernMilkmanDriver.entitlements; path = ModernMilkmanDriver/ModernMilkmanDriver.entitlements; sourceTree = "<group>"; };
-		ACC2E19AC2DBAB6848F9A38E /* Pods-ModernMilkmanDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.release.xcconfig"; sourceTree = "<group>"; };
+		BA4DF0D20FDF55C99A075E86 /* libPods-ModernMilkmanDriver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCF95F8A01CFA6607155965F /* Pods-ModernMilkmanDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.release.xcconfig"; sourceTree = "<group>"; };
+		C42B7866C22F1C44F6848163 /* Pods-ModernMilkmanDriver.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.debug.xcconfig"; sourceTree = "<group>"; };
+		CD7EC3C0697830AB17398C85 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig"; sourceTree = "<group>"; };
+		DFE62B09B063A6BB0DB3EE90 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB8AFB512369794CEE553F47 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F16B52850D15817B7075E8FC /* Pods-ModernMilkmanDriver.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver.debug.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver.debug.xcconfig"; sourceTree = "<group>"; };
-		F313FCAC4216CB8C5C880740 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig"; path = "Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig"; sourceTree = "<group>"; };
 		FF1E6A5B24AF433D00366BEF /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "ModernMilkmanDriver/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		FF5E534E27AB0BC300205FD0 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FF6F542F252DFE9000CB07B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F02D95813C21AA10681CDC1D /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */,
+				5BAF47D0FFA0A636396655F7 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38BDA10D45FF86719D41A225 /* libPods-ModernMilkmanDriver.a in Frameworks */,
+				138026FA33BFB5BFF0586852 /* libPods-ModernMilkmanDriver.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,8 +137,8 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				675FFC1D2DC82F2323222C84 /* libPods-ModernMilkmanDriver.a */,
-				031A917BEF74380E3EE6A21C /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */,
+				BA4DF0D20FDF55C99A075E86 /* libPods-ModernMilkmanDriver.a */,
+				DFE62B09B063A6BB0DB3EE90 /* libPods-ModernMilkmanDriver-ModernMilkmanDriverTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -207,10 +207,10 @@
 		E54CC72C5AA26491F34CA958 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F16B52850D15817B7075E8FC /* Pods-ModernMilkmanDriver.debug.xcconfig */,
-				F313FCAC4216CB8C5C880740 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig */,
-				ACC2E19AC2DBAB6848F9A38E /* Pods-ModernMilkmanDriver.release.xcconfig */,
-				9B8C66B6637B4A29FEF77165 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */,
+				C42B7866C22F1C44F6848163 /* Pods-ModernMilkmanDriver.debug.xcconfig */,
+				BCF95F8A01CFA6607155965F /* Pods-ModernMilkmanDriver.release.xcconfig */,
+				28481F128F0ABC69553DBE9B /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */,
+				CD7EC3C0697830AB17398C85 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -222,13 +222,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ModernMilkmanDriverTests" */;
 			buildPhases = (
-				67EFBEDD503E8A2AC2B1670D /* [CP] Check Pods Manifest.lock */,
+				D88BBB029AA0ED5BC15804B3 /* [CP] Check Pods Manifest.lock */,
 				518BBB78F0D84F4284086FAB /* [Expo] Configure project */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				4C655BBCA5BED7B0B12E7B40 /* [CP] Embed Pods Frameworks */,
-				CF74CF8F0DCDA53B21D90EBC /* [CP] Copy Pods Resources */,
+				987050212BEB3E12C0CF709B /* [CP] Embed Pods Frameworks */,
+				D45C41118904114D822B563C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -244,15 +244,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ModernMilkmanDriver" */;
 			buildPhases = (
-				5C92AE0FE80A2739FCAB9BBB /* [CP] Check Pods Manifest.lock */,
+				AC9D8FB60DE6C152F4CD8267 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				6F22378172FF089317CFDCE1 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				604B016192A98F69302E0A27 /* [CP] Embed Pods Frameworks */,
-				B08FA83576B207BE399B78DE /* [CP] Copy Pods Resources */,
+				C1C064D2F23653EEA15103C4 /* [CP] Embed Pods Frameworks */,
+				2AB3ADE17D24E8B8EEEDE421 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -340,21 +340,21 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		4C655BBCA5BED7B0B12E7B40 /* [CP] Embed Pods Frameworks */ = {
+		2AB3ADE17D24E8B8EEEDE421 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		518BBB78F0D84F4284086FAB /* [Expo] Configure project */ = {
@@ -376,7 +376,43 @@
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/expo-configure-project.sh\"\n";
 		};
-		5C92AE0FE80A2739FCAB9BBB /* [CP] Check Pods Manifest.lock */ = {
+		6F22378172FF089317CFDCE1 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ModernMilkmanDriver/expo-configure-project.sh\"\n";
+		};
+		987050212BEB3E12C0CF709B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AC9D8FB60DE6C152F4CD8267 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -398,7 +434,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		604B016192A98F69302E0A27 /* [CP] Embed Pods Frameworks */ = {
+		C1C064D2F23653EEA15103C4 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -415,7 +451,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		67EFBEDD503E8A2AC2B1670D /* [CP] Check Pods Manifest.lock */ = {
+		D45C41118904114D822B563C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D88BBB029AA0ED5BC15804B3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -435,59 +488,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6F22378172FF089317CFDCE1 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ModernMilkmanDriver/expo-configure-project.sh\"\n";
-		};
-		B08FA83576B207BE399B78DE /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver/Pods-ModernMilkmanDriver-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CF74CF8F0DCDA53B21D90EBC /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests/Pods-ModernMilkmanDriver-ModernMilkmanDriverTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -556,7 +556,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9B8C66B6637B4A29FEF77165 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */;
+			baseConfigurationReference = 28481F128F0ABC69553DBE9B /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -585,7 +585,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F313FCAC4216CB8C5C880740 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig */;
+			baseConfigurationReference = CD7EC3C0697830AB17398C85 /* Pods-ModernMilkmanDriver-ModernMilkmanDriverTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -611,13 +611,13 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F16B52850D15817B7075E8FC /* Pods-ModernMilkmanDriver.debug.xcconfig */;
+			baseConfigurationReference = C42B7866C22F1C44F6848163 /* Pods-ModernMilkmanDriver.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Default;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ModernMilkmanDriver/ModernMilkmanDriver.entitlements;
-				CURRENT_PROJECT_VERSION = 217;
+				CURRENT_PROJECT_VERSION = 223;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -630,7 +630,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.5;
+				MARKETING_VERSION = 8.0.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -651,13 +651,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ACC2E19AC2DBAB6848F9A38E /* Pods-ModernMilkmanDriver.release.xcconfig */;
+			baseConfigurationReference = BCF95F8A01CFA6607155965F /* Pods-ModernMilkmanDriver.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Default;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ModernMilkmanDriver/ModernMilkmanDriver.entitlements;
-				CURRENT_PROJECT_VERSION = 217;
+				CURRENT_PROJECT_VERSION = 223;
 				DEVELOPMENT_TEAM = HHZUS5J79B;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ModernMilkmanDriver/Info.plist;
@@ -666,7 +666,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.5;
+				MARKETING_VERSION = 8.0.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -716,7 +716,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -788,7 +788,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
