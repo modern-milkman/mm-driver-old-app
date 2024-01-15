@@ -87,6 +87,10 @@
       "inputPlaceholder": "Ajouter plus d'informations ici",
       "rejectTitle": "Motif de rejet"
     },
+    "podCamera": {
+      "retake": "Reprendre",
+      "save": "Sauvegarder"
+    },
     "proofOfDeliveryRequired": "REQUIERT UNE PREUVE DE LIVRAISON",
     "routeDescription": "ID de route #{{routeDescription}}",
     "scanner": {
@@ -218,6 +222,7 @@
     },
     "sections": {
       "authentication": "Authentification",
+      "delivery": "Livraison",
       "device": "Appareil",
       "general": "Général",
       "map": "Carte",
@@ -242,6 +247,7 @@
       "deliveriesCountDown": "Basculer en appuyant sur la barre de livraison dans l'écran principal",
       "deliveriesRemaining": "Livraisons restantes",
       "foreground": "Grand premier plan",
+      "largerDeliveryText": "Texte des articles de livraison plus grands",
       "optimisedRoutingUnavailable": "Indisponible pour l'itinéraire actuel pour le moment",
       "showAllPendingStops": {
         "description": "L'affichage d'un grand nombre d'arrêts peut affecter les performances de l'application",

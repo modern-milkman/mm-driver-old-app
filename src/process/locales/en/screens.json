@@ -88,8 +88,8 @@
       "rejectTitle": "Rejection Reason"
     },
     "podCamera": {
-      "save": "Save",
-      "retake": "Retake"
+      "retake": "Retake",
+      "save": "Save"
     },
     "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",
