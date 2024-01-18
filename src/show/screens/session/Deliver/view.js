@@ -446,8 +446,10 @@ const Deliver = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
 
-  const acknowledgedList = selectedStop?.claims.acknowledgedList || [];
-  const unacknowledgedList = selectedStop?.claims.unacknowledgedList || [];
+  const acknowledgedList =
+    Object.values(selectedStop?.claims.acknowledgedClaims) || [];
+  const unacknowledgedList =
+    Object.values(selectedStop?.claims.unacknowledgedClaims) || [];
   const showClaimModal = selectedStop?.claims.showClaimModal;
 
   const optimizedStopOrders = selectedStop
@@ -589,19 +591,18 @@ const Deliver = props => {
           leftIcon={'chevron-down'}
           leftIconAction={NavigationService.goBack}
           title={I18n.t('general:details')}
-          rightCustomIcon={
-            acknowledgedList?.length > 0 ? 'customerIssue' : null
-          }
-          rightColor={
-            unacknowledgedList.length === 0 ? colors.error : colors.input
-          }
-          rightAction={
-            unacknowledgedList.length === 0
-              ? NavigationService.navigate.bind(null, {
-                  routeName: 'CustomerIssueList'
-                })
-              : mock
-          }
+          {...((acknowledgedList.length > 0 ||
+            unacknowledgedList.length > 0) && {
+            rightCustomIcon: 'customerIssue',
+            rightColor:
+              unacknowledgedList.length > 0 ? colors.error : colors.primary,
+            rightAction:
+              unacknowledgedList.length > 0
+                ? showClaims.bind(null, toggleModal)
+                : NavigationService.navigate.bind(null, {
+                    routeName: 'CustomerIssueList'
+                  })
+          })}
           testID={'deliver-navbar'}
         />
         {selectedStop && selectedStop.status !== 'pending' && (

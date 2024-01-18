@@ -11,6 +11,8 @@ const CustomerIssueList = props => {
   const { colors } = useTheme();
   const { claims, selectedStop, setSelectedClaimId } = props;
 
+  const acknowledgedList = Object.values(claims?.acknowledgedClaims || {});
+
   const newList = {
     title: I18n.t('screens:deliver.customerIssue.list.new'),
     data: []
@@ -21,8 +23,8 @@ const CustomerIssueList = props => {
   };
   const listItems = [];
 
-  if (claims?.acknowledgedList && claims?.acknowledgedList.length > 0) {
-    claims.acknowledgedList.forEach(item => {
+  if (acknowledgedList && acknowledgedList.length > 0) {
+    acknowledgedList.forEach(item => {
       let date = formatDate(new Date(item.claimDateTime));
       const tempItem = {
         claimItem: item.claimItem,

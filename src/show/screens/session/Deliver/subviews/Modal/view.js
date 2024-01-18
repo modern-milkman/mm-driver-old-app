@@ -157,13 +157,12 @@ const CustomerIssueModal = props => {
   const { alphaColor, colors } = useTheme();
   const {
     cannedContent,
+    claims,
     claims: {
-      acknowledgedList,
       selectedClaimId,
       showClaimModal,
       showCount,
       showReplyModal,
-      unacknowledgedList,
       unacknowledgedListNr
     },
     driverReply,
@@ -171,6 +170,8 @@ const CustomerIssueModal = props => {
     toggleModal,
     updateDriverResponse
   } = props;
+
+  const unacknowledgedList = Object.values(claims.unacknowledgedClaims);
 
   const { width, height } = deviceFrame();
 
@@ -196,15 +197,11 @@ const CustomerIssueModal = props => {
 
   let selectedClaimData;
   if (unacknowledgedList?.length > 0) {
-    selectedClaimData = unacknowledgedList.filter(
-      claim => claim.claimId === selectedClaimId
-    )[0];
+    selectedClaimData = claims.unacknowledgedClaims[selectedClaimId];
   }
 
   if (!selectedClaimData) {
-    selectedClaimData = acknowledgedList.filter(
-      claim => claim.claimId === selectedClaimId
-    )[0];
+    selectedClaimData = claims.acknowledgedClaims[selectedClaimId];
   }
 
   const sectionData = [
@@ -332,8 +329,7 @@ const CustomerIssueModal = props => {
                       null,
                       selectedClaimData?.claimId,
                       driverResponse?.text,
-                      !showClaimModal,
-                      selectedClaimData.index - 1
+                      !showClaimModal
                     )
                   : toggleModal.bind(null, 'showReplyModal', !showReplyModal)
               }
@@ -356,7 +352,7 @@ CustomerIssueModal.propTypes = {
 
 CustomerIssueModal.defaultProps = {
   cannedContent: [],
-  claims: { unacknowledgedList: [], acknowledgedList: [] },
+  claims: { unacknowledgedList: {}, acknowledgedClaims: {} },
   driverReply: mock,
   driverResponse: {},
   toggleModal: mock,

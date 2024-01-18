@@ -141,9 +141,11 @@ export const driverReply = function* ({
     selectedStopId: sID
   });
   yield put({ type: TransientTypes.RESET });
+
   if (
     acknowledgedClaim ||
-    (!acknowledgedClaim && stops[sID].claims.unacknowledgedList.length === 0)
+    (!acknowledgedClaim &&
+      Object.values(stops[sID].claims.unacknowledgedClaims).length === 0)
   ) {
     NavigationService.goBack();
   }

@@ -27,13 +27,13 @@ PODS:
     - AppCenter/Crashes (~> 5.0)
     - AppCenterReactNativeShared (~> 5.0)
     - React-Core
-  - AppCenter/Analytics (5.0.3):
+  - AppCenter/Analytics (5.0.4):
     - AppCenter/Core
-  - AppCenter/Core (5.0.3)
-  - AppCenter/Crashes (5.0.3):
+  - AppCenter/Core (5.0.4)
+  - AppCenter/Crashes (5.0.4):
     - AppCenter/Core
-  - AppCenterReactNativeShared (5.0.0):
-    - AppCenter/Core (= 5.0.3)
+  - AppCenterReactNativeShared (5.0.1):
+    - AppCenter/Core (= 5.0.4)
   - boost (1.76.0)
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
@@ -660,9 +660,9 @@ PODS:
   - RNVectorIcons (10.0.3):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - SDWebImage (5.18.7):
-    - SDWebImage/Core (= 5.18.7)
-  - SDWebImage/Core (5.18.7)
+  - SDWebImage (5.18.10):
+    - SDWebImage/Core (= 5.18.10)
+  - SDWebImage/Core (5.18.10)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -958,11 +958,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Appboy-iOS-SDK: 2fc5b290fe1caa85718b811a19b303d45caea975
-  AppCenter: a4070ec3d4418b5539067a51f57155012e486ebd
+  AppCenter: 85c92db0759d2792a65eb61d6842d2e86611a49a
   appcenter-analytics: fbeef54afe6fa91d3803dfd31499817baa81fec0
   appcenter-core: e192ea8b373bebd3e44998882b43311078bd7dda
   appcenter-crashes: 266063788bcebd553e621344a54286395a8e2010
-  AppCenterReactNativeShared: 01df23849b1c3c6eb8c4049f54322635650e98f0
+  AppCenterReactNativeShared: 22aea9046e80c449137f4e574ae1f229616e2358
   boost: 7dcd2de282d72e344012f7d6564d024930a6a440
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
@@ -1050,12 +1050,12 @@ SPEC CHECKSUMS:
   RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
   RNVectorIcons: 64e6a523ac30a3241efa9baf1ffbcc5e76ff747a
-  SDWebImage: f9258c58221ed854cfa0e2b80ee4033710b1c6d3
+  SDWebImage: fc8f2d48bbfd72ef39d70e981bd24a3f3be53fec
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: eddf2bbe4a896454c248a8f23b4355891eb720a6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: 8575743d1cfdeab49fbc45fa3f577d893b2723e5
+PODFILE CHECKSUM: e7fd129a8f35d3e87a04f859579d2291731deb6b
 
 COCOAPODS: 1.14.3

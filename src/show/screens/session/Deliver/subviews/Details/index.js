@@ -5,13 +5,15 @@ import { Creators as deliveryActions } from 'Reducers/delivery';
 import CustomerIssueDetails from './view';
 
 export default connect(
-  (state) => {
+  state => {
     const selectedStopId = state.delivery?.selectedStopId;
     const selectedStop = state.delivery?.stops[selectedStopId];
 
     return {
-      selectedClaim: selectedStop?.claims.acknowledgedList.filter(
-        (claim) => claim.claimId === selectedStop.claims.selectedClaimId
+      selectedClaim: Object.values(
+        selectedStop?.claims.acknowledgedClaims
+      ).filter(
+        claim => claim.claimId === selectedStop.claims.selectedClaimId
       )[0]
     };
   },

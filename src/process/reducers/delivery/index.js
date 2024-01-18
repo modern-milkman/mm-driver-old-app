@@ -145,19 +145,20 @@ const addPodImage = (state, { img: { uri, mime } }) =>
 const addPodImageToDriverClaim = (state, { image, handledClaims, stopId }) =>
   produce(state, draft => {
     handledClaims.forEach(claimId => {
-      const claimIdx = state.stops[stopId].claims.acknowledgedList.findIndex(
+      const claimIdx = state.stops[stopId].claims.acknowledgedClaims.findIndex(
         cl => cl.claimId === claimId
       );
 
       if (claimIdx !== -1) {
-        draft.stops[stopId].claims.acknowledgedList[claimIdx].driverResponses =
-          state.stops[stopId].claims.acknowledgedList[
-            claimIdx
-          ].driverResponses.map(dr => ({
-            ...dr,
-            isLocalImage: true,
-            localImage: image
-          }));
+        draft.stops[stopId].claims.acknowledgedClaims[
+          claimIdx
+        ].driverResponses = state.stops[stopId].claims.acknowledgedClaims[
+          claimIdx
+        ].driverResponses.map(dr => ({
+          ...dr,
+          isLocalImage: true,
+          localImage: image
+        }));
       }
     });
   });
@@ -181,7 +182,7 @@ const deliverLater = (state, { selectedStopId }) =>
     }
   });
 
-const driverReply = (state, { claimId, comment, acknowledgedClaim, index }) =>
+const driverReply = (state, { claimId, comment, acknowledgedClaim }) =>
   produce(state, draft => {
     const selectedStopId = state.selectedStopId;
     const response = {
@@ -192,31 +193,33 @@ const driverReply = (state, { claimId, comment, acknowledgedClaim, index }) =>
     };
 
     if (!acknowledgedClaim) {
-      const unacknowledgedList =
-        state.stops[selectedStopId].claims.unacknowledgedList;
-      draft.stops[selectedStopId].claims.unacknowledgedList =
-        unacknowledgedList.slice(1);
+      const unacknowledgedClaims = {
+        ...state.stops[selectedStopId].claims.unacknowledgedClaims
+      };
+      const selectedClaim = unacknowledgedClaims[claimId];
 
-      draft.stops[selectedStopId].claims.acknowledgedList.push({
-        ...unacknowledgedList.slice(0, 1)[0],
-        driverResponses: [
-          ...unacknowledgedList.slice(0, 1)[0].driverResponses,
-          response
-        ],
-        index: state.stops[selectedStopId].claims.acknowledgedList.length + 1
-      });
+      delete unacknowledgedClaims[claimId];
+
+      draft.stops[selectedStopId].claims.unacknowledgedClaims =
+        unacknowledgedClaims;
+
+      draft.stops[selectedStopId].claims.acknowledgedClaims[claimId] = {
+        ...selectedClaim,
+        driverResponses: [...selectedClaim.driverResponses, response]
+      };
+
       draft.stops[selectedStopId].claims.showCount =
         draft.stops[selectedStopId].claims.showCount + 1;
 
-      if (draft.stops[selectedStopId].claims.unacknowledgedList.length === 0) {
+      if (Object.values(unacknowledgedClaims).length === 0) {
         draft.stops[selectedStopId].claims.showClaimModal = false;
       } else {
         draft.stops[selectedStopId].claims.selectedClaimId =
-          unacknowledgedList.slice(1)[0].claimId;
+          Object.keys(unacknowledgedClaims)[0];
       }
     } else {
-      draft.stops[selectedStopId].claims.acknowledgedList[
-        index
+      draft.stops[selectedStopId].claims.acknowledgedClaims[
+        claimId
       ].driverResponses.push(response);
     }
 
@@ -412,8 +415,8 @@ export const getForDriverSuccess = (state, { payload }) =>
           ...address,
           barcodeValues: {},
           claims: {
-            acknowledgedList: [],
-            unacknowledgedList: [],
+            acknowledgedClaims: {},
+            unacknowledgedClaims: {},
             unacknowledgedListIds: [],
             showClaimModal: false
           },
@@ -636,32 +639,28 @@ export const setCannedContent = (state, { payload }) =>
 
 export const setCustomerClaims = (state, { payload, stopId }) =>
   produce(state, draft => {
-    const unacknowledgedList = [];
-    const acknowledgedList = [];
+    const unacknowledgedClaims = {};
+    const acknowledgedClaims = {};
     const unacknowledgedListIds = [];
 
     payload.forEach(claim => {
-      if (claim.driverAcknowledged === false) {
-        unacknowledgedList.push({
-          ...claim,
-          index: unacknowledgedList.length + 1
-        });
+      if (!claim.driverAcknowledged) {
+        unacknowledgedClaims[claim.claimId] = claim;
         unacknowledgedListIds.push(claim.claimId);
         draft.stops[stopId].claims.showClaimModal = true;
       } else {
-        acknowledgedList.push({ ...claim, index: acknowledgedList.length + 1 });
+        acknowledgedClaims[claim.claimId] = claim;
       }
     });
 
-    if (unacknowledgedList.length > 0) {
+    if (unacknowledgedListIds.length > 0) {
       draft.stops[stopId].claims.showCount = 1;
-      draft.stops[stopId].claims.selectedClaimId =
-        unacknowledgedList[0].claimId;
+      draft.stops[stopId].claims.selectedClaimId = unacknowledgedListIds[0];
       draft.stops[stopId].claims.unacknowledgedListNr =
-        unacknowledgedList.length;
+        unacknowledgedListIds.length;
     }
-    draft.stops[stopId].claims.acknowledgedList = acknowledgedList;
-    draft.stops[stopId].claims.unacknowledgedList = unacknowledgedList;
+    draft.stops[stopId].claims.acknowledgedClaims = acknowledgedClaims;
+    draft.stops[stopId].claims.unacknowledgedClaims = unacknowledgedClaims;
     draft.stops[stopId].claims.unacknowledgedListIds = unacknowledgedListIds;
   });
 
