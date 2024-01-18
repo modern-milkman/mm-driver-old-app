@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { alphaColor } from './colors';
+import { RGB_COLORS } from './colors';
 
 const iOShint = {
   shadowColor: '#000',
@@ -16,9 +16,9 @@ export * from './colors';
 
 export const defaults = {
   borderRadius: 10,
+  inputBorderRadius: 16,
   marginHorizontal: 24,
   marginVertical: 24,
-  overlayBackground: alphaColor('secondary', 0.85),
   paddingHorizontal: 16,
   topNavigation: {
     height: 44,
@@ -90,7 +90,7 @@ export const shadows = {
   inner: {
     ...Platform.select({
       ios: {
-        shadowColor: alphaColor('primary', 0.15),
+        shadowColor: `rgba(${RGB_COLORS.primary.dark}, 0.15)`, // theming here is complicated and is used primary collor which is the same for ligth and dark
         shadowOffset: {
           width: 0,
           height: 4

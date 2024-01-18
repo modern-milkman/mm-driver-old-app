@@ -1,0 +1,10 @@
+{
+  "placeholder": {
+    "customerIssueModal": "Raison",
+    "email": "E-mail",
+    "mileage": "Kilométrage actuel d'entrée (ODO)",
+    "number": "Entrez un nombre. Peut être 0",
+    "password": "Mot de passe",
+    "registration": "Enregistrement d'entrée (BD51 SMR)"
+  }
+}

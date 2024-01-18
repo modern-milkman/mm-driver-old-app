@@ -1,12 +1,5 @@
 import I18n from 'Locales/I18n';
 
-const requiredValidation = {
-  isValid: value => {
-    return !(value === null || value === undefined || value.length === 0);
-  },
-  message: I18n.t('validations:invalid.requiredValidation')
-};
-
 const numericValidation = {
   isValid: value => {
     const numberRegex = new RegExp(/^0$|^[1-9][0-9]*$/);
@@ -20,9 +13,35 @@ const numericValidation = {
   message: I18n.t('validations:invalid.numericValidation')
 };
 
+const requiredValidation = {
+  isValid: value => {
+    return !(
+      value === null ||
+      value === undefined ||
+      value.length === 0 ||
+      value.trim().length === 0
+    );
+  },
+  message: I18n.t('validations:invalid.requiredValidation')
+};
+
+const textValidation = {
+  isValid: value => {
+    if (value === null || value === undefined) {
+      return true;
+    }
+    return value.length === 0 || value?.trim().length > 0;
+  },
+  message: I18n.t('validations:invalid.textValidation')
+};
+
 export const regex = {
   empties: {
     tester: new RegExp(/^empty[0-9]+$/),
+    validations: [numericValidation]
+  },
+  requiredEmpties: {
+    tester: new RegExp(/^requiredEmpty[0-9]+$/),
     validations: [requiredValidation, numericValidation]
   }
 };
@@ -44,5 +63,7 @@ export const standard = {
       },
       message: I18n.t('validations:invalid.email')
     }
-  ]
+  ],
+  vehicleRegistration: [requiredValidation],
+  text: [textValidation]
 };

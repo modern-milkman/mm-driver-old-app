@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import { ActivityIndicator, Animated } from 'react-native';
 
 import Icon from 'Components/Icon';
-import { colors, sizes } from 'Theme';
+import { sizes } from 'Theme';
+import { useTheme, useThemedStyles } from 'Containers';
 
-import styles from './style';
+import unthemedStyle from './style';
 
 const rotationInterpolation = {
   inputRange: [-1000, 0, 1000],
@@ -15,9 +16,10 @@ const rotationInterpolation = {
 };
 
 const Fab = props => {
+  const { colors } = useTheme();
   const {
     bottom,
-    color,
+    color = colors.primary,
     containerSize,
     disabled,
     iconName,
@@ -34,7 +36,7 @@ const Fab = props => {
     type,
     zIndex
   } = props;
-
+  const styles = useThemedStyles(unthemedStyle);
   const composedStyle = {
     borderRadius: containerSize / 2,
     bottom,
@@ -71,7 +73,6 @@ const Fab = props => {
 
 Fab.defaultProps = {
   bottom: undefined,
-  color: colors.primary,
   containerSize: sizes.fab.container,
   disabled: false,
   iconName: 'close-thick',

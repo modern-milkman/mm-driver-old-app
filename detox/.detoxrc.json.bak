@@ -1,0 +1,26 @@
+{
+  "testRunner": "jest",
+  "runnerConfig": "e2e/config.json",
+  "skipLegacyWorkersInjection": true,
+  "apps": {
+    "android": {
+      "type": "android.apk",
+      "build": "npm run build:android",
+      "binaryPath": "../android/app/build/outputs/apk/debug/app-debug.apk"
+    }
+  },
+  "devices": {
+    "emulator": {
+      "type": "android.emulator",
+      "device": {
+        "avdName": "Pixel_API_28_AOSP"
+      }
+    }
+  },
+  "configurations": {
+    "android": {
+      "device": "emulator",
+      "app": "android"
+    }
+  }
+}

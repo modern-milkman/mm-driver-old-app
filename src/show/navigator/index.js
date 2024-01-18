@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 
 import {
@@ -26,24 +28,29 @@ import {
 
 const Stack = createStackNavigator();
 
-const Navigator = () => {
+const Navigator = ({ theme, userSessionPresent }) => {
   return (
-    <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName={'Home'}>
-        {VechicleCheckWizardNavigator()}
-        {MainNavigator()}
-        {ModalNavigator()}
-
-        <Stack.Group
-          initialRouteName="Home"
-          screenOptions={{
-            headerShown: false,
-            gestureEnabled: false,
-            cardStyle: { backgroundColor: 'transparent' }
-          }}>
-          <Stack.Screen name="Home" component={Home} />
-        </Stack.Group>
-
+    <NavigationContainer
+      ref={navigationRef}
+      theme={{ colors: { background: theme.colors.background } }}>
+      <Stack.Navigator initialRouteName={!userSessionPresent ? 'Home' : 'Main'}>
+        {!userSessionPresent ? (
+          <Stack.Group
+            initialRouteName="Home"
+            screenOptions={{
+              headerShown: false,
+              gestureEnabled: false,
+              cardStyle: { backgroundColor: 'transparent' }
+            }}>
+            <Stack.Screen name="Home" component={Home} />
+          </Stack.Group>
+        ) : (
+          <>
+            {MainNavigator()}
+            {VechicleCheckWizardNavigator()}
+            {ModalNavigator()}
+          </>
+        )}
         <Stack.Group
           screenOptions={{
             headerShown: false,
@@ -74,11 +81,13 @@ export const VechicleCheckWizardNavigator = () => (
 
 const MainNavigator = () => (
   <Stack.Group
+    initialRouteName="Main"
     screenOptions={{
       headerShown: false,
       gestureEnabled: false,
       detachPreviousScreen: true
     }}>
+    <Stack.Screen name="Main" component={DrawerNavigator} />
     <Stack.Screen
       name="CheckIn"
       options={TransitionPresets.ScaleFromCenterAndroid}
@@ -89,7 +98,6 @@ const MainNavigator = () => (
       component={Deliver}
       options={TransitionPresets.ScaleFromCenterAndroid}
     />
-    <Stack.Screen name="Main" component={DrawerNavigator} />
     <Stack.Screen name="Settings" component={Settings} />
     <Stack.Screen name="LoadVan" component={LoadVan} />
     <Stack.Screen name="CustomerIssueList" component={CustomerIssueList} />
@@ -112,4 +120,15 @@ const ModalNavigator = () => (
   </Stack.Group>
 );
 
-export default Navigator;
+Navigator.propTypes = {
+  theme: PropTypes.object,
+  userSessionPresent: PropTypes.bool
+};
+
+const mapStateToProps = state => ({
+  userSessionPresent: state.application.userSessionPresent
+});
+
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navigator);

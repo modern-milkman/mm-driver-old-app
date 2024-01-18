@@ -1,0 +1,32 @@
+{
+  "build": {
+    "debugGradle": false,
+    "environment": "Debug",
+    "createBundle": false,
+    "environments": ["Debug", "QaTest"]
+  },
+  "android": {
+    "appDirectory": ["..", "android"],
+    "cliToolsDirectory": "cmdline-tools/latest/bin",
+    "sdkVariableName": "ANDROID_SDK_ROOT",
+    "avdHomeVariableName": "ANDROID_AVD_HOME",
+    "allowedJdkVersions": [11],
+    "toolNames": {
+      "sdkmanager": "sdkmanager",
+      "avdmanager": "avdmanager",
+      "emulator": "emulator"
+    },
+    "avdConfig": {
+      "sdkVersion": 29,
+      "arch": "x86",
+      "name": "emu",
+      "device": "pixel",
+      "googleServices": true,
+      "sdcard": {
+        "use": true,
+        "size": "200M"
+      }
+    },
+    "testbutlerUrl": "https://repo1.maven.org/maven2/com/linkedin/testbutler/test-butler-app/2.2.1/test-butler-app-2.2.1.apk"
+  }
+}

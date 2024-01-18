@@ -4,32 +4,51 @@ import Config from 'react-native-config';
 import { Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
+import actionSheet from 'Services/actionSheet';
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
-import { colors, defaults, sizes } from 'Theme';
+import { defaults, sizes } from 'Theme';
 import NavigationService from 'Services/navigation';
-import { ColumnView, Modal, RowView, SafeAreaView } from 'Containers';
 import { deliveredStatuses, deviceFrame, mock, preopenPicker } from 'Helpers';
+import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
 import {
   Button,
   Image,
   List,
   ListHeader,
   NavBar,
-  Picker,
+  SegmentedControl,
   Separator,
   Text,
   TextInput
 } from 'Components';
 
-import { renderImageTextModal } from 'Renders';
+import { ImageTextModal } from 'Renders';
 
 import style from './style';
 
 const reasonMessageRef = React.createRef();
 
+const focusReasonMessage = () => {
+  reasonMessageRef?.current?.focus();
+};
+
 const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
+  focusReasonMessage();
+};
+
+const openActionSheet = ({ rejectReasons, updateTransientProps }) => {
+  const options = [];
+  for (const reason of rejectReasons) {
+    options[reason.description] = handleChangeSkip.bind(
+      null,
+      updateTransientProps,
+      'reasonType',
+      reason
+    );
+  }
+  actionSheet(options);
 };
 
 const podPrompt = ({
@@ -97,6 +116,8 @@ const renderFallbackCustomerImage = width => (
 );
 
 const renderSkipModal = ({
+  colors,
+  hasCollectedEmpties,
   outOfStockIds,
   reasonMessage,
   rejectReasons,
@@ -105,7 +126,7 @@ const renderSkipModal = ({
   setModalText,
   setModalVisible,
   setRejected,
-  reasonType = rejectReasons[2].id,
+  reasonType,
   updateTransientProps,
   width
 }) => (
@@ -115,19 +136,42 @@ const renderSkipModal = ({
     flex={1}>
     <ColumnView
       alignItems={'flex-start'}
+      borderColor={colors.input}
+      borderWidth={1}
       backgroundColor={colors.neutral}
       overflow={'hidden'}
       borderRadius={defaults.borderRadius}>
       <ColumnView paddingHorizontal={defaults.marginHorizontal}>
-        <Picker
-          items={rejectReasons}
-          selected={reasonType}
-          onChange={handleChangeSkip.bind(
-            null,
-            updateTransientProps,
-            'reasonType'
-          )}
-        />
+        <RowView
+          justifyContent={'flex-start'}
+          marginTop={defaults.marginVertical}
+          marginBottom={defaults.marginVertical / 2}>
+          <Text.Label
+            align={'left'}
+            width={'100%'}
+            color={colors.inputSecondary}>
+            {I18n.t('screens:deliver.modal.rejectTitle')}
+          </Text.Label>
+        </RowView>
+
+        <RowView paddingBottom={defaults.marginVertical}>
+          <Button.Outline
+            borderColor={!reasonType ? colors.error : colors.primary}
+            shadow
+            title={
+              !reasonType
+                ? I18n.t('screens:deliver.modal.actionSheetPlaceholder')
+                : reasonType.description
+            }
+            titleColor={colors.inputSecondary}
+            onPress={openActionSheet.bind(null, {
+              rejectReasons,
+              updateTransientProps
+            })}
+            testID={'modal-reason-type'}
+          />
+        </RowView>
+
         <RowView paddingBottom={defaults.marginVertical}>
           <TextInput
             disableErrors
@@ -140,6 +184,7 @@ const renderSkipModal = ({
               'reasonMessage'
             )}
             ref={reasonMessageRef}
+            testID={'modal-reason-input'}
           />
         </RowView>
       </ColumnView>
@@ -152,12 +197,13 @@ const renderSkipModal = ({
           onPress={setModalVisible.bind(null, false)}
           width={'50%'}
           noBorderRadius
+          testID={'modal-cancel-btn'}
         />
         {selectedStop && (
           <Button.Primary
             title={I18n.t('general:skip')}
             width={'50%'}
-            disabled={reasonMessage === ''}
+            disabled={reasonMessage === '' || !reasonType}
             onPress={rejectAndNavigateBack.bind(
               null,
               setRejected.bind(
@@ -166,13 +212,15 @@ const renderSkipModal = ({
                 selectedStop.key,
                 outOfStockIds,
                 reasonType,
-                reasonMessage
+                reasonMessage,
+                hasCollectedEmpties
               ),
               setModalImageSrc,
               setModalText,
               setModalVisible
             )}
             noBorderRadius
+            testID={'modal-skip-btn'}
           />
         )}
       </RowView>
@@ -213,8 +261,12 @@ const Deliver = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
 
+  const [hasCollectedEmpties, setHasCollectedEmpties] = useState(null);
+
+  const { colors } = useTheme();
   const {
     allItemsDone,
+    buttonAccessibility,
     confirmedItem,
     navigation,
     outOfStockIds,
@@ -313,6 +365,8 @@ const Deliver = props => {
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
         {modalType === 'skip' &&
           renderSkipModal({
+            colors,
+            hasCollectedEmpties,
             ...props,
             setModalImageSrc,
             setModalText,
@@ -320,7 +374,7 @@ const Deliver = props => {
             width
           })}
         {modalType === 'image' &&
-          renderImageTextModal({
+          ImageTextModal({
             imageSource: {
               uri: modalImageSrc
             },
@@ -369,7 +423,7 @@ const Deliver = props => {
           marginHorizontal={defaults.marginHorizontal}
           marginVertical={defaults.marginVertical / 2}>
           <Text.Heading
-            color={colors.secondary}
+            color={colors.inputSecondary}
             numberOfLines={2}
             testID={'deliver-title'}>
             {selectedStop.title}
@@ -382,7 +436,7 @@ const Deliver = props => {
                 width={sizes.list.image}
                 containerWidth={sizes.list.image}
                 icon={'coolbox'}
-                iconColor={colors.secondary}
+                iconColor={colors.inputSecondary}
                 disabled
               />
             </RowView>
@@ -399,16 +453,17 @@ const Deliver = props => {
           marginHorizontal={defaults.marginHorizontal}
           marginVertical={defaults.marginVertical / 2}
           justifyContent={'space-between'}>
-          <Text.Caption color={colors.secondary} testID={'deliver-userId'}>
+          <Text.Caption color={colors.inputSecondary} testID={'deliver-userId'}>
             {I18n.t('screens:deliver.userId', {
               userId: selectedStop?.userId
             })}
           </Text.Caption>
           <Text.Caption
-            color={colors.secondary}
+            color={colors.inputSecondary}
             testID={'deliver-routeDescription'}>
             {I18n.t('screens:deliver.routeDescription', {
-              routeDescription
+              routeDescription,
+              interpolation: { escapeValue: false }
             })}
           </Text.Caption>
         </RowView>
@@ -459,7 +514,7 @@ const Deliver = props => {
                     width={'auto'}
                     marginLeft={defaults.marginHorizontal / 2}>
                     <Text.Input
-                      color={colors.secondary}
+                      color={colors.inputSecondary}
                       numberOfLines={4}
                       testID={'deliver-deliveryInstructions'}>
                       {selectedStop.deliveryInstructions}
@@ -484,17 +539,43 @@ const Deliver = props => {
                   : optimizedStopOrders
               }
               hasSections={height > 700}
-              onLongPress={toggleOutOfStock}
+              onLongPress={
+                selectedStop?.satisfactionStatus === 5 ? mock : toggleOutOfStock
+              }
               onPress={toggleConfirmedItem}
+              testID={'deliver-order-items'}
             />
           </>
         )}
       </ColumnView>
       {selectedStop && selectedStop.status === 'pending' && (
-        <ColumnView
-          width={'auto'}
-          marginHorizontal={defaults.marginHorizontal}
-          marginTop={defaults.marginVertical / 2}>
+        <ColumnView width={'auto'} marginHorizontal={defaults.marginHorizontal}>
+          <Separator width={'100%'} />
+          <RowView
+            width={'100%'}
+            marginHorizontal={defaults.marginHorizontal}
+            marginVertical={defaults.marginVertical / 2}
+            justifyContent={'space-between'}>
+            <Text.List color={colors.inputSecondary}>
+              {I18n.t('screens:deliver.emptiesCollected')}
+            </Text.List>
+
+            <SegmentedControl
+              buttons={[
+                {
+                  label: I18n.t('general:yes'),
+                  value: true
+                },
+                {
+                  label: I18n.t('general:no'),
+                  value: false
+                }
+              ]}
+              onPress={setHasCollectedEmpties}
+              selected={hasCollectedEmpties}
+            />
+          </RowView>
+
           {unacknowledgedList.length > 0 && (
             <RowView marginVertical={defaults.marginVertical}>
               <Button.Secondary
@@ -507,7 +588,9 @@ const Deliver = props => {
           )}
           {unacknowledgedList.length === 0 && (
             <>
-              <RowView justifyContent={'space-between'}>
+              <RowView
+                justifyContent={'space-between'}
+                testID="delivery-actions-view">
                 {!podImage && (
                   <CustomIcon
                     onPress={podPrompt.bind(null, {
@@ -519,21 +602,21 @@ const Deliver = props => {
                       setModalVisible,
                       updateProps
                     })}
-                    containerWidth={sizes.list.image}
-                    width={sizes.list.image}
+                    containerWidth={buttonAccessibility}
+                    width={buttonAccessibility}
                     icon={'addPhoto'}
                     iconColor={
                       selectedStop.proofOfDeliveryRequired
                         ? colors.error
                         : colors.primary
                     }
-                    style={style.addPhotoIcon}
                   />
                 )}
                 {podImage && (
                   <Pressable
+                    testID={'deliver-prove-btn'}
                     key={'pod'}
-                    style={style.photoWrapper}
+                    style={[style.photoWrapper, { width: buttonAccessibility }]}
                     onPress={podPrompt.bind(null, {
                       podImage,
                       proofOfDeliveryRequired:
@@ -549,12 +632,12 @@ const Deliver = props => {
                         uri: podImage.path
                       }}
                       style={{ borderRadius: defaults.borderRadius }}
-                      width={sizes.list.image}
-                      height={sizes.list.image}
+                      width={buttonAccessibility}
                     />
                   </Pressable>
                 )}
                 <Button.Primary
+                  testID={'deliver-done-btn'}
                   title={I18n.t('general:done')}
                   onPress={NavigationService.goBack.bind(null, {
                     afterCallback: setDelivered.bind(
@@ -562,22 +645,25 @@ const Deliver = props => {
                       selectedStop.orderId,
                       selectedStop.key,
                       outOfStockIds,
-                      podImage
+                      podImage,
+                      hasCollectedEmpties
                     )
                   })}
                   disabled={
                     !allItemsDone ||
-                    (selectedStop.proofOfDeliveryRequired && !podImage)
+                    (selectedStop.proofOfDeliveryRequired && !podImage) ||
+                    hasCollectedEmpties === null
                   }
                   width={
-                    width - sizes.list.image - defaults.marginHorizontal * 2.5
+                    width -
+                    buttonAccessibility -
+                    defaults.marginHorizontal * 2.5
                   }
-                  testID={'deliver-done'}
                 />
               </RowView>
               <RowView marginVertical={defaults.marginVertical}>
                 <Button.Outline
-                  title={I18n.t('general:skip')}
+                  title={I18n.t('screens:deliver.skipDelivery')}
                   onPress={showModal.bind(null, {
                     type: 'skip',
                     setModalType,
@@ -596,6 +682,7 @@ const Deliver = props => {
 
 Deliver.propTypes = {
   allItemsDone: PropTypes.bool,
+  buttonAccessibility: PropTypes.number,
   confirmedItem: PropTypes.array,
   navigation: PropTypes.object,
   outOfStockIds: PropTypes.array,

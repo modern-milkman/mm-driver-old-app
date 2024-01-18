@@ -3,20 +3,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
-import { colors } from 'Theme';
+import { useTheme } from 'Containers';
 
 import style from './style';
 
 const FullView = props => {
-  const composedStyles = [style.fullview, { backgroundColor: props.bgColor }];
+  const { colors } = useTheme();
+  const { bgColor = colors.neutral, behaviour, children, testID } = props;
+  const composedStyles = [style.fullview, { backgroundColor: bgColor }];
 
   return (
     <KeyboardAvoidingView
-      {...props.behaviour}
+      {...behaviour}
       enabled
       style={composedStyles}
-      testID={props.testID}>
-      {props.children}
+      testID={testID}>
+      {children}
     </KeyboardAvoidingView>
   );
 };
@@ -36,10 +38,12 @@ FullView.defaultProps = {
     ...Platform.select({
       ios: {
         behavior: 'padding'
+      },
+      android: {
+        behavior: 'height'
       }
     })
   },
-  bgColor: colors.neutral,
   children: null
 };
 

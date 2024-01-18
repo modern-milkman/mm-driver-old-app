@@ -2,25 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
-import Api from 'Api';
 import I18n from 'Locales/I18n';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
+
+import { openRateMyRound } from 'SessionShared';
 import NavigationService from 'Services/navigation';
-import { ColumnView, RowView, SafeAreaView } from 'Containers';
+import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import { deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
 
 import style from './style';
 
-const openRateMyRound = ({ updateChecklistProps, updateInAppBrowserProps }) => {
-  updateChecklistProps({ rateMyRound: true });
-  updateInAppBrowserProps({
-    visible: true,
-    url: Api.RATE_MY_ROUND()
-  });
-};
-
-const renderButtonTitle = ({ checklist, status }) => {
+const renderButtonTitle = ({ status }) => {
   switch (status) {
     default:
       return I18n.t('screens:checkIn.go');
@@ -31,7 +24,7 @@ const renderButtonTitle = ({ checklist, status }) => {
   }
 };
 
-const renderHelperMessage = ({ checklist, status }) => {
+const renderHelperMessage = ({ checklist, colors, status }) => {
   const helperIcon = 'information-outline';
   let helperMessage = I18n.t('screens:checkIn.helperMessages.checkLoadVan');
   switch (status) {
@@ -61,10 +54,10 @@ const renderHelperMessage = ({ checklist, status }) => {
         size={15}
         containerSize={15}
         name={helperIcon}
-        color={colors.secondary}
+        color={colors.inputSecondary}
         style={{ marginRight: defaults.marginHorizontal / 3 }}
       />
-      <Text.Caption align={'center'} color={colors.secondary}>
+      <Text.Caption align={'center'} color={colors.inputSecondary}>
         {helperMessage}
       </Text.Caption>
     </RowView>
@@ -89,6 +82,7 @@ const navigationSideEffect = ({
 };
 
 const CheckIn = props => {
+  const { colors } = useTheme();
   const {
     autoSelectStop,
     checklist,
@@ -171,7 +165,7 @@ const CheckIn = props => {
         : checklist.rateMyRound
         ? 'check'
         : 'chevron-right',
-      title: I18n.t('screens:checkIn.rateMyRound'),
+      title: I18n.t('screens:checkIn.rateMyRound.title'),
       testID: 'checkIn-checkVanEnd-listItem'
     },
     {
@@ -195,7 +189,7 @@ const CheckIn = props => {
         ? 'check'
         : 'chevron-right',
       title: I18n.t('screens:checkIn.checkOut'),
-      testID: 'checkIn-checkVanEnd-listItem'
+      testID: 'checkIn-checkOut-listItem'
     }
   ];
 
@@ -210,13 +204,13 @@ const CheckIn = props => {
       testID
     } = checkinRows[index];
     return (
-      <View style={style.fullWidth}>
+      <View key={index} style={style.fullWidth}>
         <Separator />
         <ListItem
           disabled={disabled}
           enforceLayout
           suffixBottom={suffixBottom}
-          suffixColor={colors.secondary}
+          suffixColor={colors.inputSecondary}
           onPress={onPress}
           customIcon={customIcon}
           rightIcon={rightIcon}
@@ -247,9 +241,11 @@ const CheckIn = props => {
           <View style={style.fullWidth}>
             <ColumnView
               width={'auto'}
+              marginVertical={defaults.marginVertical}
               marginHorizontal={defaults.marginHorizontal}>
+              {renderHelperMessage({ checklist, colors, status })}
               <Button.Primary
-                title={renderButtonTitle({ checklist, status })}
+                title={renderButtonTitle({ status })}
                 disabled={
                   ([DS.NCI, DS.LV, DS.SSC].includes(status) &&
                     (checklist.loadedVan === false ||
@@ -266,7 +262,6 @@ const CheckIn = props => {
                       : null
                 })}
               />
-              {renderHelperMessage({ checklist, status })}
             </ColumnView>
           </View>
         </ColumnView>

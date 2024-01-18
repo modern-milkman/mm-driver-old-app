@@ -26,7 +26,6 @@ export const { Types, Creators } = createActions(
     getDriverReplyImage: ['driverResponses', 'claimIndex', 'stopId'],
     getForDriver: null,
     getForDriverSuccess: ['payload'],
-    getProductsOrder: null,
     getVehicleStockForDriver: null,
     getVehicleStockForDriverSuccess: ['payload', 'deliveryDate'],
     getRejectDeliveryReasons: null,
@@ -34,29 +33,35 @@ export const { Types, Creators } = createActions(
     incrementDeliveredStock: ['productId', 'quantity'],
     initChecklist: null,
     redirectSetSelectedClaimId: ['claimId'],
+    refreshAllData: null,
     resetChecklistPayload: ['resetType'],
     saveVehicleChecks: ['saveType'],
     setCustomerClaims: ['payload', 'stopId'],
-    setDelivered: ['id', 'selectedStopId', 'outOfStockIds', 'podImage'],
+    setDelivered: [
+      'id',
+      'selectedStopId',
+      'outOfStockIds',
+      'podImage',
+      'hasCollectedEmpties'
+    ],
     setEmpty: ['prop', 'value'],
     setDirectionsPolyline: ['payload'],
     setBundleProducts: ['payload'],
     setCannedContent: ['payload'],
     setItemOutOfStock: ['id'],
     setMileage: ['mileage'],
-    setProductsOrder: ['payload'],
     setRegistration: ['reg'],
     setRejected: [
       'id',
       'selectedStopId',
       'outOfStockIds',
       'reasonType',
-      'reasonMessage'
+      'reasonMessage',
+      'hasCollectedEmpties'
     ],
     setSelectedClaimId: ['claim'],
     setRejectDeliveryReasons: ['payload'],
     setReturnTypes: ['payload'],
-
     startDelivering: null,
     showMustComplyWithTerms: null,
     showPODRequired: null,
@@ -91,7 +96,10 @@ const initialVehicleChecks = {
 
 export const initialChecklist = {
   deliveryComplete: false,
+  emptiesRequired: false,
+  emptiesScreenDirty: false,
   loadedVan: false,
+  loadedVanItems: [],
   rateMyRound: false,
   shiftEndVanChecks: false,
   shiftStartVanChecks: false,
@@ -216,7 +224,10 @@ const incrementDeliveredStock = (draft, { productId, quantity }) => {
 
 const resetChecklistFlags = checklist => {
   checklist.deliveryComplete = false;
+  checklist.emptiesRequired = false;
+  checklist.emptiesScreenDirty = false;
   checklist.loadedVan = false;
+  checklist.loadedVanItems = [];
   checklist.payloadAltered = false;
   checklist.rateMyRound = false;
   checklist.shiftStartVanChecks = false;
@@ -284,8 +295,6 @@ export const getVehicleStockForDriverSuccess = (
   { deliveryDate, payload }
 ) =>
   produce(state, draft => {
-    const misplacedProducts = {};
-
     draft.loaderInfo = null;
     draft.itemCount = 0;
     draft.additionalItemCount = 0;
@@ -305,31 +314,16 @@ export const getVehicleStockForDriverSuccess = (
           productId: item.productId
         };
 
-        if (draft.productsOrder.includes(item.productId)) {
-          const productSortedIndex = draft.productsOrder.indexOf(
-            item.productId
-          );
-
-          if (draft.orderedStock[productSortedIndex]) {
-            draft.orderedStock[productSortedIndex].quantity += item.quantity;
-            if (route.isAdditionalStock) {
-              draft.orderedStock[productSortedIndex].additionalQuantity +=
-                item.quantity;
-            }
-          } else {
-            draft.orderedStock[productSortedIndex] = formattedProduct;
+        if (draft.orderedStock[item.productId]) {
+          draft.orderedStock[item.productId].quantity += item.quantity;
+          if (route.isAdditionalStock) {
+            draft.orderedStock[item.productId].additionalQuantity +=
+              item.quantity;
           }
         } else {
-          if (misplacedProducts[item.productId]) {
-            misplacedProducts[item.productId].quantity += item.quantity;
-            if (route.isAdditionalStock) {
-              misplacedProducts[item.productId].additionalQuantity +=
-                item.quantity;
-            }
-          } else {
-            misplacedProducts[item.productId] = formattedProduct;
-          }
+          draft.orderedStock[item.productId] = formattedProduct;
         }
+
         draft.itemCount += item.quantity;
         if (route.isAdditionalStock) {
           draft.additionalItemCount += item.quantity;
@@ -338,11 +332,6 @@ export const getVehicleStockForDriverSuccess = (
     }
     draft.orderedStock = draft.orderedStock.filter(product => product);
 
-    if (Object.keys(misplacedProducts).length > 0) {
-      for (const misplacedProductKey in misplacedProducts) {
-        draft.orderedStock.push(misplacedProducts[misplacedProductKey]);
-      }
-    }
     draft.processing = false;
   });
 
@@ -385,7 +374,7 @@ export const getForDriverSuccess = (state, { payload }) =>
         (address.postcodeOutward ? `, ${address.postcodeOutward}` : '') +
         (address.postcodeInward ? `${address.postcodeInward}` : '');
       const deliveryInstructions =
-        address?.deliveryInstructions?.length > 0
+        address?.deliveryInstructions?.replace(/\s/g, '').length > 0
           ? address.deliveryInstructions
           : null;
       draft.serverAddressIds.push(parseInt(address.addressId));
@@ -535,10 +524,12 @@ export const getForDriverSuccess = (state, { payload }) =>
       draft.checklist[state.userId].deliveryComplete = true;
       draft.checklist[state.userId].shiftStartVanChecks = true;
       draft.checklist[state.userId].loadedVan = true;
+      draft.checklist[state.userId].loadedVanItems = [];
     } else if (hasNonPendingOrders) {
       draft.status = DS.DEL;
       draft.checklist[state.userId].shiftStartVanChecks = true;
       draft.checklist[state.userId].loadedVan = true;
+      draft.checklist[state.userId].loadedVanItems = [];
     }
   });
 
@@ -623,10 +614,17 @@ export const setDelivered = (state, params) =>
 
 export const setEmpty = (state, { prop, value }) =>
   produce(state, draft => {
-    draft.checklist[draft.userId].payload.emptiesCollected[prop] = {
-      ...draft.checklist[draft.userId].payload.emptiesCollected[prop],
+    const emptiesCollected =
+      draft.checklist[draft.userId].payload.emptiesCollected;
+
+    emptiesCollected[prop] = {
+      ...emptiesCollected[prop],
       value
     };
+
+    draft.checklist[draft.userId].emptiesScreenDirty =
+      Object.values(emptiesCollected).filter(el => parseInt(el.value) >= 0)
+        .length > 0;
   });
 
 export const setItemOutOfStock = state =>
@@ -646,11 +644,6 @@ export const setRegistration = (state, { reg }) =>
 
 export const setRejected = (state, params) =>
   setDeliveredOrRejected(state, 'rejected', params);
-
-export const setProductsOrder = (state, { payload }) =>
-  produce(state, draft => {
-    draft.productsOrder = payload;
-  });
 
 export const setRejectDeliveryReasons = (state, { payload }) =>
   produce(state, draft => {
@@ -759,7 +752,6 @@ export default createReducer(initialState, {
   [Types.GET_FOR_DRIVER]: getForDriver,
   [Types.GET_DRIVER_DATA_FAILURE]: setLoaderInfo.bind(null, null),
   [Types.GET_FOR_DRIVER_SUCCESS]: getForDriverSuccess,
-  [Types.GET_PRODUCTS_ORDER]: setLoaderInfo.bind(null, 'productsOrder'),
   [Types.GET_REJECT_DELIVERY_REASONS]: setLoaderInfo.bind(
     null,
     'rejectReasons'
@@ -778,7 +770,6 @@ export default createReducer(initialState, {
   [Types.SET_EMPTY]: setEmpty,
   [Types.SET_ITEM_OUT_OF_STOCK]: setItemOutOfStock,
   [Types.SET_MILEAGE]: setMileage,
-  [Types.SET_PRODUCTS_ORDER]: setProductsOrder,
   [Types.SET_REGISTRATION]: setRegistration,
   [Types.SET_REJECT_DELIVERY_REASONS]: setRejectDeliveryReasons,
   [Types.SET_REJECTED]: setRejected,
@@ -809,6 +800,9 @@ export const itemCount = state => state.delivery?.itemCount || 0;
 
 export const isOptimised = state => state.delivery?.stockWithData?.isOptimised;
 
+export const loadedVanItems = state =>
+  state.delivery?.checklist?.[state.delivery?.userId].loadedVanItems;
+
 export const orderedStock = state => state.delivery.orderedStock;
 
 export const orderedStopsIds = state =>
@@ -826,6 +820,9 @@ export const outOfSequenceIds = state => state.delivery?.outOfSequenceIds;
 export const routeDescription = state =>
   state.delivery?.stockWithData?.routeDescription;
 
+//REMIND ME Theoretically it should not have multiple routes/night, BE informed
+export const routeId = state => state.delivery?.stock[0]?.routeId;
+
 export const selectedStop = state => {
   const todaysDelivery = state.delivery;
   return todaysDelivery &&
@@ -841,6 +838,8 @@ export const selectedStopId = state => state.delivery?.selectedStopId;
 export const serverAddressIds = state => state.delivery?.serverAddressIds;
 
 export const status = state => state.delivery?.status;
+
+export const stock = state => state.delivery?.stock;
 
 export const stops = state => state.delivery?.stops;
 

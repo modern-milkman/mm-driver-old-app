@@ -4,15 +4,15 @@ import { Pressable, View } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
-import { RowView } from 'Containers';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
 import { deliveryStates as DS } from 'Helpers';
 import NavigationService from 'Services/navigation';
 import { Icon, ProgressBar, Text } from 'Components';
+import { RowView, useTheme, useThemedStyles } from 'Containers';
 
-import style from './style';
+import unthemedStyle from './style';
 
-const renderCountDown = (completed, stopCount) => (
+const renderCountDown = (colors, completed, stopCount) => (
   <>
     {renderProgressBar({
       completed,
@@ -20,7 +20,7 @@ const renderCountDown = (completed, stopCount) => (
       props: { marginRight: defaults.marginHorizontal / 4 }
     })}
 
-    <Text.List color={colors.secondary}>
+    <Text.List color={colors.inputSecondary}>
       {I18n.t('screens:main.navigation.deliveriesLeft', {
         nr: stopCount - completed
       })}
@@ -28,9 +28,9 @@ const renderCountDown = (completed, stopCount) => (
   </>
 );
 
-const renderCountUp = (completed, stopCount) => (
+const renderCountUp = (colors, completed, stopCount) => (
   <>
-    <Text.List color={colors.secondary}>
+    <Text.List testID={'home-deliveries-label'} color={colors.inputSecondary}>
       {I18n.t('screens:main.navigation.deliveries')}
     </Text.List>
 
@@ -40,9 +40,9 @@ const renderCountUp = (completed, stopCount) => (
       props: { marginHorizontal: defaults.marginHorizontal / 4 }
     })}
 
-    <Text.List color={colors.secondary}>{completed} </Text.List>
+    <Text.List color={colors.inputSecondary}>{completed} </Text.List>
 
-    <Text.List color={colors.secondary}>/ {stopCount}</Text.List>
+    <Text.List color={colors.inputSecondary}>/ {stopCount}</Text.List>
   </>
 );
 
@@ -52,7 +52,7 @@ const renderProgressBar = ({ completed, stopCount, props }) => (
   </RowView>
 );
 
-const renderLowConnection = () => (
+const renderLowConnection = colors => (
   <Icon
     size={30}
     color={colors.warning}
@@ -64,6 +64,9 @@ const renderLowConnection = () => (
 );
 
 const Navigation = props => {
+  const { colors } = useTheme();
+  const style = useThemedStyles(unthemedStyle);
+
   const {
     completedStopsIds,
     countDown,
@@ -97,13 +100,13 @@ const Navigation = props => {
               onPress={updateDeviceProps.bind(null, { countDown: !countDown })}>
               <RowView height={48}>
                 {countDown
-                  ? renderCountDown(completed, stopCount)
-                  : renderCountUp(completed, stopCount)}
+                  ? renderCountDown(colors, completed, stopCount)
+                  : renderCountUp(colors, completed, stopCount)}
               </RowView>
             </Pressable>
           </RowView>
         )}
-        {lowConnection && network.status === 0 && renderLowConnection()}
+        {lowConnection && network.status === 0 && renderLowConnection(colors)}
       </RowView>
     </View>
   );

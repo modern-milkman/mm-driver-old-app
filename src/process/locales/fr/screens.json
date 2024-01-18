@@ -1,0 +1,221 @@
+{
+  "appCrash": {
+    "crashCode": "Appuyez pour copier le CODE d'erreur : {{crashCode}}",
+    "description": "Malheureusement, l'application Driver a rencontré une erreur qui n'a pas pu être gérée. L'erreur a été signalée aux développeurs et sera traitée dans une mise à jour de l'application. Si le problème persiste, contactez votre superviseur.",
+    "title": "Le conducteur a un problème"
+  },
+  "checkIn": {
+    "checkIn": "Enregistrement",
+    "checkOut": "Vérifier",
+    "checkVan": "Vérifiez Van",
+    "deliverProducts": "Livrer des produits",
+    "endShift": "Fin de quart",
+    "go": "Va!",
+    "helperMessages": {
+      "checkLoadVan": "Vérifiez et chargez la camionnette pour commencer votre tour",
+      "checkVan": "Vérifiez la camionnette pour commencer votre tour",
+      "checkVanEnd": "Vérifier la camionnette pour terminer le quart de travail",
+      "doneForToday": "Yay! Vous avez terminé pour aujourd'hui.",
+      "go": "Appuyez sur \"Aller !\" pour commencer votre tour",
+      "loadVan": "Chargez la camionnette pour commencer votre tour"
+    },
+    "itemsLeft": "{{items}} articles restants",
+    "loadVan": "Fourgon de chargement",
+    "rateMyRound": "Évaluer ma partie",
+    "title": "Liste de contrôle de votre itinéraire"
+  },
+  "checklist": {
+    "driverPrompts": {
+      "messages": {
+        "fit": "Je confirme que je suis en bonne forme physique pour accomplir mon quart de travail",
+        "license": "Je confirme que ma licence est actuellement en date et conforme aux exigences de l'entreprise"
+      },
+      "title": "Consentement requis"
+    },
+    "title": "Liste de contrôle"
+  },
+  "deliver": {
+    "customer": {
+      "instructions": "Consignes client"
+    },
+    "customerIssue": {
+      "details": {
+        "dateTime": "{{date}} à {{time}}",
+        "driverReplies": "Réponses du pilote",
+        "noReplies": "Aucune réponse"
+      },
+      "list": {
+        "clientIdIssues": "Numéro de client #{{cId}} problèmes",
+        "dateOrTime": "{{value}}",
+        "empty": "Aucunes réclamations",
+        "new": "Nouvelle",
+        "nrReplies": "{{nr}} Réponses",
+        "previous": "Précédent",
+        "title": "Problème client #{{issueNr}}"
+      },
+      "modal": {
+        "customerComment": "Commenter:",
+        "customerIssue": "Problème client",
+        "date": "Date:",
+        "finalEscalation": "Escalade finale",
+        "listTitle": "Répondre #{{id}}",
+        "productsAffected": "Produits concernés :",
+        "reason": "Raison:",
+        "reply": "Répondre",
+        "send": "Envoyer",
+        "title": "Répondre au problème du client"
+      }
+    },
+    "deliveryItems": "Articles de livraison",
+    "modal": {
+      "inputPlaceholder": "Tapez votre raison ici"
+    },
+    "proofOfDeliveryRequired": "REQUIERT UNE PREUVE DE LIVRAISON",
+    "routeDescription": "ID de route #{{routeDescription}}",
+    "status": {
+      "completed": "Complété",
+      "rejected": "Ignoré"
+    },
+    "userId": "ID utilisateur #{{userId}}",
+    "viewClaims": "Afficher les revendications ({{claimNo}})"
+  },
+  "emptiesCollected": {
+    "subHeading": {
+      "end": "Vous avez laissé tomber des vides ce matin ? Tapez 0 si vous voulez les laisser tomber au début de votre prochain tour !",
+      "start": "Laisser tomber des vides ce soir? Tapez 0 sinon."
+    },
+    "title": "Vides collectés"
+  },
+  "home": {
+    "biometrics": {
+      "login": "Connectez-vous avec la biométrie",
+      "setup": "Configurer la biométrie"
+    },
+    "driver": "Chauffeur",
+    "rememberMe": "Souviens-toi de moi",
+    "standard": {
+      "login": "Connectez-vous avec email / mot de passe"
+    }
+  },
+  "loadVan": {
+    "done": "Terminé",
+    "title": "éléments"
+  },
+  "main": {
+    "actions": {
+      "openIn": "Ouvrir dans {{appName}}"
+    },
+    "activeDeliveryFor": {
+      "plural": "Afficher {{itemCount}} éléments",
+      "singular": "Afficher {{itemCount}} élément"
+    },
+    "autoSelectStop": "Sélectionnez le prochain arrêt optimisé",
+    "descriptions": {
+      "comeBackLater": "Revenez plus tard",
+      "deliveryActive": "{{stopCount}} livraisons",
+      "noDelivery": "À demain",
+      "or": "OU"
+    },
+    "foreground": {
+      "loaderText": {
+        "getForDriver": "Chargement des données d'itinéraire",
+        "getVehicleStockForDriver": "Chargement des informations boursières",
+        "rejectReasons": "Chargement des motifs de rejet",
+        "returnTypes": "Chargement des types de retour"
+      }
+    },
+    "lowConnectionModal": {
+      "description": "Vous pouvez rencontrer des décalages pendant que l'application se connecte au serveur, ce qui signifie que vous pouvez voir que les icônes de chargement restent allumées plus longtemps que d'habitude. Il n'est pas nécessaire de se déconnecter et le temps d'attente maximum est de 30 secondes.",
+      "directions": "Les itinéraires ne s'affichent pas, même s'ils sont activés",
+      "images": "Les images ne se chargent pas",
+      "pins": "Les broches sont marquées comme terminées avec un décalage",
+      "title": "Connexion lente au serveur",
+      "whatToExpect": "À quoi d'autre s'attendre :"
+    },
+    "navigation": {
+      "deliveries": "Livraisons",
+      "deliveriesLeft": "{{nr}} livraisons restantes"
+    },
+    "search": {
+      "noResults": "Aucun résultat trouvé",
+      "placeholder": "Rechercher"
+    },
+    "titles": {
+      "comeBackLater": "Pas encore d'informations sur la livraison",
+      "noDelivery": "Pas de livraison ce soir",
+      "selectNextStop": "Veuillez sélectionner le prochain arrêt"
+    }
+  },
+  "panel": {
+    "driverID": "ID conducteur #{{driverId}}",
+    "gasStation": "Trouver une station-service à proximité",
+    "loadedStock": "Stock chargé",
+    "suggestions": "Suggérer un changement"
+  },
+  "permissionsMissing": {
+    "description": "Certaines des autorisations obligatoires dont l'application Driver a besoin pour fonctionner correctement n'ont pas été accordées. Voir les détails ci-dessous.",
+    "instructions": {
+      "camera": {
+        "android": "Activer à partir des paramètres de l'appareil > Confidentialité > Gestionnaire d'autorisations > Caméra > Écran du pilote.",
+        "ios": "Activer à partir de l'écran Paramètres > Confidentialité > Appareil photo de l'appareil."
+      },
+      "location": {
+        "android": "Activer à partir des paramètres de l'appareil > Emplacement > Autorisation de l'application > Écran du pilote.",
+        "ios": "Activer à partir de l'écran Paramètres > Confidentialité > Services de localisation de l'appareil."
+      }
+    },
+    "title": "Autorisations manquantes"
+  },
+  "registrationMileage": {
+    "mileage": "Kilométrage",
+    "or": "OU",
+    "registration": "Inscription",
+    "title": "Inscription"
+  },
+  "settings": {
+    "misc": {
+      "language": "Langue",
+      "languageRestart": "L'application redémarrera si la langue est modifiée"
+    },
+    "sections": {
+      "authentication": "Authentification",
+      "device": "Appareil",
+      "map": "Carte",
+      "routeManagement": "Gestion des itinéraires"
+    },
+    "sliders": {
+      "buttons": "Taille du bouton",
+      "drag": "Faites glisser pour redimensionner",
+      "mapMarkers": "Taille de la broche",
+      "optimisedStopsToShow": "Nombre d'arrêts suivants"
+    },
+    "switches": {
+      "autoOpenStopDetails": {
+        "description": "Ouvre l'écran des détails de la livraison lorsque vous arrivez à l'emplacement",
+        "title": "Ouvrir automatiquement la livraison"
+      },
+      "autoSelectStop": "Sélectionner automatiquement le prochain arrêt",
+      "biometricsDisabled": "La biométrie ne peut être configurée que sur l'écran de connexion",
+      "computeDirections": "Calculer les directions de livraison",
+      "computeShortDirections": "Calculer les directions de livraison dans un rayon de 500 m",
+      "darkMode": "Mode sombre",
+      "deliveriesCountDown": "Basculer en appuyant sur la barre de livraison dans l'écran principal",
+      "deliveriesRemaining": "Livraisons restantes",
+      "foreground": "Grand premier plan",
+      "optimisedRoutingUnavailable": "Indisponible pour l'itinéraire actuel pour le moment",
+      "showAllPendingStops": {
+        "description": "L'affichage d'un grand nombre d'arrêts peut affecter les performances de l'application",
+        "title": "Afficher tous les arrêts en attente"
+      },
+      "showDoneDeliveries": "Afficher les livraisons effectuées",
+      "showMapControlsOnMovement": "Afficher les contrôles sur le mouvement manuel",
+      "vibrations": "Vibrations"
+    }
+  },
+  "upgradeApp": {
+    "description": "Malheureusement, cette version de Modern Milkman Driver n'est plus prise en charge. Pour continuer à utiliser Modern Milkman Driver, veuillez mettre à jour dès que possible.",
+    "download": "Télécharger Driver {{version}}",
+    "minimumVersion": "La version minimale requise du pilote Modern Milkman est {{minimumVersion}}",
+    "other": "ou essayez une autre version"
+  }
+}

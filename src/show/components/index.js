@@ -1,6 +1,5 @@
 import ActionSheetAndroid from './ActionSheetAndroid';
 import Button from './Button';
-import CustomBackHandler from './CustomBackHandler';
 import Fab from './Fab';
 import Growl from './Growl';
 import Icon from './Icon';
@@ -15,13 +14,13 @@ import Separator from './Separator';
 import SideBar from './SideBar';
 import Slider from './Slider';
 import Switch from './Switch';
+import SegmentedControl from './SegmentedControl';
 import Text from './Text';
 import TextInput from './TextInput';
 
 export {
   ActionSheetAndroid,
   Button,
-  CustomBackHandler,
   Fab,
   Growl,
   Icon,
@@ -34,6 +33,7 @@ export {
   NavBar,
   Picker,
   ProgressBar,
+  SegmentedControl,
   Separator,
   SideBar,
   Slider,

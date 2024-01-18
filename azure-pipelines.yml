@@ -1,0 +1,145 @@
+trigger:
+- feature/detox-tests
+
+pool:
+  vmImage: 'macos-latest'
+
+variables:
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+  GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'The Modern Milkman Subscription (f372c232-3c1f-431e-a234-1d41a5b6408e)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      IP_ADDRESS=$(curl -s http://ipinfo.io/json | jq '.ip' | sed -e 's/\"//g')
+      az sql server firewall-rule update -g $RESOURCE_GROUP -s $SERVER_NAME -n Azure_DevOps_Access --start-ip-address $IP_ADDRESS --end-ip-address $IP_ADDRESS
+  env: 
+    RESOURCE_GROUP: $(test-resourcegroup)
+    SERVER_NAME: $(test-servername)
+  displayName: 'Add firewall rule'
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.17.3'
+  displayName: 'Install Node'
+
+- task: Cache@2
+  inputs:
+    key: 'gradle | "$(Agent.OS)"'
+    restoreKeys: gradle
+    path: $(GRADLE_USER_HOME)
+  displayName: 'Gradle build cache'
+
+# - task: Cache@2
+#   inputs:
+#     key: 'yarn | "$(Agent.OS)" | yarn.lock'
+#     restoreKeys: |
+#       yarn | "$(Agent.OS)"
+#       yarn
+#     path: $(YARN_CACHE_FOLDER)
+#   displayName: 'Cache Yarn packages'
+
+# We need to force a specific version of homebrew to be able to download the MSSQL Driver silently
+# https://github.com/microsoft/homebrew-mssql-release/issues/84
+# If or when this is resolved by MS then revert back to using the official install script
+- script: |
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thelazurite-cell/install/master/install.sh)"
+    brew install unixodbc
+    brew tap microsoft/mssql-release https://github.com/Microsoft/homebrew-mssql-release
+    HOMEBREW_NO_ENV_FILTERING=1 ACCEPT_EULA=Y brew install msodbcsql17 mssql-tools
+    # sudo ln -s /usr/local/etc/odbcinst.ini /etc/odbcinst.ini
+    # sudo ln -s /usr/local/etc/odbc.ini /etc/odbc.ini
+    odbcinst -j
+    sqlcmd -S $TEST_DB_UK_HOST -U $TEST_DB_UK_USER -P $TEST_DB_UK_PASSWORD -Q "SELECT TOP 5 * FROM [tmm-milkman].[milkman].[return]"
+  env:
+    PATH: "$(PATH):/opt/mssql-tools/bin"
+    TEST_DB_UK_HOST: $(test-uk-dbhost)
+    TEST_DB_UK_USER: $(test-uk-dbuser)
+    TEST_DB_UK_PASSWORD: $(test-uk-dbpassword)
+    TEST_DB_UK_NAME: $(test-uk-dbname)
+    HOMEBREW_BREW_GIT_BRANCH: "c5731faf8be1ddc1eeae4b162b88bd76318fc279"
+    HOMEBREW_CORE_GIT_BRANCH: "6acac26d08f5ea6b0ae33d19e862b0aec8070d6a"
+    HOMEBREW_NO_AUTO_UPDATE: 1
+  displayName: 'Install ODBC Driver'
+
+- script: gem install cocoapods
+  displayName: 'Install cocoapods'
+
+- script: yarn --frozen-lockfile
+  displayName: 'Install dependencies'
+
+# - task: Cache@2
+#   inputs:
+#     key: 'AVD_IMAGES_29'
+#     path: '$(ANDROID_HOME)/system-images'
+#     cacheHitVar: 'AVD_IMAGES_RESTORED'
+#   continueOnError: true
+#   condition: succeededOrFailed()
+#   displayName: 'Caching System Images for AVD'
+
+# - script: |
+#     echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-29;google_apis;x86"
+#     echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "pixel" -k 'system-images;android-29;google_apis;x86'
+#     $ANDROID_HOME/emulator/emulator -list-avds
+#   condition: ne(variables.AVD_IMAGES_RESTORED, 'true')
+#   displayName: 'Download Android Emulator Image'
+
+- script: |
+    npm i -g detox-cli gulp yarn
+    yarn
+  displayName: 'Get Detox Dependencies'
+
+- script: |
+    cd ./detox
+    npm i
+    npm run build:android
+    cd .. && npx react-native start &
+    npm run test:android:headless
+  env:
+    JAVA_HOME: $(JAVA_HOME_11_X64)
+    PATH: $(JAVA_HOME_11_X64)/bin:$(PATH):/opt/mssql-tools/bin
+    HOMEBREW_NO_ENV_FILTERING: 1
+    ACCEPT_EULA: Y
+    TEST_DEFAULTPASSWORD: $(test-defaultpassword)
+    TEST_DRIVERDBFRANCE: $(test-fr-connectionstring)
+    TEST_DRIVERDBUK: $(test-uk-connectionstring)
+    TEST_DB_UK_HOST: $(test-uk-dbhost)
+    TEST_DB_UK_USER: $(test-uk-dbuser)
+    TEST_DB_UK_PASSWORD: $(test-uk-dbpassword)
+    TEST_DB_UK_NAME: $(test-uk-dbname)
+  displayName: 'Build App & Run Tests'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/detox/reports/junit.xml'
+    testRunTitle: 'Detox Android'
+  condition: succeededOrFailed()
+  displayName: 'Publish Test Results'
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)'
+    contents: '**/detox/reports/**/*'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  condition: succeededOrFailed()
+  displayName: 'Fetch Test Artifacts'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'TestOutput'
+  condition: succeededOrFailed()
+  displayName: 'Publish Test Artifacts'
+
+# - script: |
+#     echo "Starting emulator"
+#     nohup $ANDROID_HOME/emulator/emulator -avd emu -no-snapshot -no-audio -no-boot-anim -accel auto -gpu auto -qemu -lcd-density 420 > /dev/null 2>&1 &
+#     $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+#     $ANDROID_HOME/platform-tools/adb devices
+#     echo "Emulator started"
+#   displayName: 'Android Emulator'

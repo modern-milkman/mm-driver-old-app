@@ -9,8 +9,8 @@ import Text from 'Components/Text';
 import { CustomIcon } from 'Images';
 import Image from 'Components/Image';
 import Separator from 'Components/Separator';
-import { colors, defaults, sizes } from 'Theme';
-import { ColumnView, RowView } from 'Containers';
+import { defaults, sizes } from 'Theme';
+import { ColumnView, RowView, useTheme } from 'Containers';
 
 import style from './style.js';
 import ListHeader from './ListHeader';
@@ -81,11 +81,17 @@ const renderMedia = ({
   }
 };
 
-const renderPrefix = ({ prefix, prefixColor, PrefixTextComponent, testID }) => (
+const renderPrefix = ({
+  colors,
+  prefix,
+  prefixColor,
+  PrefixTextComponent,
+  testID
+}) => (
   <ColumnView flex={1} justifyContent={'center'} alignItems={'flex-start'}>
     <PrefixTextComponent
       align={'left'}
-      color={prefixColor || colors.secondaryLight}
+      color={prefixColor || colors.inputSecondary}
       testID={`${testID}-prefix`}>
       {prefix}
     </PrefixTextComponent>
@@ -93,6 +99,7 @@ const renderPrefix = ({ prefix, prefixColor, PrefixTextComponent, testID }) => (
 );
 
 const renderSuffix = ({
+  colors,
   suffixBottom,
   SuffixBottomTextComponent,
   suffixColor,
@@ -106,13 +113,13 @@ const renderSuffix = ({
     alignItems={suffixTop && suffixBottom ? 'space-between' : 'center'}>
     <SuffixTopTextComponent
       align={'right'}
-      color={suffixColor || colors.secondaryLight}
+      color={suffixColor || colors.inputSecondary}
       testID={`${testID}-suffixTop`}>
       {suffixTop}
     </SuffixTopTextComponent>
     <SuffixBottomTextComponent
       align={'right'}
-      color={suffixColor || colors.inputDark}
+      color={suffixColor || colors.inputSecondary}
       testID={`${testID}-suffixBottom`}>
       {suffixBottom}
     </SuffixBottomTextComponent>
@@ -121,6 +128,7 @@ const renderSuffix = ({
 
 const renderItemInterface = (
   {
+    colors,
     disabled: listDisabled,
     onPress: listOnPress,
     onLongPress: listOnLongPress,
@@ -134,11 +142,11 @@ const renderItemInterface = (
     customRightIcon,
     customRightIconProps,
     description,
-    descriptionColor = colors.secondary,
+    descriptionColor = colors.inputSecondary,
     disabled: listItemDisabled,
     enforceLayout = false,
     icon,
-    iconColor = colors.secondary,
+    iconColor = colors.inputSecondary,
     image,
     key,
     listItemStyle,
@@ -148,7 +156,7 @@ const renderItemInterface = (
     prefix,
     prefixColor,
     PrefixTextComponent = Text.Input,
-    rightComponent = mock,
+    rightComponent,
     rightIcon,
     rightIconColor = colors.primary,
     rightImage,
@@ -163,7 +171,7 @@ const renderItemInterface = (
     SuffixTopTextComponent = Text.Button,
     testID,
     title,
-    titleColor = colors.secondary,
+    titleColor = colors.inputSecondary,
     titleExpands = false
   } = item;
 
@@ -203,7 +211,13 @@ const renderItemInterface = (
         )}
 
         {prefix &&
-          renderPrefix({ prefix, prefixColor, PrefixTextComponent, testID })}
+          renderPrefix({
+            colors,
+            prefix,
+            prefixColor,
+            PrefixTextComponent,
+            testID
+          })}
 
         {(title || description) && (
           <ColumnView
@@ -227,6 +241,7 @@ const renderItemInterface = (
 
         {(suffixTop || suffixBottom) &&
           renderSuffix({
+            colors,
             suffixBottom,
             SuffixBottomTextComponent,
             suffixColor,
@@ -283,7 +298,7 @@ const renderItemInterface = (
             justifyContent={'flex-start'}
             width={'auto'}
             flex={1}>
-            <Text.List align={'left'} color={colors.secondary}>
+            <Text.List align={'left'} color={colors.inputSecondary}>
               {moreInfo}
             </Text.List>
           </ColumnView>
@@ -294,6 +309,7 @@ const renderItemInterface = (
 };
 
 const List = props => {
+  const { colors } = useTheme();
   const {
     data,
     disabled,
@@ -320,6 +336,7 @@ const List = props => {
       extraData={extraData}
       keyExtractor={(item, index) => index}
       renderItem={renderItem.bind(null, {
+        colors,
         disabled,
         onPress,
         onLongPress,
@@ -338,7 +355,10 @@ const List = props => {
   );
 };
 
-const ListItem = item => renderItemInterface({}, { item });
+const ListItem = item => {
+  const { colors } = useTheme();
+  return renderItemInterface({ colors }, { item });
+};
 
 const SectionHeader = ({ section }) =>
   (section && <ListHeader title={section.title} />) || null;
@@ -397,7 +417,7 @@ ListItem.propTypes = {
   moreInfo: PropTypes.any,
   onLongPress: PropTypes.func,
   onPress: PropTypes.func,
-  rightComponent: PropTypes.func,
+  rightComponent: PropTypes.any,
   rightIcon: PropTypes.string,
   rightIconColor: PropTypes.string,
   rightImage: PropTypes.string,
@@ -418,11 +438,9 @@ ListItem.defaultProps = {
   customRightIcon: null,
   customRightIconProps: null,
   description: null,
-  descriptionColor: colors.secondary,
   enforceLayout: false,
   disabled: false,
   icon: null,
-  iconColor: colors.secondary,
   image: null,
   listItemStyle: {},
   moreInfo: null,
@@ -430,9 +448,8 @@ ListItem.defaultProps = {
   onPress: mock,
   prefix: null,
   PrefixTextComponent: Text.Input,
-  rightComponent: mock,
+  rightComponent: null,
   rightIcon: null,
-  rightIconColor: colors.primary,
   rightImage: null,
   secondaryCustomRightIcon: null,
   secondaryCustomRightIconProps: {},
@@ -443,7 +460,6 @@ ListItem.defaultProps = {
   suffixTop: null,
   SuffixTopTextComponent: Text.Button,
   title: null,
-  titleColor: colors.secondary,
   titleExpands: false
 };
 

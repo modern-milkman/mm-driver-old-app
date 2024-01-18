@@ -11,7 +11,11 @@ import { user as userSelector } from 'Reducers/user';
 import Analytics, { EVENTS } from 'Services/analytics';
 import { base64ToHex, deliveryStates as DS, distance } from 'Helpers';
 import { Types as TransientTypes } from 'Reducers/transient';
-import { userSessionPresent as userSessionPresentSelector } from 'Reducers/application';
+import {
+  rehydrated as rehydratedSelector,
+  lastRoute as lastRouteSelector,
+  userSessionPresent as userSessionPresentSelector
+} from 'Reducers/application';
 import {
   checklist as checklistSelector,
   completedStopsIds as completedStopsIdsSelector,
@@ -21,14 +25,15 @@ import {
   selectedStop as selectedStopSelector,
   selectedStopId as selectedStopIdSelector,
   serverAddressIds as serverAddressIdsSelector,
+  routeId as routeIdSelector,
   status as statusSelector,
+  stock as stockSelector,
   stops as stopsSelector,
   Types as DeliveryTypes
 } from 'Reducers/delivery';
 import {
   Types as DeviceTypes,
   autoSelectStop as autoSelectStopSelector,
-  country as countrySelector,
   device as deviceSelector
 } from 'Reducers/device';
 
@@ -123,22 +128,21 @@ export const driverReply = function* ({
 };
 
 export const foregroundDeliveryActions = function* ({}) {
-  // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
-  // rejectReasons -> productsOrder -> returnTypes -> getForDriver -> getVehicleStockForDriver |
-  // cannedContent |
-  // bundleProducts |
-  const status = yield select(statusSelector);
-  const user_session = yield select(userSessionPresentSelector);
+  const rehydrated = yield select(rehydratedSelector);
+  if (rehydrated) {
+    const lastRoute = yield select(lastRouteSelector);
+    const user_session = yield select(userSessionPresentSelector);
 
-  yield put({ type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS });
+    yield put({
+      type: DeviceTypes.ENSURE_MANDATORY_PERMISSIONS,
+      routeName: lastRoute
+    });
 
-  if (status === DS.NCI && user_session) {
-    yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
-    yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
-    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
-  }
-  if (user_session) {
-    yield put({ type: DeliveryTypes.INIT_CHECKLIST });
+    yield put({ type: DeliveryTypes.REFRESH_ALL_DATA });
+
+    if (user_session) {
+      yield put({ type: DeliveryTypes.INIT_CHECKLIST });
+    }
   }
 };
 
@@ -243,8 +247,8 @@ export const getForDriverSuccess = function* ({ payload }) {
 
     if (stop.hasImage) {
       Api.repositories.filesystem.downloadFile({
-        fromUrl: `${Api.SERVER_URL()}${
-          Config.SERVER_URL_BASE
+        fromUrl: `${Api.S_URL()}${
+          Api.S_URL_SUFFIX
         }/Customer/CustomerImageFile/${stop.customerId}/${stop.key}`,
         toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${stop.customerId}-${stop.key}`
       });
@@ -264,18 +268,6 @@ export const getForDriverSuccess = function* ({ payload }) {
   Analytics.trackEvent(EVENTS.GET_FOR_DRIVER_SUCCESSFUL, {
     payload,
     serverAddressIds
-  });
-};
-
-export const getProductsOrder = function* () {
-  yield put({
-    type: Api.API_CALL,
-    actions: {
-      success: { type: DeliveryTypes.SET_PRODUCTS_ORDER },
-      fail: { type: DeliveryTypes.UPDATE_PROPS }
-    },
-    promise: Api.repositories.delivery.getProductsOrder(),
-    props: { processing: false, loaderInfo: null }
   });
 };
 
@@ -303,7 +295,7 @@ export const getReturnTypes = function* () {
   });
 };
 
-export const getVehicleStockForDriverSuccess = function* ({ payload }) {
+export const getVehicleStockForDriverSuccess = function* () {
   const autoSelectStop = yield select(autoSelectStopSelector);
   const checklist = yield select(checklistSelector);
   const isOptimised = yield select(isOptimisedSelector);
@@ -322,8 +314,10 @@ export const getVehicleStockForDriverSuccess = function* ({ payload }) {
     });
   }
   for (const { productId: id, quantity } of orderedStock) {
+    Api.repositories.delivery.getProductImage(id);
     productId[id] = quantity;
   }
+
   Analytics.trackEvent(EVENTS.GET_STOCK_WITH_DATA_SUCCESSFULL, {
     productId
   });
@@ -333,14 +327,32 @@ export const redirectSetSelectedClaimId = function* () {
   NavigationService.navigate({ routeName: 'CustomerIssueDetails' });
 };
 
+export const refreshAllData = function* () {
+  // GETS MANDATORY DATA REQUIRED FOR APP TO WORK
+  // rejectDeliveryReasons -> returnTypes -> getForDriver -> getVehicleStockForDriver |
+  // cannedContent |
+  // bundleProducts |
+  const status = yield select(statusSelector);
+  const user_session = yield select(userSessionPresentSelector);
+
+  if (status === DS.NCI && user_session) {
+    yield put({ type: DeliveryTypes.GET_REJECT_DELIVERY_REASONS });
+    yield put({ type: DeliveryTypes.GET_CANNED_CONTENT });
+    yield put({ type: DeliveryTypes.GET_BUNDLE_PRODUCTS });
+  }
+};
+
 export const saveVehicleChecks = function* () {
   NavigationService.navigate({ routeName: 'CheckIn' });
   const checklist = yield select(checklistSelector);
   const payload = { ...checklist.payload };
 
   const returns = [];
+
   for (const { id, value } of Object.values(payload.emptiesCollected)) {
-    returns.push({ returnTypeId: id, quantity: parseInt(value) });
+    if (parseInt(value) >= 0) {
+      returns.push({ returnTypeId: id, quantity: parseInt(value) });
+    }
   }
   delete payload.emptiesCollected;
 
@@ -356,21 +368,33 @@ export const saveVehicleChecks = function* () {
       }
     })
   });
+  yield put({
+    type: DeliveryTypes.UPDATE_CHECKLIST_PROPS,
+    props: { emptiesRequired: !checklist.emptiesScreenDirty }
+  });
   yield put({ type: DeliveryTypes.RESET_CHECKLIST_PAYLOAD });
 };
 
 export const setDeliveredOrRejected = function* (
   requestType,
-  { id, podImage, outOfStockIds, selectedStopId, reasonType, reasonMessage }
+  {
+    hasCollectedEmpties,
+    id,
+    podImage,
+    outOfStockIds,
+    selectedStopId,
+    reasonType,
+    reasonMessage
+  }
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
-  const country = yield select(countrySelector);
   const device = yield select(deviceSelector);
   const isOptimised = yield select(isOptimisedSelector);
   const orderedStopsIds = yield select(orderedStopsIdsSelector);
   const status = yield select(statusSelector);
   const stops = yield select(stopsSelector);
   const user = yield select(userSelector);
+  const routeId = yield select(routeIdSelector);
 
   const {
     autoOpenStopDetails,
@@ -388,20 +412,16 @@ export const setDeliveredOrRejected = function* (
   const totalDeliveries = Object.keys(stops).length;
   const deliveriesLeft = orderedStopsIds.length;
 
+  const promise =
+    requestType === 'delivered'
+      ? Api.repositories.delivery.postDelivered
+      : Api.repositories.delivery.patchRejected;
+
   const promisePayload = {
     orderId: id,
     deliveryLocationLatitude: position?.latitude,
     deliveryLocationLongitude: position?.longitude
   };
-
-  // TODO once microservices are deployed into FR env, remove the country check / patchFRDelivered
-  // also remove country export from reducer as this is the sole place it is used
-  const promise =
-    requestType === 'delivered'
-      ? country === 'uk'
-        ? Api.repositories.delivery.postDelivered
-        : Api.repositories.delivery.patchFRDelivered
-      : Api.repositories.delivery.patchRejected;
 
   if (isOptimised && autoSelectStop) {
     yield put({
@@ -421,17 +441,21 @@ export const setDeliveredOrRejected = function* (
     promise: promise({
       ...promisePayload,
       ...(requestType === 'rejected' && {
-        reasonType,
+        reasonType: reasonType.id,
         description: reasonMessage
       }),
-      ...(requestType === 'delivered' &&
-        podImage && {
+      ...(requestType === 'delivered' && {
+        driverId: user.driverId,
+        routeId: routeId,
+        emptiesCollected: hasCollectedEmpties,
+        ...(podImage && {
           podImage: yield Repositories.filesystem.readFile(
             podImage.path,
             'base64'
           ),
           podImageType: podImage.mime
         })
+      })
     })
   });
 
@@ -489,12 +513,6 @@ export const setItemOutOfStock = function* ({ id }) {
   Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, { id });
 };
 
-export const setProductsOrder = function* ({ payload }) {
-  for (const i of payload) {
-    Api.repositories.delivery.getProductImage(i);
-  }
-};
-
 export const setReturnTypes = function* () {
   const user_session = yield select(userSessionPresentSelector);
   if (user_session) {
@@ -526,8 +544,9 @@ export const showPODRequired = function* () {
 
 export const updateDriverActivity = function* () {
   const user = yield select(userSelector);
+  const stock = yield select(stockSelector);
 
-  for (const i of user.routes) {
+  for (const i of stock) {
     yield put({
       type: Api.API_CALL,
       promise: Api.repositories.delivery.postDriverActivity({

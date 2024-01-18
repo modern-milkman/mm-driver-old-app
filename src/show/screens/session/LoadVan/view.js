@@ -3,23 +3,28 @@ import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
 import Config from 'react-native-config';
 
-import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
-import { colors } from 'Theme';
+import { mock, toggle } from 'Helpers';
 import { List, NavBar } from 'Components';
 import NavigationService from 'Services/navigation';
-import { ColumnView, SafeAreaView } from 'Containers';
+import { ColumnView, SafeAreaView, useTheme } from 'Containers';
 
 const doneLoadedVan = (updateChecklistProps, updateDriverActivity) => {
-  updateChecklistProps({ loadedVan: true });
+  updateChecklistProps({ loadedVan: true, loadedVanItems: [] });
   updateDriverActivity();
 };
 
+const toggleLoadedVanItem = ({ loadedVanItems, updateChecklistProps }, id) => {
+  updateChecklistProps({ loadedVanItems: toggle(loadedVanItems, id) });
+};
+
 const LoadVan = props => {
+  const { colors } = useTheme();
   const {
     additionalItemCount,
     deliveredStock,
     itemCount,
+    loadedVanItems,
     orderedStock,
     readOnly,
     updateChecklistProps,
@@ -32,8 +37,10 @@ const LoadVan = props => {
     const combinedItemQuantity = stockItem.additionalQuantity
       ? `${stockItem.quantity} (${stockItem.additionalQuantity})`
       : stockItem.quantity;
+    const isPicked = loadedVanItems?.includes(stockItem.key);
     return {
       ...stockItem,
+      disabled: readOnly,
       suffixTop: readOnly
         ? `${
             stockItem.quantity - (deliveredStock[stockItem.key] || 0)
@@ -41,13 +48,21 @@ const LoadVan = props => {
         : combinedItemQuantity,
       image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
       customIcon: 'productPlaceholder',
-      testID: `loadVan-product-${stockItem.productId}`
+      testID: `loadVan-product-${stockItem.productId}`,
+      ...(isPicked && {
+        rightIcon: 'check',
+        rightIconColor: colors.success
+      })
     };
   });
 
   const combinedItemCount = additionalItemCount
     ? `${itemCount} (${additionalItemCount})`
     : itemCount;
+
+  const doneDisabled =
+    Config.ENVIRONMENT === 'production' &&
+    loadedVanItems?.length !== mappedStock.length;
 
   return (
     <SafeAreaView>
@@ -64,16 +79,29 @@ const LoadVan = props => {
               : combinedItemCount
           } ${I18n.t('screens:loadVan.title')}`}
           rightText={readOnly ? null : I18n.t('screens:loadVan.done')}
-          rightAction={NavigationService.goBack.bind(null, {
-            beforeCallback: doneLoadedVan.bind(
-              null,
-              updateChecklistProps,
-              updateDriverActivity
-            )
-          })}
+          rightColor={doneDisabled ? colors.input : colors.primary}
+          rightAction={
+            doneDisabled
+              ? null
+              : NavigationService.goBack.bind(null, {
+                  beforeCallback: doneLoadedVan.bind(
+                    null,
+                    updateChecklistProps,
+                    updateDriverActivity
+                  )
+                })
+          }
           testID={'loadVan-navbar'}
         />
-        <List data={mappedStock} />
+        <List
+          scrollable
+          data={mappedStock}
+          onPress={toggleLoadedVanItem.bind(null, {
+            loadedVanItems,
+            updateChecklistProps
+          })}
+          testID={'loadVan-products-view'}
+        />
       </ColumnView>
     </SafeAreaView>
   );
@@ -83,6 +111,7 @@ LoadVan.propTypes = {
   additionalItemCount: PropTypes.number,
   deliveredStock: PropTypes.object,
   itemCount: PropTypes.number,
+  loadedVanItems: PropTypes.array,
   orderedStock: PropTypes.array,
   readOnly: PropTypes.bool,
   updateChecklistProps: PropTypes.func,
@@ -93,6 +122,7 @@ LoadVan.defaultProps = {
   additionalItemCount: 0,
   deliveredStock: {},
   itemCount: 0,
+  loadedVanItems: [],
   orderedStock: [],
   readOnly: false,
   updateChecklistProps: mock,

@@ -2,9 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal as RNModal, KeyboardAvoidingView } from 'react-native';
 
-import style from './style';
+import { useThemedStyles } from 'Containers';
 
-const Modal = (props) => {
+import unthemedStyle from './style';
+
+const Modal = props => {
+  const style = useThemedStyles(unthemedStyle);
+
   const {
     animationType,
     children,

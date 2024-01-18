@@ -1,0 +1,7 @@
+{
+  "invalid": {
+    "email": "Le courriel est invalide",
+    "numericValidation": "Doit être un nombre",
+    "requiredValidation": "Ne peux pas être vide"
+  }
+}

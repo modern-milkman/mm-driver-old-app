@@ -46,15 +46,14 @@ import {
   getDriverReplyImage,
   getForDriver,
   getForDriverSuccess,
-  getProductsOrder,
   getRejectDeliveryReasons,
   getReturnTypes,
   getVehicleStockForDriverSuccess,
   redirectSetSelectedClaimId,
+  refreshAllData,
   saveVehicleChecks,
   setDeliveredOrRejected,
   setItemOutOfStock,
-  setProductsOrder,
   setReturnTypes,
   showMustComplyWithTerms,
   showPODRequired,
@@ -70,6 +69,7 @@ import {
   lowConnectionUpdate,
   reduxSagaNetstatChange,
   setCountry,
+  setLanguage,
   setLocation,
   setMapMode,
   shareOfflineData,
@@ -126,7 +126,6 @@ export default function* root() {
     takeLatest(DeliveryTypes.GET_DRIVER_DATA_FAILURE, getDriverDataFailure),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER, getForDriver),
     takeLatest(DeliveryTypes.GET_FOR_DRIVER_SUCCESS, getForDriverSuccess),
-    takeLatest(DeliveryTypes.GET_PRODUCTS_ORDER, getProductsOrder),
     takeLatest(
       DeliveryTypes.GET_REJECT_DELIVERY_REASONS,
       getRejectDeliveryReasons
@@ -140,25 +139,24 @@ export default function* root() {
       DeliveryTypes.REDIRECT_SET_SELECTED_CLAIM_ID,
       redirectSetSelectedClaimId
     ),
-    takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getProductsOrder),
+    takeLatest(DeliveryTypes.REFRESH_ALL_DATA, refreshAllData),
     takeLatest(DeliveryTypes.SAVE_VEHICLE_CHECKS, saveVehicleChecks),
-    takeLatest(
-      DeliveryTypes.SHOW_MUST_COMPLY_WITH_TERMS,
-      showMustComplyWithTerms
-    ),
     takeEvery(DeliveryTypes.SET_CUSTOMER_CLAIMS, getDriverReplyImage),
     takeLatest(
       DeliveryTypes.SET_DELIVERED,
       setDeliveredOrRejected.bind(null, 'delivered')
     ),
     takeEvery(DeliveryTypes.SET_ITEM_OUT_OF_STOCK, setItemOutOfStock),
-    takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, setProductsOrder),
-    takeEvery(DeliveryTypes.SET_PRODUCTS_ORDER, getReturnTypes),
+    takeLatest(DeliveryTypes.SET_REJECT_DELIVERY_REASONS, getReturnTypes),
     takeLatest(
       DeliveryTypes.SET_REJECTED,
       setDeliveredOrRejected.bind(null, 'rejected')
     ),
     takeEvery(DeliveryTypes.SET_RETURN_TYPES, setReturnTypes),
+    takeLatest(
+      DeliveryTypes.SHOW_MUST_COMPLY_WITH_TERMS,
+      showMustComplyWithTerms
+    ),
     takeEvery(DeliveryTypes.SHOW_POD_REQUIRED, showPODRequired),
     takeEvery(
       DeliveryTypes.UPDATE_DIRECTIONS_POLYLINE,
@@ -174,6 +172,7 @@ export default function* root() {
     ),
     takeLatest(DeviceTypes.LOW_CONNECTION_UPDATE, lowConnectionUpdate),
     takeLatest(DeviceTypes.SET_COUNTRY, setCountry),
+    takeLatest(DeviceTypes.SET_LANGUAGE, setLanguage),
     takeLatest(DeviceTypes.SET_MAP_MODE, setMapMode),
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA, shareOfflineData),
     takeLatest(DeviceTypes.SHARE_OFFLINE_DATA_ERROR, shareOfflineDataError),

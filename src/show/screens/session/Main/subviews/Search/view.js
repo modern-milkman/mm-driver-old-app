@@ -4,14 +4,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import I18n from 'Locales/I18n';
+import { defaults, sizes } from 'Theme';
 import List from 'Components/List';
-import { RowView } from 'Containers';
 import Label from 'Components/Label';
-import { colors, defaults } from 'Theme';
+import { RowView, useTheme, useThemedStyles } from 'Containers';
 import { deliveryStates as DS, statusBarHeight, mock } from 'Helpers';
 import TextInput, { height as textInputHeight } from 'Components/TextInput';
 
-import style from './style';
+import unthemedStyle from './style';
 
 const searchReference = React.createRef();
 
@@ -25,6 +25,8 @@ const handleSearchFilter = (items, searchValue) => {
 };
 
 const Search = props => {
+  const { colors } = useTheme();
+  const style = useThemedStyles(unthemedStyle);
   const {
     completedStopsIds,
     isOptimised,
@@ -76,8 +78,8 @@ const Search = props => {
       title: I18n.t('general:upNext'),
       data: dataSearched.filter(
         item =>
-          (orderedStopsIds.includes(item.key) ||
-            outOfSequenceIds.includes(item.key)) &&
+          orderedStopsIds.includes(item.key) &&
+          !outOfSequenceIds.includes(item.key) &&
           !completedStopsIds.includes(item.key)
       )
     },
@@ -87,8 +89,7 @@ const Search = props => {
       disabled: true,
       data: dataSearched.filter(
         item =>
-          !orderedStopsIds.includes(item.key) &&
-          !outOfSequenceIds.includes(item.key) &&
+          outOfSequenceIds.includes(item.key) &&
           !completedStopsIds.includes(item.key)
       )
     },
@@ -139,7 +140,10 @@ const Search = props => {
             {
               height: top + inputHeight + defaults.marginVertical / 4
             },
-            focused && { backgroundColor: colors.neutral, ...style.elevation7 }
+            focused && {
+              backgroundColor: colors.neutral,
+              ...style.elevation7
+            }
           ]}>
           <Animated.View
             style={[
@@ -167,6 +171,7 @@ const Search = props => {
               <Label
                 backgroundColor={isOptimised ? colors.success : colors.error}
                 shadow
+                height={sizes.input.small}
                 text={I18n.t('general:RO')}
               />
             </RowView>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import EM from 'es-event-emitter';
-import { gt as semverGt } from 'semver';
+import { coerce, gt as semverGt } from 'semver';
 import Config from 'react-native-config';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -23,16 +23,19 @@ let NETINFO_LISTENER = null;
 const requestCountTimes = [];
 
 // COUNTRY BASED CONFIG
-const COUNTRY_BASED_PROP = prop => {
+const COUNTRY_BASED_PROP = (rootProp, secondaryProp = null) => {
   const country =
     store().store.getState().device.country || Config.DEFAULT_COUNTRY;
-  return countryBasedEnvironmentConfig[Config.ENVIRONMENT][prop][country];
+  if (secondaryProp) {
+    return countryBasedEnvironmentConfig[Config.ENVIRONMENT][rootProp][
+      secondaryProp
+    ][country];
+  }
+  return countryBasedEnvironmentConfig[Config.ENVIRONMENT][rootProp][country];
 };
 
 const configureCountryBaseURL = () => {
-  api.defaults.baseURL = `${COUNTRY_BASED_PROP('SERVER_URL')}${
-    Config.SERVER_URL_BASE
-  }`;
+  api.defaults.baseURL = `${COUNTRY_BASED_PROP('S_URL')}`;
 
   if (NETINFO_LISTENER) {
     NETINFO_LISTENER();
@@ -50,6 +53,16 @@ const configureCountryBaseURL = () => {
   });
   NETINFO_LISTENER = NetInfo.addEventListener(handleNetStatChange);
   NetInfo.fetch().done(handleNetStatChange);
+};
+
+const RMR_COUNTRY_BASED_PROP = () => {
+  const user = store().store.getState().user;
+  const routeDescription =
+    store().store.getState().delivery.stockWithData.routeDescription;
+
+  return `${COUNTRY_BASED_PROP('RATE_MY_ROUND')}&entry.2020812711=${
+    user.name
+  }&entry.1414591438=${user.driverId}&entry.1516670531=${routeDescription}`;
 };
 
 const handleNetStatChange = netStatProps => {
@@ -315,9 +328,11 @@ api.interceptors.response.use(
 
 const Api = {
   API_CALL: 'API_CALL',
-  RATE_MY_ROUND: COUNTRY_BASED_PROP.bind(null, 'RATE_MY_ROUND'),
-  SERVER_SERVICE_URL: COUNTRY_BASED_PROP.bind(null, 'SERVER_SERVICE_URL'),
-  SERVER_URL: COUNTRY_BASED_PROP.bind(null, 'SERVER_URL'),
+  RATE_MY_ROUND: RMR_COUNTRY_BASED_PROP,
+  S_URL: COUNTRY_BASED_PROP.bind(null, 'S_URL'),
+  SS_URL: COUNTRY_BASED_PROP.bind(null, 'SS_URL'),
+  S_URL_SUFFIX: COUNTRY_BASED_PROP.bind(null, 'SS_URL'),
+  SS_URL_SUFFIX: COUNTRY_BASED_PROP.bind(null, 'SS_URL_SUFFIX'),
 
   configureCountryBaseURL,
   repositories,
@@ -362,17 +377,22 @@ const Api = {
 
   testCustomHeaders({ headers }) {
     if (headers) {
+      const { dispatch } = store().store;
       if (
         headers['x-app-version'] &&
-        semverGt(headers['x-app-version'], Config.APP_VERSION_NAME)
+        semverGt(headers['x-app-version'], coerce(Config.APP_VERSION_NAME))
       ) {
+        dispatch(
+          DeviceActions.updateProps({
+            minimumVersion: headers['x-app-version']
+          })
+        );
         NavigationService.navigate({
           routeName: 'UpgradeApp',
           params: { minimumVersion: headers['x-app-version'] }
         });
       }
       if (headers['x-route-time']) {
-        const { dispatch } = store().store;
         const [h, m] = timeToHMArray(headers['x-route-time']);
         dispatch(
           DeviceActions.updateProps({

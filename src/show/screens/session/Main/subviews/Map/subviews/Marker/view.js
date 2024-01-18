@@ -4,30 +4,48 @@ import React, { useEffect, useState } from 'react';
 import { Marker as RNMMarker } from 'react-native-maps';
 
 import { Text } from 'Components';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
+import { useTheme, useThemedStyles } from 'Containers';
 
-import {
-  mock,
-  customerSatisfactionColor as getCustomerSatisfactionColor
-} from 'Helpers';
+import { mock } from 'Helpers';
 
-import style from './style';
+import unthemedStyle from './style';
+
+const getCustomerSatisfactionColor = (colors, satisfactionStatus) => {
+  switch (satisfactionStatus) {
+    case 1:
+      return colors.success;
+    case 2:
+      return colors.primaryBright;
+    case 3:
+      return colors.warning;
+    case 4:
+      return colors.error;
+    case 5:
+      return colors.freddiesFlowers;
+    default:
+      return colors.primary;
+  }
+};
 
 const markerOnPress = ({ updateProps, updateSelectedStop, id }) => {
   updateSelectedStop(id);
 };
 
-const renderSequence = ({ id, selectedStopId, sequence }) => {
+const renderSequence = ({ colors, id, selectedStopId, sequence }) => {
   return sequence && selectedStopId !== id ? (
     <View style={{ transform: [{ rotateZ: '45deg' }] }}>
-      <Text.Input color={colors.secondary}>{sequence}</Text.Input>
+      <Text.Input color={colors.inputSecondary}>{sequence}</Text.Input>
     </View>
   ) : null;
 };
 
 const Marker = props => {
+  const { colors } = useTheme();
+  const style = useThemedStyles(unthemedStyle);
   const {
     completedStopsIds,
+    darkMode,
     disabled,
     id,
     mapMarkerSize,
@@ -42,15 +60,18 @@ const Marker = props => {
   const completed = completedStopsIds.includes(id);
 
   const customerSatisfactionColor = getCustomerSatisfactionColor(
+    colors,
     selectedStop?.satisfactionStatus
   );
+
   const mapMarkerBackgroundColor =
     selectedStopId === id
-      ? colors.secondary
+      ? colors.inputSecondary
       : completed
       ? colors.input
       : customerSatisfactionColor;
 
+  const [previousDarkMode, setPreviousDarkMode] = useState(darkMode);
   const [previousMarkerSize, setPreviousMarkerSize] = useState(mapMarkerSize);
   const [previousSequence, setPreviousSequence] = useState(sequence);
   const [tracksViewChanges, setTracksViewChanges] = useState(
@@ -61,9 +82,13 @@ const Marker = props => {
     setTracksViewChanges(
       selectedStopId === id ||
         previousStopId === id ||
+        previousDarkMode !== darkMode ||
         previousMarkerSize !== mapMarkerSize ||
         previousSequence !== sequence
     );
+    if (previousDarkMode !== darkMode) {
+      setPreviousDarkMode(darkMode);
+    }
     if (previousMarkerSize !== mapMarkerSize) {
       setPreviousMarkerSize(mapMarkerSize);
     }
@@ -74,8 +99,10 @@ const Marker = props => {
       setTracksViewChanges(false);
     }, 125);
   }, [
+    darkMode,
     id,
     mapMarkerSize,
+    previousDarkMode,
     previousMarkerSize,
     previousSequence,
     previousStopId,
@@ -100,6 +127,7 @@ const Marker = props => {
         {...(selectedStopId === id && { zIndex: 1 })}
         tracksViewChanges={tracksViewChanges}>
         <View
+          testID={`map-marker-${id}`}
           style={[
             style.marker,
             {
@@ -141,7 +169,7 @@ const Marker = props => {
               ]}
             />
           )}
-          {renderSequence({ id, selectedStopId, sequence })}
+          {renderSequence({ colors, id, selectedStopId, sequence })}
         </View>
         {selectedStopId === id && (
           <View
@@ -172,6 +200,7 @@ Marker.defaultProps = {
 Marker.propTypes = {
   completed: PropTypes.bool,
   completedStopsIds: PropTypes.array,
+  darkMode: PropTypes.bool,
   disabled: PropTypes.bool,
   id: PropTypes.number,
   mapMarkerSize: PropTypes.number,
@@ -185,6 +214,7 @@ Marker.propTypes = {
 
 const areEqual = (prevProps, nextProps) => {
   return (
+    prevProps.darkMode === nextProps.darkMode &&
     prevProps.disabled === nextProps.disabled &&
     prevProps.completed === nextProps.completed &&
     prevProps.mapMarkerSize === nextProps.mapMarkerSize &&

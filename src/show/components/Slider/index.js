@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import { Slider as SliderRN } from '@miblanchard/react-native-slider';
 
 import { mock } from 'Helpers';
+import { useTheme, useThemedStyles } from 'Containers';
 
-import { colors } from 'Theme';
-
-import style from './style';
+import unthemedStyle from './style';
 
 const Slider = props => {
+  const { colors } = useTheme();
+  const style = useThemedStyles(unthemedStyle);
+
   const {
     disabled,
     maximumValue,
@@ -24,7 +26,7 @@ const Slider = props => {
     <SliderRN
       animateTransitions
       disabled={disabled}
-      maximumTrackTintColor={disabled ? colors.input : colors.secondary}
+      maximumTrackTintColor={disabled ? colors.input : colors.inputSecondary}
       maximumValue={maximumValue}
       minimumTrackTintColor={disabled ? colors.input : colors.primary}
       minimumValue={minimumValue}

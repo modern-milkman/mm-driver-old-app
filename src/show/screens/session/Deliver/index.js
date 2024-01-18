@@ -9,6 +9,7 @@ export default connect(
   state => {
     return {
       allItemsDone: state.delivery?.allItemsDone,
+      buttonAccessibility: state.device.buttonAccessibility,
       selectedStop: selectedStop(state),
       confirmedItem: state.delivery?.confirmedItem,
       outOfStockIds: state.delivery?.outOfStockIds,

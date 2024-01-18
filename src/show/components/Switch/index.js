@@ -4,22 +4,27 @@ import PropTypes from 'prop-types';
 import { Platform, Switch as RNSwitch } from 'react-native';
 
 import { mock } from 'Helpers';
-import { colors } from 'Theme';
+import { useTheme } from 'Containers';
 
 const Switch = props => {
+  const { alphaColor, colors } = useTheme();
   const { disabled, onValueChange, testID, value } = props;
   const trackColor = {
     false: Platform.select({
-      android: colors.input
+      android: disabled ? alphaColor('input', 0.4) : colors.input
     }),
     true: Platform.select({
-      android: colors.input,
+      android: disabled ? alphaColor('input', 0.4) : colors.primary,
       ios: colors.primary
     })
   };
   const platformProps = Platform.select({
     android: {
-      thumbColor: colors.primary
+      thumbColor: disabled
+        ? colors.input
+        : value
+        ? colors.whiteOnly
+        : colors.primary
     },
     ios: {
       ios_backgroundColor: colors.input

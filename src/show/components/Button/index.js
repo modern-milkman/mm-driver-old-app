@@ -11,11 +11,11 @@ import {
 
 import Icon from 'Components/Icon';
 import Text from 'Components/Text';
-import { RowView } from 'Containers';
+import { RowView, useThemedStyles } from 'Containers';
 import { sizes } from 'Theme';
 
 import Types from './Types';
-import { style } from './style';
+import unthemedStyle from './style';
 
 const wrapButtonComponent = (props, type) => <Button {...props} type={type} />;
 
@@ -32,6 +32,7 @@ const onPressHandler = ({ internallyDisabled, onPress }) => {
 const Button = props => {
   const {
     backgroundOpacity,
+    borderColor,
     buttonAccessibility,
     disabled,
     icon,
@@ -50,6 +51,7 @@ const Button = props => {
     width,
     noBorderRadius
   } = props;
+  const style = useThemedStyles(unthemedStyle);
   const computedTitleColor = disabled
     ? style.disabled.textStyle.color
     : titleColor
@@ -77,7 +79,8 @@ const Button = props => {
             },
           { height: buttonAccessibility },
           noBorderRadius && { ...style.noBorderRadius },
-          backgroundOpacity && { opacity: backgroundOpacity }
+          backgroundOpacity && { opacity: backgroundOpacity },
+          borderColor && { borderColor }
         ]}
       />
 
@@ -124,6 +127,7 @@ const Button = props => {
 
 Button.propTypes = {
   backgroundOpacity: PropTypes.object,
+  borderColor: PropTypes.string,
   buttonAccessibility: PropTypes.number,
   disabled: PropTypes.bool,
   icon: PropTypes.bool,
@@ -137,7 +141,7 @@ Button.propTypes = {
   textAlign: PropTypes.string,
   textFlex: PropTypes.number,
   title: PropTypes.string.isRequired,
-  titleColor: PropTypes.object,
+  titleColor: PropTypes.string,
   type: PropTypes.string,
   weight: PropTypes.string,
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number])

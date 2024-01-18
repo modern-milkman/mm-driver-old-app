@@ -5,10 +5,10 @@ import { WebView } from 'react-native-webview';
 
 import { openURL } from 'Helpers';
 import { Icon, Text } from 'Components';
-import { colors, defaults } from 'Theme';
-import { Modal, RowView, SafeAreaView } from 'Containers';
+import { defaults } from 'Theme';
+import { Modal, RowView, SafeAreaView, useThemedStyles } from 'Containers';
 
-import style from './style';
+import unthemedStyle from './style';
 
 const webview = createRef();
 
@@ -25,7 +25,15 @@ const goBackOrDismiss = ({ canGoBack, updateProps }) => {
 };
 
 const InAppBrowser = props => {
-  const { canGoBack, canGoForward, updateProps, url: uri, visible } = props;
+  const {
+    canGoBack,
+    canGoForward,
+    theme: { colors },
+    updateProps,
+    url: uri,
+    visible
+  } = props;
+  const style = useThemedStyles(unthemedStyle);
 
   return (
     <Modal
@@ -50,7 +58,7 @@ const InAppBrowser = props => {
             name="arrow-left"
             size={defaults.topNavigation.iconSize}
             containerSize={defaults.topNavigation.height}
-            color={canGoBack ? colors.white : colors.primaryLight}
+            color={canGoBack ? colors.white : colors.input}
             disabled={!canGoBack}
             onPress={webview?.current?.goBack}
           />
@@ -66,7 +74,7 @@ const InAppBrowser = props => {
             name="arrow-right"
             size={defaults.topNavigation.iconSize}
             containerSize={defaults.topNavigation.height}
-            color={canGoForward ? colors.white : colors.primaryLight}
+            color={canGoForward ? colors.white : colors.input}
             disabled={!canGoForward}
             onPress={webview?.current?.goForward}
           />
@@ -104,6 +112,7 @@ InAppBrowser.defaultProps = {
 InAppBrowser.propTypes = {
   canGoBack: PropTypes.bool,
   canGoForward: PropTypes.bool,
+  theme: PropTypes.object,
   updateProps: PropTypes.func,
   url: PropTypes.string,
   visible: PropTypes.bool

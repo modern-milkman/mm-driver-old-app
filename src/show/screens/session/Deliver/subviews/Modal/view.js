@@ -2,16 +2,18 @@ import React from 'react';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { TouchableOpacity } from 'react-native';
-import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from '../../../../../../providers/imageCropPickerProvider';
+import { useFocusEffect } from '@react-navigation/native';
+import { BackHandler, TouchableOpacity } from 'react-native';
 
 import I18n from 'Locales/I18n';
 import { CustomIcon } from 'Images';
 import actionSheet from 'Services/actionSheet';
-import { ColumnView, RowView } from 'Containers';
 import NavigationService from 'Services/navigation';
+import Analytics, { EVENTS } from 'Services/analytics';
 import { deviceFrame, formatDate, mock } from 'Helpers';
-import { alphaColor, colors, defaults, sizes } from 'Theme';
+import { defaults, sizes } from 'Theme';
+import { ColumnView, RowView, useTheme, useThemedStyles } from 'Containers';
 import {
   Button,
   Text,
@@ -23,7 +25,7 @@ import {
   Separator
 } from 'Components';
 
-import style from './style';
+import unthemedStyle from './style';
 
 const hideClaimsModal = toggleModal => {
   toggleModal('showClaimModal', false);
@@ -68,9 +70,18 @@ const openCannedContent = ({
 };
 
 const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
+  const event =
+    method === 'openCamera'
+      ? EVENTS.IMAGE_PICKER_FROM_CAMERA
+      : 'openPicker'
+      ? EVENTS.IMAGE_PICKER_FROM_PHOTO_LIBRARY
+      : EVENTS.IMAGE_PICKER_FROM_NULL;
+  Analytics.trackEvent(event);
+
   ImagePicker[method]({
     width: 1000,
     height: 1000,
+    compressImageQuality: 0.6,
     cropping: true
   }).then(img => {
     updateDriverResponse({
@@ -82,9 +93,11 @@ const openPicker = ({ driverResponse, method, updateDriverResponse }) => {
 };
 
 const renderReplyBody = ({
+  cannedContent,
+  colors,
   driverResponse,
   updateDriverResponse,
-  cannedContent
+  style
 }) => {
   return (
     <ColumnView
@@ -98,6 +111,8 @@ const renderReplyBody = ({
           updateDriverResponse,
           driverResponse
         )}
+        error={driverResponse?.textHasError}
+        errorMessage={driverResponse?.textErrorMessage}
         multiline
         value={driverResponse?.text}
         multilineHeight={100}
@@ -158,7 +173,7 @@ const renderReplyBody = ({
               justifyContent={'flex-start'}
               width={sizes.list.image}
               height={sizes.list.image}
-              backgroundColor={colors.secondary}
+              backgroundColor={colors.inputSecondary}
               borderRadius={defaults.borderRadius}>
               <Icon
                 name={'quickreply'}
@@ -178,6 +193,7 @@ const renderReplyBody = ({
 
 const renderCustomerIssueBody = ({
   customerComment = '',
+  colors,
   reason = '',
   sectionData = [],
   height
@@ -189,11 +205,11 @@ const renderCustomerIssueBody = ({
         paddingHorizontal={defaults.marginHorizontal}
         justifyContent={'flex-start'}
         alignItems={'flex-start'}>
-        <Text.List color={colors.secondaryLight}>
+        <Text.List color={colors.inputSecondary}>
           {I18n.t('screens:deliver.customerIssue.modal.reason')}
         </Text.List>
 
-        <Text.List color={colors.secondary} flex={1}>
+        <Text.List color={colors.inputSecondary} flex={1}>
           {reason}
         </Text.List>
       </RowView>
@@ -206,11 +222,11 @@ const renderCustomerIssueBody = ({
             paddingVertical={defaults.marginVertical / 2}
             justifyContent={'flex-start'}
             alignItems={'flex-start'}>
-            <Text.List color={colors.secondaryLight}>
+            <Text.List color={colors.inputSecondary}>
               {I18n.t('screens:deliver.customerIssue.modal.customerComment')}
             </Text.List>
 
-            <Text.List color={colors.secondary} flex={1}>
+            <Text.List color={colors.inputSecondary} flex={1}>
               {customerComment}
             </Text.List>
           </RowView>
@@ -233,6 +249,8 @@ const updateText = (updateDriverResponse, driverResponse, text) => {
 };
 
 const CustomerIssueModal = props => {
+  const style = useThemedStyles(unthemedStyle);
+  const { alphaColor, colors } = useTheme();
   const {
     cannedContent,
     claims: {
@@ -251,6 +269,28 @@ const CustomerIssueModal = props => {
   } = props;
 
   const { width, height } = deviceFrame();
+
+  const disabled =
+    showReplyModal &&
+    ((!driverResponse?.text && !driverResponse?.image) ||
+      driverResponse.textHasError);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        toggleModal('showClaimModal', false);
+        toggleModal('showReplyModal', false);
+        NavigationService.goBack();
+
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [toggleModal])
+  );
 
   let selectedClaimData;
   if (unacknowledgedList?.length > 0) {
@@ -281,7 +321,7 @@ const CustomerIssueModal = props => {
   ];
 
   return (
-    <ColumnView flex={1} backgroundColor={alphaColor('secondary', 0.85)}>
+    <ColumnView flex={1} backgroundColor={alphaColor('blackOnly', 0.85)}>
       <ColumnView
         backgroundColor={'transparent'}
         marginHorizontal={defaults.marginHorizontal}
@@ -309,7 +349,7 @@ const CustomerIssueModal = props => {
                 bgColor={'transparent'}
                 disabled
               />
-              <Text.Heading color={colors.secondary}>
+              <Text.Heading color={colors.inputSecondary}>
                 {showReplyModal
                   ? I18n.t('screens:deliver.customerIssue.modal.title')
                   : I18n.t('screens:deliver.customerIssue.modal.customerIssue')}
@@ -319,7 +359,7 @@ const CustomerIssueModal = props => {
             {!showReplyModal && (
               <Text.Heading
                 color={
-                  colors.secondaryLight
+                  colors.inputSecondary
                 }>{` ${showCount} / ${unacknowledgedListNr}`}</Text.Heading>
             )}
           </RowView>
@@ -331,10 +371,10 @@ const CustomerIssueModal = props => {
             paddingHorizontal={defaults.marginHorizontal}
             justifyContent={'space-between'}>
             <RowView flex={1} justifyContent={'flex-start'}>
-              <Text.List color={colors.secondaryLight}>
+              <Text.List color={colors.inputSecondary}>
                 {I18n.t('screens:deliver.customerIssue.modal.date')}
               </Text.List>
-              <Text.List color={colors.secondary}>
+              <Text.List color={colors.inputSecondary}>
                 {formatDate(new Date(selectedClaimData?.claimDateTime))}
               </Text.List>
             </RowView>
@@ -351,13 +391,16 @@ const CustomerIssueModal = props => {
 
           {showReplyModal
             ? renderReplyBody({
+                cannedContent,
+                colors,
                 driverResponse,
                 updateDriverResponse,
-                cannedContent
+                style
               })
             : renderCustomerIssueBody({
                 customerComment: selectedClaimData?.customerComment,
                 reason: selectedClaimData?.reason,
+                colors,
                 sectionData,
                 height
               })}
@@ -379,11 +422,7 @@ const CustomerIssueModal = props => {
                   ? 'screens:deliver.customerIssue.modal.send'
                   : 'screens:deliver.customerIssue.modal.reply'
               )}
-              disabled={
-                showReplyModal &&
-                !driverResponse?.image &&
-                !driverResponse?.text
-              }
+              disabled={disabled}
               width={'50%'}
               noBorderRadius
               onPress={

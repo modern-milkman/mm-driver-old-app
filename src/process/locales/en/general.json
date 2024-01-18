@@ -1,4 +1,5 @@
 {
+  "camera": "Camera",
   "cancel": "Cancel",
   "country": "Location/Region selected",
   "deletePhoto": "Delete Photo",
@@ -20,6 +21,7 @@
       "whyLocationUsage": "Your location is required to make deliveries."
     }
   },
+  "photoLibrary": "Photo Library",
   "reset": "Reset & Restart Driver",
   "restart": "Restart Driver",
   "reviewPhoto": "Review Photo",

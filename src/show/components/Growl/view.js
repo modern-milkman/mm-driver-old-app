@@ -1,79 +1,85 @@
 //testID supported
-import React from 'react';
 import store from 'Redux/store';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { StyleSheet } from 'react-native';
+import React, { createRef, useEffect } from 'react';
 import DropdownAlert from 'react-native-dropdownalert';
 
-import { colors } from 'Theme';
+import { useThemedStyles } from 'Containers';
 
-import style from './style';
+import unthemedStyle from './style';
 
-class Growl extends React.Component {
-  componentDidMount = () => {
-    const { updateProps } = this.props;
+const dropdown = createRef();
+
+const Growl = props => {
+  const style = useThemedStyles(unthemedStyle);
+  const {
+    growl,
+    theme: { colors },
+    testID,
+    updateProps
+  } = props;
+
+  useEffect(() => {
     updateProps({
-      dropdownAlertInstance: this.dropdown.alertWithType.bind(this)
+      dropdownAlertInstance: dropdown.current.alertWithType
     });
-  };
 
-  componentWillUnmount = () => {
-    const { updateProps } = this.props;
-    updateProps({ dropdownAlertInstance: null });
-  };
+    return () => {
+      updateProps({ dropdownAlertInstance: null });
+    };
+  }, [updateProps]);
 
-  onTap = ({ payload }) => {
-    const { onTap = null, action = null, ...rest } = payload;
+  const onTap = ({ payload }) => {
+    const { onTap: propOnTap = null, action = null, ...rest } = payload;
     if (action) {
       const { dispatch } = store().store;
       dispatch({ type: action, ...rest });
-    } else if (onTap) {
-      onTap();
+    } else if (propOnTap) {
+      propOnTap();
     }
   };
 
-  render = () => {
-    const { growl, testID } = this.props;
-    return (
-      <DropdownAlert
-        ref={ref => (this.dropdown = ref)}
-        closeInterval={parseInt(Config.GROWL_AUTOHIDE)}
-        contentContainerStyle={style.contentContainerStyle}
-        defaultContainer={style.defaultContainer}
-        defaultTextContainer={style.defaultTextContainer}
-        errorColor={colors.error}
-        errorImageSrc={null}
-        imageStyle={style.logo}
-        inactiveStatusBarBackgroundColor={'transparent'}
-        infoColor={colors.primary}
-        infoImageSrc={null}
-        messageNumOfLines={5}
-        messageStyle={StyleSheet.flatten([
-          style.messageStyle,
-          growl.type === 'error' && style.error
-        ])}
-        onTap={this.onTap}
-        panResponderEnabled
-        tapToCloseEnabled
-        testID={testID}
-        titleNumOfLines={2}
-        titleStyle={StyleSheet.flatten([
-          style.titleStyle,
-          growl.type === 'error' && style.error
-        ])}
-        translucent
-        updateStatusBar={false}
-        wrapperStyle={style.shadow}
-        zIndex={100}
-      />
-    );
-  };
-}
+  return (
+    <DropdownAlert
+      ref={dropdown}
+      closeInterval={parseInt(Config.GROWL_AUTOHIDE)}
+      contentContainerStyle={style.contentContainerStyle}
+      defaultContainer={style.defaultContainer}
+      defaultTextContainer={style.defaultTextContainer}
+      errorColor={colors.error}
+      errorImageSrc={null}
+      imageStyle={style.logo}
+      inactiveStatusBarBackgroundColor={'transparent'}
+      infoColor={colors.primary}
+      infoImageSrc={null}
+      messageNumOfLines={5}
+      messageStyle={StyleSheet.flatten([
+        style.messageStyle,
+        growl.type === 'error' && style.error
+      ])}
+      onTap={onTap}
+      panResponderEnabled
+      tapToCloseEnabled
+      testID={testID}
+      titleNumOfLines={2}
+      titleStyle={StyleSheet.flatten([
+        style.titleStyle,
+        growl.type === 'error' && style.error
+      ])}
+      translucent
+      updateStatusBar={false}
+      wrapperStyle={style.shadow}
+      zIndex={100}
+    />
+  );
+};
 
 Growl.propTypes = {
   growl: PropTypes.object,
   testID: PropTypes.string,
+  theme: PropTypes.object,
   updateProps: PropTypes.func.isRequired
 };
 

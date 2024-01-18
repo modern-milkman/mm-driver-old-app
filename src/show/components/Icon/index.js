@@ -1,16 +1,17 @@
 //testID supported
 import React from 'react';
-import { View } from 'react-native';
 import PropTypes from 'prop-types';
+import { View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors } from 'Theme';
+import { useTheme } from 'Containers';
 
 import defaultStyle from './style';
 
 const Icon = props => {
+  const { colors } = useTheme();
   const {
-    color,
+    color = colors.primary,
     containerSize,
     disabled,
     name,
@@ -57,7 +58,6 @@ Icon.propTypes = {
 };
 
 Icon.defaultProps = {
-  color: colors.primary,
   containerSize: 44,
   disabled: false,
   name: 'circle',

@@ -3,33 +3,26 @@ import PropTypes from 'prop-types';
 import { Pressable } from 'react-native';
 
 import I18n from 'Locales/I18n';
-import { CarLogo } from 'Images';
+import { Logo } from 'Images';
+import { defaults, sizes } from 'Theme';
 import { Button, Text } from 'Components';
-import { colors, defaults, sizes } from 'Theme';
-import { ColumnView, FullView, RowView } from 'Containers';
 import { openDriverUpdate, triggerDriverUpdate } from 'Helpers';
+import { ColumnView, FullView, RowView, useTheme } from 'Containers';
 
 import style from './style';
 
 const logoSize = 100;
 
 const UpgradeApp = props => {
-  const {
-    appcenter,
-    navigation: {
-      state: { params }
-    }
-  } = props;
+  const { colors } = useTheme();
+  const { appcenter, minimumVersion } = props;
 
   return (
     <FullView bgColor={colors.primary}>
       <ColumnView flex={1} justifyContent={'center'}>
-        <CarLogo
-          width={logoSize}
-          disabled
-          fill={colors.white}
-          primaryFill={colors.primary}
-        />
+        <ColumnView marginVertical={defaults.marginVertical}>
+          <Logo width={logoSize} />
+        </ColumnView>
         <ColumnView height={Text.Heading.height}>
           <Text.Heading color={colors.white}>
             {I18n.t('screens:home.driver')}
@@ -43,11 +36,11 @@ const UpgradeApp = props => {
             {I18n.t('screens:upgradeApp.description')}
           </Text.List>
 
-          {params?.minimumVersion && (
+          {minimumVersion && (
             <ColumnView marginTop={defaults.marginVertical}>
               <Text.Caption align={'center'}>
                 {I18n.t('screens:upgradeApp.minimumVersion', {
-                  minimumVersion: params.minimumVersion
+                  minimumVersion
                 })}
               </Text.Caption>
             </ColumnView>
@@ -88,11 +81,7 @@ const UpgradeApp = props => {
 
 UpgradeApp.propTypes = {
   appcenter: PropTypes.object,
-  navigation: PropTypes.object
-};
-
-UpgradeApp.defaultProps = {
-  navigation: {}
+  minimumVersion: PropTypes.string
 };
 
 export default UpgradeApp;

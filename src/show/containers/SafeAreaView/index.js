@@ -3,9 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
 
-import { colors } from 'Theme';
+import { useTheme } from 'Containers';
 
 const SafeAreaView = props => {
+  const { colors } = useTheme();
   const { bottom, testID, top } = props;
   const defaultStyle = {
     backgroundColor: colors.neutral,

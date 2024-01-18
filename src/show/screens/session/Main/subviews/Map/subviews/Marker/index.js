@@ -8,6 +8,7 @@ export default connect(
   state => {
     return {
       completedStopsIds: state.delivery?.completedStopsIds,
+      darkMode: state.device?.darkMode,
       mapMarkerSize: state.device.mapMarkerSize,
       previousStopId: state.delivery?.previousStopId,
       selectedStopId: state.delivery?.selectedStopId,

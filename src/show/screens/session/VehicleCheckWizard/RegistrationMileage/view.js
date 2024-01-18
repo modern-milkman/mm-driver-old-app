@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
+import Analytics, { EVENTS } from 'Services/analytics';
 import React, { useState, useRef, useEffect } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 
 import I18n from 'Locales/I18n';
-import { defaults, colors } from 'Theme';
+import { defaults } from 'Theme';
 import NavigationService from 'Services/navigation';
 import { deviceFrame, mock, plateRecognition } from 'Helpers';
-import { ColumnView, SafeAreaView, RowView } from 'Containers';
+import { ColumnView, SafeAreaView, RowView, useTheme } from 'Containers';
 import { Button, ListHeader, NavBar, Text, TextInput, Image } from 'Components';
 
 import styles from './style';
@@ -49,6 +50,7 @@ const RegistrationMileage = ({
   vehicleRegistrationErrorMessage,
   vehicleRegistrationHasError
 }) => {
+  const { colors } = useTheme();
   const videowidth = width - defaults.marginHorizontal * 2;
 
   const {
@@ -84,13 +86,16 @@ const RegistrationMileage = ({
     for (const text of blocks.textBlocks) {
       let plateWithoutSpace = text.value.replace(/\s/g, '');
       if (typeof text.value === 'string' && UKregex.test(plateWithoutSpace)) {
+        let value = text.value;
         const plateRec = plateRecognition(text.value, plates);
         if (plateRec.length > 0) {
-          setNrPlateAndStop(plateRec);
+          value = plateRec;
           focusMileage();
-        } else {
-          setNrPlateAndStop(text.value);
         }
+        setNrPlateAndStop(value);
+        Analytics.trackEvent(EVENTS.TEXT_RECOGNITION_REGISTRATION, {
+          recognizedText: value
+        });
       }
     }
   };
@@ -126,12 +131,16 @@ const RegistrationMileage = ({
                   routeName
                 })
           }
-          {...(disabled && { rightColor: colors.inputDark })}
+          {...(disabled && { rightColor: colors.inputSecondary })}
           testID={'checkVan-navbar'}
         />
         {renderProgressBar(1, payload)}
 
-        <ColumnView scrollable width={'auto'} alignItems={'stretch'}>
+        <ColumnView
+          scrollable
+          width={'auto'}
+          alignItems={'stretch'}
+          testID={'checkVan-scroll-view'}>
           <KeyboardAvoidingView behavior={'padding'}>
             <ListHeader
               title={I18n.t('screens:registrationMileage.registration')}
@@ -174,16 +183,19 @@ const RegistrationMileage = ({
               </Pressable>
             </ColumnView>
 
-            <Text.Label color={colors.inputDark} align={'center'}>
+            <Text.Label color={colors.inputSecondary} align={'center'}>
               {I18n.t('screens:registrationMileage.or')}
             </Text.Label>
 
+            <ListHeader
+              title={I18n.t('screens:registrationMileage.manualRegistration')}
+            />
             <RowView
               width={'auto'}
               marginHorizontal={defaults.marginHorizontal}
               marginVertical={defaults.marginVertical / 2}>
               <TextInput
-                autoCapitalize={'none'}
+                autoCapitalize={'characters'}
                 error={vehicleRegistrationHasError}
                 errorMessage={vehicleRegistrationErrorMessage}
                 onChangeText={updateReducerAndTransient.bind(null, {

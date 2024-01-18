@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {
   additionalItemCount,
   itemCount,
+  loadedVanItems,
   Creators as deliveryActions
 } from 'Reducers/delivery';
 
@@ -13,6 +14,7 @@ export default connect(
     additionalItemCount: additionalItemCount(state),
     itemCount: itemCount(state),
     deliveredStock: state.delivery?.deliveredStock,
+    loadedVanItems: loadedVanItems(state),
     orderedStock: state.delivery?.orderedStock,
     readOnly: state.application.lastRouteParams?.readOnly
   }),

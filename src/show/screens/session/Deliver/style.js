@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { defaults, sizes } from 'Theme';
+import { defaults } from 'Theme';
 
 const style = StyleSheet.create({
   flex1: {
@@ -10,8 +10,6 @@ const style = StyleSheet.create({
     width: '100%'
   },
   photoWrapper: {
-    height: sizes.list.image,
-    width: sizes.list.image,
     borderRadius: defaults.borderRadius,
     marginRight: defaults.marginHorizontal / 2
   }

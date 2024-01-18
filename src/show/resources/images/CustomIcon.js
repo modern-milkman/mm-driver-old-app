@@ -4,17 +4,20 @@ import Svg, { Path, Rect, G } from 'react-native-svg';
 import { TouchableOpacity } from 'react-native';
 
 import { mock } from 'Helpers';
-import { colors, defaults } from 'Theme';
+import { defaults } from 'Theme';
+import { useTheme } from 'Containers';
 
 import internalStyle from './style';
 
 const CustomIcon = props => {
+  const { colors } = useTheme();
+
   const {
-    bgColor,
+    bgColor = colors.input,
     containerWidth,
     disabled,
     icon,
-    iconColor,
+    iconColor = colors.inputSecondary,
     onLongPress,
     onPress,
     style,
@@ -446,7 +449,6 @@ const CustomIcon = props => {
 
 CustomIcon.propTypes = {
   bgColor: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  borderColor: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   containerWidth: PropTypes.number,
   disabled: PropTypes.bool,
   icon: PropTypes.string,
@@ -458,10 +460,7 @@ CustomIcon.propTypes = {
 };
 
 CustomIcon.defaultProps = {
-  bgColor: colors.input,
-  borderColor: colors.white,
   icon: 'close',
-  iconColor: colors.secondary,
   onLongPress: mock,
   onPress: mock,
   style: {},

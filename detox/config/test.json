@@ -1,0 +1,36 @@
+{
+  "maxRouteAttempts": 5,
+  "defaultLat": 53.483,
+  "defaultLong": -2.244,
+  "longTestTimeout": 240000,
+  "env": {
+    "db": [
+      {
+        "uk": {
+          "host": "",
+          "name": "",
+          "user": "",
+          "password": "",
+          "connectionTimeout": "120000",
+          "requestTimeout": "1200000",
+          "environmentPrefix": "tmm"
+        }
+      },
+      {
+        "france": {
+          "host": "",
+          "name": "",
+          "user": "",
+          "password": "",
+          "connectionTimeout": "120000",
+          "requestTimeout": "1200000",
+          "environmentPrefix": "poly"
+        }
+      }
+    ],
+    "driverDbUk": "",
+    "driverDbFrance": "",
+    "defaultPassword": "",
+    "defaultUser": "a@a.com"
+  }
+}

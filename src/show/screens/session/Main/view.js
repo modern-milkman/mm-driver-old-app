@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { BackHandler } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
-import { colors } from 'Theme';
 import { deliveryStates as DS } from 'Helpers';
 import NavigationService from 'Services/navigation';
-import { ColumnView, SafeAreaView } from 'Containers';
-import Analytics, { EVENTS } from 'Services/analytics';
+import { ColumnView, SafeAreaView, useTheme } from 'Containers';
 
 import { ForegroundContent, Navigation, Map, Search } from './subviews';
 
@@ -53,10 +53,10 @@ const mainForegroundAction = ({
       }
       break;
   }
-  Analytics.trackEvent(EVENTS.MAIN_FOREGROUND_ACTION);
 };
 
 const Main = props => {
+  const { colors } = useTheme();
   const {
     autoSelectStop,
     checklist,
@@ -69,13 +69,26 @@ const Main = props => {
     updateDeviceProps
   } = props;
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
+
   return (
     <SafeAreaView top={false}>
       <ColumnView flex={1} justifyContent={'flex-start'}>
         <Search />
 
         <ColumnView flex={1}>
-          <Map />
+          <Map testID={'main-deliveries-map'} />
         </ColumnView>
         <ColumnView>
           <ColumnView backgroundColor={colors.white}>
@@ -93,7 +106,10 @@ const Main = props => {
             />
           </ColumnView>
 
-          <Navigation openDrawer={navigation.openDrawer} />
+          <Navigation
+            testID={'home-sidebar-button'}
+            openDrawer={navigation.openDrawer}
+          />
         </ColumnView>
       </ColumnView>
     </SafeAreaView>
