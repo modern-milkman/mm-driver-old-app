@@ -31,16 +31,19 @@ const handleCapture = async ({ cameraRef, setCurrentPhoto }) => {
   }
 };
 
-const handleOnSave = ({ currentPhoto, onClosePress, onSave }) => {
+const handleOnSave = ({ data, onClosePress, onSave }) => {
   onClosePress();
-  onSave(currentPhoto);
+  onSave(data);
+};
+
+const handleBarcodeScanned = ({ onClosePress, onSave }, { data }) => {
+  onClosePress();
+  onSave(data);
 };
 
 const Camera = props => {
   const {
-    barcodeValue = '',
     buttonAccessibility = sizes.button.large,
-    onBarcodeTextChange = mock,
     onClosePress = mock,
     onSave = mock,
     showBarCodeScanner = false,
@@ -54,6 +57,7 @@ const Camera = props => {
 
   const cameraRef = useRef(null);
   const [currentPhoto, setCurrentPhoto] = useState({});
+  const [barcodeValue, setBarcodeValue] = useState('');
 
   return (
     <View style={{ ...style.flex, ...style.opaque }}>
@@ -91,16 +95,24 @@ const Camera = props => {
                 <TextInput
                   autoCapitalize={'none'}
                   keyboardType={'numeric'}
-                  onChangeText={onBarcodeTextChange}
-                  onSubmitEditing={onSave}
-                  placeholder={I18n.t('screens:deliver.scanner.placeholder')}
+                  onChangeText={setBarcodeValue}
+                  onSubmitEditing={handleOnSave.bind(null, {
+                    onClosePress,
+                    onSave,
+                    data: barcodeValue
+                  })}
+                  placeholder={I18n.t('general:scanner.placeholder')}
                   returnKeyType={'done'}
                   value={barcodeValue}
                 />
 
                 <Button.Primary
-                  title={I18n.t('screens:deliver.scanner.button')}
-                  onPress={onSave}
+                  title={I18n.t('general:scanner.button')}
+                  onPress={handleOnSave.bind(null, {
+                    onClosePress,
+                    onSave,
+                    data: barcodeValue
+                  })}
                   disabled={barcodeValue === ''}
                 />
               </ColumnView>
@@ -114,7 +126,7 @@ const Camera = props => {
                       onPress={handleOnSave.bind(null, {
                         onClosePress,
                         onSave,
-                        currentPhoto
+                        data: currentPhoto
                       })}
                       width={width / 2 - defaults.marginHorizontal * 1.5}
                     />
@@ -167,7 +179,12 @@ const Camera = props => {
       <RNCamera
         flashMode={torch ? FlashMode.torch : FlashMode.off}
         ref={cameraRef}
-        {...(showBarCodeScanner && { onBarCodeScanned: onSave })}
+        {...(showBarCodeScanner && {
+          onBarCodeScanned: handleBarcodeScanned.bind(null, {
+            onClosePress,
+            onSave
+          })
+        })}
         style={{
           ...style.cameraScanner,
           ...(squareImage && {
@@ -181,9 +198,7 @@ const Camera = props => {
 };
 
 Camera.propTypes = {
-  barcodeValue: PropTypes.string,
   buttonAccessibility: PropTypes.number,
-  onBarcodeTextChange: PropTypes.func,
   onClosePress: PropTypes.func,
   onSave: PropTypes.func,
   showBarCodeScanner: PropTypes.bool,

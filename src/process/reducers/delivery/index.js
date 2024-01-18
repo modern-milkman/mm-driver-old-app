@@ -34,6 +34,7 @@ export const { Types, Creators } = createActions(
     resetChecklistPayload: ['resetType'],
     saveVehicleChecks: ['saveType'],
     scanBarcode: ['barcodeValue'],
+    scanBarcodeError: null,
     scanBarcodeSuccess: ['itemId'],
     setCustomerClaims: ['payload', 'stopId'],
     setDelivered: [
@@ -100,7 +101,10 @@ export const initialChecklist = {
   emptiesRequired: false,
   emptiesScreenDirty: false,
   loadedVan: false,
-  loadedVanItems: [],
+  loadedVanMM: false,
+  loadedVanTPL: false,
+  loadedVanBarcode: false,
+  loadedVanItems: {},
   shiftEndVanChecks: false,
   shiftStartVanChecks: false,
   payload: {
@@ -256,7 +260,10 @@ const resetChecklistFlags = checklist => {
   checklist.emptiesRequired = false;
   checklist.emptiesScreenDirty = false;
   checklist.loadedVan = false;
-  checklist.loadedVanItems = [];
+  checklist.loadedVanMM = false;
+  checklist.loadedVanTPL = false;
+  checklist.loadedVanBarcode = false;
+  checklist.loadedVanItems = {};
   checklist.payloadAltered = false;
   checklist.shiftStartVanChecks = false;
   checklist.shiftEndVanChecks = false;
@@ -318,24 +325,26 @@ export const clearCenterMapLocation = state =>
     draft.centerMapLocation = null;
   });
 
-export const getVehicleStockForDriverSuccess = (
-  state,
-  { deliveryDate, payload }
-) =>
+export const getVehicleStockForDriverSuccess = (state, { payload }) =>
   produce(state, draft => {
-    draft.loaderInfo = null;
-    draft.itemCount = 0;
     draft.additionalItemCount = 0;
-    draft.stock = payload;
+    draft.barcodeItemCount = 0;
     draft.hasRoutes = payload.length > 0;
-    draft.orderedStock = [];
+    draft.itemCount = 0;
+    draft.loaderInfo = null;
+    draft.orderedStock = {};
+    draft.stock = payload;
+    draft.TPLItemCount = 0;
 
     for (const route of payload) {
       route.vehicleStockItems.forEach(item => {
         const formattedProduct = {
           additionalQuantity: route.isAdditionalStock ? item.quantity : 0,
+          barcodeValue: item.barcodeValue,
+          barcodeScanMandatory: item.barcodeScanMandatory,
           description: item.measureDescription,
           disabled: true, // items in load van should not be tappable
+          is3PL: item.is3PL,
           key: item.productId,
           quantity: item.quantity,
           title: item.productName,
@@ -352,13 +361,40 @@ export const getVehicleStockForDriverSuccess = (
           draft.orderedStock[item.productId] = formattedProduct;
         }
 
-        draft.itemCount += item.quantity;
         if (route.isAdditionalStock) {
           draft.additionalItemCount += item.quantity;
         }
+
+        // priorities: barcode mandatory, 3PL, regular
+        // reasoning, both regular and 3PLs might have mandatory barcode scanning required
+        // CAUTION
+        // if different routes contain vehicleStockItems with same product ID,
+        // but with different barcodeValue / barcodeScanMandatory / is3PL
+        // item totals shown by driver app will not be computed correctly
+        if (item.barcodeScanMandatory) {
+          draft.barcodeItemCount += item.quantity;
+        } else if (item.is3PL) {
+          draft.TPLItemCount += item.quantity;
+        } else {
+          draft.itemCount += item.quantity;
+        }
       });
     }
-    draft.orderedStock = draft.orderedStock.filter(product => product);
+    draft.orderedStock = Object.values(draft.orderedStock).filter(
+      product => product
+    );
+
+    // the edge case in which all 3 counters are zero, for which loadedVan should be true
+    // should not be possible thanks to backend constraints
+    if (draft.barcodeItemCount === 0) {
+      draft.checklist[state.userId].loadedVanBarcode = true;
+    }
+    if (draft.TPLItemCount === 0) {
+      draft.checklist[state.userId].loadedVanTPL = true;
+    }
+    if (draft.itemCount === 0) {
+      draft.checklist[state.userId].loadedVanMM = true;
+    }
 
     draft.processing = false;
   });
@@ -578,12 +614,18 @@ export const getForDriverSuccess = (state, { payload }) =>
       draft.checklist[state.userId].deliveryComplete = true;
       draft.checklist[state.userId].shiftStartVanChecks = true;
       draft.checklist[state.userId].loadedVan = true;
-      draft.checklist[state.userId].loadedVanItems = [];
+      draft.checklist[state.userId].loadedVanMM = true;
+      draft.checklist[state.userId].loadedVanTPL = true;
+      draft.checklist[state.userId].loadedVanBarcode = true;
+      draft.checklist[state.userId].loadedVanItems = {};
     } else if (hasNonPendingOrders) {
       draft.status = DS.DEL;
       draft.checklist[state.userId].shiftStartVanChecks = true;
+      draft.checklist[state.userId].loadedVanMM = true;
+      draft.checklist[state.userId].loadedVanTPL = true;
+      draft.checklist[state.userId].loadedVanBarcode = true;
       draft.checklist[state.userId].loadedVan = true;
-      draft.checklist[state.userId].loadedVanItems = [];
+      draft.checklist[state.userId].loadedVanItems = {};
     }
   });
 
@@ -863,6 +905,8 @@ export default createReducer(initialState, {
 
 export const additionalItemCount = state => state.delivery?.additionalItemCount;
 
+export const barcodeItemCount = state => state.delivery?.barcodeItemCount || 0;
+
 export const checklist = state =>
   state.delivery?.checklist?.[state.delivery?.userId];
 
@@ -921,3 +965,5 @@ export const stops = state => state.delivery?.stops;
 
 export const stopCount = state =>
   Object.keys(state.delivery?.stops).length || 0;
+
+export const TPLItemCount = state => state.delivery?.TPLItemCount || 0;

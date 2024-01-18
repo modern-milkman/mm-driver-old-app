@@ -135,23 +135,59 @@ const SideBar = props => {
           </ColumnView>
 
           {status === DS.DEL && (
-            <ListItem
-              title={I18n.t('screens:checkIn.loadVan')}
-              rightIcon={'chevron-right'}
-              onPress={navigateAndClose.bind(
-                null,
-                navigation.closeDrawer,
-                NavigationService.navigate.bind(null, {
-                  routeName: 'LoadVan',
-                  params: { readOnly: true }
-                })
-              )}
-              customIcon={'loadVan'}
-              customIconProps={{
-                containerSize: sizes.sidebar.icon.default,
-                width: sizes.sidebar.icon.large
-              }}
-            />
+            <>
+              <ListItem
+                title={I18n.t('screens:checkIn.loadMMVan')}
+                rightIcon={'chevron-right'}
+                onPress={navigateAndClose.bind(
+                  null,
+                  navigation.closeDrawer,
+                  NavigationService.navigate.bind(null, {
+                    routeName: 'LoadVan',
+                    params: { readOnly: true, type: 'MM' }
+                  })
+                )}
+                customIcon={'loadVan'}
+                customIconProps={{
+                  containerSize: sizes.sidebar.icon.default,
+                  width: sizes.sidebar.icon.large
+                }}
+              />
+              <ListItem
+                title={I18n.t('screens:checkIn.load3PLVan')}
+                rightIcon={'chevron-right'}
+                onPress={navigateAndClose.bind(
+                  null,
+                  navigation.closeDrawer,
+                  NavigationService.navigate.bind(null, {
+                    routeName: 'LoadVan',
+                    params: { readOnly: true, type: 'TPL' }
+                  })
+                )}
+                customIcon={'loadVan'}
+                customIconProps={{
+                  containerSize: sizes.sidebar.icon.default,
+                  width: sizes.sidebar.icon.large
+                }}
+              />
+              <ListItem
+                title={I18n.t('screens:checkIn.scanToVan')}
+                rightIcon={'chevron-right'}
+                onPress={navigateAndClose.bind(
+                  null,
+                  navigation.closeDrawer,
+                  NavigationService.navigate.bind(null, {
+                    routeName: 'LoadVan',
+                    params: { readOnly: true, type: 'Barcode' }
+                  })
+                )}
+                customIcon={'barcode'}
+                customIconProps={{
+                  containerSize: sizes.sidebar.icon.default,
+                  width: sizes.sidebar.icon.large
+                }}
+              />
+            </>
           )}
 
           {network.status !== 2 && (

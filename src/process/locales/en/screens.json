@@ -35,7 +35,9 @@
       "loadVan": "Load van to start your round"
     },
     "itemsLeft": "{{items}} items left",
-    "loadVan": "Load Van",
+    "loadMMVan": "Load MM to Van",
+    "load3PLVan": "Load 3PL to Van",
+    "scanToVan": "Scan to Van",
     "title": "Your Route Checklist"
   },
   "checklist": {
@@ -93,18 +95,6 @@
     },
     "proofOfDeliveryRequired": "REQUIRES PROOF OF DELIVERY",
     "routeDescription": "Route ID #{{routeDescription}}",
-    "scanner": {
-      "button": "Enter manually",
-      "error": {
-        "description": "Incorrect product scanned",
-        "title": "Oops"
-      },
-      "placeholder": "Type barcode here if scan fails",
-      "success": {
-        "description": "Correct product scanned",
-        "title": "Successful"
-      }
-    },
     "skipDelivery": "Skip Delivery",
     "status": {
       "completed": "Completed",

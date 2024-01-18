@@ -78,16 +78,21 @@ export const scanBarcode = function* ({ barcodeValue }) {
       itemId: selectedStop.barcodeValues[barcodeValue]
     });
   } else {
-    yield put({
-      type: GrowlTypes.ALERT,
-      props: {
-        type: 'error',
-        title: I18n.t('screens:deliver.scanner.error.title'),
-        message: I18n.t('screens:deliver.scanner.error.description')
-      }
-    });
+    yield put({ type: DeliveryTypes.SCAN_BARCODE_ERROR });
   }
 };
+
+export const scanBarcodeError = function* () {
+  yield put({
+    type: GrowlTypes.ALERT,
+    props: {
+      type: 'error',
+      title: I18n.t('general:scanner.error.title'),
+      message: I18n.t('general:scanner.error.description')
+    }
+  });
+};
+
 export const scanBarcodeSuccess = function* ({ itemId }) {
   yield put({
     type: DeliveryTypes.TOGGLE_CONFIRMED_ITEM,
@@ -98,8 +103,8 @@ export const scanBarcodeSuccess = function* ({ itemId }) {
     type: GrowlTypes.ALERT,
     props: {
       type: 'info',
-      title: I18n.t('screens:deliver.scanner.success.title'),
-      message: I18n.t('screens:deliver.scanner.success.description')
+      title: I18n.t('general:scanner.success.title'),
+      message: I18n.t('general:scanner.success.description')
     }
   });
 };
@@ -599,6 +604,24 @@ export const showPODRequired = function* () {
       message: I18n.t('alert:success.delivery.proofOfDeliveryRequired.message')
     }
   });
+};
+
+export const updateChecklistProps = function* ({
+  props: { loadedVanBarcode, loadedVanMM, loadedVanTPL }
+}) {
+  const checklist = yield select(checklistSelector);
+  if (
+    (loadedVanBarcode || loadedVanMM || loadedVanTPL) &&
+    checklist.loadedVanBarcode &&
+    checklist.loadedVanMM &&
+    checklist.loadedVanTPL
+  ) {
+    yield put({
+      type: DeliveryTypes.UPDATE_CHECKLIST_PROPS,
+      props: { loadedVan: true, loadedVanItems: {} }
+    });
+    yield put({ type: DeliveryTypes.UPDATE_DRIVER_ACTIVITY });
+  }
 };
 
 export const updateDriverActivity = function* () {

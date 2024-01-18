@@ -5,9 +5,9 @@ import { View } from 'react-native';
 import I18n from 'Locales/I18n';
 import { defaults } from 'Theme';
 import NavigationService from 'Services/navigation';
-import { deliveryStates as DS, deliverProductsDisabled } from 'Helpers';
 import { ColumnView, RowView, SafeAreaView, useTheme } from 'Containers';
 import { Button, Icon, ListItem, NavBar, Text, Separator } from 'Components';
+import { deliveryStates as DS, deliverProductsDisabled, mock } from 'Helpers';
 
 import style from './style';
 
@@ -33,7 +33,7 @@ const renderHelperMessage = ({ checklist, colors, status }) => {
         helperMessage = I18n.t('screens:checkIn.helperMessages.checkVan');
       }
       if (!checklist.loadedVan && checklist.shiftStartVanChecks) {
-        helperMessage = I18n.t('screens:checkIn.helperMessages.loadVan');
+        helperMessage = I18n.t('screens:checkIn.helperMessages.loadMMVan');
       }
       if (checklist.loadedVan && checklist.shiftStartVanChecks) {
         helperMessage = I18n.t('screens:checkIn.helperMessages.go');
@@ -82,16 +82,18 @@ const navigationSideEffect = ({
 const CheckIn = props => {
   const { colors } = useTheme();
   const {
-    autoSelectStop,
-    checklist,
-    continueDelivering,
-    itemCount,
-    resetChecklistPayload,
-    isOptimised,
-    status,
-    startDelivering,
-    stopCount,
-    updateDeliveryProps
+    autoSelectStop = true,
+    barcodeItemCount = 0,
+    checklist = {},
+    continueDelivering = mock,
+    itemCount = 0,
+    resetChecklistPayload = mock,
+    isOptimised = false,
+    status = DS.NCI,
+    startDelivering = mock,
+    stopCount = 0,
+    TPLItemCount = 0,
+    updateDeliveryProps = mock
   } = props;
 
   const dpDisabled = deliverProductsDisabled({ checklist, status });
@@ -113,20 +115,60 @@ const CheckIn = props => {
       title: I18n.t('screens:checkIn.checkIn'),
       testID: 'checkIn-checkVan-listItem'
     },
-    {
-      customIcon: 'loadVanWithBackground',
-      disabled: checklist.deliveryComplete,
-      suffixBottom: I18n.t('screens:checkIn.itemsLeft', {
-        items: checklist.loadedVan ? 0 : itemCount
-      }),
-      onPress: NavigationService.navigate.bind(null, {
-        routeName: 'LoadVan',
-        params: { readOnly: checklist.loadedVan }
-      }),
-      rightIcon: checklist.loadedVan ? 'check' : 'chevron-right',
-      title: I18n.t('screens:checkIn.loadVan'),
-      testID: 'checkIn-loadVan-listItem'
-    },
+    ...(itemCount !== 0
+      ? [
+          {
+            customIcon: 'loadVanWithBackground',
+            disabled: checklist.deliveryComplete,
+            suffixBottom: I18n.t('screens:checkIn.itemsLeft', {
+              items: checklist.loadedVanMM ? 0 : itemCount
+            }),
+            onPress: NavigationService.navigate.bind(null, {
+              routeName: 'LoadVan',
+              params: { readOnly: checklist.loadedVanMM, type: 'MM' }
+            }),
+            rightIcon: checklist.loadedVanMM ? 'check' : 'chevron-right',
+            title: I18n.t('screens:checkIn.loadMMVan'),
+            testID: 'checkIn-loadVan-listItem'
+          }
+        ]
+      : []),
+    ...(TPLItemCount !== 0
+      ? [
+          {
+            customIcon: 'loadVanWithBackground',
+            disabled: checklist.deliveryComplete,
+            suffixBottom: I18n.t('screens:checkIn.itemsLeft', {
+              items: checklist.loadedVanTPL ? 0 : TPLItemCount
+            }),
+            onPress: NavigationService.navigate.bind(null, {
+              routeName: 'LoadVan',
+              params: { readOnly: checklist.loadedVanTPL, type: 'TPL' }
+            }),
+            rightIcon: checklist.loadedVanTPL ? 'check' : 'chevron-right',
+            title: I18n.t('screens:checkIn.load3PLVan'),
+            testID: 'checkIn-load3PLVan-listItem'
+          }
+        ]
+      : []),
+    ...(barcodeItemCount !== 0
+      ? [
+          {
+            customIcon: 'barcodeWithBackground',
+            disabled: checklist.deliveryComplete,
+            suffixBottom: I18n.t('screens:checkIn.itemsLeft', {
+              items: checklist.loadedVanBarcode ? 0 : barcodeItemCount
+            }),
+            onPress: NavigationService.navigate.bind(null, {
+              routeName: 'LoadVan',
+              params: { readOnly: checklist.loadedVanBarcode, type: 'Barcode' }
+            }),
+            rightIcon: checklist.loadedVanBarcode ? 'check' : 'chevron-right',
+            title: I18n.t('screens:checkIn.scanToVan'),
+            testID: 'checkIn-scanToVan-listItem'
+          }
+        ]
+      : []),
     {
       customIcon: 'deliver',
       disabled: dpDisabled,
@@ -249,6 +291,7 @@ const CheckIn = props => {
 
 CheckIn.propTypes = {
   autoSelectStop: PropTypes.bool,
+  barcodeItemCount: PropTypes.number,
   checklist: PropTypes.object,
   continueDelivering: PropTypes.func,
   itemCount: PropTypes.number,
@@ -257,15 +300,8 @@ CheckIn.propTypes = {
   resetChecklistPayload: PropTypes.func,
   startDelivering: PropTypes.func,
   stopCount: PropTypes.number,
+  TPLItemCount: PropTypes.number,
   updateDeliveryProps: PropTypes.func
-};
-
-CheckIn.defaultProps = {
-  autoSelectStop: true,
-  itemCount: 0,
-  isOptimised: false,
-  status: DS.NCI,
-  stopCount: 0
 };
 
 export default CheckIn;

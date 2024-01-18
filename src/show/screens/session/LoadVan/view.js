@@ -1,71 +1,163 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
+import React, { useState } from 'react';
 import Config from 'react-native-config';
 
+import { mock } from 'Helpers';
 import I18n from 'Locales/I18n';
-import { mock, toggle } from 'Helpers';
-import { List, NavBar } from 'Components';
+import { Camera, List, NavBar } from 'Components';
 import NavigationService from 'Services/navigation';
-import { ColumnView, SafeAreaView, useTheme } from 'Containers';
+import { ColumnView, Modal, SafeAreaView, useTheme } from 'Containers';
 
-const doneLoadedVan = (updateChecklistProps, updateDriverActivity) => {
-  updateChecklistProps({ loadedVan: true, loadedVanItems: [] });
-  updateDriverActivity();
+const computeItemCount = ({
+  barcodeItemCount,
+  itemCount,
+  TPLItemCount,
+  type
+}) => {
+  switch (type) {
+    case 'MM':
+      return itemCount;
+    case 'TPL':
+      return TPLItemCount;
+    default:
+      return barcodeItemCount;
+  }
 };
 
-const toggleLoadedVanItem = ({ loadedVanItems, updateChecklistProps }, id) => {
-  updateChecklistProps({ loadedVanItems: toggle(loadedVanItems, id) });
+const filterFunctions = {
+  Barcode: element => element.barcodeScanMandatory,
+  MM: element => !element.is3PL && !element.barcodeScanMandatory,
+  TPL: element => element.is3PL && !element.barcodeScanMandatory
+};
+
+const handleBarCodeScanned = (
+  { barcodeIds, loadedVanItems, updateChecklistProps, scanBarcodeError },
+  data
+) => {
+  if (barcodeIds[data]) {
+    toggleLoadedVanItem({
+      id: barcodeIds[data],
+      loadedVanItems,
+      updateChecklistProps
+    });
+  } else {
+    scanBarcodeError();
+  }
+};
+
+const handleListItemOnPress = (
+  { loadedVanItems, setModalVisible, type, updateChecklistProps },
+  id
+) => {
+  if (type === 'Barcode' && !loadedVanItems[id]) {
+    setModalVisible(true);
+  } else {
+    toggleLoadedVanItem({
+      id,
+      loadedVanItems,
+      updateChecklistProps
+    });
+  }
+};
+
+const toggleLoadedVanItem = ({ id, loadedVanItems, updateChecklistProps }) => {
+  loadedVanItems = { ...loadedVanItems };
+  if (loadedVanItems[id]) {
+    delete loadedVanItems[id];
+  } else {
+    loadedVanItems[id] = true;
+  }
+  updateChecklistProps({ loadedVanItems });
 };
 
 const LoadVan = props => {
   const { colors } = useTheme();
   const {
-    additionalItemCount,
-    deliveredStock,
-    itemCount,
-    loadedVanItems,
-    orderedStock,
-    readOnly,
-    updateChecklistProps,
-    updateDriverActivity
+    additionalItemCount = 0,
+    barcodeItemCount = 0,
+    deliveredStock = {},
+    itemCount = 0,
+    loadedVanItems = {},
+    orderedStock = [],
+    readOnly = false,
+    scanBarcodeError = mock,
+    TPLItemCount = 0,
+    type = 'MM',
+    updateChecklistProps = mock
   } = props;
 
-  let deliveredTotal = 0;
-  const mappedStock = orderedStock.map(stockItem => {
-    deliveredTotal += deliveredStock[stockItem.key] || 0;
-    const combinedItemQuantity = stockItem.additionalQuantity
-      ? `${stockItem.quantity} (${stockItem.additionalQuantity})`
-      : stockItem.quantity;
-    const isPicked = loadedVanItems?.includes(stockItem.key);
-    return {
-      ...stockItem,
-      disabled: readOnly,
-      suffixTop: readOnly
-        ? `${
-            stockItem.quantity - (deliveredStock[stockItem.key] || 0)
-          } / ${combinedItemQuantity}`
-        : combinedItemQuantity,
-      image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
-      customIcon: 'productPlaceholder',
-      testID: `loadVan-product-${stockItem.productId}`,
-      ...(isPicked && {
-        rightIcon: 'check',
-        rightIconColor: colors.success
-      })
-    };
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const barcodeIds = {};
+
+  const computedItemCount = computeItemCount({
+    barcodeItemCount,
+    itemCount,
+    TPLItemCount,
+    type
   });
 
-  const combinedItemCount = additionalItemCount
-    ? `${itemCount} (${additionalItemCount})`
-    : itemCount;
+  let deliveredTotal = 0;
+  let disableDoneButton = false;
 
-  const doneDisabled =
-    Config.ENVIRONMENT === 'production' &&
-    loadedVanItems?.length !== mappedStock.length;
+  const mappedStock = orderedStock
+    .filter(filterFunctions[type])
+    .map(stockItem => {
+      deliveredTotal += deliveredStock[stockItem.key] || 0;
+      const combinedItemQuantity = stockItem.additionalQuantity
+        ? `${stockItem.quantity} (${stockItem.additionalQuantity})`
+        : stockItem.quantity;
+      const isPicked = loadedVanItems[stockItem.key];
+      if (!loadedVanItems[stockItem.key]) {
+        disableDoneButton = true;
+      }
+      barcodeIds[stockItem.barcodeValue] = stockItem.key;
+      return {
+        ...stockItem,
+        disabled: readOnly,
+        suffixTop: readOnly
+          ? `${
+              stockItem.quantity - (deliveredStock[stockItem.key] || 0)
+            } / ${combinedItemQuantity}`
+          : combinedItemQuantity,
+        image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
+        customIcon: 'productPlaceholder',
+        testID: `loadVan-product-${stockItem.productId}`,
+        ...(isPicked && {
+          rightIcon: 'check',
+          rightIconColor: colors.success
+        }),
+        ...(!isPicked &&
+          stockItem.barcodeScanMandatory &&
+          stockItem.barcodeValue && {
+            rightIcon: 'barcode',
+            rightIconColor: colors.primary
+          })
+      };
+    });
+
+  const combinedItemCount = additionalItemCount
+    ? `${computedItemCount} (${additionalItemCount})`
+    : computedItemCount;
+
+  const doneDisabled = Config.ENVIRONMENT === 'production' && disableDoneButton;
 
   return (
     <SafeAreaView>
+      <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
+        <Camera
+          onClosePress={setModalVisible.bind(null, false)}
+          onSave={handleBarCodeScanned.bind(null, {
+            barcodeIds,
+            loadedVanItems,
+            updateChecklistProps,
+            scanBarcodeError
+          })}
+          showBarCodeScanner
+          showRegularControls={false}
+        />
+      </Modal>
       <ColumnView
         flex={1}
         justifyContent={'flex-start'}
@@ -75,7 +167,7 @@ const LoadVan = props => {
           leftIconAction={NavigationService.goBack}
           title={`${
             readOnly
-              ? `${itemCount - deliveredTotal} / ${combinedItemCount}`
+              ? `${computedItemCount - deliveredTotal} / ${combinedItemCount}`
               : combinedItemCount
           } ${I18n.t('screens:loadVan.title')}`}
           rightText={readOnly ? null : I18n.t('screens:loadVan.done')}
@@ -84,19 +176,19 @@ const LoadVan = props => {
             doneDisabled
               ? null
               : NavigationService.goBack.bind(null, {
-                  beforeCallback: doneLoadedVan.bind(
-                    null,
-                    updateChecklistProps,
-                    updateDriverActivity
-                  )
+                  beforeCallback: updateChecklistProps.bind(null, {
+                    [`loadedVan${type}`]: true
+                  })
                 })
           }
           testID={'loadVan-navbar'}
         />
         <List
           data={mappedStock}
-          onPress={toggleLoadedVanItem.bind(null, {
+          onPress={handleListItemOnPress.bind(null, {
             loadedVanItems,
+            setModalVisible,
+            type,
             updateChecklistProps
           })}
         />
@@ -107,24 +199,16 @@ const LoadVan = props => {
 
 LoadVan.propTypes = {
   additionalItemCount: PropTypes.number,
+  barcodeItemCount: PropTypes.number,
   deliveredStock: PropTypes.object,
   itemCount: PropTypes.number,
-  loadedVanItems: PropTypes.array,
+  loadedVanItems: PropTypes.object,
   orderedStock: PropTypes.array,
   readOnly: PropTypes.bool,
-  updateChecklistProps: PropTypes.func,
-  updateDriverActivity: PropTypes.func
-};
-
-LoadVan.defaultProps = {
-  additionalItemCount: 0,
-  deliveredStock: {},
-  itemCount: 0,
-  loadedVanItems: [],
-  orderedStock: [],
-  readOnly: false,
-  updateChecklistProps: mock,
-  updateDriverActivity: mock
+  scanBarcodeError: PropTypes.func,
+  TPLItemCount: PropTypes.number,
+  type: PropTypes.string,
+  updateChecklistProps: PropTypes.func
 };
 
 export default LoadVan;

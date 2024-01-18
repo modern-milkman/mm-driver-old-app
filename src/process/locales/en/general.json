@@ -24,6 +24,18 @@
   "reset": "Reset & Restart Driver",
   "restart": "Restart Driver",
   "reviewPhoto": "Review Photo",
+  "scanner": {
+    "button": "Enter manually",
+    "error": {
+      "description": "Incorrect product scanned",
+      "title": "Oops"
+    },
+    "placeholder": "Type barcode here if scan fails",
+    "success": {
+      "description": "Correct product scanned",
+      "title": "Successful"
+    }
+  },
   "skip": "Skip",
   "tryAgain": "Try Again",
   "upNext": "Up next",

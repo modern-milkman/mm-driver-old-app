@@ -34,15 +34,6 @@ const focusReasonMessage = () => {
   reasonMessageRef?.current?.focus();
 };
 
-const handleBarCodeScanned = (
-  { setModalVisible, scanBarcode, setManuallyTypedBarcode },
-  { data }
-) => {
-  setModalVisible(false);
-  setManuallyTypedBarcode('');
-  scanBarcode(data);
-};
-
 const handleChangeSkip = (updateTransientProps, key, value) => {
   updateTransientProps({ [key]: value });
   focusReasonMessage();
@@ -134,28 +125,11 @@ const rejectAndNavigateBack = (
   });
 };
 
-const renderBarCodeScanner = ({
-  manuallyTypedBarcode,
-  scanBarcode,
-  setManuallyTypedBarcode,
-  setModalVisible
-}) => {
+const renderBarCodeScanner = ({ scanBarcode, setModalVisible }) => {
   return (
     <Camera
-      barcodeValue={manuallyTypedBarcode}
-      onBarcodeTextChange={setManuallyTypedBarcode}
       onClosePress={setModalVisible.bind(null, false)}
-      onSave={handleBarCodeScanned.bind(
-        null,
-        {
-          setModalVisible,
-          scanBarcode,
-          setManuallyTypedBarcode
-        },
-        {
-          data: manuallyTypedBarcode
-        }
-      )}
+      onSave={scanBarcode}
       showBarCodeScanner
       showRegularControls={false}
     />
@@ -439,7 +413,6 @@ const Deliver = props => {
 
   const { colors } = useTheme();
   const [hasCollectedEmpties, setHasCollectedEmpties] = useState(null);
-  const [manuallyTypedBarcode, setManuallyTypedBarcode] = useState('');
   const [modalImageSrc, setModalImageSrc] = useState(null);
   const [modalText, setModalText] = useState(null);
   const [modalType, setModalType] = useState('skip');
@@ -568,9 +541,7 @@ const Deliver = props => {
           })}
         {modalType === 'barcode' &&
           renderBarCodeScanner({
-            manuallyTypedBarcode,
             scanBarcode,
-            setManuallyTypedBarcode,
             setModalVisible
           })}
         {modalType === 'pod' && (
