@@ -34,9 +34,7 @@ const buttonTitleText = (foregroundState, { selectedStop }) => {
       return I18n.t('screens:checkIn.go');
     case 'DELIVERING':
       return I18n.t(
-        `screens:main.activeDeliveryFor.${
-          selectedStop.itemCount === 1 ? 'singular' : 'plural'
-        }`,
+        `screens:main.activeDeliveryFor.${selectedStop.itemCount === 1 ? 'singular' : 'plural'}`,
         {
           itemCount: selectedStop.itemCount
         }
@@ -64,7 +62,7 @@ const headingText = (foregroundState, { routeDescription, selectedStop }) => {
   }
 };
 
-const subHeadingText = (foregroundState, { stopCount, selectedStop }) => {
+const subHeadingText = (foregroundState, { stopCount }) => {
   switch (foregroundState) {
     case 'MANUAL':
       return I18n.t('screens:main.descriptions.or');
