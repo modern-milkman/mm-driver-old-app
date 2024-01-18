@@ -174,9 +174,11 @@ export function* setLocation({ position }) {
         'ME'
       ) < 50
     ) {
-      NavigationService.navigate({
-        routeName: 'Deliver',
-        params: { auto: true, selectedStopId }
+      InteractionManager.runAfterInteractions(() => {
+        NavigationService.navigate({
+          routeName: 'Deliver',
+          params: { auto: true, selectedStopId }
+        });
       });
     }
 

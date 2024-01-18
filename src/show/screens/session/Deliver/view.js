@@ -421,11 +421,43 @@ const Deliver = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
 
-  const acknowledgedList =
-    Object.values(selectedStop?.claims.acknowledgedClaims) || [];
-  const unacknowledgedList =
-    Object.values(selectedStop?.claims.unacknowledgedClaims) || [];
   const showClaimModal = selectedStop?.claims.showClaimModal;
+  const isFocused = useIsFocused();
+
+  const acknowledgedList = Object.values(
+    selectedStop?.claims.acknowledgedClaims || {}
+  );
+  const unacknowledgedList = Object.values(
+    selectedStop?.claims.unacknowledgedClaims || {}
+  );
+
+  useEffect(() => {
+    if (isFocused) {
+      if (showClaimModal) {
+        NavigationService.navigate({
+          routeName: 'CustomerIssueModal'
+        });
+      } else if (
+        selectedStop?.proofOfDeliveryRequired &&
+        unacknowledgedList.length === 0 &&
+        selectedStop?.status === 'pending'
+      ) {
+        showPODRequired();
+      }
+    }
+  }, [
+    isFocused,
+    selectedStop?.proofOfDeliveryRequired,
+    selectedStop?.status,
+    showClaimModal,
+    showPODRequired,
+    unacknowledgedList.length
+  ]);
+
+  //This will prevent whitescreen and failcase if selectStop will be undefined / null after setDelivered is made and autoselectopen is true and it will triger the navigation to Deliver screen
+  if (!selectedStop) {
+    return null;
+  }
 
   const optimizedStopOrders = selectedStop
     ? Object.values(selectedStop.orderItems).map(order => {
@@ -488,35 +520,6 @@ const Deliver = props => {
   ) {
     setPodPromptAutoShown(true);
     showPODRequired();
-  }
-
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    if (isFocused) {
-      if (showClaimModal) {
-        NavigationService.navigate({
-          routeName: 'CustomerIssueModal'
-        });
-      } else if (
-        selectedStop?.proofOfDeliveryRequired &&
-        unacknowledgedList.length === 0 &&
-        selectedStop?.status === 'pending'
-      ) {
-        showPODRequired();
-      }
-    }
-  }, [
-    isFocused,
-    selectedStop?.proofOfDeliveryRequired,
-    selectedStop?.status,
-    showClaimModal,
-    showPODRequired,
-    unacknowledgedList.length
-  ]);
-
-  if (!selectedStop) {
-    return null;
   }
 
   const overXMetresAway =
