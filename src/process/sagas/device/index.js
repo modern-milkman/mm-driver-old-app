@@ -1,6 +1,6 @@
 // DEVICE SAGAS BELOW
 // could be used for offline / online / set position
-
+import Config from 'react-native-config';
 import * as SplashScreen from 'expo-splash-screen';
 import { delay, put, select } from 'redux-saga/effects';
 import { InteractionManager, Platform } from 'react-native';
@@ -182,13 +182,15 @@ export function* setLocation({ position }) {
 
     if (user_session && user.driverId) {
       Analytics.trackEvent(EVENTS.SET_DEVICE_LOCATION, position);
-      yield put({
-        type: Api.API_CALL,
-        promise: Api.repositories.fleet.drivers({
-          id: `${user.driverId}`,
-          location: position.coords
-        })
-      });
+      if (JSON.parse(Config.ENABLE_FLEET_TRACKER)) {
+        yield put({
+          type: Api.API_CALL,
+          promise: Api.repositories.fleet.drivers({
+            id: `${user.driverId}`,
+            location: position.coords
+          })
+        });
+      }
     }
   }
 }

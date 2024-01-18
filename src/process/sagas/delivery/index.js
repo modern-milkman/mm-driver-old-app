@@ -40,14 +40,16 @@ import {
 const updateTrackerData = function* ({ status }) {
   const user = yield select(userSelector);
   const device = yield select(deviceSelector);
-  yield put({
-    type: Api.API_CALL,
-    promise: Api.repositories.fleet.drivers({
-      id: `${user.driverId}`,
-      deliveryStatus: status,
-      ...(device.position && { location: device.position })
-    })
-  });
+  if (JSON.parse(Config.ENABLE_FLEET_TRACKER)) {
+    yield put({
+      type: Api.API_CALL,
+      promise: Api.repositories.fleet.drivers({
+        id: `${user.driverId}`,
+        deliveryStatus: status,
+        ...(device.position && { location: device.position })
+      })
+    });
+  }
 };
 
 // EXPORTED
@@ -523,18 +525,20 @@ export const setDeliveredOrRejected = function* (
     })
   });
 
-  yield put({
-    type: Api.API_CALL,
-    promise: Api.repositories.fleet.drivers({
-      id: `${user.driverId}`,
-      deliveryStatus: status,
-      deliveries: {
-        completed: totalDeliveries - deliveriesLeft,
-        total: totalDeliveries,
-        completedStopsIds
-      }
-    })
-  });
+  if (JSON.parse(Config.ENABLE_FLEET_TRACKER)) {
+    yield put({
+      type: Api.API_CALL,
+      promise: Api.repositories.fleet.drivers({
+        id: `${user.driverId}`,
+        deliveryStatus: status,
+        deliveries: {
+          completed: totalDeliveries - deliveriesLeft,
+          total: totalDeliveries,
+          completedStopsIds
+        }
+      })
+    });
+  }
 
   if (
     status === DS.DELC &&
