@@ -43,6 +43,7 @@ const initialState = {
   country: Config.DEFAULT_COUNTRY,
   crashCount: 0,
   darkMode: true,
+  distanceToPin: 40000,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info,
   language: 'uninitialized',

@@ -396,6 +396,14 @@ const Api = {
         user: { acceptedTermsVersion },
         application: { userSessionPresent }
       } = getState();
+
+      if (headers['x-distance-to-pin']) {
+        dispatch(
+          DeviceActions.updateProps({
+            distanceToPin: parseInt(headers['x-distance-to-pin'])
+          })
+        );
+      }
       if (
         headers['x-app-version'] &&
         semverGt(headers['x-app-version'], coerce(Config.APP_VERSION_NAME))

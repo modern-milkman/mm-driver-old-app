@@ -89,6 +89,7 @@
       "inputPlaceholder": "Add more info here",
       "rejectTitle": "Rejection Reason"
     },
+    "overXmeters": "You are over {{distance}} metres away from the customer's pin",
     "podCamera": {
       "retake": "Retake",
       "save": "Save"

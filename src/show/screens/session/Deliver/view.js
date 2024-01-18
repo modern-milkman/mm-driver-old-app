@@ -11,8 +11,8 @@ import { defaults, sizes } from 'Theme';
 import { ImageTextModal } from 'Renders';
 import actionSheet from 'Services/actionSheet';
 import NavigationService from 'Services/navigation';
-import { deliveredStatuses, deviceFrame, mock } from 'Helpers';
 import { ColumnView, Modal, RowView, SafeAreaView, useTheme } from 'Containers';
+import { deliveredStatuses, deviceFrame, distance, mock } from 'Helpers';
 import {
   Button,
   Camera,
@@ -395,12 +395,14 @@ const Deliver = props => {
     addPodImage = mock,
     allItemsDone = false,
     bundledProducts = {},
-    buttonAccessibility,
+    buttonAccessibility = sizes.button.large,
     confirmedItem = [],
+    distanceToPin = 40000,
     deletePodImage = mock,
     largerDeliveryText = false,
     outOfStockIds = [],
     podImages = [],
+    position = { latitude: 0, longitude: 0 },
     routeDescription = null,
     scanBarcode = mock,
     selectedStop = {},
@@ -517,6 +519,13 @@ const Deliver = props => {
     return null;
   }
 
+  const overXMetresAway =
+    distance(
+      { x: position.latitude, y: position.longitude },
+      { x: selectedStop.latitude, y: selectedStop.longitude },
+      'ME'
+    ) > distanceToPin;
+
   return (
     <SafeAreaView>
       <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
@@ -588,6 +597,21 @@ const Deliver = props => {
               <Text.Button testID={'deliver-deliveryStatus'}>
                 {I18n.t(`screens:deliver.status.${selectedStop.status}`)}
               </Text.Button>
+            </RowView>
+          </>
+        )}
+
+        {overXMetresAway && (
+          <>
+            <Separator width={'100%'} />
+            <RowView
+              paddingVertical={defaults.marginHorizontal / 2}
+              backgroundColor={colors.error}>
+              <Text.Caption color={colors.whiteOnly}>
+                {I18n.t('screens:deliver.overXmeters', {
+                  distance: distanceToPin
+                })}
+              </Text.Caption>
             </RowView>
           </>
         )}
@@ -834,8 +858,10 @@ Deliver.propTypes = {
   buttonAccessibility: PropTypes.number,
   confirmedItem: PropTypes.array,
   deletePodImage: PropTypes.func,
+  distanceToPin: PropTypes.number,
   largerDeliveryText: PropTypes.bool,
   outOfStockIds: PropTypes.array,
+  podImage: PropTypes.object,
   podImages: PropTypes.array,
   position: PropTypes.object,
   reasonMessage: PropTypes.string,
@@ -848,7 +874,6 @@ Deliver.propTypes = {
   toggleConfirmedItem: PropTypes.func,
   toggleModal: PropTypes.func,
   toggleOutOfStock: PropTypes.func,
-  updateProps: PropTypes.func,
   updateTransientProps: PropTypes.func
 };
 
