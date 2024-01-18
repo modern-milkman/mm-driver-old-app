@@ -73,6 +73,7 @@ const renderImage = ({ customIcon, customIconProps, image, testID }) => (
     }}
     resizeMode={'contain'}
     width={style.image.width}
+    height={style.image.height}
     {...(customIcon && {
       renderFallback: renderCustomIcon.bind(null, {
         customIcon,
@@ -244,6 +245,11 @@ const renderItemInterface = (
                 ? customIconProps.containerSize
                 : style.image.width) +
               defaults.marginHorizontal / 2
+            }
+            height={
+              customIconProps?.containerSize
+                ? customIconProps.containerSize
+                : style.image.height
             }
             justifyContent={'flex-start'}>
             {(customIcon || image || icon) &&
