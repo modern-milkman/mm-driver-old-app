@@ -35,9 +35,9 @@
       "loadVan": "Chargez la camionnette pour commencer votre tour"
     },
     "itemsLeft": "{{items}} articles restants",
-    "load3PLVan": "Charger 3PL dans le fourgon",
-    "loadMMVan": "Charger MM dans le fourgon",
-    "scanToVan": "Numériser vers un fourgon",
+    "load3PLVan": "Charger articles 3PL",
+    "loadMMVan": "Charger éléments TMM",
+    "scanToVan": "Charger éléments numérisables",
     "title": "Liste de contrôle de votre itinéraire"
   },
   "checklist": {
