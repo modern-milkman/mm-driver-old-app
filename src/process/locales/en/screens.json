@@ -35,8 +35,8 @@
       "loadVan": "Load van to start your round"
     },
     "itemsLeft": "{{items}} items left",
-    "loadMMVan": "Load MM to Van",
     "load3PLVan": "Load 3PL to Van",
+    "loadMMVan": "Load MM to Van",
     "scanToVan": "Scan to Van",
     "title": "Your Route Checklist"
   },

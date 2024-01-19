@@ -24,6 +24,18 @@
   "reset": "Réinitialiser et redémarrer le pilote",
   "restart": "Redémarrer Driver",
   "reviewPhoto": "Revoir la photo",
+  "scanner": {
+    "button": "Entrer manuellement",
+    "error": {
+      "description": "Produit incorrect scanné",
+      "title": "Oops"
+    },
+    "placeholder": "Tapez le code-barres ici si la numérisation échoue",
+    "success": {
+      "description": "Produit correct scanné",
+      "title": "Réussi"
+    }
+  },
   "skip": "Sauter",
   "tryAgain": "Essayer à nouveau",
   "upNext": "Suivant",

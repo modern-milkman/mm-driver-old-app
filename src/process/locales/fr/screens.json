@@ -35,7 +35,9 @@
       "loadVan": "Chargez la camionnette pour commencer votre tour"
     },
     "itemsLeft": "{{items}} articles restants",
-    "loadVan": "Fourgon de chargement",
+    "load3PLVan": "Charger 3PL dans le fourgon",
+    "loadMMVan": "Charger MM dans le fourgon",
+    "scanToVan": "Numériser vers un fourgon",
     "title": "Liste de contrôle de votre itinéraire"
   },
   "checklist": {
@@ -87,24 +89,13 @@
       "inputPlaceholder": "Ajouter plus d'informations ici",
       "rejectTitle": "Motif de rejet"
     },
+    "overXmeters": "Tu es fini {{distance}} à quelques mètres du code PIN du client",
     "podCamera": {
       "retake": "Reprendre",
       "save": "Sauvegarder"
     },
     "proofOfDeliveryRequired": "REQUIERT UNE PREUVE DE LIVRAISON",
     "routeDescription": "ID de route #{{routeDescription}}",
-    "scanner": {
-      "button": "Entrer manuellement",
-      "error": {
-        "description": "Ce LaaS n'est pas correct.",
-        "title": "Oops"
-      },
-      "placeholder": "Code",
-      "success": {
-        "description": "LaaS a été confirmé.",
-        "title": "Réussi"
-      }
-    },
     "skipDelivery": "Sauter la livraison",
     "status": {
       "completed": "Complété",
