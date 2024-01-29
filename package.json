@@ -1,7 +1,7 @@
 {
   "name": "ModernMilkmanDriver",
-  "version": "8.1.1",
-  "versionCode": "233",
+  "version": "8.1.2",
+  "versionCode": "234",
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules ios/Pods ios/Podfile.lock yarn.lock; yarn; ./appcenter-pre-build.sh",
