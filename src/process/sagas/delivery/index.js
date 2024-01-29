@@ -222,9 +222,7 @@ export const getDriverDataFailure = function* ({ status }) {
         type: 'error',
         title: I18n.t('alert:errors.api.driverData.title'),
         message: I18n.t(
-          `alert:errors.api.driverData.${
-            status === DS.DEL ? 'message' : 'refreshMessage'
-          }`
+          `alert:errors.api.driverData.${status === DS.DEL ? 'message' : 'refreshMessage'}`
         ),
         ...(status !== DS.DEL && {
           interval: -1,
@@ -278,9 +276,7 @@ export const getForDriverSuccess = function* ({ payload }) {
 
     if (stop.hasImage) {
       Api.repositories.filesystem.downloadFile({
-        fromUrl: `${Api.ADMIN_URL()}/Customer/CustomerImageFile/${
-          stop.customerId
-        }/${stop.key}`,
+        fromUrl: `${Api.ADMIN_URL()}/Customer/CustomerImageFile/${stop.customerId}/${stop.key}`,
         toFile: `${RNFS.DocumentDirectoryPath}/${Config.FS_CUSTOMER_IMAGES}/${stop.customerId}-${stop.key}`
       });
     }
@@ -487,7 +483,7 @@ export const setDeliveredOrRejected = function* (
 
   let proofOfDeliveryImages = [];
 
-  if (podImages.length > 0 && requestType === 'delivered') {
+  if (podImages && podImages?.length > 0 && requestType === 'delivered') {
     for (let index = 0; index < podImages.length; index++) {
       proofOfDeliveryImages.push({
         imageData: yield Repositories.filesystem.readFile(

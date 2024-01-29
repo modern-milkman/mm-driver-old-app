@@ -128,12 +128,24 @@ const renderPrefix = ({
   testID
 }) => (
   <ColumnView flex={1} justifyContent={'center'} alignItems={'flex-start'}>
-    <PrefixTextComponent
-      align={'left'}
-      color={prefixColor || colors.inputSecondary}
-      testID={`${testID}-prefix`}>
-      {prefix}
-    </PrefixTextComponent>
+    {Array.isArray(prefix) ? (
+      prefix.map(el => (
+        <PrefixTextComponent
+          key={el}
+          align={'left'}
+          color={prefixColor || colors.inputSecondary}
+          testID={`${testID}-prefix`}>
+          {el}
+        </PrefixTextComponent>
+      ))
+    ) : (
+      <PrefixTextComponent
+        align={'left'}
+        color={prefixColor || colors.inputSecondary}
+        testID={`${testID}-prefix`}>
+        {prefix}
+      </PrefixTextComponent>
+    )}
   </ColumnView>
 );
 

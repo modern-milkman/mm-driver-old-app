@@ -41,18 +41,31 @@ const handleBarcodeScanned = ({ onClosePress, onSave }, { data }) => {
   onSave(data);
 };
 
+const FlashModes = [
+  { type: FlashMode.torch, icon: 'flashlight' },
+  { type: FlashMode.on, icon: 'flash' },
+  { type: FlashMode.auto, icon: 'flash-auto' },
+  { type: FlashMode.off, icon: 'flash-off' }
+];
+
+const toggleTorch = ({ flashModeIndex = 0, updateProps = mock }) => {
+  const nextFlashModeIndex = (flashModeIndex + 1) % FlashModes.length;
+  updateProps({ flashModeIndex: nextFlashModeIndex });
+};
+
 const Camera = props => {
   const {
     buttonAccessibility = sizes.button.large,
+    flashModeIndex = 0,
     onClosePress = mock,
     onSave = mock,
     showBarCodeScanner = false,
     showRegularControls = true,
-    squareImage = false
+    squareImage = false,
+    updateProps = mock
   } = props;
 
   const { colors, alphaColor } = useTheme();
-  const [torch, setTorch] = useState(true);
   const style = useThemedStyles(unthemedStyle);
 
   const cameraRef = useRef(null);
@@ -75,11 +88,14 @@ const Camera = props => {
               }>
               {!currentPhoto?.uri && (
                 <Icon
-                  name={torch ? 'flashlight' : 'flashlight-off'}
+                  name={FlashModes[flashModeIndex].icon}
                   color={colors.inputSecondary}
-                  size={buttonAccessibility}
+                  size={40}
                   containerSize={buttonAccessibility}
-                  onPress={setTorch.bind(null, !torch)}
+                  onPress={toggleTorch.bind(null, {
+                    flashModeIndex,
+                    updateProps
+                  })}
                 />
               )}
               <CustomIcon
@@ -121,6 +137,11 @@ const Camera = props => {
               <ColumnView>
                 {currentPhoto?.uri ? (
                   <RowView justifyContent={'space-between'}>
+                    <Button.Secondary
+                      title={I18n.t('screens:deliver.podCamera.retake')}
+                      onPress={setCurrentPhoto.bind(null, {})}
+                      width={width / 2 - defaults.marginHorizontal * 1.5}
+                    />
                     <Button.Primary
                       title={I18n.t('screens:deliver.podCamera.save')}
                       onPress={handleOnSave.bind(null, {
@@ -128,11 +149,6 @@ const Camera = props => {
                         onSave,
                         data: currentPhoto
                       })}
-                      width={width / 2 - defaults.marginHorizontal * 1.5}
-                    />
-                    <Button.Secondary
-                      title={I18n.t('screens:deliver.podCamera.retake')}
-                      onPress={setCurrentPhoto.bind(null, {})}
                       width={width / 2 - defaults.marginHorizontal * 1.5}
                     />
                   </RowView>
@@ -177,7 +193,7 @@ const Camera = props => {
         </View>
       )}
       <RNCamera
-        flashMode={torch ? FlashMode.torch : FlashMode.off}
+        flashMode={FlashModes[flashModeIndex].type}
         ref={cameraRef}
         {...(showBarCodeScanner && {
           onBarCodeScanned: handleBarcodeScanned.bind(null, {
@@ -199,11 +215,13 @@ const Camera = props => {
 
 Camera.propTypes = {
   buttonAccessibility: PropTypes.number,
+  flashModeIndex: PropTypes.number,
   onClosePress: PropTypes.func,
   onSave: PropTypes.func,
   showBarCodeScanner: PropTypes.bool,
   showRegularControls: PropTypes.bool,
-  squareImage: PropTypes.bool
+  squareImage: PropTypes.bool,
+  updateProps: PropTypes.func
 };
 
 export default Camera;

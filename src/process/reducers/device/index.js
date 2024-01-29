@@ -44,6 +44,7 @@ const initialState = {
   crashCount: 0,
   darkMode: true,
   distanceToPin: 40000,
+  flashModeIndex: 0,
   foregroundSize: 'large',
   growl: true, // TODO add in Settings screen when growls will also have type info,
   language: 'uninitialized',
