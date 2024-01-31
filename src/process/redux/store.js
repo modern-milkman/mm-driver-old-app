@@ -4,7 +4,11 @@ import createSagaMiddleware from 'redux-saga';
 import { persistStore, persistReducer } from 'redux-persist';
 import { createStore, compose, applyMiddleware } from 'redux';
 
+import Api from 'Api';
 import sagas from 'Sagas';
+import { formatDateTime } from 'Helpers';
+import Analytics, { EVENTS } from 'Services/analytics';
+import { Creators as DeviceActions } from 'Reducers/device';
 import { Creators as StartupActions } from 'Reducers/application';
 
 import { storeConfig } from './config';
@@ -21,7 +25,33 @@ const rehydrationPromise = new Promise(resolve => {
 
 const rehydration = () => rehydrationPromise;
 
-const sagaMiddleware = createSagaMiddleware();
+const handleSagaError = error => {
+  if (JSON.parse(Config.SEND_SLACK_CRASHLOGS) && store) {
+    const { dispatch, getState } = store;
+    const { delivery, device, user } = getState();
+    // sagas have crashed and cannot be recovered
+    // use repository and analytics directly
+    const props = {
+      crashCount: 1,
+      crashCode: `${device.uniqueID}.${formatDateTime(new Date())}`
+    };
+    Api.repositories.slack.sendCrashLog({
+      delivery,
+      device,
+      error,
+      user
+    });
+    Analytics.trackEvent(EVENTS.CRASH_CODE, {
+      crashCode: props.crashCode
+    });
+    dispatch(DeviceActions.updateProps(props));
+    dispatch(StartupActions.updateProps({ hasMiddlewareError: true }));
+  }
+};
+
+const sagaMiddleware = createSagaMiddleware({
+  onError: handleSagaError
+});
 
 middlewares.push(apiMiddleware);
 middlewares.push(sagaMiddleware);

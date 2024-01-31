@@ -29,8 +29,14 @@ import {
   Text
 } from 'Components';
 
-const restartApp = () => {
-  RNRestart.Restart();
+const restartApp = ({ dispatch }) => {
+  dispatch({
+    type: ApplicationTypes.UPDATE_PROPS,
+    props: {
+      hasMiddlewareError: false
+    }
+  });
+  window.setTimeout(RNRestart.Restart, 1000);
 };
 
 const sendToClipboard = ({ crashCode }) => {
@@ -94,8 +100,13 @@ class Root extends React.Component {
 
   render = () => {
     const { hasError } = this.state;
+    const {
+      application: { hasMiddlewareError = false }
+    } = this.props;
 
-    return hasError ? this.renderCrash() : this.renderApp();
+    return hasError || hasMiddlewareError
+      ? this.renderCrash()
+      : this.renderApp();
   };
 
   renderApp = () => {
@@ -120,6 +131,7 @@ class Root extends React.Component {
 
   renderCrash = () => {
     const {
+      application: { hasMiddlewareError = false },
       theme: { colors },
       device: {
         crashCount,
@@ -170,7 +182,7 @@ class Root extends React.Component {
             {crashCount <= 1 && (
               <Button.Tertiary
                 title={I18n.t('general:restart')}
-                onPress={restartApp}
+                onPress={restartApp.bind(null, { dispatch })}
               />
             )}
             {crashCount > 1 && (
@@ -192,7 +204,7 @@ class Root extends React.Component {
             defaults.marginVertical / 4
           }
           marginVertical={defaults.marginVertical}>
-          {crashCount <= 1 && (
+          {crashCount <= 1 && !hasMiddlewareError && (
             <Button.Primary
               title={I18n.t('general:reset')}
               onPress={dispatch.bind(null, resetAndReload())}
@@ -210,6 +222,7 @@ class Root extends React.Component {
 }
 
 Root.propTypes = {
+  application: PropTypes.object,
   colors: PropTypes.object,
   delivery: PropTypes.object,
   device: PropTypes.object,
@@ -221,6 +234,7 @@ Root.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  application: state.application,
   delivery: state.delivery,
   device: state.device,
   user: state.user
