@@ -24,7 +24,7 @@ const minSquare = Math.min(width, height);
 const handleCapture = async ({ cameraRef, setCurrentPhoto }) => {
   if (cameraRef.current) {
     const photo = await cameraRef.current.takePictureAsync({
-      quality: 0.5
+      quality: 0.35
     });
 
     setCurrentPhoto({ mime: 'image/jpeg', uri: photo.uri });
