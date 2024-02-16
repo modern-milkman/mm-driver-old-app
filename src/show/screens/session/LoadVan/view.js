@@ -36,7 +36,7 @@ const handleBarCodeScanned = (
   data
 ) => {
   if (barcodeIds[data]) {
-    toggleLoadedVanItem({
+    setLoadedVanItemChecked({
       id: barcodeIds[data],
       loadedVanItems,
       updateChecklistProps
@@ -59,6 +59,16 @@ const handleListItemOnPress = (
       updateChecklistProps
     });
   }
+};
+
+const setLoadedVanItemChecked = ({
+  id,
+  loadedVanItems,
+  updateChecklistProps
+}) => {
+  loadedVanItems = { ...loadedVanItems };
+  loadedVanItems[id] = true;
+  updateChecklistProps({ loadedVanItems });
 };
 
 const toggleLoadedVanItem = ({ id, loadedVanItems, updateChecklistProps }) => {

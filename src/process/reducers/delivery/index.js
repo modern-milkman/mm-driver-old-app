@@ -149,20 +149,15 @@ const addPodImage = (state, { img: { uri, mime } }) =>
 const addPodImageToDriverClaim = (state, { image, handledClaims, stopId }) =>
   produce(state, draft => {
     handledClaims.forEach(claimId => {
-      const claimIdx = state.stops[stopId].claims.acknowledgedClaims.findIndex(
-        cl => cl.claimId === claimId
-      );
-
-      if (claimIdx !== -1) {
-        draft.stops[stopId].claims.acknowledgedClaims[
-          claimIdx
-        ].driverResponses = state.stops[stopId].claims.acknowledgedClaims[
-          claimIdx
-        ].driverResponses.map(dr => ({
-          ...dr,
-          isLocalImage: true,
-          localImage: image
-        }));
+      if (state.stops[stopId].claims.acknowledgedClaims[claimId]) {
+        draft.stops[stopId].claims.acknowledgedClaims[claimId].driverResponses =
+          state.stops[stopId].claims.acknowledgedClaims[
+            claimId
+          ].driverResponses.map(dr => ({
+            ...dr,
+            isLocalImage: true,
+            localImage: image
+          }));
       }
     });
   });
