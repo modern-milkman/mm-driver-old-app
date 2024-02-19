@@ -9,5 +9,5 @@ then
 fi
 
 echo "uninstalling all cocoapods versions"
-sudo gem uninstall cocoapods --all
+sudo gem uninstall cocoapods --all --force
 sudo gem install cocoapods -v 1.14.3
