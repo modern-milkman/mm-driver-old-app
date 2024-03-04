@@ -46,20 +46,24 @@ const handleBarCodeScanned = (
   }
 };
 
-const handleListItemOnPress = (
-  { loadedVanItems, setModalVisible, type, updateChecklistProps },
-  id
-) => {
-  if (type === 'Barcode' && !loadedVanItems[id]) {
-    setModalVisible(true);
-  } else {
-    toggleLoadedVanItem({
-      id,
-      loadedVanItems,
-      updateChecklistProps
-    });
-  }
-};
+// const handleListItemOnPress = (
+//   { loadedVanItems, setModalVisible, type, updateChecklistProps },
+//   id
+// ) => {
+//   if (loadedVanItems[id]) {
+//     return;
+//   }
+//
+//   if (type === 'Barcode' && !loadedVanItems[id]) {
+//     setModalVisible(true);
+//   } else {
+//     toggleLoadedVanItem({
+//       id,
+//       loadedVanItems,
+//       updateChecklistProps
+//     });
+//   }
+// };
 
 const setLoadedVanItemChecked = ({
   id,
@@ -71,15 +75,15 @@ const setLoadedVanItemChecked = ({
   updateChecklistProps({ loadedVanItems });
 };
 
-const toggleLoadedVanItem = ({ id, loadedVanItems, updateChecklistProps }) => {
-  loadedVanItems = { ...loadedVanItems };
-  if (loadedVanItems[id]) {
-    delete loadedVanItems[id];
-  } else {
-    loadedVanItems[id] = true;
-  }
-  updateChecklistProps({ loadedVanItems });
-};
+// const toggleLoadedVanItem = ({ id, loadedVanItems, updateChecklistProps }) => {
+//   loadedVanItems = { ...loadedVanItems };
+//   if (loadedVanItems[id]) {
+//     delete loadedVanItems[id];
+//   } else {
+//     loadedVanItems[id] = true;
+//   }
+//   updateChecklistProps({ loadedVanItems });
+// };
 
 const LoadVan = props => {
   const { colors } = useTheme();
@@ -195,12 +199,12 @@ const LoadVan = props => {
         />
         <List
           data={mappedStock}
-          onPress={handleListItemOnPress.bind(null, {
-            loadedVanItems,
-            setModalVisible,
-            type,
-            updateChecklistProps
-          })}
+          // onPress={handleListItemOnPress.bind(null, {
+          //   loadedVanItems,
+          //   setModalVisible,
+          //   type,
+          //   updateChecklistProps
+          // })}
         />
       </ColumnView>
     </SafeAreaView>
