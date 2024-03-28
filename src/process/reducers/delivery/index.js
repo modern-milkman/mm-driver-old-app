@@ -42,7 +42,8 @@ export const { Types, Creators } = createActions(
       'selectedStopId',
       'outOfStockIds',
       'podImages',
-      'hasCollectedEmpties'
+      'hasCollectedEmpties',
+      'outOfStockIdsList'
     ],
     setEmpty: ['prop', 'value'],
     setDirectionsPolyline: ['payload'],
@@ -58,7 +59,8 @@ export const { Types, Creators } = createActions(
       'outOfStockIds',
       'reasonType',
       'reasonMessage',
-      'hasCollectedEmpties'
+      'hasCollectedEmpties',
+      'outOfStockIdsList'
     ],
     setRegistrationPlates: ['payload'],
     setRejectDeliveryReasons: ['payload'],
@@ -69,7 +71,7 @@ export const { Types, Creators } = createActions(
     startDelivering: null,
     toggleConfirmedItem: ['id'],
     toggleModal: ['modal', 'show'],
-    toggleOutOfStock: ['id'],
+    toggleOutOfStock: ['id', 'selectedItemOrderId', 'selectedItemQty'],
     updateChecklistProps: ['props'],
     updateDirectionsPolyline: null,
     updateDriverActivity: null,
@@ -130,6 +132,7 @@ export const initialState = {
   orderedStopsIds: [],
   outOfSequenceIds: [],
   outOfStockIds: [],
+  outOfStockIdsList: [],
   previousStopId: null,
   processing: true,
   selectedStopId: null,
@@ -270,6 +273,7 @@ const resetSelectedStopInfo = draft => {
   draft.allItemsDone = false;
   draft.confirmedItem = [];
   draft.outOfStockIds = [];
+  draft.outOfStockIdsList = [];
 };
 
 const setDeliveredOrRejected = (
@@ -780,6 +784,16 @@ export const startDelivering = state =>
 // TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
 export const toggleConfirmedItem = (state, { id }) =>
   produce(state, draft => {
+    const _newArrayOfStockObject = draft?.outOfStockIdsList || [];
+    const newArrayofStockObject = _newArrayOfStockObject.flat();
+    const index = draft?.outOfStockIdsList?.findIndex(item => item.id === id);
+    if (index !== -1) {
+      if (newArrayofStockObject.length) {
+        newArrayofStockObject.splice(index, 1);
+      }
+    }
+    draft.outOfStockIdsList = newArrayofStockObject;
+
     draft.confirmedItem = toggle(state.confirmedItem, id);
 
     const idx = state.outOfStockIds.indexOf(id);
@@ -793,18 +807,55 @@ export const toggleConfirmedItem = (state, { id }) =>
   });
 
 // TODO reuse code from toggleConfirmedItem / toggleOutOfStock as one
-export const toggleOutOfStock = (state, { id }) =>
+export const toggleOutOfStock = (
+  state,
+  { id, selectedItemOrderId, selectedItemQty }
+) =>
   produce(state, draft => {
-    draft.outOfStockIds = toggle(state.outOfStockIds, id);
-    const idx = state.confirmedItem.indexOf(id);
-    if (idx > -1) {
-      draft.confirmedItem.splice(idx, 1);
+    const _newArrayOfStockObject = draft?.outOfStockIdsList || [];
+    const newArrayofStockObject = _newArrayOfStockObject.flat();
+    const index = draft?.outOfStockIdsList?.findIndex(
+      item => item.id === selectedItemOrderId
+    );
+    let isUpdateOutOfStockItem = false;
+    if (index !== -1) {
+      if (newArrayofStockObject.length) {
+        newArrayofStockObject.splice(index, 1);
+        let outOfStockObject = {
+          id: selectedItemOrderId,
+          quantity: selectedItemQty
+        };
+        newArrayofStockObject.push(outOfStockObject);
+        isUpdateOutOfStockItem = true;
+      }
+    } else {
+      let outOfStockObject = {
+        id: selectedItemOrderId,
+        quantity: selectedItemQty
+      };
+      newArrayofStockObject.push(outOfStockObject);
     }
+    draft.outOfStockIdsList = newArrayofStockObject;
+
+    // for (const orderItem of Object.values(
+    //   draft.stops[selectedStopId].orderItems
+    // )) {
+    //   orderItem.status = requestType === 'delivered' ? 2 : 4;
+
+    // }
+
+    if (!isUpdateOutOfStockItem) {
+      draft.outOfStockIds = toggle(state.outOfStockIds, id);
+      const idx = state.confirmedItem.indexOf(id);
+      if (idx > -1) {
+        draft.confirmedItem.splice(idx, 1);
+      }
+    }
+
     draft.allItemsDone =
       draft.confirmedItem.length + draft.outOfStockIds.length ===
       Object.keys(state.stops[state.selectedStopId]?.orderItems).length;
   });
-
 export const toggleModal = (state, { modal, show }) =>
   produce(state, draft => {
     draft.stops[draft.selectedStopId].claims[modal] = show;

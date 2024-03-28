@@ -44,6 +44,15 @@ const handlePodCameraOpen = ({ setModalType, setModalVisible }) => {
   setModalVisible(true);
 };
 
+const handleOOSQuantitySelection = (
+  text,
+  setQuantityEnterForStock,
+  setErrorMessageOfOutofStock
+) => {
+  setErrorMessageOfOutofStock(false);
+  setQuantityEnterForStock(text);
+};
+
 const handleListItemOnPress = (
   {
     confirmedItem,
@@ -123,6 +132,63 @@ const rejectAndNavigateBack = (
   NavigationService.goBack({
     beforeCallback: callback
   });
+};
+
+const doneOnOverStock = (
+  setModalVisible,
+  setSelectedItemQty,
+  setSelectedItemOrderId,
+  selectedItemOrderId,
+  selectedItemQty,
+  quantityEnterForStock,
+  toggleOutOfStock,
+  setErrorMessageOfOutofStock,
+  confirmedItem,
+  selectedStop,
+  setModalType,
+  toggleConfirmedItem
+) => {
+  const numericQuantity = Number.parseInt(quantityEnterForStock);
+  if (
+    quantityEnterForStock.length > 0 &&
+    quantityEnterForStock < selectedItemQty
+  ) {
+    setErrorMessageOfOutofStock(false);
+    setModalVisible(false);
+    let finalQtyForOutOfStock =
+      Number.parseInt(selectedItemQty) - numericQuantity;
+    toggleOutOfStock(
+      selectedItemOrderId,
+      selectedItemOrderId,
+      finalQtyForOutOfStock
+    );
+  } else if (quantityEnterForStock === selectedItemQty) {
+    setErrorMessageOfOutofStock(false);
+    setModalVisible(false);
+    handleListItemOnPress(
+      {
+        confirmedItem,
+        selectedStop,
+        setModalVisible,
+        setModalType,
+        toggleConfirmedItem
+      },
+      selectedItemOrderId
+    );
+  } else {
+    setErrorMessageOfOutofStock(true);
+  }
+};
+const cancelOnOverStock = (
+  setModalVisible,
+  setSelectedItemQty,
+  setSelectedItemOrderId,
+  setErrorMessageOfOutofStock
+) => {
+  setModalVisible(false);
+  setSelectedItemQty(0);
+  setSelectedItemOrderId(0);
+  setErrorMessageOfOutofStock(false);
 };
 
 const renderBarCodeScanner = ({ scanBarcode, setModalVisible }) => {
@@ -333,6 +399,164 @@ const renderSkipModal = ({
   </ColumnView>
 );
 
+//For Out of Stock
+const renderTextBoxModal = ({
+  colors,
+  orderId,
+  selectedStop,
+  setModalVisible,
+  width,
+  setSelectedItemQty,
+  setSelectedItemOrderId,
+  selectedItemOrderId,
+  selectedItemQty,
+  quantityEnterForStock,
+  setQuantityEnterForStock,
+  toggleOutOfStock,
+  setErrorMessageOfOutofStock,
+  isShowErrorMessageOfOutofStock,
+  confirmedItem,
+  setModalType,
+  toggleConfirmedItem
+}) => (
+  <ColumnView
+    marginHorizontal={defaults.marginHorizontal}
+    width={width - defaults.marginHorizontal * 2}
+    flex={1}>
+    <ColumnView
+      alignItems={'flex-start'}
+      borderColor={colors.input}
+      borderWidth={1}
+      backgroundColor={colors.neutral}
+      overflow={'hidden'}
+      borderRadius={defaults.borderRadius}>
+      <RowView
+        justifyContent={'flex-start'}
+        marginTop={defaults.marginVertical}
+        marginHorizontal={defaults.marginHorizontal}>
+        <Text.Label align={'left'} width={'100%'} color={colors.inputSecondary}>
+          {I18n.t('screens:deliver.enterOOSQuantityPlaceholder')}
+        </Text.Label>
+      </RowView>
+      <ColumnView
+        paddingHorizontal={defaults.marginHorizontal}
+        paddingVertical={defaults.marginVertical}>
+        <TextInput
+          disableErrors
+          keyboardType={'numeric'}
+          value={quantityEnterForStock}
+          placeholder={I18n.t(
+            'screens:deliver.enterOOSQuantityPlaceholderText'
+          )}
+          error={isShowErrorMessageOfOutofStock ? true : false}
+          errorMessage={'testttt'}
+          onChangeText={text =>
+            handleOOSQuantitySelection(
+              text,
+              setQuantityEnterForStock,
+              setErrorMessageOfOutofStock
+            )
+          }
+        />
+        {isShowErrorMessageOfOutofStock && quantityEnterForStock.length > 0 && (
+          <Text.List
+            align={'left'}
+            width={'100%'}
+            marginLeft={20}
+            marginTop={10}
+            textTransform={'lowercase'}
+            color={'red'}>
+            {I18n.t('screens:deliver.enterOOSQuantityPlaceholderError')}
+          </Text.List>
+        )}
+        {isShowErrorMessageOfOutofStock &&
+          quantityEnterForStock.length === 0 && (
+            <Text.List
+              align={'left'}
+              width={'100%'}
+              marginLeft={20}
+              marginTop={10}
+              textTransform={'lowercase'}
+              color={'red'}>
+              {I18n.t('screens:deliver.enterQuantityEmptyPlaceholderError')}
+            </Text.List>
+          )}
+      </ColumnView>
+
+      <Separator width={'100%'} />
+
+      <RowView>
+        <Button.Primary
+          title={I18n.t('general:done')}
+          onPress={doneOnOverStock.bind(
+            null,
+            setModalVisible,
+            setSelectedItemQty,
+            setSelectedItemOrderId,
+            selectedItemOrderId,
+            selectedItemQty,
+            quantityEnterForStock,
+            toggleOutOfStock,
+            setErrorMessageOfOutofStock,
+            confirmedItem,
+            selectedStop,
+            setModalType,
+            toggleConfirmedItem
+          )}
+          width={'50%'}
+          noBorderRadius
+        />
+        <Button.Tertiary
+          title={I18n.t('general:cancel')}
+          onPress={cancelOnOverStock.bind(
+            null,
+            setModalVisible,
+            setSelectedItemQty,
+            setSelectedItemOrderId,
+            setErrorMessageOfOutofStock
+          )}
+          width={'50%'}
+          noBorderRadius
+        />
+      </RowView>
+    </ColumnView>
+  </ColumnView>
+);
+
+//For Out of Stock
+const showTextBoxModal = (
+  {
+    selectedStop,
+    setModalVisible,
+    type,
+    setModalType,
+    setSelectedItemOrderId,
+    setSelectedItemQty,
+    setQuantityEnterForStock,
+    outOfStockIdsList
+  },
+  orderId
+) => {
+  if (outOfStockIdsList.length > 0) {
+    let indexExist = outOfStockIdsList.findIndex(x => x.id === orderId);
+    if (indexExist !== -1) {
+      let lastEnteredQty =
+        selectedStop.orderItems[orderId].quantity -
+        outOfStockIdsList[indexExist].quantity;
+      setQuantityEnterForStock(lastEnteredQty + '');
+    } else {
+      setQuantityEnterForStock('0');
+    }
+  } else {
+    setQuantityEnterForStock('0');
+  }
+
+  setSelectedItemQty(selectedStop.orderItems[orderId].quantity);
+  setSelectedItemOrderId(orderId);
+  setModalType(type);
+  setModalVisible(true);
+};
+
 const showBarCodeScanner = ({
   confirmedItem,
   orderId,
@@ -401,6 +625,7 @@ const Deliver = props => {
     deletePodImage = mock,
     largerDeliveryText = false,
     outOfStockIds = [],
+    outOfStockIdsList = [],
     podImages = [],
     position = { latitude: 0, longitude: 0 },
     routeDescription = null,
@@ -420,6 +645,11 @@ const Deliver = props => {
   const [modalType, setModalType] = useState('skip');
   const [modalVisible, setModalVisible] = useState(false);
   const [podPromptAutoShown, setPodPromptAutoShown] = useState(false);
+  const [selectedItemQty, setSelectedItemQty] = useState(0);
+  const [selectedItemOrderId, setSelectedItemOrderId] = useState(0);
+  const [quantityEnterForStock, setQuantityEnterForStock] = useState('0');
+  const [isShowErrorMessageOfOutofStock, setErrorMessageOfOutofStock] =
+    useState(false);
 
   const showClaimModal = selectedStop?.claims.showClaimModal;
   const isFocused = useIsFocused();
@@ -462,6 +692,7 @@ const Deliver = props => {
   const optimizedStopOrders = selectedStop
     ? Object.values(selectedStop.orderItems).map(order => {
         const isOutOfStock = outOfStockIds.includes(order.key);
+        outOfStockIdsList.includes(order.key);
         return {
           ...order,
           description: null,
@@ -563,6 +794,27 @@ const Deliver = props => {
             squareImage
           />
         )}
+        {modalType === 'outOfStock' &&
+          renderTextBoxModal({
+            colors,
+            ...props,
+            setModalText,
+            setModalVisible,
+            width,
+            setSelectedItemQty,
+            setSelectedItemOrderId,
+            selectedItemOrderId,
+            selectedItemQty,
+            quantityEnterForStock,
+            setQuantityEnterForStock,
+            toggleOutOfStock,
+            setErrorMessageOfOutofStock,
+            isShowErrorMessageOfOutofStock,
+            confirmedItem,
+            setModalType,
+            toggleConfirmedItem,
+            selectedStop
+          })}
       </Modal>
 
       <ColumnView
@@ -740,7 +992,18 @@ const Deliver = props => {
                   : optimizedStopOrders
               }
               hasSections={height > 700}
-              onLongPress={toggleOutOfStock}
+              // onLongPress={toggleOutOfStock}
+
+              onLongPress={showTextBoxModal.bind(null, {
+                selectedStop,
+                setModalVisible,
+                type: 'outOfStock',
+                setModalType,
+                setSelectedItemOrderId,
+                setSelectedItemQty,
+                setQuantityEnterForStock,
+                outOfStockIdsList
+              })}
               onPress={handleListItemOnPress.bind(null, {
                 confirmedItem,
                 selectedStop,
@@ -815,7 +1078,8 @@ const Deliver = props => {
                       selectedStop.key,
                       outOfStockIds,
                       podImages,
-                      hasCollectedEmpties
+                      hasCollectedEmpties,
+                      outOfStockIdsList
                     )
                   })}
                   disabled={
@@ -864,6 +1128,7 @@ Deliver.propTypes = {
   distanceToPin: PropTypes.number,
   largerDeliveryText: PropTypes.bool,
   outOfStockIds: PropTypes.array,
+  outOfStockIdsList: PropTypes.array,
   podImage: PropTypes.object,
   podImages: PropTypes.array,
   position: PropTypes.object,

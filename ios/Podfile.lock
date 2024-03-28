@@ -482,13 +482,13 @@ PODS:
     - React-Core
   - react-native-geolocation (3.1.0):
     - React-Core
-  - react-native-google-maps (1.9.1):
+  - react-native-google-maps (1.8.4):
     - Google-Maps-iOS-Utils (= 4.2.2)
     - GoogleMaps (= 7.4.0)
     - React-Core
   - react-native-keep-awake (1.2.2):
     - React-Core
-  - react-native-maps (1.9.1):
+  - react-native-maps (1.8.4):
     - React-Core
   - react-native-netinfo (11.2.1):
     - React-Core
@@ -622,7 +622,7 @@ PODS:
   - RNGestureHandler (2.14.1):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNPermissions (4.0.4):
+  - RNPermissions (4.1.0):
     - React-Core
   - RNReanimated (3.3.0):
     - DoubleConversion
@@ -661,9 +661,9 @@ PODS:
   - RNVectorIcons (10.0.3):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - SDWebImage (5.18.10):
-    - SDWebImage/Core (= 5.18.10)
-  - SDWebImage/Core (5.18.10)
+  - SDWebImage (5.19.0):
+    - SDWebImage/Core (= 5.19.0)
+  - SDWebImage/Core (5.19.0)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -1016,9 +1016,9 @@ SPEC CHECKSUMS:
   react-native-config: 86038147314e2e6d10ea9972022aa171e6b1d4d8
   react-native-encrypted-storage: db300a3f2f0aba1e818417c1c0a6be549038deb7
   react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
-  react-native-google-maps: 5e3af3d3bd16a9936a44be5be47ced7dbd45029b
+  react-native-google-maps: 1e3d5bb85a6b9823bf034c4ec68ab096690e24e8
   react-native-keep-awake: ad1d67f617756b139536977a0bf06b27cec0714a
-  react-native-maps: 4f45622710094c3603b262279c40026750579b1f
+  react-native-maps: e2b78affd8e90c807a87bd042dc6b1af2decbcf1
   react-native-netinfo: 8a7fd3f7130ef4ad2fb4276d5c9f8d3f28d2df3d
   react-native-restart: ea6a0e2b19282b99dcb765e71e208e7f4c64236b
   react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
@@ -1046,17 +1046,17 @@ SPEC CHECKSUMS:
   RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: fe2be3be5598dc74329b211c58c9f2d231461769
-  RNPermissions: 466242bfb5bfe8520069d505b6a905b799bbb4e0
+  RNPermissions: faeba579c0aa49cc29aa20c7eb4ab9f5ba8f6f5a
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
   RNVectorIcons: 64e6a523ac30a3241efa9baf1ffbcc5e76ff747a
-  SDWebImage: fc8f2d48bbfd72ef39d70e981bd24a3f3be53fec
+  SDWebImage: 981fd7e860af070920f249fd092420006014c3eb
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: eddf2bbe4a896454c248a8f23b4355891eb720a6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: e4c6b0c8c3b73fb488784c7bb442cabadc4c40cd
+PODFILE CHECKSUM: 82d313dc2f6a5b2d8b7fc034787f177f2793192d
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2
