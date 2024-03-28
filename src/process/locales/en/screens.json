@@ -89,6 +89,10 @@
       "inputPlaceholder": "Add more info here",
       "rejectTitle": "Rejection Reason"
     },
+    "enterOOSQuantityPlaceholder": "Enter the quantity that is delivered",
+    "enterOOSQuantityPlaceholderError": "Quantity cannot be greater than total product quantity",
+    "enterOOSQuantityPlaceholderText": "Enter quantity delivered",
+    "enterQuantityEmptyPlaceholderError": "Quantity field cannot be empty",
     "overXmeters": "You are over {{distance}} metres away from the customer's pin",
     "podCamera": {
       "retake": "Retake",

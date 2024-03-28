@@ -15,6 +15,7 @@ export default connect(
       distanceToPin: state.device.distanceToPin,
       largerDeliveryText: state.device.largerDeliveryText,
       outOfStockIds: state.delivery?.outOfStockIds,
+      outOfStockIdsList: state.delivery?.outOfStockIdsList,
       podImages: state.delivery?.podImages,
       position: state.device.position,
       rejectReasons: state.delivery?.rejectReasons,
