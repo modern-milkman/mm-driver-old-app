@@ -117,6 +117,11 @@ const LoadVan = props => {
 
   const mappedStock = orderedStock
     .filter(filterFunctions[type])
+    .sort((a, b) => {
+      const isAPicked = loadedVanItems[a.key];
+      const isBPicked = loadedVanItems[b.key];
+      return isAPicked - isBPicked;
+    })
     .map(stockItem => {
       deliveredTotal += deliveredStock[stockItem.key] || 0;
       const combinedItemQuantity = stockItem.additionalQuantity
@@ -131,9 +136,7 @@ const LoadVan = props => {
         ...stockItem,
         disabled: readOnly,
         suffixTop: readOnly
-          ? `${
-              stockItem.quantity - (deliveredStock[stockItem.key] || 0)
-            } / ${combinedItemQuantity}`
+          ? `${stockItem.quantity - (deliveredStock[stockItem.key] || 0)} / ${combinedItemQuantity}`
           : combinedItemQuantity,
         image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
         customIcon: 'productPlaceholder',
@@ -197,15 +200,29 @@ const LoadVan = props => {
           }
           testID={'loadVan-navbar'}
         />
-        <List
-          data={mappedStock}
-          onLongPress={handleListItemOnPress.bind(null, {
-            loadedVanItems,
-            setModalVisible,
-            type,
-            updateChecklistProps
-          })}
-        />
+        {type === 'Barcode' ? (
+          <List
+            data={mappedStock}
+            onLongPress={id =>
+              handleListItemOnPress.bind(null, {
+                loadedVanItems: loadedVanItems[id],
+                setModalVisible,
+                type,
+                updateChecklistProps
+              })
+            }
+          />
+        ) : (
+          <List
+            data={mappedStock}
+            onPress={handleListItemOnPress.bind(null, {
+              loadedVanItems,
+              setModalVisible,
+              type,
+              updateChecklistProps
+            })}
+          />
+        )}
       </ColumnView>
     </SafeAreaView>
   );
