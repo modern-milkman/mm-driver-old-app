@@ -90,7 +90,7 @@
       "rejectTitle": "Rejection Reason"
     },
     "enterOOSQuantityPlaceholder": "Enter the quantity that is delivered",
-    "enterOOSQuantityPlaceholderError": "Quantity cannot be greater than total product quantity",
+    "enterOOSQuantityPlaceholderError": "Delivered quantity should be lesser than total product quantity to mark Out of Stock",
     "enterOOSQuantityPlaceholderText": "Enter quantity delivered",
     "enterQuantityEmptyPlaceholderError": "Quantity field cannot be empty",
     "overXmeters": "You are over {{distance}} metres away from the customer's pin",

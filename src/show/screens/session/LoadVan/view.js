@@ -50,10 +50,6 @@ const handleListItemOnPress = (
   { loadedVanItems, setModalVisible, type, updateChecklistProps },
   id
 ) => {
-  if (loadedVanItems[id]) {
-    return;
-  }
-
   if (type === 'Barcode' && !loadedVanItems[id]) {
     setModalVisible(true);
   } else {
@@ -215,14 +211,12 @@ const LoadVan = props => {
         ) : (
           <List
             data={mappedStock}
-            onPress={id =>
-              handleListItemOnPress.bind(null, {
-                loadedVanItems: loadedVanItems[id],
-                setModalVisible,
-                type,
-                updateChecklistProps
-              })
-            }
+            onPress={handleListItemOnPress.bind(null, {
+              loadedVanItems,
+              setModalVisible,
+              type,
+              updateChecklistProps
+            })}
           />
         )}
       </ColumnView>
