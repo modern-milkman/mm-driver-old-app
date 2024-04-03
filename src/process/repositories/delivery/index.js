@@ -47,9 +47,7 @@ export default {
     return Api.get('/Delivery/GetVehicleStockForDriver');
   },
   patchItemOutOfStock(itemId, quantityOutOfStock) {
-    return Api.patch(
-      `/Delivery/SetOrderItemOutOfStock/${itemId}/${quantityOutOfStock}`
-    );
+    return Api.patch(`/Delivery/SetOutOfStock/${itemId}/${quantityOutOfStock}`);
   },
   patchRejected({
     orderId,

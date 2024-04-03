@@ -215,12 +215,14 @@ const LoadVan = props => {
         ) : (
           <List
             data={mappedStock}
-            onPress={handleListItemOnPress.bind(null, {
-              loadedVanItems,
-              setModalVisible,
-              type,
-              updateChecklistProps
-            })}
+            onPress={id =>
+              handleListItemOnPress.bind(null, {
+                loadedVanItems: loadedVanItems[id],
+                setModalVisible,
+                type,
+                updateChecklistProps
+              })
+            }
           />
         )}
       </ColumnView>
