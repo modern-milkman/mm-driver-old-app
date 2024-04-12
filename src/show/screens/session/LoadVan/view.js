@@ -199,14 +199,12 @@ const LoadVan = props => {
         {type === 'Barcode' ? (
           <List
             data={mappedStock}
-            onLongPress={id =>
-              handleListItemOnPress.bind(null, {
-                loadedVanItems: loadedVanItems[id],
-                setModalVisible,
-                type,
-                updateChecklistProps
-              })
-            }
+            onLongPress={handleListItemOnPress.bind(null, {
+              loadedVanItems,
+              setModalVisible,
+              type,
+              updateChecklistProps
+            })}
           />
         ) : (
           <List
