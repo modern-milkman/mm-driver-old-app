@@ -68,6 +68,11 @@ const setLoadedVanItemChecked = ({
 }) => {
   loadedVanItems = { ...loadedVanItems };
   loadedVanItems[id] = true;
+  loadedVanItems.sort((a, b) => {
+    const isAPicked = loadedVanItems[a.key];
+    const isBPicked = loadedVanItems[b.key];
+    return isAPicked - isBPicked;
+  });
   updateChecklistProps({ loadedVanItems });
 };
 
@@ -78,6 +83,11 @@ const toggleLoadedVanItem = ({ id, loadedVanItems, updateChecklistProps }) => {
   } else {
     loadedVanItems[id] = true;
   }
+  loadedVanItems.sort((a, b) => {
+    const isAPicked = loadedVanItems[a.key];
+    const isBPicked = loadedVanItems[b.key];
+    return isAPicked - isBPicked;
+  });
   updateChecklistProps({ loadedVanItems });
 };
 
