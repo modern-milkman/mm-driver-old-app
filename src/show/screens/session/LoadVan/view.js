@@ -164,7 +164,8 @@ const LoadVan = props => {
     ? `${computedItemCount} (${additionalItemCount})`
     : computedItemCount;
 
-  const doneDisabled = Config.ENVIRONMENT === 'production' && disableDoneButton;
+  //  const doneDisabled = Config.ENVIRONMENT === 'production' && disableDoneButton;
+  const doneDisabled = disableDoneButton;
 
   return (
     <SafeAreaView>
