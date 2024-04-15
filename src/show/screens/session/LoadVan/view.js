@@ -113,6 +113,11 @@ const LoadVan = props => {
 
   const mappedStock = orderedStock
     .filter(filterFunctions[type])
+    .sort((a, b) => {
+      const isAPicked = loadedVanItems[a.key];
+      const isBPicked = loadedVanItems[b.key];
+      return isAPicked - isBPicked;
+    })
     .map(stockItem => {
       deliveredTotal += deliveredStock[stockItem.key] || 0;
       const combinedItemQuantity = stockItem.additionalQuantity
@@ -143,11 +148,6 @@ const LoadVan = props => {
             rightIconColor: colors.primary
           })
       };
-    })
-    .sort((a, b) => {
-      const isAPicked = loadedVanItems[a.key];
-      const isBPicked = loadedVanItems[b.key];
-      return isAPicked - isBPicked;
     });
   const combinedItemCount = additionalItemCount
     ? `${computedItemCount} (${additionalItemCount})`
@@ -197,11 +197,8 @@ const LoadVan = props => {
         />
         {type === 'Barcode' ? (
           <List
-            data={mappedStock.sort((a, b) => {
-              const isAPicked = loadedVanItems[a.key];
-              const isBPicked = loadedVanItems[b.key];
-              return isAPicked - isBPicked;
-            })}
+            data={mappedStock}
+            extraData={mappedStock}
             onLongPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
@@ -211,11 +208,8 @@ const LoadVan = props => {
           />
         ) : (
           <List
-            data={mappedStock.sort((a, b) => {
-              const isAPicked = loadedVanItems[a.key];
-              const isBPicked = loadedVanItems[b.key];
-              return isAPicked - isBPicked;
-            })}
+            data={mappedStock}
+            extraData={mappedStock}
             onPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
