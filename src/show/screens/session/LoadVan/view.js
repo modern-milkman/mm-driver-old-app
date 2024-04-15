@@ -113,11 +113,6 @@ const LoadVan = props => {
 
   const mappedStock = orderedStock
     .filter(filterFunctions[type])
-    .sort((a, b) => {
-      const isAPicked = loadedVanItems[a.key];
-      const isBPicked = loadedVanItems[b.key];
-      return isAPicked - isBPicked;
-    })
     .map(stockItem => {
       deliveredTotal += deliveredStock[stockItem.key] || 0;
       const combinedItemQuantity = stockItem.additionalQuantity
@@ -148,8 +143,12 @@ const LoadVan = props => {
             rightIconColor: colors.primary
           })
       };
+    })
+    .sort((a, b) => {
+      const isAPicked = loadedVanItems[a.key];
+      const isBPicked = loadedVanItems[b.key];
+      return isAPicked - isBPicked;
     });
-
   const combinedItemCount = additionalItemCount
     ? `${computedItemCount} (${additionalItemCount})`
     : computedItemCount;
