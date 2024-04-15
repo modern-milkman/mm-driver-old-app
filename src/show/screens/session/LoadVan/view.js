@@ -198,7 +198,11 @@ const LoadVan = props => {
         />
         {type === 'Barcode' ? (
           <List
-            data={mappedStock}
+            data={mappedStock.sort((a, b) => {
+              const isAPicked = loadedVanItems[a.key];
+              const isBPicked = loadedVanItems[b.key];
+              return isAPicked - isBPicked;
+            })}
             onLongPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
@@ -208,7 +212,11 @@ const LoadVan = props => {
           />
         ) : (
           <List
-            data={mappedStock}
+            data={mappedStock.sort((a, b) => {
+              const isAPicked = loadedVanItems[a.key];
+              const isBPicked = loadedVanItems[b.key];
+              return isAPicked - isBPicked;
+            })}
             onPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
