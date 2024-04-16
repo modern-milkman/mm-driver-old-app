@@ -47,7 +47,7 @@ const handleBarCodeScanned = (
 };
 
 const handleListItemOnPress = (
-  { loadedVanItems, setModalVisible, type, updateChecklistProps },
+  { loadedVanItems, setModalVisible, type, updateChecklistProps, setReRender },
   id
 ) => {
   toggleLoadedVanItem({
@@ -55,9 +55,10 @@ const handleListItemOnPress = (
     loadedVanItems,
     updateChecklistProps
   });
+  setReRender(reRender => reRender + 1);
 };
 const handleBarcodeListItemOnPress = (
-  { loadedVanItems, setModalVisible, type, updateChecklistProps },
+  { loadedVanItems, setModalVisible, type, updateChecklistProps, setReRender },
   id
 ) => {
   if (type === 'Barcode' && !loadedVanItems[id]) {
@@ -69,6 +70,7 @@ const handleBarcodeListItemOnPress = (
       updateChecklistProps
     });
   }
+  setReRender(reRender => reRender + 1);
 };
 
 const setLoadedVanItemChecked = ({
@@ -108,7 +110,7 @@ const LoadVan = props => {
   } = props;
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [sortedStock, setSortedStock] = useState([]);
+  const [reRender, setReRender] = useState(0);
 
   const barcodeIds = {};
 
@@ -161,14 +163,6 @@ const LoadVan = props => {
       };
     });
 
-  setSortedStock(
-    mappedStock.sort((a, b) => {
-      const isAPicked = loadedVanItems[a.key];
-      const isBPicked = loadedVanItems[b.key];
-      return isAPicked - isBPicked;
-    })
-  );
-
   const combinedItemCount = additionalItemCount
     ? `${computedItemCount} (${additionalItemCount})`
     : computedItemCount;
@@ -217,23 +211,27 @@ const LoadVan = props => {
         />
         {type === 'Barcode' ? (
           <List
-            data={sortedStock}
+            data={mappedStock}
+            extraData={reRender}
             onPress={handleBarcodeListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps
+              updateChecklistProps,
+              setReRender
             })}
             onLongPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps
+              updateChecklistProps,
+              setReRender
             })}
           />
         ) : (
           <List
-            data={sortedStock}
+            data={mappedStock}
+            extraData={reRender}
             onPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
