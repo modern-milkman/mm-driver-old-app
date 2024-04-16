@@ -47,7 +47,22 @@ const handleBarCodeScanned = (
 };
 
 const handleListItemOnPress = (
-  { loadedVanItems, setModalVisible, type, updateChecklistProps },
+  { loadedVanItems, setModalVisible, type, updateChecklistProps, orderedStock },
+  id
+) => {
+  toggleLoadedVanItem({
+    id,
+    loadedVanItems,
+    updateChecklistProps
+  });
+  orderedStock.sort((a, b) => {
+    const isAPicked = loadedVanItems[a.key];
+    const isBPicked = loadedVanItems[b.key];
+    return isAPicked - isBPicked;
+  });
+};
+const handleBarcodeListItemOnPress = (
+  { loadedVanItems, setModalVisible, type, updateChecklistProps, orderedStock },
   id
 ) => {
   if (type === 'Barcode' && !loadedVanItems[id]) {
@@ -59,6 +74,11 @@ const handleListItemOnPress = (
       updateChecklistProps
     });
   }
+  orderedStock.sort((a, b) => {
+    const isAPicked = loadedVanItems[a.key];
+    const isBPicked = loadedVanItems[b.key];
+    return isAPicked - isBPicked;
+  });
 };
 
 const setLoadedVanItemChecked = ({
@@ -199,11 +219,19 @@ const LoadVan = props => {
           <List
             data={mappedStock}
             extraData={mappedStock}
+            onPress={handleBarcodeListItemOnPress.bind(null, {
+              loadedVanItems,
+              setModalVisible,
+              type,
+              updateChecklistProps,
+              orderedStock
+            })}
             onLongPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps
+              updateChecklistProps,
+              orderedStock
             })}
           />
         ) : (
@@ -214,7 +242,8 @@ const LoadVan = props => {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps
+              updateChecklistProps,
+              orderedStock
             })}
           />
         )}
