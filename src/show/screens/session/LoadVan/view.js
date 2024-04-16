@@ -47,7 +47,7 @@ const handleBarCodeScanned = (
 };
 
 const handleListItemOnPress = (
-  { loadedVanItems, setModalVisible, type, updateChecklistProps, setReRender },
+  { loadedVanItems, setModalVisible, type, updateChecklistProps },
   id
 ) => {
   toggleLoadedVanItem({
@@ -55,10 +55,9 @@ const handleListItemOnPress = (
     loadedVanItems,
     updateChecklistProps
   });
-  setReRender(reRender => reRender + 1);
 };
 const handleBarcodeListItemOnPress = (
-  { loadedVanItems, setModalVisible, type, updateChecklistProps, setReRender },
+  { loadedVanItems, setModalVisible, type, updateChecklistProps },
   id
 ) => {
   if (type === 'Barcode' && !loadedVanItems[id]) {
@@ -70,7 +69,6 @@ const handleBarcodeListItemOnPress = (
       updateChecklistProps
     });
   }
-  setReRender(reRender => reRender + 1);
 };
 
 const setLoadedVanItemChecked = ({
@@ -110,7 +108,6 @@ const LoadVan = props => {
   } = props;
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [reRender, setReRender] = useState(0);
 
   const barcodeIds = {};
 
@@ -212,26 +209,24 @@ const LoadVan = props => {
         {type === 'Barcode' ? (
           <List
             data={mappedStock}
-            extraData={reRender}
+            extraData={loadedVanItems}
             onPress={handleBarcodeListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps,
-              setReRender
+              updateChecklistProps
             })}
             onLongPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps,
-              setReRender
+              updateChecklistProps
             })}
           />
         ) : (
           <List
             data={mappedStock}
-            extraData={reRender}
+            extraData={loadedVanItems}
             onPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
