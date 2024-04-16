@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Config from 'react-native-config';
 
 import { mock } from 'Helpers';
@@ -108,6 +108,7 @@ const LoadVan = props => {
   } = props;
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [sortedStock, setSortedStock] = useState([]);
 
   const barcodeIds = {};
 
@@ -159,6 +160,17 @@ const LoadVan = props => {
           })
       };
     });
+
+  useEffect(() => {
+    setSortedStock(
+      mappedStock.sort((a, b) => {
+        const isAPicked = loadedVanItems[a.key];
+        const isBPicked = loadedVanItems[b.key];
+        return isAPicked - isBPicked;
+      })
+    );
+  }, [loadedVanItems, mappedStock]);
+
   const combinedItemCount = additionalItemCount
     ? `${computedItemCount} (${additionalItemCount})`
     : computedItemCount;
@@ -207,7 +219,7 @@ const LoadVan = props => {
         />
         {type === 'Barcode' ? (
           <List
-            data={mappedStock}
+            data={sortedStock}
             onPress={handleBarcodeListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
@@ -223,7 +235,7 @@ const LoadVan = props => {
           />
         ) : (
           <List
-            data={mappedStock}
+            data={sortedStock}
             onPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
