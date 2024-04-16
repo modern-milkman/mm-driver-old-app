@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import RNFS from 'react-native-fs';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Config from 'react-native-config';
 
 import { mock } from 'Helpers';
@@ -161,15 +161,13 @@ const LoadVan = props => {
       };
     });
 
-  useEffect(() => {
-    setSortedStock(
-      mappedStock.sort((a, b) => {
-        const isAPicked = loadedVanItems[a.key];
-        const isBPicked = loadedVanItems[b.key];
-        return isAPicked - isBPicked;
-      })
-    );
-  }, [loadedVanItems, mappedStock]);
+  setSortedStock(
+    mappedStock.sort((a, b) => {
+      const isAPicked = loadedVanItems[a.key];
+      const isBPicked = loadedVanItems[b.key];
+      return isAPicked - isBPicked;
+    })
+  );
 
   const combinedItemCount = additionalItemCount
     ? `${computedItemCount} (${additionalItemCount})`
