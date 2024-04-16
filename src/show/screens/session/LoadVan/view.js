@@ -47,7 +47,7 @@ const handleBarCodeScanned = (
 };
 
 const handleListItemOnPress = (
-  { loadedVanItems, setModalVisible, type, updateChecklistProps, orderedStock },
+  { loadedVanItems, setModalVisible, type, updateChecklistProps },
   id
 ) => {
   toggleLoadedVanItem({
@@ -55,14 +55,9 @@ const handleListItemOnPress = (
     loadedVanItems,
     updateChecklistProps
   });
-  orderedStock.sort((a, b) => {
-    const isAPicked = loadedVanItems[a.key];
-    const isBPicked = loadedVanItems[b.key];
-    return isAPicked - isBPicked;
-  });
 };
 const handleBarcodeListItemOnPress = (
-  { loadedVanItems, setModalVisible, type, updateChecklistProps, orderedStock },
+  { loadedVanItems, setModalVisible, type, updateChecklistProps },
   id
 ) => {
   if (type === 'Barcode' && !loadedVanItems[id]) {
@@ -74,11 +69,6 @@ const handleBarcodeListItemOnPress = (
       updateChecklistProps
     });
   }
-  orderedStock.sort((a, b) => {
-    const isAPicked = loadedVanItems[a.key];
-    const isBPicked = loadedVanItems[b.key];
-    return isAPicked - isBPicked;
-  });
 };
 
 const setLoadedVanItemChecked = ({
@@ -218,32 +208,27 @@ const LoadVan = props => {
         {type === 'Barcode' ? (
           <List
             data={mappedStock}
-            extraData={mappedStock}
             onPress={handleBarcodeListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps,
-              orderedStock
+              updateChecklistProps
             })}
             onLongPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps,
-              orderedStock
+              updateChecklistProps
             })}
           />
         ) : (
           <List
             data={mappedStock}
-            extraData={mappedStock}
             onPress={handleListItemOnPress.bind(null, {
               loadedVanItems,
               setModalVisible,
               type,
-              updateChecklistProps,
-              orderedStock
+              updateChecklistProps
             })}
           />
         )}
