@@ -427,7 +427,8 @@ export const setDeliveredOrRejected = function* (
     outOfStockIds,
     selectedStopId,
     reasonType,
-    reasonMessage
+    reasonMessage,
+    outOfStockIdsList
   }
 ) {
   const completedStopsIds = yield select(completedStopsIdsSelector);
@@ -473,13 +474,20 @@ export const setDeliveredOrRejected = function* (
       type: DeliveryTypes.CONTINUE_DELIVERING
     });
   }
-
-  for (const i of outOfStockIds) {
+  for (let index = 0; index < outOfStockIdsList.length; index++) {
     yield put({
       type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK,
-      id: i
+      id: outOfStockIdsList[index].id,
+      quantity: outOfStockIdsList[index].quantity
     });
   }
+
+  // for (const i of outOfStockIds) {
+  //   yield put({
+  //     type: DeliveryTypes.SET_ITEM_OUT_OF_STOCK,
+  //     id: i
+  //   });
+  // }
 
   let proofOfDeliveryImages = [];
 
@@ -502,6 +510,7 @@ export const setDeliveredOrRejected = function* (
   }
 
   // deliveryDateLocal may be altered if drivers change their device time.
+
   yield put({
     type: Api.API_CALL,
     promise: promise({
@@ -568,11 +577,11 @@ export const setDeliveredOrRejected = function* (
   );
 };
 
-export const setItemOutOfStock = function* ({ id }) {
+export const setItemOutOfStock = function* ({ id, quantity }) {
   yield put({
     type: Api.API_CALL,
     actions: {},
-    promise: Api.repositories.delivery.patchItemOutOfStock(id)
+    promise: Api.repositories.delivery.patchItemOutOfStock(id, quantity)
   });
   Analytics.trackEvent(EVENTS.SET_ITEM_OUT_OF_STOCK, { id });
 };

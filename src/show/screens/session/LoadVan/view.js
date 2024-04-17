@@ -46,24 +46,46 @@ const handleBarCodeScanned = (
   }
 };
 
-// const handleListItemOnPress = (
-//   { loadedVanItems, setModalVisible, type, updateChecklistProps },
-//   id
-// ) => {
-//   if (loadedVanItems[id]) {
-//     return;
-//   }
-//
-//   if (type === 'Barcode' && !loadedVanItems[id]) {
-//     setModalVisible(true);
-//   } else {
-//     toggleLoadedVanItem({
-//       id,
-//       loadedVanItems,
-//       updateChecklistProps
-//     });
-//   }
-// };
+const handleListItemOnPress = (
+  {
+    loadedVanItems,
+    setModalVisible,
+    type,
+    updateChecklistProps,
+    reRenderLoadList,
+    setReRenderLoadList
+  },
+  id
+) => {
+  toggleLoadedVanItem({
+    id,
+    loadedVanItems,
+    updateChecklistProps
+  });
+  setReRenderLoadList(reRenderLoadList + 1);
+};
+const handleBarcodeListItemOnPress = (
+  {
+    loadedVanItems,
+    setModalVisible,
+    type,
+    updateChecklistProps,
+    reRenderLoadList,
+    setReRenderLoadList
+  },
+  id
+) => {
+  if (type === 'Barcode' && !loadedVanItems[id]) {
+    setModalVisible(true);
+  } else {
+    toggleLoadedVanItem({
+      id,
+      loadedVanItems,
+      updateChecklistProps
+    });
+  }
+  setReRenderLoadList(reRenderLoadList + 1);
+};
 
 const setLoadedVanItemChecked = ({
   id,
@@ -75,15 +97,15 @@ const setLoadedVanItemChecked = ({
   updateChecklistProps({ loadedVanItems });
 };
 
-// const toggleLoadedVanItem = ({ id, loadedVanItems, updateChecklistProps }) => {
-//   loadedVanItems = { ...loadedVanItems };
-//   if (loadedVanItems[id]) {
-//     delete loadedVanItems[id];
-//   } else {
-//     loadedVanItems[id] = true;
-//   }
-//   updateChecklistProps({ loadedVanItems });
-// };
+const toggleLoadedVanItem = ({ id, loadedVanItems, updateChecklistProps }) => {
+  loadedVanItems = { ...loadedVanItems };
+  if (loadedVanItems[id]) {
+    delete loadedVanItems[id];
+  } else {
+    loadedVanItems[id] = true;
+  }
+  updateChecklistProps({ loadedVanItems });
+};
 
 const LoadVan = props => {
   const { colors } = useTheme();
@@ -102,6 +124,7 @@ const LoadVan = props => {
   } = props;
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [reRenderLoadList, setReRenderLoadList] = useState(0);
 
   const barcodeIds = {};
 
@@ -117,6 +140,11 @@ const LoadVan = props => {
 
   const mappedStock = orderedStock
     .filter(filterFunctions[type])
+    .sort((a, b) => {
+      const isAPicked = loadedVanItems[a.key];
+      const isBPicked = loadedVanItems[b.key];
+      return isAPicked === isBPicked ? 0 : isAPicked ? 1 : -1;
+    })
     .map(stockItem => {
       deliveredTotal += deliveredStock[stockItem.key] || 0;
       const combinedItemQuantity = stockItem.additionalQuantity
@@ -131,9 +159,7 @@ const LoadVan = props => {
         ...stockItem,
         disabled: readOnly,
         suffixTop: readOnly
-          ? `${
-              stockItem.quantity - (deliveredStock[stockItem.key] || 0)
-            } / ${combinedItemQuantity}`
+          ? `${stockItem.quantity - (deliveredStock[stockItem.key] || 0)} / ${combinedItemQuantity}`
           : combinedItemQuantity,
         image: `file://${RNFS.DocumentDirectoryPath}/${Config.FS_PROD_IMAGES}/${stockItem.productId}`,
         customIcon: 'productPlaceholder',
@@ -197,15 +223,41 @@ const LoadVan = props => {
           }
           testID={'loadVan-navbar'}
         />
-        <List
-          data={mappedStock}
-          // onPress={handleListItemOnPress.bind(null, {
-          //   loadedVanItems,
-          //   setModalVisible,
-          //   type,
-          //   updateChecklistProps
-          // })}
-        />
+        {type === 'Barcode' ? (
+          <List
+            data={mappedStock}
+            extraData={reRenderLoadList}
+            onPress={handleBarcodeListItemOnPress.bind(null, {
+              loadedVanItems,
+              setModalVisible,
+              type,
+              updateChecklistProps,
+              reRenderLoadList,
+              setReRenderLoadList
+            })}
+            onLongPress={handleListItemOnPress.bind(null, {
+              loadedVanItems,
+              setModalVisible,
+              type,
+              updateChecklistProps,
+              reRenderLoadList,
+              setReRenderLoadList
+            })}
+          />
+        ) : (
+          <List
+            data={mappedStock}
+            extraData={reRenderLoadList}
+            onPress={handleListItemOnPress.bind(null, {
+              loadedVanItems,
+              setModalVisible,
+              type,
+              updateChecklistProps,
+              reRenderLoadList,
+              setReRenderLoadList
+            })}
+          />
+        )}
       </ColumnView>
     </SafeAreaView>
   );

@@ -89,6 +89,10 @@
       "inputPlaceholder": "Ajouter plus d'informations ici",
       "rejectTitle": "Motif de rejet"
     },
+    "enterOOSQuantityPlaceholder": "Entrez la quantité livrée",
+    "enterOOSQuantityPlaceholderError": "La quantité ne peut pas être supérieure à la quantité totale du produit",
+    "enterOOSQuantityPlaceholderText": "Entrez la quantité livrée",
+    "enterQuantityEmptyPlaceholderError": "Le champ Quantité ne peut pas être vide",
     "overXmeters": "Tu es fini {{distance}} à quelques mètres du code PIN du client",
     "podCamera": {
       "retake": "Reprendre",
