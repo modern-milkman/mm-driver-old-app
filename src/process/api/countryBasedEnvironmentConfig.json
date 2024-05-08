@@ -1,15 +1,15 @@
 {
   "development": {
     "ADMIN": {
-      "uk": "https://tst-services.themodernmilkman.co.uk/tmm-adminapi/v1/api",
+      "uk": "https://tst-services.themodernmilkman.co.uk/ctd-adminapi/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-adminapi/v1/api"
     },
     "DELIVERY": {
-      "uk": "https://tst-services.themodernmilkman.co.uk/tmm-delivery/v1/api",
+      "uk": "https://tst-services.themodernmilkman.co.uk/ctd-delivery/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-delivery/v1/api"
     },
     "OPERATIONS": {
-      "uk": "https://tst-services.themodernmilkman.co.uk/tmm-operations/v1/api",
+      "uk": "https://tst-services.themodernmilkman.co.uk/ctd-operations/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-operations/v1/api"
     }
   },
@@ -29,15 +29,15 @@
   },
   "test": {
     "ADMIN": {
-      "uk": "https://tst-services.themodernmilkman.co.uk/tmm-adminapi/v1/api",
+      "uk": "https://tst-services.themodernmilkman.co.uk/ctd-adminapi/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-adminapi/v1/api"
     },
     "DELIVERY": {
-      "uk": "https://tst-services.themodernmilkman.co.uk/tmm-delivery/v1/api",
+      "uk": "https://tst-services.themodernmilkman.co.uk/ctd-delivery/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-delivery/v1/api"
     },
     "OPERATIONS": {
-      "uk": "https://tst-services.themodernmilkman.co.uk/tmm-operations/v1/api",
+      "uk": "https://tst-services.themodernmilkman.co.uk/ctd-operations/v1/api",
       "fr": "https://tst-services.themodernmilkman.co.uk/poly-operations/v1/api"
     }
   }
