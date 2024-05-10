@@ -293,6 +293,7 @@ const renderSkipModal = ({
   colors,
   hasCollectedEmpties,
   outOfStockIds,
+  outOfStockIdsList,
   reasonMessage = '',
   rejectReasons,
   selectedStop,
@@ -385,7 +386,8 @@ const renderSkipModal = ({
                 outOfStockIds,
                 reasonType,
                 reasonMessage,
-                hasCollectedEmpties
+                hasCollectedEmpties,
+                outOfStockIdsList
               ),
               setModalImageSrc,
               setModalText,
