@@ -1,15 +1,16 @@
 {
   "cli": {
-    "version": "latest"
+    "version": ">=3.18.0"
   },
   "build": {
     "production": {
       "ios": {
-        "distribution": "app-store",
-        "buildConfiguration": "Release"
+        "distribution": "store",
+        "autoIncrement": false
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle",
+        "autoIncrement": false
       }
     }
   }

@@ -4,10 +4,13 @@
     "slug": "old-customer-driver-app",
     "version": "8.2.6",
     "sdkVersion": "49.0.21",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "ios": {
       "bundleIdentifier": "com.luminos.modernmilkmandriver.app",
-      "buildNumber": "274",
+      "buildNumber": "268",
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app requires location access to provide accurate navigation and delivery tracking.",
@@ -16,7 +19,7 @@
     },
     "android": {
       "package": "com.luminos.modernmilkmandriver.app",
-      "versionCode": 274
+      "versionCode": 268
     },
     "assetBundlePatterns": [
       "**/*"
@@ -31,7 +34,11 @@
       "enabled": false
     },
     "extra": {
-      "environment": "production"
-    }
+      "environment": "production",
+      "eas": {
+        "projectId": "0fdc59ac-3944-4856-80a0-17643686d5c0"
+      }
+    },
+    "owner": "themodernmilkman"
   }
 }
