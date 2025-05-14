@@ -5,12 +5,11 @@
   "build": {
     "production": {
       "ios": {
-        "buildType": "app-store",
-        "autoIncrement": false
+        "distribution": "app-store",
+        "buildConfiguration": "Release"
       },
       "android": {
-        "buildType": "app-bundle",
-        "autoIncrement": false
+        "buildType": "apk"
       }
     }
   }
