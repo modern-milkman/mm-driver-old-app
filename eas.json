@@ -1,0 +1,17 @@
+{
+  "cli": {
+    "version": "latest"
+  },
+  "build": {
+    "production": {
+      "ios": {
+        "buildType": "app-store",
+        "autoIncrement": false
+      },
+      "android": {
+        "buildType": "app-bundle",
+        "autoIncrement": false
+      }
+    }
+  }
+}

@@ -1,4 +1,37 @@
 {
-  "name": "ModernMilkmanDriver",
-  "displayName": "Modern Milkman Driver"
+  "expo": {
+    "name": "Old Customer Driver App",
+    "slug": "old-customer-driver-app",
+    "version": "8.2.6",
+    "sdkVersion": "49.0.21",
+    "platforms": ["ios", "android"],
+    "ios": {
+      "bundleIdentifier": "com.luminos.modernmilkmandriver.app",
+      "buildNumber": "274",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app requires location access to provide accurate navigation and delivery tracking.",
+        "NSLocationAlwaysUsageDescription": "This app needs background location access to provide uninterrupted delivery navigation."
+      }
+    },
+    "android": {
+      "package": "com.luminos.modernmilkmandriver.app",
+      "versionCode": 274
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "enabled": false
+    },
+    "extra": {
+      "environment": "production"
+    }
+  }
 }
